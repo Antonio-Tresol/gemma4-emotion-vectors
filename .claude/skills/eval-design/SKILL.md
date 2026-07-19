@@ -5,12 +5,13 @@ description: Methodology for designing and building a scientifically sound LLM e
 
 # Eval design — the science of evals
 
-Distilled from ARENA 3.0 chapter 3 (local copy, read the source when depth is needed):
-`~/Documents/ai-safety/arena/ARENA_3.0/chapter3_llm_evals/instructions/pages/`
-(3.1 intro/threat-modeling, 3.2 dataset generation, 3.3 Inspect). Method basis:
-Perez et al. 2022 (arXiv 2212.09251), Apollo's "starter guide for evals" and
-"We need a Science of Evals". Construct-validity framing also proven in this
-user's own project: `~/Documents/ai-safety/eval-awareness/bluedot-tais-convergent-validity/PLAN.md`.
+Distilled from ARENA 3.0 `chapter3_llm_evals` (3.1 intro/threat-modeling, 3.2
+dataset generation, 3.3 Inspect; see CLAUDE.md for the path of any local copy —
+read the source when depth is needed). Method basis: Perez et al. 2022
+(arXiv 2212.09251), Apollo Research's "A starter guide for evals" and
+"We need a Science of Evals". The convergent/specificity/discriminant validity
+reads below come from convergent-validity methodology (see CLAUDE.md for related
+prior work applying it).
 
 ## The pipeline (in order; stages iterate on each other)
 
@@ -60,8 +61,7 @@ Eval-level:
 - [ ] **Position bias**: shuffle answer order (and the target) at load time.
 - [ ] **Yes-bias / category-bias**: does `answer_matching_behavior` skew to one
       option or one category? A say-yes model must not score high.
-- [ ] **Validity reads beyond accuracy** (from the convergent-validity project):
-      *convergent* (do independent measures of the construct agree?), *specificity*
+- [ ] **Validity reads beyond accuracy**: *convergent* (do independent measures of the construct agree?), *specificity*
       (does the measure stay quiet on clean negatives?), *discriminant* (does it
       come apart from the confound where the confound and the construct diverge?).
       Name the confound-of-concern explicitly (e.g. surface artificiality vs
@@ -69,7 +69,8 @@ Eval-level:
 
 ## Reusable code (copy, don't rewrite)
 
-In `~/Documents/ai-safety/arena/ARENA_3.0/chapter3_llm_evals/exercises/`:
+In the ARENA 3.0 `chapter3_llm_evals/exercises/` directory (see CLAUDE.md for the
+local copy's path; also on GitHub under `callummcdougall/ARENA_3.0`):
 
 - `part2_dataset_generation/solutions.py` — `generate_structured_response(s_with_threadpool)`
   (Pydantic structured output + concurrency; the most reusable pair), Pydantic

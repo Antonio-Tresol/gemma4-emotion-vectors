@@ -57,7 +57,10 @@ Phases iterate; the gates do not.
 - Skills (`.claude/skills/`): `research`, `eval-design`, `falsify`,
   `validate-claims`, `derive-from-sources`, `research-log`.
 - Related prior work for reference: `~/Documents/ai-safety/eval-awareness/`
-  (eval-awareness detectors, convergent validity, EvalAwareBench),
+  (eval-awareness detectors, convergent validity, EvalAwareBench; the
+  convergent-validity framing the `eval-design` skill cites lives in
+  `bluedot-tais-convergent-validity/PLAN.md`),
   `~/Documents/uni/thesis/gemma3-refusal-*` (mech interp on refusal),
   `~/Documents/ai-safety/arena/ARENA_3.0/chapter3_llm_evals/` (evals curriculum
-  + reusable generation/QC/Inspect code).
+  + reusable generation/QC/Inspect code — the `eval-design` skill's source:
+  curriculum pages under `instructions/pages/`, reusable code under `exercises/`).

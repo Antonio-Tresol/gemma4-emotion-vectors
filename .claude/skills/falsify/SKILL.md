@@ -7,7 +7,7 @@ effort: max
 
 # Falsification Protocol
 
-Scientific claims survive falsification efforts. That is science. This skill systematically attempts to destroy every claim before it enters the thesis.
+Scientific claims survive falsification efforts. That is science. This skill systematically attempts to destroy every claim before it graduates into a deliverable.
 
 ## Workflow
 
@@ -46,11 +46,10 @@ For each claim, state:
 ### Step 6: Update
 Update the source document with qualified claims and a falsification scorecard.
 
-## Lessons from this project
+## Worked examples of falsification catches
 
-- Feature 9449→20318 "reparameterization" was a **base-rate artifact** caught by permutation test (both fire on 97% of prompts, expected Jaccard under independence = 0.944)
-- "Near-orthogonal" safety-capability cosine had bootstrap CI [-0.316, 0.639] — crosses zero
-- Random split null gave p=0.054 — borderline, not definitive
-- Always check: is the "effect" just what you'd expect from base rates?
+- **Base-rate artifact caught by permutation test**: two detectors appeared to strongly "co-fire" (high Jaccard overlap), but each fired on ~97% of inputs individually — the expected overlap under independence was already ~0.94. The apparent relationship was nothing beyond base rates. Always check: is the "effect" just what you'd expect from base rates?
+- **Bootstrap CI crossing zero**: a "near-orthogonal" cosine-similarity claim had a bootstrap CI of roughly [-0.32, 0.64] — consistent with everything from mild anti-alignment to substantial alignment. The point estimate carried no information; the claim was retracted.
+- **Borderline p-value**: a random-split null gave p = 0.054 — reported as borderline, neither dressed up as significant nor dismissed as null. Borderline stays borderline in the writeup.
 
 $ARGUMENTS

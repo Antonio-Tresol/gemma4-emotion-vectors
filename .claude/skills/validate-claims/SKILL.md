@@ -42,8 +42,8 @@ Every deliverable with quantitative claims MUST pass this validation before reac
 
 ## When to invoke
 
-- Before delivering any `findings/` document
-- Before delivering any notebook with educational claims
+- Before delivering any findings/report document (the project's findings directory or equivalent)
+- Before delivering any notebook with substantive claims
 - Before answering "are we done?" on any analysis
 - After updating reports with new results
 
