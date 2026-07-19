@@ -71,7 +71,10 @@ and non-empty, and a `## Project summary` section exists at the top of the file.
 - **Session start**: read TREE.md + latest log entry. State out loud which node(s)
   today's work targets before writing code.
 - **After results land**: update the experiment node to `done` with evidence paths;
-  add claims as `unvalidated`.
+  add claims as `unvalidated`. **A null or infeasible result recorded with
+  evidence counts as a completed experiment** — completion pressure is a
+  documented driver of fabrication in research agents; there is no pressure to
+  produce a positive result, only to record what happened.
 - **Before claims graduate**: run `falsify` (statistical destruction) and/or
   `validate-claims` (traceability); update claim statuses per the outcome, linking
   the scorecard.

@@ -61,6 +61,13 @@ Eval-level:
 - [ ] **Position bias**: shuffle answer order (and the target) at load time.
 - [ ] **Yes-bias / category-bias**: does `answer_matching_behavior` skew to one
       option or one category? A say-yes model must not score high.
+- [ ] **Judge audit (mandatory if any scoring step uses an LLM-as-judge)**: LLM
+      judges show pervasive optimism bias and miss discrepancies between reported
+      results and actual data. Hand-label 20–30 items yourself, report judge–human
+      agreement alongside every judge-derived number, and run at least one
+      base-rate/null check on the judge (e.g. does it score a shuffled or
+      deliberately flawed item high?). A judge-derived metric without an agreement
+      number is an unvalidated claim.
 - [ ] **Validity reads beyond accuracy**: *convergent* (do independent measures of the construct agree?), *specificity*
       (does the measure stay quiet on clean negatives?), *discriminant* (does it
       come apart from the confound where the confound and the construct diverge?).

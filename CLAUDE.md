@@ -47,7 +47,9 @@ Phases iterate; the gates do not.
 - No claim in any deliverable that is not a node in TREE.md with linked evidence.
 - No quoted text that is not verbatim from a source read in-session.
 - Honest nulls: a detector/effect that doesn't fire is reported as such, never
-  dressed up (lesson inherited from the eval-awareness pilot).
+  dressed up (lesson inherited from the eval-awareness pilot). A null or
+  infeasible result recorded with evidence is a completed experiment, not a
+  failure to complete one.
 - Pivots are recorded, not erased: nodes become `abandoned`, never deleted.
 
 ## Tooling
