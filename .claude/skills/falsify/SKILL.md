@@ -9,6 +9,8 @@ effort: max
 
 Scientific claims survive falsification efforts. That is science. This skill systematically attempts to destroy every claim before it graduates into a deliverable.
 
+A **Failed** verdict is the protocol succeeding, not the research failing: retracting a claim before it ships is the entire point. The scorecard's value is its honesty, not its survival rate — a scorecard where everything survives is more suspicious than one with retractions.
+
 ## Workflow
 
 ### Step 1: Identify claims

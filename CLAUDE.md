@@ -1,9 +1,12 @@
 # CBAI sprint — interpretability & evals practice project
 
-A 2–3 day solo research sprint (week of 2026-07-20) to practice AI-safety research
-skills in interpretability and evaluations. Everything here is optimized for one
-thing: producing a small number of **claims that survive scrutiny**, with an audit
-trail proving it.
+A 2–3 day research sprint (week of 2026-07-20, solo or small team) to practice
+AI-safety research skills in interpretability and evaluations. Everything here is
+optimized for one thing: ending the sprint with **answers we can trust**, with an
+audit trail proving it. A well-evidenced null, a refuted hypothesis, or an honest
+"infeasible in the time available" is exactly as much a success as a positive
+finding. There is no pressure to produce positive results — only to record what
+is true.
 
 ## State and history (read these first, every session)
 
@@ -54,15 +57,15 @@ Phases iterate; the gates do not.
 
 ## Tooling
 
-- MCP: `arxiv-mcp-server` (papers stored in `data/papers/`), `paper-search-mcp`
+- MCP: `arxiv-mcp-server` (paper storage: `data/papers/`, path relative to the
+  project root — after your first download, verify papers actually land there and
+  switch to an absolute path in `.mcp.json` if they don't), `paper-search-mcp`
   (multi-source search). Configured in `.mcp.json`.
 - Skills (`.claude/skills/`): `research`, `eval-design`, `falsify`,
-  `validate-claims`, `derive-from-sources`, `research-log`.
-- Related prior work for reference: `~/Documents/ai-safety/eval-awareness/`
-  (eval-awareness detectors, convergent validity, EvalAwareBench; the
-  convergent-validity framing the `eval-design` skill cites lives in
-  `bluedot-tais-convergent-validity/PLAN.md`),
-  `~/Documents/uni/thesis/gemma3-refusal-*` (mech interp on refusal),
-  `~/Documents/ai-safety/arena/ARENA_3.0/chapter3_llm_evals/` (evals curriculum
-  + reusable generation/QC/Inspect code — the `eval-design` skill's source:
-  curriculum pages under `instructions/pages/`, reusable code under `exercises/`).
+  `validate-claims`, `derive-from-sources`, `research-log`. All generic and
+  portable — no machine-specific paths.
+- Machine-specific pointers (local copies of ARENA, related prior repos) live in
+  `CLAUDE.local.md`, which is gitignored — each team member keeps their own.
+  Sources referenced by the `eval-design` skill are all public: ARENA 3.0
+  `chapter3_llm_evals` (github.com/callummcdougall/ARENA_3.0), Perez et al.
+  arXiv 2212.09251, Apollo Research's evals guides.

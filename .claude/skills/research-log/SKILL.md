@@ -36,6 +36,10 @@ Status vocabulary (exact strings, nothing else):
 - Experiments: `planned` | `running` | `done` | `abandoned`
 - Claims: `unvalidated` | `survived` | `weakened` | `failed`
 
+`refuted`, `failed`, and `abandoned` are healthy terminal states, not outcomes to
+avoid: they mean the process caught something. A tree containing only `supported`
+and `survived` nodes is a red flag (nothing was genuinely tested), not a success.
+
 Rules the validator enforces:
 
 1. IDs unique; every child's ID extends its parent's ID; nesting depth matches ID depth.

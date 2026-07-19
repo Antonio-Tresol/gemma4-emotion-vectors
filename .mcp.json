@@ -4,7 +4,7 @@
       "command": "arxiv-mcp-server",
       "args": [
         "--storage-path",
-        "/Users/abo-tresol/Documents/ai-safety/cbai_project/data/papers"
+        "data/papers"
       ]
     },
     "paper-search-mcp": {
