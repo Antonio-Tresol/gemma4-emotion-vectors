@@ -46,8 +46,9 @@ Rules the validator enforces:
    `survived`/`weakened` (belief changes require validated evidence).
 5. Every node with a `log:` date has a matching entry in `RESEARCH_LOG.md`.
 6. A claim may only be `survived`/`weakened`/`failed` after the falsify or
-   validate-claims protocol ran; record which in the evidence (e.g. the
-   falsification script or scorecard path).
+   validate-claims protocol ran. Mechanically enforced: at least one evidence
+   path must be a scorecard artifact whose filename contains `falsify`,
+   `scorecard`, or `validation`.
 
 ## RESEARCH_LOG.md format (enforced by the validator)
 

@@ -20,8 +20,8 @@ Phases iterate; the gates do not.
 
 1. **Scope** — one narrow question answerable with one dataset, 1–2 models, and
    known metrics. Write it as `Q1` in TREE.md before anything else.
-2. **Literature** (timebox: half a day) — `research` skill for search/retrieval,
-   `alphaxiv-paper-lookup` for fast structured reads, papers land in `data/papers/`.
+2. **Literature** (timebox: half a day) — `research` skill for search/retrieval
+   (including AlphaXiv structured overviews), papers land in `data/papers/`.
    Any synthesis document follows `derive-from-sources`: read every source, notes
    file with verbatim quotes first, draft only from the notes.
 3. **Design** — for eval work, follow the `eval-design` skill: threat model →
@@ -55,7 +55,7 @@ Phases iterate; the gates do not.
 - MCP: `arxiv-mcp-server` (papers stored in `data/papers/`), `paper-search-mcp`
   (multi-source search). Configured in `.mcp.json`.
 - Skills (`.claude/skills/`): `research`, `eval-design`, `falsify`,
-  `validate-claims`, `derive-from-sources`, `alphaxiv-paper-lookup`, `research-log`.
+  `validate-claims`, `derive-from-sources`, `research-log`.
 - Related prior work for reference: `~/Documents/ai-safety/eval-awareness/`
   (eval-awareness detectors, convergent validity, EvalAwareBench),
   `~/Documents/uni/thesis/gemma3-refusal-*` (mech interp on refusal),

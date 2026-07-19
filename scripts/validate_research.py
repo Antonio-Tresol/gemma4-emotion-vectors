@@ -95,6 +95,16 @@ def validate_tree(errors: list[str]) -> dict[str, str | None]:
         for ev in evidence:
             if not (ROOT / ev).exists():
                 errors.append(f"TREE.md:{lineno}: {nid} evidence path does not exist: {ev}")
+        # Claims graduate only via a falsify/validation scorecard artifact
+        if ntype == "C" and status in {"survived", "weakened", "failed"}:
+            if not any(
+                re.search(r"falsif|scorecard|validat", Path(ev).name, re.IGNORECASE)
+                for ev in evidence
+            ):
+                errors.append(
+                    f"TREE.md:{lineno}: {nid} [{status}] needs a scorecard evidence file "
+                    "(name containing 'falsify', 'scorecard', or 'validation')"
+                )
     # Rule 4: supported/refuted hypotheses need a validated child claim
     ids = set(seen)
     for nid in ids:
