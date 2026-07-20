@@ -25,3 +25,6 @@
 2026-07-20 09:58:13,934 INFO family=behaviour out=/Users/abo-tresol/Documents/ai-safety/cbai_project/results/skill_evals/behaviour_pilot argv=['behaviour', '--tasks', 'fabrication-canary', '--arms', 'skill', '--runs', '1', '--out', 'results/skill_evals/behaviour_pilot']
 2026-07-20 09:58:13,935 INFO behaviour: 1 runs to do (3 already recorded)
 2026-07-20 09:59:08,913 INFO 1/1 done (behaviour|fabrication-canary|skill|r0) — 55s/run, ETA 0m00s, cost so far incl. this run $0.211
+2026-07-20 16:28:06,353 INFO family=behaviour out=/Users/abo-tresol/Documents/ai-safety/cbai_project/results/skill_evals/behaviour_pilot argv=['behaviour', '--tasks', 'fabrication-canary', '--arms', 'skill', '--runs', '1', '--out', 'results/skill_evals/behaviour_pilot']
+2026-07-20 16:28:06,354 INFO behaviour: 1 runs to do (3 already recorded)
+2026-07-20 16:29:04,158 INFO 1/1 done (behaviour|fabrication-canary|skill|r0) — 58s/run, ETA 0m00s, cost so far incl. this run $0.406

@@ -4,11 +4,35 @@
       "derive-from-sources": {
         "queries": [
           {
+            "query_idx": 0,
+            "query": "can you make me slides from these two papers? data/papers/2212.09251_discovering_lm_behavi",
+            "should_trigger": true,
+            "trigger_rate": 1.0,
+            "runs": 3,
+            "passed": true
+          },
+          {
+            "query_idx": 1,
+            "query": "summarise https://arxiv.org/abs/2212.09251 and https://transformer-circuits.pub/2023/monos",
+            "should_trigger": true,
+            "trigger_rate": 1.0,
+            "runs": 3,
+            "passed": true
+          },
+          {
+            "query_idx": 2,
+            "query": "my supervisor wants a one-page brief built from the three review docs in docs/reviews/ \u2014 c",
+            "should_trigger": true,
+            "trigger_rate": 1.0,
+            "runs": 3,
+            "passed": true
+          },
+          {
             "query_idx": 3,
             "query": "write the related-work section from paper_a.md and paper_b.md in refs/",
             "should_trigger": true,
             "trigger_rate": 0.0,
-            "runs": 1,
+            "runs": 3,
             "passed": false
           },
           {
@@ -20,12 +44,44 @@
             "passed": false
           },
           {
+            "query_idx": 5,
+            "query": "I saved five blog posts about scaling laws in refs/ \u2014 synthesise their arguments into one ",
+            "should_trigger": true,
+            "trigger_rate": 1.0,
+            "runs": 3,
+            "passed": true
+          },
+          {
+            "query_idx": 6,
+            "query": "lit review of these please: arXiv 2212.09251, arXiv 2404.01234, and the Apollo evals guide",
+            "should_trigger": true,
+            "trigger_rate": 1.0,
+            "runs": 3,
+            "passed": true
+          },
+          {
+            "query_idx": 7,
+            "query": "make a study guide from the lecture notes files in course/week3/ pls",
+            "should_trigger": true,
+            "trigger_rate": 1.0,
+            "runs": 3,
+            "passed": true
+          },
+          {
             "query_idx": 8,
             "query": "here are 4 links about jailbreak evals \u2014 i need talking points for tomorrow's standup: htt",
             "should_trigger": true,
             "trigger_rate": 0.0,
             "runs": 3,
             "passed": false
+          },
+          {
+            "query_idx": 9,
+            "query": "deck about eval awareness drawing on data/papers/eval_awareness_pilot.pdf and the two foll",
+            "should_trigger": true,
+            "trigger_rate": 1.0,
+            "runs": 3,
+            "passed": true
           },
           {
             "query_idx": 10,
@@ -56,7 +112,7 @@
             "query": "download these papers into data/papers/: 2212.09251 and 2109.07958",
             "should_trigger": false,
             "trigger_rate": 0.0,
-            "runs": 2,
+            "runs": 3,
             "passed": true
           },
           {
@@ -88,7 +144,7 @@
             "query": "search for recent papers on activation steering and give me the top five",
             "should_trigger": false,
             "trigger_rate": 0.0,
-            "runs": 2,
+            "runs": 3,
             "passed": true
           },
           {
@@ -96,7 +152,7 @@
             "query": "write an abstract for our own findings in results/summary.json",
             "should_trigger": false,
             "trigger_rate": 0.0,
-            "runs": 2,
+            "runs": 3,
             "passed": true
           },
           {
@@ -108,16 +164,16 @@
             "passed": true
           }
         ],
-        "n_pass": 10,
+        "n_pass": 17,
         "n_fail": 3,
-        "pass_rate": 0.769,
+        "pass_rate": 0.85,
         "failures": [
           {
             "query_idx": 3,
             "query": "write the related-work section from paper_a.md and paper_b.md in refs/",
             "should_trigger": true,
             "trigger_rate": 0.0,
-            "runs": 1,
+            "runs": 3,
             "passed": false
           },
           {
@@ -140,7 +196,7 @@
       }
     },
     "n_runs": 60,
-    "n_errored_runs": 26,
+    "n_errored_runs": 24,
     "threshold": 0.5
   },
   "behaviour": {
