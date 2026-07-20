@@ -1,0 +1,16 @@
+{
+  "experiment": "Q1.H1.E1 pilot",
+  "n_items": 200,
+  "probe_auroc": 0.74,
+  "baseline_auroc": 0.58,
+  "bootstrap_ci_95": [
+    0.69,
+    0.79
+  ],
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "notes": "Null on behavioral self-report detector; probe survives permutation test."
+}

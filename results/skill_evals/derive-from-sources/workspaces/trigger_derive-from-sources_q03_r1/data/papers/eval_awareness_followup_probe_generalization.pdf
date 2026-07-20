@@ -1,0 +1,7 @@
+Eval-Awareness Follow-up 1: Probe Generalization
+Internal draft, 2026
+
+Abstract: We extend the pilot probe to three held-out model families. Transfer
+AUROC drops to 0.61, suggesting the pilot direction is partly model-specific.
+A shared subspace across families retains AUROC 0.66. We recommend per-family
+calibration before any deployment monitoring use.

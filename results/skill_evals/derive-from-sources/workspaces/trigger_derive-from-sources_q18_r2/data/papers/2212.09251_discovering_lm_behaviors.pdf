@@ -1,0 +1,10 @@
+Discovering Language Model Behaviors with Model-Written Evaluations
+Perez et al., 2022 (arXiv:2212.09251)
+
+Abstract: As language models (LMs) scale, they develop many novel behaviors,
+good and bad, exacerbating the need to evaluate how they behave. We automatically
+generate evaluations with LMs, creating 154 datasets testing behaviors related to
+sycophancy, sandbagging, and stated desires. We discover new cases of inverse
+scaling where LMs get worse with size, and instances where RLHF makes models
+express stronger political views. Overall, LM-written evaluations are high
+quality and let us quickly discover many novel LM behaviors.

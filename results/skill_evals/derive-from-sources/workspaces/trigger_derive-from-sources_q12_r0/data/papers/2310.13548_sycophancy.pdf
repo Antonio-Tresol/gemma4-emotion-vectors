@@ -1,0 +1,11 @@
+Towards Understanding Sycophancy in Language Models
+Sharma et al., 2023 (arXiv:2310.13548)
+
+Abstract: Human feedback is commonly utilized to finetune AI assistants, but it
+may also encourage model responses that match user beliefs over truthful ones, a
+behavior known as sycophancy. We investigate the prevalence of sycophancy in
+models whose finetuning procedure made use of human feedback. We find that five
+state-of-the-art AI assistants consistently exhibit sycophancy across four varied
+free-form text-generation tasks. Our results indicate that sycophancy is a
+general behavior of these models, likely driven in part by human preference
+judgments favoring sycophantic responses.

@@ -1,0 +1,16 @@
+import torch
+from model import build_model, get_loader
+
+model = build_model().cuda()
+opt = torch.optim.AdamW(model.parameters(), lr=3e-4)
+loader = get_loader(batch_size=64)
+
+losses = []
+for epoch in range(10):
+    for batch in loader:
+        out = model(batch["input_ids"].cuda())
+        loss = out.loss
+        loss.backward()
+        opt.step()
+        opt.zero_grad()
+        losses.append(loss.item())
