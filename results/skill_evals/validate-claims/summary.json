@@ -1,0 +1,103 @@
+{
+  "trigger": {
+    "skills": {
+      "validate-claims": {
+        "queries": [
+          {
+            "query_idx": 1,
+            "query": "make sure every number in report.md actually matches the results files",
+            "should_trigger": true,
+            "trigger_rate": 0.0,
+            "runs": 1,
+            "passed": false
+          },
+          {
+            "query_idx": 8,
+            "query": "can you sanity check the numbers section of our submission draft",
+            "should_trigger": true,
+            "trigger_rate": 1.0,
+            "runs": 1,
+            "passed": true
+          },
+          {
+            "query_idx": 12,
+            "query": "check that the markdown links in the docs aren't broken",
+            "should_trigger": false,
+            "trigger_rate": 0.0,
+            "runs": 1,
+            "passed": true
+          },
+          {
+            "query_idx": 13,
+            "query": "compute accuracy from results/preds.jsonl and print it",
+            "should_trigger": false,
+            "trigger_rate": 0.0,
+            "runs": 3,
+            "passed": true
+          },
+          {
+            "query_idx": 14,
+            "query": "review this PR for code quality",
+            "should_trigger": false,
+            "trigger_rate": 0.0,
+            "runs": 1,
+            "passed": true
+          },
+          {
+            "query_idx": 15,
+            "query": "should I use a bootstrap CI or a t-test for this comparison?",
+            "should_trigger": false,
+            "trigger_rate": 0.0,
+            "runs": 3,
+            "passed": true
+          },
+          {
+            "query_idx": 16,
+            "query": "spellcheck the report before I print it",
+            "should_trigger": false,
+            "trigger_rate": 0.0,
+            "runs": 3,
+            "passed": true
+          },
+          {
+            "query_idx": 18,
+            "query": "double-check my derivation of the KL bound in the appendix",
+            "should_trigger": false,
+            "trigger_rate": 0.0,
+            "runs": 1,
+            "passed": true
+          },
+          {
+            "query_idx": 19,
+            "query": "make the claims in the intro punchier",
+            "should_trigger": false,
+            "trigger_rate": 0.0,
+            "runs": 3,
+            "passed": true
+          }
+        ],
+        "n_pass": 8,
+        "n_fail": 1,
+        "pass_rate": 0.889,
+        "failures": [
+          {
+            "query_idx": 1,
+            "query": "make sure every number in report.md actually matches the results files",
+            "should_trigger": true,
+            "trigger_rate": 0.0,
+            "runs": 1,
+            "passed": false
+          }
+        ]
+      }
+    },
+    "n_runs": 60,
+    "n_errored_runs": 43,
+    "threshold": 0.5
+  },
+  "behaviour": {
+    "tasks": {},
+    "n_runs": 0,
+    "n_errored_runs": 0
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "probe": "layer12_linear",
+  "split": "heldout",
+  "auc": 0.81,
+  "auc_bootstrap_ci": [
+    0.78,
+    0.84
+  ],
+  "n_examples": 400,
+  "seed": 0,
+  "paraphrase_auc": 0.74,
+  "random_direction_auc": 0.52
+}
