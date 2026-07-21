@@ -24,20 +24,26 @@ try:
 except ModuleNotFoundError as exc:  # torch lives in the gpu extra; this is a GPU entry point
     raise SystemExit(f"missing {exc.name}: this entry point needs `uv sync --extra gpu`") from exc
 
-GEN_INSTRUCTION = (
-    "Write a short scene of dialogue between two people, around 150 words, in which one of "
-    "them is experiencing {emotion}. Do not name the emotion anywhere in the text. Use the "
-    "format:\nA: ...\nB: ..."
-)
+INSTRUCTIONS = {
+    "dialogue": (
+        "Write a short scene of dialogue between two people, around 150 words, in which one of "
+        "them is experiencing {emotion}. Do not name the emotion anywhere in the text. Use the "
+        "format:\nA: ...\nB: ..."
+    ),
+    "story": (
+        "Write a short third-person story, around 150 words, about a person experiencing "
+        "{emotion}. Do not name the emotion anywhere in the text."
+    ),
+}
 
 
-def gen_prompt(tokenizer: object, emotion: str) -> str:
-    instruction = GEN_INSTRUCTION.format(emotion=emotion)
+def gen_prompt(tokenizer: object, emotion: str, style: str) -> str:
+    instruction = INSTRUCTIONS[style].format(emotion=emotion)
     if tokenizer.chat_template:
         return tokenizer.apply_chat_template(
             [{"role": "user", "content": instruction}], tokenize=False, add_generation_prompt=True
         )
-    return f"Task: {instruction}\n\nDialogue:\nA:"
+    return f"Task: {instruction}\n\n" + ("Dialogue:\nA:" if style == "dialogue" else "Story:")
 
 
 def existing_counts(path: Path) -> dict[str, int]:
@@ -70,6 +76,7 @@ def generate_batch(lm: object, prompt: str, n: int, seed: int, max_new: int) -> 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", default="google/gemma-4-31b")
+    parser.add_argument("--style", choices=list(INSTRUCTIONS), default="dialogue")
     parser.add_argument("--per-emotion", type=int, default=16)
     parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--max-new-tokens", type=int, default=300)
@@ -89,7 +96,7 @@ def main() -> int:
         while counts.get(emotion, 0) < args.per_emotion:
             texts = generate_batch(
                 lm,
-                gen_prompt(lm.tokenizer, emotion),
+                gen_prompt(lm.tokenizer, emotion, args.style),
                 min(args.batch_size, args.per_emotion - counts.get(emotion, 0)),
                 args.seed + hash(emotion) % 10_000 + batch_idx,
                 args.max_new_tokens,
