@@ -1,5 +1,0 @@
-Date,Day,Time In,Time Out,Hours,Task/Activity,Project/Category,Notes
-2026-07-20,Monday,,,,,CBAI 3-day sprint,
-2026-07-21,Tuesday,,,,,CBAI 3-day sprint,
-2026-07-22,Wednesday,,,,,CBAI 3-day sprint,
-Total Hours,,,=SUM(E2:E4),,,,
