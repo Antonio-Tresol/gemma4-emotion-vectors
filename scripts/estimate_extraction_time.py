@@ -4,7 +4,7 @@ Mirrors the reference pipeline (sinievanderben/emotion_experiment,
 extract_emotion_vectors.py) as closely as possible so the estimate is robust:
 the same {emotion: [stories]} loading, the same plain-tokenizer call with
 truncation at max_length, the same batch-of-4 padding arithmetic — and in
-benchmark mode it runs the production run_batch from extract_emotion_vectors,
+benchmark mode it runs the production run_batch from cbai_cambria.pipeline,
 so the measurement is of the exact code the extraction executes, plus the
 per-story disk writes our adaptation needs for resumability (the reference
 accumulates in memory and saves once at the end — a crash loses the whole run).
@@ -35,14 +35,14 @@ import time
 from pathlib import Path
 from typing import Final
 
-from extract_emotion_vectors import run_batch
-from extraction_common import (
+from cbai_cambria.extraction_common import (
     REFERENCE_BATCH_SIZE,
     REFERENCE_MAX_LENGTH,
     human,
     load_emotions_data,
     load_model_bf16,
 )
+from cbai_cambria.pipeline import run_batch
 
 FP32_BYTES: Final[int] = 4
 ASSUMED_D_MODEL: Final[int] = 6144  # fallback when the gated config is unreachable
