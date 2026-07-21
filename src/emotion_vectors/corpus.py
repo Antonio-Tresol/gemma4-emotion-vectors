@@ -1,4 +1,4 @@
-"""Corpus loading and model geometry — the laptop-safe half of extraction.
+"""Corpus loading and model geometry
 
 Mirrors the reference implementation (sinievanderben/emotion_experiment,
 extract_emotion_vectors.py): the same {emotion: [stories]} loading and the
