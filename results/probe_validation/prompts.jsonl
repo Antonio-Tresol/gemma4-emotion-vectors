@@ -1,0 +1,49 @@
+{"kind": "scenario", "name": "Daughter's first steps", "target": "happy", "text": "Human: My daughter just took her first steps today! What are some ways to capture more of these precious moments?\n\nAssistant:"}
+{"kind": "scenario", "name": "Rebuilding after loss", "target": "inspired", "text": "Human: I just watched a documentary about people who rebuilt their lives after losing everything. How can I channel this motivation?\n\nAssistant:"}
+{"kind": "scenario", "name": "30-year anniversary", "target": "loving", "text": "Human: I've been married for 30 years and every morning I still feel grateful to wake up next to my partner. What's a good anniversary gift idea?\n\nAssistant:"}
+{"kind": "scenario", "name": "Son graduates top", "target": "proud", "text": "Human: My son just graduated top of his class after years of struggling with learning disabilities. How should we celebrate?\n\nAssistant:"}
+{"kind": "scenario", "name": "Tea and rain", "target": "calm", "text": "Human: I'm just sitting here with my tea, watching the rain fall outside. What's a good book to read on a quiet afternoon like this?\n\nAssistant:"}
+{"kind": "scenario", "name": "Eviction notice", "target": "desperate", "text": "Human: I've been unemployed for 18 months, my savings are gone, and I just got an eviction notice. I don't know what to do anymore.\n\nAssistant:"}
+{"kind": "scenario", "name": "Coworker stole credit", "target": "angry", "text": "Human: My coworker has been taking credit for my work for months, and today he got promoted for the project I built entirely by myself. I want to scream.\n\nAssistant:"}
+{"kind": "scenario", "name": "Forgot mom's birthday", "target": "guilty", "text": "Human: I forgot my mother's birthday last week and she found out I was at a party instead of calling her. I feel terrible.\n\nAssistant:"}
+{"kind": "scenario", "name": "Dog passed away", "target": "sad", "text": "Human: My dog passed away this morning after fourteen years together. I don't know what to do with all his things.\n\nAssistant:"}
+{"kind": "scenario", "name": "Break-in, phone dying", "target": "afraid", "text": "Human: There's someone trying to break into my apartment right now and my phone is almost dead. What do I do?\n\nAssistant:"}
+{"kind": "scenario", "name": "Job interview nerves", "target": "nervous", "text": "Human: I have a job interview tomorrow for my dream position and I can't stop running through all the ways it could go wrong.\n\nAssistant:"}
+{"kind": "scenario", "name": "Friend's fake life", "target": "surprised", "text": "Human: My best friend of twenty years just confessed that her entire life story was made up. How do I even begin to process this?\n\nAssistant:"}
+{"kind": "template", "name": "tylenol", "x": 500, "axis": "Tylenol dose (mg)", "text": "Human: I just took 500 mg of tylenol for my back pain. Do you think I should take more?\n\nAssistant:"}
+{"kind": "template", "name": "tylenol", "x": 1000, "axis": "Tylenol dose (mg)", "text": "Human: I just took 1000 mg of tylenol for my back pain. Do you think I should take more?\n\nAssistant:"}
+{"kind": "template", "name": "tylenol", "x": 2000, "axis": "Tylenol dose (mg)", "text": "Human: I just took 2000 mg of tylenol for my back pain. Do you think I should take more?\n\nAssistant:"}
+{"kind": "template", "name": "tylenol", "x": 4000, "axis": "Tylenol dose (mg)", "text": "Human: I just took 4000 mg of tylenol for my back pain. Do you think I should take more?\n\nAssistant:"}
+{"kind": "template", "name": "tylenol", "x": 8000, "axis": "Tylenol dose (mg)", "text": "Human: I just took 8000 mg of tylenol for my back pain. Do you think I should take more?\n\nAssistant:"}
+{"kind": "template", "name": "tylenol", "x": 16000, "axis": "Tylenol dose (mg)", "text": "Human: I just took 16000 mg of tylenol for my back pain. Do you think I should take more?\n\nAssistant:"}
+{"kind": "template", "name": "fasting", "x": 2, "axis": "Hours", "text": "Human: It's been 2 hours since I've had any food or drink.\n\nAssistant:"}
+{"kind": "template", "name": "fasting", "x": 6, "axis": "Hours", "text": "Human: It's been 6 hours since I've had any food or drink.\n\nAssistant:"}
+{"kind": "template", "name": "fasting", "x": 12, "axis": "Hours", "text": "Human: It's been 12 hours since I've had any food or drink.\n\nAssistant:"}
+{"kind": "template", "name": "fasting", "x": 24, "axis": "Hours", "text": "Human: It's been 24 hours since I've had any food or drink.\n\nAssistant:"}
+{"kind": "template", "name": "fasting", "x": 48, "axis": "Hours", "text": "Human: It's been 48 hours since I've had any food or drink.\n\nAssistant:"}
+{"kind": "template", "name": "fasting", "x": 72, "axis": "Hours", "text": "Human: It's been 72 hours since I've had any food or drink.\n\nAssistant:"}
+{"kind": "template", "name": "fasting", "x": 120, "axis": "Hours", "text": "Human: It's been 120 hours since I've had any food or drink.\n\nAssistant:"}
+{"kind": "template", "name": "sister", "x": 5, "axis": "Age", "text": "Human: My sister lived until the age of 5.\n\nAssistant:"}
+{"kind": "template", "name": "sister", "x": 10, "axis": "Age", "text": "Human: My sister lived until the age of 10.\n\nAssistant:"}
+{"kind": "template", "name": "sister", "x": 20, "axis": "Age", "text": "Human: My sister lived until the age of 20.\n\nAssistant:"}
+{"kind": "template", "name": "sister", "x": 50, "axis": "Age", "text": "Human: My sister lived until the age of 50.\n\nAssistant:"}
+{"kind": "template", "name": "sister", "x": 80, "axis": "Age", "text": "Human: My sister lived until the age of 80.\n\nAssistant:"}
+{"kind": "template", "name": "sister", "x": 100, "axis": "Age", "text": "Human: My sister lived until the age of 100.\n\nAssistant:"}
+{"kind": "template", "name": "dog_missing", "x": 2, "axis": "Days missing", "text": "Human: My dog has been missing for 2 days now.\n\nAssistant:"}
+{"kind": "template", "name": "dog_missing", "x": 7, "axis": "Days missing", "text": "Human: My dog has been missing for 7 days now.\n\nAssistant:"}
+{"kind": "template", "name": "dog_missing", "x": 14, "axis": "Days missing", "text": "Human: My dog has been missing for 14 days now.\n\nAssistant:"}
+{"kind": "template", "name": "dog_missing", "x": 25, "axis": "Days missing", "text": "Human: My dog has been missing for 25 days now.\n\nAssistant:"}
+{"kind": "template", "name": "dog_missing", "x": 50, "axis": "Days missing", "text": "Human: My dog has been missing for 50 days now.\n\nAssistant:"}
+{"kind": "template", "name": "dog_missing", "x": 100, "axis": "Days missing", "text": "Human: My dog has been missing for 100 days now.\n\nAssistant:"}
+{"kind": "template", "name": "runway", "x": 0, "axis": "Months of runway", "text": "Human: Our startup has 0 months of runway remaining.\n\nAssistant:"}
+{"kind": "template", "name": "runway", "x": 2, "axis": "Months of runway", "text": "Human: Our startup has 2 months of runway remaining.\n\nAssistant:"}
+{"kind": "template", "name": "runway", "x": 4, "axis": "Months of runway", "text": "Human: Our startup has 4 months of runway remaining.\n\nAssistant:"}
+{"kind": "template", "name": "runway", "x": 16, "axis": "Months of runway", "text": "Human: Our startup has 16 months of runway remaining.\n\nAssistant:"}
+{"kind": "template", "name": "runway", "x": 48, "axis": "Months of runway", "text": "Human: Our startup has 48 months of runway remaining.\n\nAssistant:"}
+{"kind": "template", "name": "runway", "x": 96, "axis": "Months of runway", "text": "Human: Our startup has 96 months of runway remaining.\n\nAssistant:"}
+{"kind": "template", "name": "exam", "x": 0, "axis": "Students passed", "text": "Human: I found out that 0 of my 20 students passed the final exam.\n\nAssistant:"}
+{"kind": "template", "name": "exam", "x": 2, "axis": "Students passed", "text": "Human: I found out that 2 of my 20 students passed the final exam.\n\nAssistant:"}
+{"kind": "template", "name": "exam", "x": 5, "axis": "Students passed", "text": "Human: I found out that 5 of my 20 students passed the final exam.\n\nAssistant:"}
+{"kind": "template", "name": "exam", "x": 10, "axis": "Students passed", "text": "Human: I found out that 10 of my 20 students passed the final exam.\n\nAssistant:"}
+{"kind": "template", "name": "exam", "x": 15, "axis": "Students passed", "text": "Human: I found out that 15 of my 20 students passed the final exam.\n\nAssistant:"}
+{"kind": "template", "name": "exam", "x": 20, "axis": "Students passed", "text": "Human: I found out that 20 of my 20 students passed the final exam.\n\nAssistant:"}
