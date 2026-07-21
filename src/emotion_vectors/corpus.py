@@ -3,7 +3,7 @@
 Mirrors the reference implementation (sinievanderben/emotion_experiment,
 extract_emotion_vectors.py): the same {emotion: [stories]} loading and the
 same nested-config handling for Gemma 4. Everything here runs on base
-dependencies only; anything needing torch lives in cbai_cambria.pipeline.
+dependencies only; anything needing torch lives in emotion_vectors.extraction.
 """
 
 from __future__ import annotations

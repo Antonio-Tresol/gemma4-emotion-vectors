@@ -1,9 +1,9 @@
 """Extract emotion vectors from the residual stream — Q1.H1.E1 entry point.
 
-Thin CLI over cbai_cambria.pipeline (reference-faithful extraction; see its
+Thin CLI over emotion_vectors.extraction (reference-faithful extraction; see its
 docstring for the math and the deliberate deviations from the reference),
-cbai_cambria.story_store (resumable per-story persistence and token-weighted
-aggregation), and cbai_cambria.hf_publish (private dataset-repo upload).
+emotion_vectors.story_store (resumable per-story persistence and token-weighted
+aggregation), and emotion_vectors.hf_publish (private dataset-repo upload).
 
 Usage:
     uv run python scripts/extract_emotion_vectors.py --smoke   # 3 emotions x 4
@@ -20,17 +20,17 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from cbai_cambria.corpus import (
+from emotion_vectors.corpus import (
     REFERENCE_BATCH_SIZE,
     REFERENCE_MAX_LENGTH,
     detect_model_geometry,
     load_emotions_data,
 )
-from cbai_cambria.hf_publish import check_hf_auth, publish
-from cbai_cambria.story_store import aggregate
+from emotion_vectors.hf_publish import check_hf_auth, publish
+from emotion_vectors.story_store import aggregate
 
 try:
-    from cbai_cambria.pipeline import RunSettings, git_commit, run_extraction, setup_logger
+    from emotion_vectors.extraction import RunSettings, git_commit, run_extraction, setup_logger
 except ModuleNotFoundError as exc:  # torch lives in the gpu extra; this is a GPU entry point
     raise SystemExit(f"missing {exc.name}: this entry point needs `uv sync --extra gpu`") from exc
 
