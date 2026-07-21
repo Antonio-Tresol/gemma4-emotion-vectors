@@ -35,14 +35,15 @@ import time
 from pathlib import Path
 from typing import Final
 
-from cbai_cambria.extraction_common import (
+import numpy as np
+from transformers import AutoConfig, AutoTokenizer
+
+from cbai_cambria.corpus import (
     REFERENCE_BATCH_SIZE,
     REFERENCE_MAX_LENGTH,
     human,
     load_emotions_data,
-    load_model_bf16,
 )
-from cbai_cambria.pipeline import run_batch
 
 FP32_BYTES: Final[int] = 4
 ASSUMED_D_MODEL: Final[int] = 6144  # fallback when the gated config is unreachable
@@ -54,8 +55,6 @@ def story_token_lengths(
 ) -> tuple[dict[str, list[int]], str]:
     """Per-story truncated token counts using the reference tokenizer call."""
     try:
-        from transformers import AutoTokenizer  # noqa: PLC0415
-
         tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
         method = f"tokenizer:{model_name}, truncated at {max_length}"
 
@@ -84,8 +83,6 @@ def padded_token_total(lengths_by_emotion: dict[str, list[int]], batch_size: int
 
 def detect_d_model(model_name: str) -> tuple[int, str]:
     try:
-        from transformers import AutoConfig  # noqa: PLC0415
-
         cfg = AutoConfig.from_pretrained(model_name, trust_remote_code=True)
         d = getattr(cfg, "hidden_size", None) or cfg.text_config.hidden_size
         return int(d), "from config"
@@ -128,8 +125,10 @@ def bench_sample(emotions_data: dict[str, list[str]], seed: int, n_batches: int)
 
 def benchmark(emotions_data: dict[str, list[str]], args: argparse.Namespace) -> dict[str, float]:
     """Time the production pipeline: run_batch (tokenize -> forward with hooks
-    -> pool) from extract_emotion_vectors, then the per-story shard writes."""
-    import numpy as np  # noqa: PLC0415
+    -> pool) from cbai_cambria.pipeline, then the per-story shard writes."""
+    # The one sanctioned lazy import: analytic mode must run on machines
+    # without the gpu extra, so the torch-importing pipeline loads only here.
+    from cbai_cambria.pipeline import load_model_bf16, run_batch  # noqa: PLC0415
 
     lm, load_s = load_model_bf16(args.model)
     layers = list(range(0, args.n_layers_total, args.layer_stride))

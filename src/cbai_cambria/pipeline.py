@@ -1,9 +1,11 @@
-"""The extraction pipeline — reference-faithful math, Q1.H1.E1.
+"""The extraction pipeline — reference-faithful math, Q1.H1.E1. GPU-only:
+imports torch at module level, so it needs the `gpu` dependency extra.
 
 Mirrors sinievanderben/emotion_experiment extract_emotion_vectors.py: same
 tokenizer call (padding to the batch max, truncation), same forward-hook
-capture of each target layer's output, same pooling mask (padding zeroed,
-first TOKEN_OFFSET tokens zeroed). Deliberate deviations from the reference:
+capture of each target layer's output, same model-family layer lookup, same
+pooling mask (padding zeroed, first TOKEN_OFFSET tokens zeroed). Deliberate
+deviations from the reference:
 
   - bf16 load instead of fp32 (fp32 needs ~124 GB for the 31B model and does
     not fit the 96 GB card; hooks cast activations to fp32, as the reference's
@@ -26,17 +28,15 @@ import time
 from collections.abc import Callable
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 import numpy as np
+import torch
+from einops import rearrange, reduce
+from jaxtyping import Float, Int
+from torch import Tensor
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from cbai_cambria.extraction_common import (
-    TOKEN_OFFSET,
-    LoadedModel,
-    get_layer,
-    human,
-    load_model_bf16,
-)
+from cbai_cambria.corpus import TOKEN_OFFSET, human
 from cbai_cambria.story_store import (
     append_jsonl,
     load_manifest,
@@ -45,11 +45,15 @@ from cbai_cambria.story_store import (
     story_key,
 )
 
-if TYPE_CHECKING:
-    from jaxtyping import Float, Int
-    from torch import Tensor
-
 LOG_EVERY_BATCHES = 10
+
+
+@dataclass(frozen=True)
+class LoadedModel:
+    """Tokenizer and model travel together through the pipeline."""
+
+    tokenizer: object
+    model: object
 
 
 @dataclass(frozen=True)
@@ -86,7 +90,7 @@ class RunSettings:
 class BatchResult:
     """Pooled activations for one batch of stories."""
 
-    means: "Float[np.ndarray, 'b l d']"
+    means: Float[np.ndarray, "b l d"]
     token_counts: list[int]  # post-mask tokens per story: the aggregation weights
     raw_tokens: int  # attention-mask total, for throughput accounting
 
@@ -113,9 +117,43 @@ def git_commit() -> str:
         return "unknown"
 
 
+def get_layer(model: object, idx: int) -> object:
+    """The reference's _get_layer, condensed: model-family layer lookup."""
+    for fn in (
+        lambda m, i: m.model.layers[i],
+        lambda m, i: m.model.language_model.model.layers[i],
+        lambda m, i: m.model.language_model.layers[i],
+        lambda m, i: m.language_model.model.layers[i],
+    ):
+        try:
+            return fn(model, idx)
+        except (AttributeError, IndexError):
+            continue
+    raise AttributeError(f"cannot locate layer {idx}")
+
+
+def load_model_bf16(
+    model_name: str, log: Callable[[str], None] = print
+) -> tuple[LoadedModel, float]:
+    """(loaded model, load_seconds). bf16, not the reference's fp32:
+    fp32 needs ~124 GB for the 31B model and does not fit the 96 GB card."""
+    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    log(f"loading {model_name} (bf16)...")
+    t0 = time.monotonic()
+    model = AutoModelForCausalLM.from_pretrained(
+        model_name, dtype=torch.bfloat16, device_map="auto", trust_remote_code=True
+    )
+    model.eval()
+    load_s = time.monotonic() - t0
+    log(f"model loaded in {human(load_s)}")
+    return LoadedModel(tokenizer=tokenizer, model=model), load_s
+
+
 def make_hook(
-    captured: dict[int, "Tensor"], idx: int
-) -> "Callable[[object, object, object], None]":
+    captured: dict[int, Float[Tensor, "b s d"]], idx: int
+) -> Callable[[object, object, object], None]:
     def _hook(module, inp, out):
         hidden = out[0] if isinstance(out, tuple) else out
         captured[idx] = hidden.detach().float()  # reference casts to fp32 here
@@ -124,15 +162,12 @@ def make_hook(
 
 
 def pool_batch(
-    captured: dict[int, "Float[Tensor, 'b s d']"],
-    attention_mask: "Int[Tensor, 'b s']",
+    captured: dict[int, Float[Tensor, "b s d"]],
+    attention_mask: Int[Tensor, "b s"],
     layers: list[int],
-) -> tuple["Float[np.ndarray, 'b l d']", list[int]]:
+) -> tuple[Float[np.ndarray, "b l d"], list[int]]:
     """Reference pooling, kept per-story: mask padding and the first
     TOKEN_OFFSET tokens, then mean over the surviving token positions."""
-    import torch  # noqa: PLC0415
-    from einops import rearrange, reduce  # noqa: PLC0415
-
     mask = attention_mask.clone()
     mask[:, :TOKEN_OFFSET] = 0  # reference: early tokens are narrative framing
     mask_f = rearrange(mask, "b s -> b s 1").float()
@@ -145,12 +180,10 @@ def pool_batch(
 
 def run_batch(lm: LoadedModel, texts: list[str], layers: list[int], max_length: int) -> BatchResult:
     """Tokenize -> forward with hooks -> pool. The reference loop, per batch."""
-    import torch  # noqa: PLC0415
-
     inputs = lm.tokenizer(
         texts, return_tensors="pt", padding=True, truncation=True, max_length=max_length
     ).to(lm.model.device)
-    captured: dict[int, torch.Tensor] = {}
+    captured: dict[int, Float[Tensor, "b s d"]] = {}
     hooks = [get_layer(lm.model, i).register_forward_hook(make_hook(captured, i)) for i in layers]
     try:
         with torch.inference_mode():
@@ -244,8 +277,6 @@ def run_extraction(
     n_pending = sum(len(v) for v in pending.values())
     logger.info(f"{n_total} stories, {n_pending} pending ({n_total - n_pending} already on disk)")
     if n_pending:
-        import torch  # noqa: PLC0415
-
         torch.manual_seed(settings.seed)
         lm, _ = load_model_bf16(settings.model, logger.info)
         get_layer(lm.model, settings.layers[-1])  # fail fast on layer lookup, before the loop

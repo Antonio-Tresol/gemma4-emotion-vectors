@@ -36,4 +36,7 @@ line-length = 100
 target-version = "py311"
 
 [tool.ruff.lint]
-select = ["I"]  # import sorting; other lint belongs to lanorme
+# I: import sorting. PLC0415: imports belong at module top — the only sanctioned
+# exception (documented noqa) is loading the torch-importing pipeline lazily so
+# laptop-side tools run without the gpu extra. Other lint belongs to lanorme.
+select = ["I", "PLC0415"]

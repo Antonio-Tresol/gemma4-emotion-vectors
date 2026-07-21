@@ -11,13 +11,13 @@ import json
 import logging
 from pathlib import Path
 
+from huggingface_hub import HfApi
+
 DEFAULT_REPO_BASENAME = "emotion-vectors-gemma-4-31b"
 
 
 def check_hf_auth(logger: logging.Logger) -> None:
     """Fail fast — called before the model load so a bad token costs seconds."""
-    from huggingface_hub import HfApi  # noqa: PLC0415
-
     logger.info(f"HF auth ok as {HfApi().whoami()['name']}")
 
 
@@ -50,8 +50,6 @@ Reproduce: `uv run python scripts/extract_emotion_vectors.py`
 def publish(out_dir: Path, repo_arg: str | None, smoke: bool, logger: logging.Logger) -> None:
     """Upload the whole output directory to a private dataset repo. Smoke runs
     get a '-smoke' suffix so they never pollute the real dataset."""
-    from huggingface_hub import HfApi  # noqa: PLC0415
-
     api = HfApi()
     name = repo_arg or (DEFAULT_REPO_BASENAME + ("-smoke" if smoke else ""))
     if "/" not in name:
