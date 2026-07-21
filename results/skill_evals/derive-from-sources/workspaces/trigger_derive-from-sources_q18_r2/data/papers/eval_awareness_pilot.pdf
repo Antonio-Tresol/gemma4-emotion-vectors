@@ -1,9 +1,0 @@
-Eval-Awareness Pilot Study
-Internal draft, 2026
-
-Abstract: We test whether frontier models can distinguish evaluation contexts
-from deployment contexts. Across 400 paired prompts, a linear probe on residual
-activations separates eval-style from deployment-style inputs with AUROC 0.74.
-Behavioral detectors based on self-report underperform the probe (AUROC 0.58).
-We discuss implications for benchmark validity and sandbagging detection, and
-release the paired-prompt dataset for replication.

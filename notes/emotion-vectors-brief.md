@@ -17,7 +17,9 @@ control prompts. Original code was never released; adapt the open-source
 replication code from "Where Do Models Find Happiness?". **Go/no-go:** if
 Gemma-4-31B yields no recoverable geometry or the control-prompt validation
 fails, there are no vectors worth injecting — record the null honestly and
-stop; Q3 closes as infeasible-with-evidence.
+stop; Q2 closes as infeasible-with-evidence. (Tree ids: replication is Q1,
+introspection Q2, renumbered when the harness self-evaluation moved to its
+own repo on 2026-07-20.)
 
 **Part 2, gated on Part 1: introspection.** Inject the validated emotion
 vectors and test whether the model can detect the emotional direction it is

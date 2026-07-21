@@ -1,7 +1,0 @@
-Eval-Awareness Follow-up 2: Behavioral Consistency
-Internal draft, 2026
-
-Abstract: We measure whether eval-aware models change their behavior when the
-probe indicates awareness. Refusal rates shift by 4.2 percentage points in
-flagged contexts (95% CI [1.8, 6.6]). The effect is small but robust to prompt
-paraphrase controls, and vanishes under a random-direction control.
