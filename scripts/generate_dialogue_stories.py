@@ -34,11 +34,19 @@ INSTRUCTIONS = {
         "Write a short third-person story, around 150 words, about a person experiencing "
         "{emotion}. Do not name the emotion anywhere in the text."
     ),
+    "neutral": (
+        "Write a short, emotionally neutral third-person transcript of an everyday activity "
+        "(for example: assembling furniture, following a recipe, describing a commute, "
+        "documenting an inventory), around 150 words. Keep it strictly factual and free of "
+        "emotional content."
+    ),
 }
 
 
 def gen_prompt(tokenizer: object, emotion: str, style: str) -> str:
-    instruction = INSTRUCTIONS[style].format(emotion=emotion)
+    instruction = (
+        INSTRUCTIONS[style].format(emotion=emotion) if style != "neutral" else INSTRUCTIONS[style]
+    )
     if tokenizer.chat_template:
         return tokenizer.apply_chat_template(
             [{"role": "user", "content": instruction}], tokenize=False, add_generation_prompt=True
@@ -86,7 +94,7 @@ def main() -> int:
 
     logger = setup_logger(args.out_dir / "generate.log")
     raw_path = args.out_dir / "dialogues_raw.jsonl"
-    emotions = [target for _, target, _ in SCENARIOS]
+    emotions = ["neutral"] if args.style == "neutral" else [target for _, target, _ in SCENARIOS]
     counts = existing_counts(raw_path)
     logger.info(f"{len(emotions)} emotions x {args.per_emotion}; resuming from {counts or '{}'}")
     lm, _ = load_model_bf16(args.model, logger.info)
