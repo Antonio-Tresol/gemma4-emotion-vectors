@@ -1,22 +1,32 @@
 {
   "dataset": "snae/emotion_stories_gemma_4_4B",
-  "n_stories": 513,
-  "total_tokens": 285707,
-  "token_method": "tokenizer:google/gemma-4-31b",
-  "overhead_multiplier": 1.2,
+  "n_emotions": 171,
+  "n_stories": 1539,
+  "raw_tokens": 276473,
+  "padded_tokens": 315024,
+  "token_method": "tokenizer:google/gemma-4-31b, truncated at 512",
+  "n_layers_swept": 20,
+  "d_model": 5376,
+  "d_model_source": "from config",
+  "resumable_disk": {
+    "per_story": "0.4 MB",
+    "corpus_total": "0.66 GB",
+    "write_time_at_assumed_throughput": "3s"
+  },
   "seed": 20260720,
+  "note": "reference default fp32 needs ~124 GB for 31B; run bf16 on the 96 GB card",
   "scenarios": {
     "1000_tok_per_s": {
-      "forward_passes": "5.7min",
-      "with_model_load": "10.7min"
+      "forward": "6.3min",
+      "with_model_load": "11.3min"
     },
     "3000_tok_per_s": {
-      "forward_passes": "1.9min",
-      "with_model_load": "6.9min"
+      "forward": "2.1min",
+      "with_model_load": "7.1min"
     },
     "6000_tok_per_s": {
-      "forward_passes": "57s",
-      "with_model_load": "6.0min"
+      "forward": "63s",
+      "with_model_load": "6.1min"
     }
   }
 }
