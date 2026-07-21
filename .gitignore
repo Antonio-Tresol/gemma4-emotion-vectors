@@ -1,6 +1,7 @@
-data/papers/
-__pycache__/
-.venv/
-.DS_Store
 *.pt
+.DS_Store
+.env
+.venv/
 CLAUDE.local.md
+__pycache__/
+data/papers/
