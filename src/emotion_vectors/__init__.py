@@ -1,4 +1,4 @@
-"""cbai_cambria — library code for the emotion-vectors project (Q1/Q3).
+"""emotion_vectors — library code for the emotion-vectors project (Q1/Q3).
 
 Modules, split along the dependency boundary (laptop-safe vs GPU):
     corpus — corpus loading, reference constants, model geometry

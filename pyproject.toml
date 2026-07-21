@@ -28,7 +28,7 @@ gpu = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/cbai_cambria"]
+packages = ["src/emotion_vectors"]
 
 [tool.ruff]
 extend-exclude = ["*.ipynb"]  # notebooks are explore-mode: exempt from polish by design

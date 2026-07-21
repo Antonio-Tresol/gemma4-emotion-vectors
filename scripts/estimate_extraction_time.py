@@ -4,7 +4,7 @@ Mirrors the reference pipeline (sinievanderben/emotion_experiment,
 extract_emotion_vectors.py) as closely as possible so the estimate is robust:
 the same {emotion: [stories]} loading, the same plain-tokenizer call with
 truncation at max_length, the same batch-of-4 padding arithmetic — and in
-benchmark mode it runs the production run_batch from cbai_cambria.pipeline,
+benchmark mode it runs the production run_batch from emotion_vectors.extraction,
 so the measurement is of the exact code the extraction executes, plus the
 per-story disk writes our adaptation needs for resumability (the reference
 accumulates in memory and saves once at the end — a crash loses the whole run).
@@ -38,7 +38,7 @@ from typing import Final
 import numpy as np
 from transformers import AutoConfig, AutoTokenizer
 
-from cbai_cambria.corpus import (
+from emotion_vectors.corpus import (
     REFERENCE_BATCH_SIZE,
     REFERENCE_MAX_LENGTH,
     human,
@@ -125,10 +125,10 @@ def bench_sample(emotions_data: dict[str, list[str]], seed: int, n_batches: int)
 
 def benchmark(emotions_data: dict[str, list[str]], args: argparse.Namespace) -> dict[str, float]:
     """Time the production pipeline: run_batch (tokenize -> forward with hooks
-    -> pool) from cbai_cambria.pipeline, then the per-story shard writes."""
+    -> pool) from emotion_vectors.extraction, then the per-story shard writes."""
     # The one sanctioned lazy import: analytic mode must run on machines
     # without the gpu extra, so the torch-importing pipeline loads only here.
-    from cbai_cambria.pipeline import load_model_bf16, run_batch  # noqa: PLC0415
+    from emotion_vectors.extraction import load_model_bf16, run_batch  # noqa: PLC0415
 
     lm, load_s = load_model_bf16(args.model)
     layers = list(range(0, args.n_layers_total, args.layer_stride))

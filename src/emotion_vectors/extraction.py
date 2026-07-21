@@ -36,8 +36,8 @@ from jaxtyping import Float, Int
 from torch import Tensor
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from cbai_cambria.corpus import TOKEN_OFFSET, human
-from cbai_cambria.story_store import (
+from emotion_vectors.corpus import TOKEN_OFFSET, human
+from emotion_vectors.story_store import (
     append_jsonl,
     load_manifest,
     pending_stories,
