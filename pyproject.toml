@@ -26,7 +26,8 @@ dependencies = [
 # Heavy CUDA stack, pod-only. On the RunPod box: uv sync --extra gpu
 gpu = [
     "accelerate>=1.14.0",
-    "torch>=2.13.0",
+    "torch",             # unpinned: vllm pins a specific torch, let it resolve
+    "vllm>=0.11",        # pod-only; pins its own torch — install into the gpu extra
 ]
 
 [tool.hatch.build.targets.wheel]
