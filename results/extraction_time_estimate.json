@@ -1,0 +1,22 @@
+{
+  "dataset": "snae/emotion_stories_gemma_4_4B",
+  "n_stories": 513,
+  "total_tokens": 285707,
+  "token_method": "tokenizer:google/gemma-4-31b",
+  "overhead_multiplier": 1.2,
+  "seed": 20260720,
+  "scenarios": {
+    "1000_tok_per_s": {
+      "forward_passes": "5.7min",
+      "with_model_load": "10.7min"
+    },
+    "3000_tok_per_s": {
+      "forward_passes": "1.9min",
+      "with_model_load": "6.9min"
+    },
+    "6000_tok_per_s": {
+      "forward_passes": "57s",
+      "with_model_load": "6.0min"
+    }
+  }
+}
