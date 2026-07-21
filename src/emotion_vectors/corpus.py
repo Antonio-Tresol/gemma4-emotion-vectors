@@ -27,8 +27,12 @@ def human(seconds: float) -> str:
 
 
 def load_emotions_data(dataset: str, split: str) -> dict[str, list[str]]:
-    """Reference's loader, verbatim in behaviour: {emotion: [story, ...]}."""
-    rows = load_dataset(dataset, split=split)
+    """Reference's loader, verbatim in behaviour: {emotion: [story, ...]}.
+    Accepts an HF dataset id or a local .jsonl with the same row shape."""
+    if dataset.endswith(".jsonl"):
+        rows = load_dataset("json", data_files=dataset, split="train")
+    else:
+        rows = load_dataset(dataset, split=split)
     emotions_data: dict[str, list[str]] = {}
     for entry in rows:
         if entry.get("stories"):

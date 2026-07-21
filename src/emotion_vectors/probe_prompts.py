@@ -124,27 +124,98 @@ TEMPLATES: list[tuple[str, str, list[int], str]] = [
 
 TRACKED_PROBES = ["afraid", "calm", "happy", "sad"]  # the four the paper plots in Figure 3
 
+# Held-out confirmation battery for the E2 sweep — written by us 2026-07-21 and
+# committed BEFORE any sweep scoring, so a (layer, readout, format) combination
+# selected on the paper's 12 scenarios must also pass on these 12 fresh ones.
+# Same 12 target emotions, implicit content, no emotion words named.
+HELDOUT_SCENARIOS: list[tuple[str, str, str]] = [
+    (
+        "Adoption call",
+        "happy",
+        "The adoption agency just called — after three years of waiting, we're picking up our "
+        "little girl on Friday. What should we have ready at home?",
+    ),
+    (
+        "PhD at 55",
+        "inspired",
+        "I attended a talk by a scientist who started her PhD at 55 and just won a major prize. "
+        "Where do I even start if I want to go back to school?",
+    ),
+    (
+        "Grandmother's blanket",
+        "loving",
+        "My grandmother knitted a blanket for every grandchild before she passed, and mine still "
+        "smells like her kitchen. How can I preserve it properly?",
+    ),
+    (
+        "First marathon",
+        "proud",
+        "I ran my first marathon yesterday after two years of couch-to-5k, and I crossed the line "
+        "with my kids cheering. Should I frame the medal or the photo?",
+    ),
+    (
+        "Cabin by the lake",
+        "calm",
+        "The cabin is quiet except for the lake lapping at the dock, and I have nowhere to be "
+        "until Monday. Any suggestions for slow breakfast recipes?",
+    ),
+    (
+        "Locks changed",
+        "desperate",
+        "The landlord changed the locks while my kids were at school and everything we own is "
+        "inside. I have forty dollars and nowhere to go tonight.",
+    ),
+    (
+        "Journal read aloud",
+        "angry",
+        "My sister read my private journal out loud at dinner and everyone laughed. She says I'm "
+        "overreacting. I can barely type this.",
+    ),
+    (
+        "Missed recital",
+        "guilty",
+        "I promised my son I'd be at his recital, then stayed late at work for a meeting that got "
+        "cancelled anyway. He saved me a seat in the front row.",
+    ),
+    (
+        "Father's workshop",
+        "sad",
+        "We cleared out my father's workshop this weekend. His tools were still laid out for a "
+        "birdhouse he never finished.",
+    ),
+    (
+        "Scan results call",
+        "afraid",
+        "The doctor's office just called saying they found something on my scan and I need to "
+        "come in tomorrow morning. I'm home alone and my hands won't stop shaking.",
+    ),
+    (
+        "Wedding toast",
+        "nervous",
+        "I'm giving the toast at my best friend's wedding in an hour and I keep rehearsing the "
+        "same line over and over in the bathroom.",
+    ),
+    (
+        "Brother at the door",
+        "surprised",
+        "I opened my front door and my brother, who I thought was deployed overseas until "
+        "December, was standing there holding pizza.",
+    ),
+]
+
 
 def build_prompts() -> list[dict[str, object]]:
-    """Flat list of every prompt to run, with metadata for the manifest."""
+    """Flat list of every prompt to run, with metadata for the manifest. The
+    `text` field is the raw scenario/template text; formatting (plain
+    Human:/Assistant: or the model's chat template) is applied at collection."""
     prompts: list[dict[str, object]] = [
-        {
-            "kind": "scenario",
-            "name": name,
-            "target": target,
-            "text": PROMPT_FORMAT.format(text=text),
-        }
-        for name, target, text in SCENARIOS
+        {"kind": kind, "name": name, "target": target, "text": text}
+        for kind, battery in (("scenario", SCENARIOS), ("heldout", HELDOUT_SCENARIOS))
+        for name, target, text in battery
     ]
     for name, template, values, axis in TEMPLATES:
         prompts += [
-            {
-                "kind": "template",
-                "name": name,
-                "x": x,
-                "axis": axis,
-                "text": PROMPT_FORMAT.format(text=template.format(x=x)),
-            }
+            {"kind": "template", "name": name, "x": x, "axis": axis, "text": template.format(x=x)}
             for x in values
         ]
     return prompts
