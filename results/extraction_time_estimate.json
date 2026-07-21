@@ -15,18 +15,12 @@
   },
   "seed": 20260720,
   "note": "reference default fp32 needs ~124 GB for 31B; run bf16 on the 96 GB card",
-  "scenarios": {
-    "1000_tok_per_s": {
-      "forward": "6.3min",
-      "with_model_load": "11.3min"
-    },
-    "3000_tok_per_s": {
-      "forward": "2.1min",
-      "with_model_load": "7.1min"
-    },
-    "6000_tok_per_s": {
-      "forward": "63s",
-      "with_model_load": "6.1min"
-    }
+  "benchmark": {
+    "forward_s": 21.66,
+    "write_s": 0.54,
+    "tokens": 4241.0,
+    "model_load_s": 2006.78,
+    "tokens_per_s": 195.8,
+    "estimated_total": "60.9min"
   }
 }
