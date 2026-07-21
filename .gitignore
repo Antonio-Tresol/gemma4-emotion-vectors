@@ -9,3 +9,4 @@ data/lexicons/
 results/emotion_vectors/emotion_means.npz
 results/dialogue_vectors/shards/
 results/dialogue_vectors/emotion_vectors.json
+results/emotion_vectors_it_means.npz

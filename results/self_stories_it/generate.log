@@ -1,0 +1,40 @@
+2026-07-21 21:50:39,036 INFO 12 emotions x 16; resuming from {}
+2026-07-21 21:50:42,301 INFO loading google/gemma-4-31b-it (bf16)...
+2026-07-21 21:51:00,648 INFO model loaded in 18s
+2026-07-21 21:51:24,294 INFO [happy] 8/16
+2026-07-21 21:51:45,968 INFO [happy] 16/16
+2026-07-21 21:51:45,978 INFO [happy] sample: {"emotion": "happy", "text": "Elias stood on the crest of the hill, the golden hour bathing the valley in a warm, honeyed light. He felt a sudden, irrepressible
+2026-07-21 21:52:07,944 INFO [inspired] 8/16
+2026-07-21 21:52:29,957 INFO [inspired] 16/16
+2026-07-21 21:52:29,970 INFO [inspired] sample: {"emotion": "inspired", "text": "Elias stood before the blank canvas, the silence of the studio pressing against his ears. For months, the white space had been 
+2026-07-21 21:52:52,289 INFO [loving] 8/16
+2026-07-21 21:53:14,129 INFO [loving] 16/16
+2026-07-21 21:53:14,141 INFO [loving] sample: {"emotion": "loving", "text": "Julian watched Clara across the crowded room, and the noise of the party faded into a dull hum. It was in the way she tilted her 
+2026-07-21 21:53:36,311 INFO [proud] 8/16
+2026-07-21 21:53:58,384 INFO [proud] 16/16
+2026-07-21 21:53:58,395 INFO [proud] sample: {"emotion": "proud", "text": "Elias stood at the back of the auditorium, his arms folded tightly across his chest. On stage, the young woman adjusted the microp
+2026-07-21 21:54:22,732 INFO [calm] 8/16
+2026-07-21 21:54:45,330 INFO [calm] 16/16
+2026-07-21 21:54:45,342 INFO [calm] sample: {"emotion": "calm", "text": "Elias leaned back against the weathered cedar porch swing, letting the rhythmic creak of the chains sync with his breathing. Above,
+2026-07-21 21:55:08,837 INFO [desperate] 8/16
+2026-07-21 21:55:31,915 INFO [desperate] 16/16
+2026-07-21 21:55:31,927 INFO [desperate] sample: {"emotion": "desperate", "text": "Elias stood before the locked vault, his breath coming in ragged, shallow gasps. He clawed at the cold steel with bleeding fin
+2026-07-21 21:55:56,325 INFO [angry] 8/16
+2026-07-21 21:56:22,106 INFO [angry] 16/16
+2026-07-21 21:56:22,118 INFO [angry] sample: {"emotion": "angry", "text": "Elias felt a sudden, sharp heat bloom in his chest, radiating outward until his fingertips trembled. His jaw locked tight, teeth g
+2026-07-21 21:56:45,676 INFO [guilty] 8/16
+2026-07-21 21:57:10,330 INFO [guilty] 16/16
+2026-07-21 21:57:10,342 INFO [guilty] sample: {"emotion": "guilty", "text": "Elias stared at the shattered porcelain vase, the fragments scattered across the hardwood like jagged stars. He had pushed it dur
+2026-07-21 21:57:33,157 INFO [sad] 8/16
+2026-07-21 21:57:54,535 INFO [sad] 16/16
+2026-07-21 21:57:54,547 INFO [sad] sample: {"emotion": "sad", "text": "Elias sat on the edge of the mattress, the silence of the house pressing against his eardrums. He stared at the empty side of the be
+2026-07-21 21:58:16,345 INFO [afraid] 8/16
+2026-07-21 21:58:40,103 INFO [afraid] 16/16
+2026-07-21 21:58:40,115 INFO [afraid] sample: {"emotion": "afraid", "text": "Elias stood frozen in the center of the hallway, his breath coming in shallow, jagged sips. The silence of the house was too heav
+2026-07-21 21:59:01,303 INFO [nervous] 8/16
+2026-07-21 21:59:22,154 INFO [nervous] 16/16
+2026-07-21 21:59:22,165 INFO [nervous] sample: {"emotion": "nervous", "text": "Elias stood behind the heavy velvet curtain, his palms slick against the fabric. He wiped them on his trousers for the tenth tim
+2026-07-21 21:59:44,655 INFO [surprised] 8/16
+2026-07-21 22:00:06,033 INFO [surprised] 16/16
+2026-07-21 22:00:06,045 INFO [surprised] sample: {"emotion": "surprised", "text": "Arthur stepped into the dim living room, the silence of the house wrapping around him like a heavy blanket. He reached for the
+2026-07-21 22:00:06,067 INFO grouped 12 emotions -> results/self_stories_it/dialogues_grouped.jsonl
