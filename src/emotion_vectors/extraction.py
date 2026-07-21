@@ -90,7 +90,7 @@ class RunSettings:
 class BatchResult:
     """Pooled activations for one batch of stories."""
 
-    means: Float[np.ndarray, "b l d"]
+    means: Float[np.ndarray, "batch layers d_model"]
     token_counts: list[int]  # post-mask tokens per story: the aggregation weights
     raw_tokens: int  # attention-mask total, for throughput accounting
 
@@ -152,7 +152,7 @@ def load_model_bf16(
 
 
 def make_hook(
-    captured: dict[int, Float[Tensor, "b s d"]], idx: int
+    captured: dict[int, Float[Tensor, "batch seq d_model"]], idx: int
 ) -> Callable[[object, object, object], None]:
     def _hook(module, inp, out):
         hidden = out[0] if isinstance(out, tuple) else out
@@ -162,19 +162,26 @@ def make_hook(
 
 
 def pool_batch(
-    captured: dict[int, Float[Tensor, "b s d"]],
-    attention_mask: Int[Tensor, "b s"],
+    captured: dict[int, Float[Tensor, "batch seq d_model"]],
+    attention_mask: Int[Tensor, "batch seq"],
     layers: list[int],
-) -> tuple[Float[np.ndarray, "b l d"], list[int]]:
+) -> tuple[Float[np.ndarray, "batch layers d_model"], list[int]]:
     """Reference pooling, kept per-story: mask padding and the first
     TOKEN_OFFSET tokens, then mean over the surviving token positions."""
     mask = attention_mask.clone()
     mask[:, :TOKEN_OFFSET] = 0  # reference: early tokens are narrative framing
-    mask_f = rearrange(mask, "b s -> b s 1").float()
-    counts = reduce(mask.float(), "b s -> b", "sum")
-    sums = torch.stack([reduce(captured[i] * mask_f, "b s d -> b d", "sum") for i in layers])
-    denom = rearrange(counts.clamp(min=1.0), "b -> 1 b 1")
-    means = rearrange(sums / denom, "l b d -> b l d").cpu().numpy().astype(np.float32)
+    mask_f = rearrange(mask, "batch seq -> batch seq 1").float()
+    counts = reduce(mask.float(), "batch seq -> batch", "sum")
+    sums = torch.stack(
+        [reduce(captured[i] * mask_f, "batch seq d_model -> batch d_model", "sum") for i in layers]
+    )
+    denom = rearrange(counts.clamp(min=1.0), "batch -> 1 batch 1")
+    means = (
+        rearrange(sums / denom, "layers batch d_model -> batch layers d_model")
+        .cpu()
+        .numpy()
+        .astype(np.float32)
+    )
     return means, [int(c) for c in counts.tolist()]
 
 
@@ -183,7 +190,7 @@ def run_batch(lm: LoadedModel, texts: list[str], layers: list[int], max_length: 
     inputs = lm.tokenizer(
         texts, return_tensors="pt", padding=True, truncation=True, max_length=max_length
     ).to(lm.model.device)
-    captured: dict[int, Float[Tensor, "b s d"]] = {}
+    captured: dict[int, Float[Tensor, "batch seq d_model"]] = {}
     hooks = [get_layer(lm.model, i).register_forward_hook(make_hook(captured, i)) for i in layers]
     try:
         with torch.inference_mode():

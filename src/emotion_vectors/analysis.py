@@ -37,7 +37,7 @@ def safe_name(emotion: str) -> str:
 
 def load_emotion_means(
     results_dir: Path,
-) -> tuple[list[str], list[int], "Float[np.ndarray, 'e l d']"]:
+) -> tuple[list[str], list[int], "Float[np.ndarray, 'emotions layers d_model']"]:
     """(emotions, layers, means) from extraction's aggregated outputs."""
     config = json.loads((results_dir / "run_config.json").read_text())
     layers: list[int] = config["layers"]
@@ -71,10 +71,10 @@ def load_nrc_vad(lexicon_file: Path) -> dict[str, tuple[float, float]]:
 
 
 def layer_geometry(
-    means: "Float[np.ndarray, 'e d']",
+    means: "Float[np.ndarray, 'emotions d_model']",
     matched_idx: list[int],
-    valence: "Float[np.ndarray, 'm']",
-    arousal: "Float[np.ndarray, 'm']",
+    valence: "Float[np.ndarray, 'matched']",
+    arousal: "Float[np.ndarray, 'matched']",
 ) -> dict[str, object]:
     """PCA on all emotions' mean-centered vectors; correlations on the
     lexicon-matched subset. Component signs are arbitrary — judge by |r|."""

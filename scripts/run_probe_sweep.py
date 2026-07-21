@@ -46,7 +46,7 @@ def format_text(tokenizer: object, text: str, fmt: str) -> str:
 
 def content_mask(
     tokenizer: object, formatted: str, raw: str, n_tokens: int
-) -> "Bool[np.ndarray, 't']":
+) -> "Bool[np.ndarray, 'tokens']":
     """Token positions overlapping the raw scenario text; all-True fallback."""
     mask = np.zeros(n_tokens, dtype=bool)
     start = formatted.find(raw)
@@ -63,7 +63,7 @@ def content_mask(
 
 def collect_one(
     lm: object, formatted: str, raw: str, layers: list[int]
-) -> dict[str, "Float[np.ndarray, 'l d']"]:
+) -> dict[str, "Float[np.ndarray, 'layers d_model']"]:
     import torch  # noqa: PLC0415
 
     inputs = lm.tokenizer(formatted, return_tensors="pt").to(lm.model.device)
@@ -75,7 +75,7 @@ def collect_one(
     finally:
         for h in hooks:
             h.remove()
-    acts = np.stack([captured[i][0].cpu().numpy() for i in layers])  # [L, T, d]
+    acts = np.stack([captured[i][0].cpu().numpy() for i in layers])  # [layers, tokens, d_model]
     cmask = content_mask(lm.tokenizer, formatted, raw, acts.shape[1])
     return {
         "last": acts[:, -1],

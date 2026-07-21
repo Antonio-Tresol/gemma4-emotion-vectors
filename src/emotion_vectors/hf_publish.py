@@ -35,7 +35,7 @@ sinievanderben/emotion_experiment `extract_emotion_vectors.py`).
 - Pooling: mean over non-pad tokens after position {config["token_offset"]},
   truncation at {config["max_length"]}, batch size {config["batch_size"]}, bf16 model,
   fp32 activations.
-- `shards/<emotion>__<idx>.npy`: one `[n_layers, d_model]` fp32 array per story.
+- `shards/<emotion>__<idx>.npy`: one `[layers, d_model]` fp32 array per story.
 - `manifest.jsonl`: per-story metadata (emotion, index, text sha1, token count).
 - `<emotion>/layer_<N>_resid.npy` and `emotion_vectors.json`: token-weighted
   per-emotion means, the reference's output format.
