@@ -1,8 +1,16 @@
 # RunPod setup — RTX PRO 6000 Blackwell (96 GB)
 
-Decisions 2026-07-20. Storage estimates below assume d_model ≈ 6k for
-Gemma-4-31B — confirm the real value from the model config at setup and
-rescale linearly if it differs.
+Decisions 2026-07-20. d_model = 5376, read from the model config by
+scripts/estimate_extraction_time.py.
+
+**Adaptation requirement found in the reference code**: extract_emotion_vectors.py
+loads the model in float32 — ~124 GB for the 31B model, which does NOT fit the
+96 GB card. Our adaptation loads bf16 (the hooks already cast to float32 for
+pooling, so the accumulation math is unchanged). The reference is also not
+resumable (in-memory accumulation, one save at the end) — our adaptation
+writes per-story pooled vectors incrementally: 0.4 MB/story, ~0.66 GB for the
+corpus at 20 swept layers, ~3 s of write time. Measured corpus: 1,539 stories,
+276k raw / 315k padded tokens in reference batches of 4.
 
 ## Pod
 

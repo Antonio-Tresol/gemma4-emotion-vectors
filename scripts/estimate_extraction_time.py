@@ -1,19 +1,29 @@
 """Estimate wall-clock time for Q1 activation extraction on the pod.
 
+Mirrors the reference pipeline (sinievanderben/emotion_experiment,
+extract_emotion_vectors.py) as closely as possible so the estimate is robust:
+the same {emotion: [stories]} loading, the same plain-tokenizer call with
+truncation at max_length, the same batch-of-4 padding arithmetic, and in
+benchmark mode the same forward-hook capture with the TOKEN_OFFSET pooling
+mask. On top of the reference path it adds the per-story disk writes our
+adaptation needs for resumability (the reference accumulates in memory and
+saves once at the end — a crash loses the whole run).
+
 Two modes:
 
-  analytic (default, laptop-friendly): measures the real corpus (token counts
-      via the Gemma tokenizer when available, a words-based proxy otherwise)
-      and reports time under a range of assumed prefill throughputs. Use this
-      to budget before renting anything.
+  analytic (default, laptop-friendly): tokenises the real corpus and reports
+      time under a range of assumed prefill throughputs, plus the disk budget
+      for resumable per-story writes.
 
-  --benchmark (pod, needs the gpu extra): loads the model, times real forward
-      passes with hidden-state capture over a seeded sample of stories, and
-      extrapolates from the MEASURED tokens/sec. Trust this one.
+  --benchmark (pod, needs the gpu extra): loads the model in bf16 (the
+      reference's float32 default needs ~124 GB for the 31B model and does not
+      fit the 96 GB card), times real batches through the reference loop, and
+      extrapolates from measured numbers, reporting forward and write stages
+      separately.
 
 Run:
     uv run python scripts/estimate_extraction_time.py
-    uv run python scripts/estimate_extraction_time.py --benchmark --sample 8
+    uv run python scripts/estimate_extraction_time.py --benchmark --sample-batches 6
 """
 
 from __future__ import annotations
@@ -25,28 +35,61 @@ import time
 from pathlib import Path
 from typing import Final
 
-TOKENS_PER_WORD_PROXY: Final[float] = 1.3  # typical English BPE ratio; reported when used
-TEXT_COLUMN_CANDIDATES: Final[tuple[str, ...]] = ("story", "text", "content", "completion")
+TOKEN_OFFSET: Final[int] = 50          # reference: pooling skips the first 50 tokens
+REFERENCE_BATCH_SIZE: Final[int] = 4   # reference default
+REFERENCE_MAX_LENGTH: Final[int] = 512
+FP32_BYTES: Final[int] = 4
+ASSUMED_D_MODEL: Final[int] = 6144     # fallback when the gated config is unreachable
+ASSUMED_WRITE_MB_S: Final[float] = 200.0
 
 
-def find_text_column(column_names: list[str], sample_row: dict[str, object]) -> str:
-    for name in TEXT_COLUMN_CANDIDATES:
-        if name in column_names:
-            return name
-    string_cols = [c for c in column_names if isinstance(sample_row[c], str)]
-    return max(string_cols, key=lambda c: len(str(sample_row[c])))
+def load_emotions_data(dataset: str, split: str) -> dict[str, list[str]]:
+    """Reference's loader, verbatim in behaviour: {emotion: [story, ...]}."""
+    from datasets import load_dataset  # noqa: PLC0415
+    rows = load_dataset(dataset, split=split)
+    emotions_data: dict[str, list[str]] = {}
+    for entry in rows:
+        if entry.get("stories"):
+            emotions_data.setdefault(entry["emotion"], []).extend(entry["stories"])
+    return emotions_data
 
 
-def count_tokens(texts: list[str], tokenizer_name: str) -> tuple[list[int], str]:
-    """Per-story token counts, with the method used ('tokenizer' or 'word-proxy')."""
+def story_token_lengths(emotions_data: dict[str, list[str]],
+                        model_name: str, max_length: int) -> tuple[dict[str, list[int]], str]:
+    """Per-story truncated token counts using the reference tokenizer call."""
     try:
-        from transformers import AutoTokenizer  # noqa: PLC0415 — heavy, optional
-        tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
-        return [len(tokenizer(t).input_ids) for t in texts], f"tokenizer:{tokenizer_name}"
-    except Exception as exc:  # gated model / offline / missing token
-        print(f"note: tokenizer unavailable ({type(exc).__name__}); using "
-              f"words x {TOKENS_PER_WORD_PROXY} proxy")
-        return [int(len(t.split()) * TOKENS_PER_WORD_PROXY) for t in texts], "word-proxy"
+        from transformers import AutoTokenizer  # noqa: PLC0415
+        tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+        method = f"tokenizer:{model_name}, truncated at {max_length}"
+        def length(text: str) -> int:
+            return min(len(tokenizer(text).input_ids), max_length)
+    except Exception as exc:
+        print(f"note: tokenizer unavailable ({type(exc).__name__}); words x 1.3 proxy")
+        method = "word-proxy x1.3"
+        def length(text: str) -> int:
+            return min(int(len(text.split()) * 1.3), max_length)
+    return ({e: [length(s) for s in stories] for e, stories in emotions_data.items()}, method)
+
+
+def padded_token_total(lengths_by_emotion: dict[str, list[int]], batch_size: int) -> int:
+    """Compute-relevant tokens: each batch pads to its longest story, and the
+    reference batches within each emotion's story list, in order."""
+    total = 0
+    for lengths in lengths_by_emotion.values():
+        for start in range(0, len(lengths), batch_size):
+            batch = lengths[start:start + batch_size]
+            total += len(batch) * max(batch)
+    return total
+
+
+def detect_d_model(model_name: str) -> tuple[int, str]:
+    try:
+        from transformers import AutoConfig  # noqa: PLC0415
+        cfg = AutoConfig.from_pretrained(model_name, trust_remote_code=True)
+        d = getattr(cfg, "hidden_size", None) or cfg.text_config.hidden_size
+        return int(d), "from config"
+    except Exception:
+        return ASSUMED_D_MODEL, "ASSUMED — verify from the model config on the pod"
 
 
 def human(seconds: float) -> str:
@@ -57,86 +100,153 @@ def human(seconds: float) -> str:
     return f"{seconds / 3600:.2f}h"
 
 
-def analytic_report(total_tokens: int, n_stories: int, args: argparse.Namespace) -> dict[str, object]:
-    scenarios = {}
+def disk_budget(n_stories: int, n_layers: int, d_model: int) -> dict[str, str]:
+    """Resumable-adaptation writes: one pooled vector per story per layer."""
+    per_story = n_layers * d_model * FP32_BYTES
+    total = n_stories * per_story
+    return {
+        "per_story": f"{per_story / 1e6:.1f} MB",
+        "corpus_total": f"{total / 1e9:.2f} GB",
+        "write_time_at_assumed_throughput": human(total / (ASSUMED_WRITE_MB_S * 1e6)),
+    }
+
+
+def analytic_report(padded_tokens: int, args: argparse.Namespace) -> dict[str, object]:
+    scenarios: dict[str, object] = {}
     for tps in args.throughputs:
-        compute = total_tokens / tps * args.overhead
+        compute = padded_tokens / tps * args.overhead
         scenarios[f"{tps}_tok_per_s"] = {
-            "forward_passes": human(compute),
+            "forward": human(compute),
             "with_model_load": human(compute + args.load_seconds),
         }
-        print(f"  @{tps:>5} tok/s prefill: {human(compute):>8} compute, "
+        print(f"  @{tps:>5} tok/s: {human(compute):>8} forward, "
               f"{human(compute + args.load_seconds):>8} incl. one model load")
     return scenarios
 
 
-def benchmark_tokens_per_second(texts: list[str], args: argparse.Namespace) -> float:
-    import torch  # noqa: PLC0415 — gpu extra only
+def benchmark(emotions_data: dict[str, list[str]], args: argparse.Namespace,
+              d_model: int) -> dict[str, float]:
+    """Reference loop, timed: tokenize -> forward with hooks -> pool -> write."""
+    import numpy as np  # noqa: PLC0415
+    import torch  # noqa: PLC0415
     from transformers import AutoModelForCausalLM, AutoTokenizer  # noqa: PLC0415
 
-    tokenizer = AutoTokenizer.from_pretrained(args.model)
-    print(f"loading {args.model} (bf16)...")
+    def get_layer(model: object, idx: int) -> object:  # reference's _get_layer, condensed
+        for fn in (lambda m, i: m.model.layers[i],
+                   lambda m, i: m.model.language_model.model.layers[i],
+                   lambda m, i: m.model.language_model.layers[i],
+                   lambda m, i: m.language_model.model.layers[i]):
+            try:
+                return fn(model, idx)
+            except (AttributeError, IndexError):
+                continue
+        raise AttributeError(f"cannot locate layer {idx}")
+
+    tokenizer = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    print(f"loading {args.model} (bf16 — the reference's fp32 does not fit 96 GB)...")
     t0 = time.monotonic()
     model = AutoModelForCausalLM.from_pretrained(
-        args.model, torch_dtype=torch.bfloat16, device_map="auto")
-    print(f"model loaded in {human(time.monotonic() - t0)}")
+        args.model, torch_dtype=torch.bfloat16, device_map="auto", trust_remote_code=True)
+    model.eval()
+    load_s = time.monotonic() - t0
+    print(f"model loaded in {human(load_s)}")
+
+    layers = list(range(0, args.n_layers_total, args.layer_stride))
     rng = random.Random(args.seed)
-    sample = rng.sample(texts, min(args.sample, len(texts)))
-    timed_tokens = 0
-    t0 = time.monotonic()
-    with torch.no_grad():
-        for text in sample:
-            batch = tokenizer(text, return_tensors="pt").to(model.device)
-            model(**batch, output_hidden_states=True)
-            timed_tokens += int(batch.input_ids.shape[1])
-    elapsed = time.monotonic() - t0
-    tps = timed_tokens / elapsed
-    print(f"measured: {timed_tokens} tokens in {human(elapsed)} -> {tps:.0f} tok/s "
-          f"(hidden states captured, batch size 1)")
-    return tps
+    all_stories = [s for stories in emotions_data.values() for s in stories]
+    sample = rng.sample(all_stories, min(args.sample_batches * REFERENCE_BATCH_SIZE, len(all_stories)))
+    out_dir = Path(args.out).parent / "benchmark_scratch"
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    stages = {"forward_s": 0.0, "write_s": 0.0, "tokens": 0.0}
+    for start in range(0, len(sample), REFERENCE_BATCH_SIZE):
+        batch = sample[start:start + REFERENCE_BATCH_SIZE]
+        inputs = tokenizer(batch, return_tensors="pt", padding=True,
+                           truncation=True, max_length=REFERENCE_MAX_LENGTH).to(model.device)
+        captured: dict[int, torch.Tensor] = {}
+        hooks = [get_layer(model, i).register_forward_hook(
+            (lambda idx: lambda m, inp, out: captured.__setitem__(
+                idx, (out[0] if isinstance(out, tuple) else out).detach().float()))(i))
+            for i in layers]
+        t0 = time.monotonic()
+        with torch.no_grad():
+            model(**inputs)
+        stages["forward_s"] += time.monotonic() - t0
+        for h in hooks:
+            h.remove()
+        mask = inputs["attention_mask"].clone()
+        mask[:, :TOKEN_OFFSET] = 0
+        stages["tokens"] += float(inputs["attention_mask"].sum().item())
+        t0 = time.monotonic()
+        denom = mask.sum(dim=1).clamp(min=1).unsqueeze(-1).float()
+        for story_idx in range(len(batch)):
+            pooled = np.stack([
+                ((captured[i][story_idx] * mask[story_idx].unsqueeze(-1)).sum(dim=0)
+                 / denom[story_idx]).cpu().numpy()
+                for i in layers])
+            np.save(out_dir / f"story_{start + story_idx}.npy", pooled)
+        stages["write_s"] += time.monotonic() - t0
+    stages["model_load_s"] = load_s
+    return stages
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", default="snae/emotion_stories_gemma_4_4B")
     parser.add_argument("--split", default="train")
-    parser.add_argument("--model", default="google/gemma-4-31b",
-                        help="tokenizer source; the model itself loads only with --benchmark")
-    parser.add_argument("--throughputs", type=int, nargs="+", default=[1000, 3000, 6000],
-                        help="prefill tok/s scenarios for analytic mode")
-    parser.add_argument("--overhead", type=float, default=1.2,
-                        help="multiplier for hook/IO overhead on top of pure forward passes")
-    parser.add_argument("--load-seconds", type=float, default=300,
-                        help="assumed one-off model load time from the volume")
+    parser.add_argument("--model", default="google/gemma-4-31b")
+    parser.add_argument("--throughputs", type=int, nargs="+", default=[1000, 3000, 6000])
+    parser.add_argument("--overhead", type=float, default=1.2)
+    parser.add_argument("--load-seconds", type=float, default=300)
+    parser.add_argument("--n-layers-total", type=int, default=60)
+    parser.add_argument("--layer-stride", type=int, default=3,
+                        help="sweep every Nth layer (plan: every 3rd of 60)")
     parser.add_argument("--benchmark", action="store_true")
-    parser.add_argument("--sample", type=int, default=8, help="stories to time in benchmark mode")
+    parser.add_argument("--sample-batches", type=int, default=6)
     parser.add_argument("--seed", type=int, default=20260720)
     parser.add_argument("--out", type=Path, default=Path("results/extraction_time_estimate.json"))
     args = parser.parse_args()
 
-    from datasets import load_dataset  # noqa: PLC0415 — after argparse so --help stays instant
-    ds = load_dataset(args.dataset, split=args.split)
-    column = find_text_column(ds.column_names, ds[0])
-    texts = list(ds[column])
-    lengths, method = count_tokens(texts, args.model)
-    total = sum(lengths)
-    print(f"corpus: {len(texts)} stories ({column!r}), {total:,} tokens total "
-          f"(mean {total / len(texts):.0f}/story, method={method})")
+    emotions_data = load_emotions_data(args.dataset, args.split)
+    n_stories = sum(len(v) for v in emotions_data.values())
+    print(f"corpus: {len(emotions_data)} emotions, {n_stories} stories "
+          f"(reference-style loading from the 'stories' lists)")
+
+    lengths, method = story_token_lengths(emotions_data, args.model, REFERENCE_MAX_LENGTH)
+    raw_total = sum(sum(v) for v in lengths.values())
+    padded = padded_token_total(lengths, REFERENCE_BATCH_SIZE)
+    print(f"tokens: {raw_total:,} raw, {padded:,} padded in reference batches of "
+          f"{REFERENCE_BATCH_SIZE} ({method})")
+
+    n_layers = len(range(0, args.n_layers_total, args.layer_stride))
+    d_model, d_src = detect_d_model(args.model)
+    disk = disk_budget(n_stories, n_layers, d_model)
+    print(f"resumable writes: {n_layers} layers x d_model {d_model} ({d_src}) -> "
+          f"{disk['per_story']}/story, {disk['corpus_total']} corpus, "
+          f"~{disk['write_time_at_assumed_throughput']} at {ASSUMED_WRITE_MB_S:.0f} MB/s")
 
     result: dict[str, object] = {
-        "dataset": args.dataset, "n_stories": len(texts), "total_tokens": total,
-        "token_method": method, "overhead_multiplier": args.overhead, "seed": args.seed,
+        "dataset": args.dataset, "n_emotions": len(emotions_data), "n_stories": n_stories,
+        "raw_tokens": raw_total, "padded_tokens": padded, "token_method": method,
+        "n_layers_swept": n_layers, "d_model": d_model, "d_model_source": d_src,
+        "resumable_disk": disk, "seed": args.seed,
+        "note": "reference default fp32 needs ~124 GB for 31B; run bf16 on the 96 GB card",
     }
     if args.benchmark:
-        tps = benchmark_tokens_per_second(texts, args)
-        compute = total / tps * args.overhead
-        result["measured_tokens_per_second"] = round(tps, 1)
-        result["estimated_total"] = human(compute)
-        print(f"\nfull extraction estimate: {human(compute)} "
-              f"(+ one model load, measured above)")
+        stages = benchmark(emotions_data, args, d_model)
+        tps = stages["tokens"] / stages["forward_s"]
+        write_frac = stages["write_s"] / max(stages["forward_s"], 1e-9)
+        est = padded / tps * (1 + write_frac)
+        result["benchmark"] = {**{k: round(v, 2) for k, v in stages.items()},
+                               "tokens_per_s": round(tps, 1),
+                               "estimated_total": human(est + stages["model_load_s"])}
+        print(f"\nmeasured {tps:.0f} tok/s; writes add {write_frac:.1%}; "
+              f"full run ~{human(est)} + {human(stages['model_load_s'])} load")
     else:
-        result["scenarios"] = analytic_report(total, len(texts), args)
-        print("\nrun with --benchmark on the pod for a measured estimate")
+        result["scenarios"] = analytic_report(padded, args)
+        print("\nrun with --benchmark on the pod for measured numbers")
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, indent=2) + "\n")
