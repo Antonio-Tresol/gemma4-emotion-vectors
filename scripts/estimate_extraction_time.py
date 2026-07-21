@@ -209,7 +209,7 @@ def benchmark(
             for i in layers
         ]
         t0 = time.monotonic()
-        with torch.no_grad():
+        with torch.inference_mode():
             model(**inputs)
         stages["forward_s"] += time.monotonic() - t0
         for h in hooks:
