@@ -21,13 +21,22 @@ stop; Q2 closes as infeasible-with-evidence. (Tree ids: replication is Q1,
 introspection Q2, renumbered when the harness self-evaluation moved to its
 own repo on 2026-07-20.)
 
-**Part 2, gated on Part 1: introspection.** Inject the validated emotion
-vectors and test whether the model can detect the emotional direction it is
-being steered toward (per "Emergent Introspective Awareness"); if it
-misidentifies, analyse the failure patterns — do wrong guesses cluster near
-the injected emotion in valence-arousal (circumplex) space, or scatter?
-Either answer is presentable (graded content access vs an extension of the
-content-agnostic finding).
+**Part 2, gated on Part 1: temporal dynamics.** (Replaced the earlier
+introspection stretch goal — pivot recorded 2026-07-20; the introspection
+sources below are kept as background.) Write synthetic stories that move
+through 2-3 emotions in sequence and track the per-token cosine similarity
+between the residual stream and each emotion vector across the story. The
+question: at emotion transitions, do the similarities show gradual
+ramp-and-crossover dynamics — the signature of evidence accumulation, as in
+drift-diffusion models of human decision-making — or abrupt steps at the
+lexical cue words? Measurable: ramp slope vs evidence strength (subtle vs
+explicit story variants), crossover latency, carryover from the previous
+emotion, competition between vectors, and distance dependence (near vs far
+circumplex pairs). Controls: random-direction trajectories and
+shuffled-sentence stories. Claims stay at "consistent with integration vs
+switching" — the analogy generates predictions; it is not the claim. Note the
+pipeline change: this needs per-token trajectories, not the extraction
+pipeline's mean-pooled activations.
 
 Scope rule: anything in the source planning brief that is not on the path to
 these two parts (hackathon logistics, staffing splits, cut negotiations,
