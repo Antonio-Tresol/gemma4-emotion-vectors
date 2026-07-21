@@ -103,7 +103,12 @@ def run_vllm(args: object, emotions: list[str], raw_path: Path, logger: object) 
     from vllm import LLM, SamplingParams  # noqa: PLC0415 — pod-only dependency
 
     tokenizer = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
-    llm = LLM(model=args.model, dtype="bfloat16", seed=args.seed)
+    # enforce_eager: this card (SM 12.x Blackwell) trips vLLM's compile path on
+    # CUDA < 12.9 wheels; eager mode skips it. max_model_len bounds the KV cache
+    # (defaults to the model's 262k context, far beyond these ~500-token prompts).
+    llm = LLM(
+        model=args.model, dtype="bfloat16", seed=args.seed, enforce_eager=True, max_model_len=2048
+    )
     for round_idx in range(2):
         counts = existing_counts(raw_path)
         todo = pending_prompts(counts, emotions, args, tokenizer)
