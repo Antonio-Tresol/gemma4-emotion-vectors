@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import time
 from collections.abc import Callable
+from dataclasses import dataclass
 from typing import Final
 
 TOKEN_OFFSET: Final[int] = 50  # reference: pooling skips the first 50 tokens
@@ -64,10 +65,18 @@ def detect_model_geometry(model_name: str) -> tuple[int, int]:
     return int(text_cfg.hidden_size), int(text_cfg.num_hidden_layers)
 
 
+@dataclass(frozen=True)
+class LoadedModel:
+    """Tokenizer and model travel together through the pipeline."""
+
+    tokenizer: object
+    model: object
+
+
 def load_model_bf16(
     model_name: str, log: Callable[[str], None] = print
-) -> tuple[object, object, float]:
-    """(tokenizer, model, load_seconds). bf16, not the reference's fp32:
+) -> tuple[LoadedModel, float]:
+    """(loaded model, load_seconds). bf16, not the reference's fp32:
     fp32 needs ~124 GB for the 31B model and does not fit the 96 GB card."""
     import torch  # noqa: PLC0415
     from transformers import AutoModelForCausalLM, AutoTokenizer  # noqa: PLC0415
@@ -83,4 +92,4 @@ def load_model_bf16(
     model.eval()
     load_s = time.monotonic() - t0
     log(f"model loaded in {human(load_s)}")
-    return tokenizer, model, load_s
+    return LoadedModel(tokenizer=tokenizer, model=model), load_s
