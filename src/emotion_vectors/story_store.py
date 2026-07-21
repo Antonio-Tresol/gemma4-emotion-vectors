@@ -2,7 +2,7 @@
 
 The reference pipeline accumulates one running sum per emotion in memory and
 saves only at the end, so a crash loses the whole run. This store instead keeps
-one `[n_layers, d_model]` fp32 shard per story plus a JSONL manifest row with
+one `[layers, d_model]` fp32 shard per story plus a JSONL manifest row with
 its post-mask token count, and recombines them as
 sum(story_mean * story_tokens) / sum(story_tokens) — the identical
 token-weighted mean the reference computes.
@@ -72,7 +72,9 @@ def pending_stories(
     return pending
 
 
-def emotion_mean(out_dir: Path, rows: list[dict[str, object]]) -> "Float[np.ndarray, 'l d']":
+def emotion_mean(
+    out_dir: Path, rows: list[dict[str, object]]
+) -> "Float[np.ndarray, 'layers d_model']":
     """Token-weighted mean over one emotion's story shards, float64 accumulation:
     sum(story_mean * story_tokens) / sum(story_tokens) — the reference's mean."""
     acc, n_tok = None, 0
@@ -99,7 +101,7 @@ def aggregate(out_dir: Path, logger: logging.Logger) -> None:
 
     combined: dict[str, dict[str, list[float]]] = {}
     for emotion, rows in by_emotion.items():
-        mean = emotion_mean(out_dir, rows)  # [n_layers, d_model]
+        mean = emotion_mean(out_dir, rows)  # [layers, d_model]
         emo_dir = out_dir / emotion.replace(" ", "_").replace("/", "-")
         emo_dir.mkdir(parents=True, exist_ok=True)
         combined[emotion] = {}

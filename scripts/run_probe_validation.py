@@ -28,7 +28,7 @@ except ModuleNotFoundError as exc:  # torch lives in the gpu extra; this is a GP
 
 def last_token_activations(
     lm: object, text: str, layers: list[int]
-) -> "np.ndarray":  # [n_layers, d_model]
+) -> "np.ndarray":  # [layers, d_model]
     """One prompt, no padding: the last position is the pre-response token."""
     import torch  # noqa: PLC0415
 
@@ -58,7 +58,7 @@ def main() -> int:
 
     acts = np.stack(
         [last_token_activations(lm, p["text"], args.layers) for p in prompts]
-    )  # [n_prompts, n_layers, d_model]
+    )  # [n_prompts, layers, d_model]
     np.savez_compressed(args.out_dir / "activations.npz", acts=acts, layers=np.array(args.layers))
     (args.out_dir / "prompts.jsonl").write_text("".join(json.dumps(p) + "\n" for p in prompts))
     logger.info(f"saved {acts.shape} -> {args.out_dir}")
