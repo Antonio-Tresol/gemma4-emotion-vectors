@@ -35,24 +35,19 @@ import time
 from pathlib import Path
 from typing import Final
 
-TOKEN_OFFSET: Final[int] = 50  # reference: pooling skips the first 50 tokens
-REFERENCE_BATCH_SIZE: Final[int] = 4  # reference default
-REFERENCE_MAX_LENGTH: Final[int] = 512
+from extraction_common import (
+    REFERENCE_BATCH_SIZE,
+    REFERENCE_MAX_LENGTH,
+    TOKEN_OFFSET,
+    get_layer,
+    human,
+    load_emotions_data,
+    load_model_bf16,
+)
+
 FP32_BYTES: Final[int] = 4
 ASSUMED_D_MODEL: Final[int] = 6144  # fallback when the gated config is unreachable
 ASSUMED_WRITE_MB_S: Final[float] = 200.0
-
-
-def load_emotions_data(dataset: str, split: str) -> dict[str, list[str]]:
-    """Reference's loader, verbatim in behaviour: {emotion: [story, ...]}."""
-    from datasets import load_dataset  # noqa: PLC0415
-
-    rows = load_dataset(dataset, split=split)
-    emotions_data: dict[str, list[str]] = {}
-    for entry in rows:
-        if entry.get("stories"):
-            emotions_data.setdefault(entry["emotion"], []).extend(entry["stories"])
-    return emotions_data
 
 
 def story_token_lengths(
@@ -99,14 +94,6 @@ def detect_d_model(model_name: str) -> tuple[int, str]:
         return ASSUMED_D_MODEL, "ASSUMED — verify from the model config on the pod"
 
 
-def human(seconds: float) -> str:
-    if seconds < 90:
-        return f"{seconds:.0f}s"
-    if seconds < 5400:
-        return f"{seconds / 60:.1f}min"
-    return f"{seconds / 3600:.2f}h"
-
-
 def disk_budget(n_stories: int, n_layers: int, d_model: int) -> dict[str, str]:
     """Resumable-adaptation writes: one pooled vector per story per layer."""
     per_story = n_layers * d_model * FP32_BYTES
@@ -131,41 +118,6 @@ def analytic_report(padded_tokens: int, args: argparse.Namespace) -> dict[str, o
             f"{human(compute + args.load_seconds):>8} incl. one model load"
         )
     return scenarios
-
-
-def get_layer(model: object, idx: int) -> object:
-    """The reference's _get_layer, condensed: model-family layer lookup."""
-    for fn in (
-        lambda m, i: m.model.layers[i],
-        lambda m, i: m.model.language_model.model.layers[i],
-        lambda m, i: m.model.language_model.layers[i],
-        lambda m, i: m.language_model.model.layers[i],
-    ):
-        try:
-            return fn(model, idx)
-        except (AttributeError, IndexError):
-            continue
-    raise AttributeError(f"cannot locate layer {idx}")
-
-
-def load_model_bf16(model_name: str) -> tuple[object, object, float]:
-    """(tokenizer, model, load_seconds). bf16, not the reference's fp32:
-    fp32 needs ~124 GB for the 31B model and does not fit the 96 GB card."""
-    import torch  # noqa: PLC0415
-    from transformers import AutoModelForCausalLM, AutoTokenizer  # noqa: PLC0415
-
-    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
-    print(f"loading {model_name} (bf16)...")
-    t0 = time.monotonic()
-    model = AutoModelForCausalLM.from_pretrained(
-        model_name, torch_dtype=torch.bfloat16, device_map="auto", trust_remote_code=True
-    )
-    model.eval()
-    load_s = time.monotonic() - t0
-    print(f"model loaded in {human(load_s)}")
-    return tokenizer, model, load_s
 
 
 def benchmark(
