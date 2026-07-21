@@ -24,6 +24,7 @@ gpu = [
 ]
 
 [tool.ruff]
+extend-exclude = ["*.ipynb"]  # notebooks are explore-mode: exempt from polish by design
 line-length = 100
 target-version = "py311"
 
