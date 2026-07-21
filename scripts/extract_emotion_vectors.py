@@ -20,15 +20,19 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from cbai_cambria.extraction_common import (
+from cbai_cambria.corpus import (
     REFERENCE_BATCH_SIZE,
     REFERENCE_MAX_LENGTH,
     detect_model_geometry,
     load_emotions_data,
 )
 from cbai_cambria.hf_publish import check_hf_auth, publish
-from cbai_cambria.pipeline import RunSettings, git_commit, run_extraction, setup_logger
 from cbai_cambria.story_store import aggregate
+
+try:
+    from cbai_cambria.pipeline import RunSettings, git_commit, run_extraction, setup_logger
+except ModuleNotFoundError as exc:  # torch lives in the gpu extra; this is a GPU entry point
+    raise SystemExit(f"missing {exc.name}: this entry point needs `uv sync --extra gpu`") from exc
 
 SMOKE_EMOTIONS = 3
 SMOKE_STORIES_PER_EMOTION = 4
