@@ -130,10 +130,22 @@ from __future__ import annotations
 import argparse, json, re
 from pathlib import Path
 
+from datasets import load_dataset
+
+# vLLM (and torch) live in the pod-only `gpu` extra. Import at MODULE TOP — a
+# guarded top-level import satisfies ruff PLC0415 and still lets laptop-side
+# tooling import this module with a friendly error instead of an ImportError.
+# This is the repo's one sanctioned lazy-import exception; see pyproject.toml
+# and scripts/generate_dialogue_stories.py. Do NOT scatter imports into functions.
+try:
+    from vllm import LLM, SamplingParams
+except ModuleNotFoundError as exc:
+    raise SystemExit(f"missing {exc.name}: this entry point needs `uv sync --extra gpu`") from exc
+
+
 def load_emotion_list(source: str) -> list[str]:
     # DO reuse the reference corpus's emotion keys so the self-gen corpus
     # covers the SAME emotions the extraction/analysis code expects.
-    from datasets import load_dataset
     rows = load_dataset(source, split="train")
     return sorted({r["emotion"] for r in rows})
 
@@ -170,7 +182,6 @@ def main() -> int:
         emotions, args.per_emotion = emotions[:2], 2
     log.info(f"config: {vars(args)} | git={_git_commit()} | {len(emotions)} emotions")
 
-    from vllm import LLM, SamplingParams          # noqa: PLC0415 — GPU import, lazy on purpose
     llm = LLM(model=args.model, dtype="bfloat16", gpu_memory_utilization=0.90,
               max_model_len=2048, seed=args.seed)
 
