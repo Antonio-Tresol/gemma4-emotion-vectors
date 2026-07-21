@@ -1,0 +1,62 @@
+2026-07-21 18:40:54,033 INFO HF auth ok as abotresol
+2026-07-21 18:43:27,995 INFO config: {"model": "google/gemma-4-31b", "dataset": "snae/emotion_stories_gemma_4_4B", "split": "train", "layers": [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57], "d_model": 5376, "batch_size": 4, "max_length": 512, "token_offset": 50, "seed": 20260720, "smoke": false, "git_commit": "c345984"}
+2026-07-21 18:43:28,013 INFO 1539 stories, 1539 pending (0 already on disk)
+2026-07-21 18:43:38,355 INFO loading google/gemma-4-31b (bf16)...
+2026-07-21 18:44:24,642 INFO model loaded in 46s
+2026-07-21 18:44:41,720 INFO 31/1539 stories | 1.82 stories/s | elapsed 17s | ETA 13.8min
+2026-07-21 18:44:51,189 INFO 62/1539 stories | 2.34 stories/s | elapsed 27s | ETA 10.5min
+2026-07-21 18:45:00,101 INFO 90/1539 stories | 2.54 stories/s | elapsed 35s | ETA 9.5min
+2026-07-21 18:45:09,576 INFO 121/1539 stories | 2.69 stories/s | elapsed 45s | ETA 8.8min
+2026-07-21 18:45:20,228 INFO 152/1539 stories | 2.73 stories/s | elapsed 56s | ETA 8.5min
+2026-07-21 18:45:28,218 INFO 180/1539 stories | 2.83 stories/s | elapsed 64s | ETA 8.0min
+2026-07-21 18:45:37,323 INFO 211/1539 stories | 2.90 stories/s | elapsed 73s | ETA 7.6min
+2026-07-21 18:45:46,776 INFO 242/1539 stories | 2.95 stories/s | elapsed 82s | ETA 7.3min
+2026-07-21 18:45:55,355 INFO 270/1539 stories | 2.98 stories/s | elapsed 1.5min | ETA 7.1min
+2026-07-21 18:46:05,147 INFO 301/1539 stories | 3.00 stories/s | elapsed 1.7min | ETA 6.9min
+2026-07-21 18:46:14,166 INFO 332/1539 stories | 3.03 stories/s | elapsed 1.8min | ETA 6.6min
+2026-07-21 18:46:22,206 INFO 360/1539 stories | 3.06 stories/s | elapsed 2.0min | ETA 6.4min
+2026-07-21 18:46:31,544 INFO 391/1539 stories | 3.08 stories/s | elapsed 2.1min | ETA 6.2min
+2026-07-21 18:46:40,816 INFO 422/1539 stories | 3.10 stories/s | elapsed 2.3min | ETA 6.0min
+2026-07-21 18:46:48,770 INFO 450/1539 stories | 3.12 stories/s | elapsed 2.4min | ETA 5.8min
+2026-07-21 18:46:58,296 INFO 481/1539 stories | 3.13 stories/s | elapsed 2.6min | ETA 5.6min
+2026-07-21 18:47:07,350 INFO 512/1539 stories | 3.15 stories/s | elapsed 2.7min | ETA 5.4min
+2026-07-21 18:47:15,627 INFO 540/1539 stories | 3.16 stories/s | elapsed 2.8min | ETA 5.3min
+2026-07-21 18:47:24,689 INFO 571/1539 stories | 3.17 stories/s | elapsed 3.0min | ETA 5.1min
+2026-07-21 18:47:34,053 INFO 602/1539 stories | 3.18 stories/s | elapsed 3.2min | ETA 4.9min
+2026-07-21 18:47:42,338 INFO 630/1539 stories | 3.19 stories/s | elapsed 3.3min | ETA 4.8min
+2026-07-21 18:47:51,563 INFO 661/1539 stories | 3.19 stories/s | elapsed 3.4min | ETA 4.6min
+2026-07-21 18:48:01,185 INFO 692/1539 stories | 3.20 stories/s | elapsed 3.6min | ETA 4.4min
+2026-07-21 18:48:09,285 INFO 720/1539 stories | 3.21 stories/s | elapsed 3.7min | ETA 4.3min
+2026-07-21 18:48:18,763 INFO 751/1539 stories | 3.21 stories/s | elapsed 3.9min | ETA 4.1min
+2026-07-21 18:48:27,351 INFO 782/1539 stories | 3.22 stories/s | elapsed 4.0min | ETA 3.9min
+2026-07-21 18:48:35,872 INFO 810/1539 stories | 3.22 stories/s | elapsed 4.2min | ETA 3.8min
+2026-07-21 18:48:44,683 INFO 841/1539 stories | 3.23 stories/s | elapsed 4.3min | ETA 3.6min
+2026-07-21 18:48:53,786 INFO 872/1539 stories | 3.24 stories/s | elapsed 4.5min | ETA 3.4min
+2026-07-21 18:49:01,752 INFO 900/1539 stories | 3.25 stories/s | elapsed 4.6min | ETA 3.3min
+2026-07-21 18:49:11,544 INFO 931/1539 stories | 3.25 stories/s | elapsed 4.8min | ETA 3.1min
+2026-07-21 18:49:21,308 INFO 962/1539 stories | 3.24 stories/s | elapsed 4.9min | ETA 3.0min
+2026-07-21 18:49:29,005 INFO 990/1539 stories | 3.25 stories/s | elapsed 5.1min | ETA 2.8min
+2026-07-21 18:49:38,120 INFO 1021/1539 stories | 3.26 stories/s | elapsed 5.2min | ETA 2.7min
+2026-07-21 18:49:47,439 INFO 1052/1539 stories | 3.26 stories/s | elapsed 5.4min | ETA 2.5min
+2026-07-21 18:49:55,286 INFO 1080/1539 stories | 3.27 stories/s | elapsed 5.5min | ETA 2.3min
+2026-07-21 18:50:06,331 INFO 1111/1539 stories | 3.25 stories/s | elapsed 5.7min | ETA 2.2min
+2026-07-21 18:50:14,952 INFO 1142/1539 stories | 3.26 stories/s | elapsed 5.8min | ETA 2.0min
+2026-07-21 18:50:22,576 INFO 1170/1539 stories | 3.27 stories/s | elapsed 6.0min | ETA 1.9min
+2026-07-21 18:50:31,337 INFO 1201/1539 stories | 3.28 stories/s | elapsed 6.1min | ETA 1.7min
+2026-07-21 18:50:40,212 INFO 1232/1539 stories | 3.28 stories/s | elapsed 6.3min | ETA 1.6min
+2026-07-21 18:50:49,146 INFO 1260/1539 stories | 3.28 stories/s | elapsed 6.4min | ETA 85s
+2026-07-21 18:50:59,131 INFO 1291/1539 stories | 3.27 stories/s | elapsed 6.6min | ETA 76s
+2026-07-21 18:51:08,085 INFO 1322/1539 stories | 3.28 stories/s | elapsed 6.7min | ETA 66s
+2026-07-21 18:51:16,436 INFO 1350/1539 stories | 3.28 stories/s | elapsed 6.9min | ETA 58s
+2026-07-21 18:51:26,170 INFO 1381/1539 stories | 3.28 stories/s | elapsed 7.0min | ETA 48s
+2026-07-21 18:51:35,486 INFO 1412/1539 stories | 3.28 stories/s | elapsed 7.2min | ETA 39s
+2026-07-21 18:51:44,243 INFO 1440/1539 stories | 3.28 stories/s | elapsed 7.3min | ETA 30s
+2026-07-21 18:51:53,161 INFO 1471/1539 stories | 3.28 stories/s | elapsed 7.5min | ETA 21s
+2026-07-21 18:52:01,945 INFO 1502/1539 stories | 3.28 stories/s | elapsed 7.6min | ETA 11s
+2026-07-21 18:52:10,495 INFO 1530/1539 stories | 3.28 stories/s | elapsed 7.8min | ETA 3s
+2026-07-21 18:52:13,246 INFO 1539/1539 stories | 3.28 stories/s | elapsed 7.8min | ETA 0s
+2026-07-21 18:54:15,062 INFO aggregated 171 emotions x 20 layers -> results/emotion_vectors
+2026-07-21 18:58:09,867 INFO published (private) -> https://huggingface.co/datasets/abotresol/emotion-vectors-gemma-4-31b
+2026-07-21 19:01:45,206 INFO config: {"model": "google/gemma-4-31b", "dataset": "snae/emotion_stories_gemma_4_4B", "split": "train", "layers": [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57], "d_model": 5376, "batch_size": 4, "max_length": 512, "seed": 20260720, "smoke": false, "git_commit": "c345984", "token_offset": 50}
+2026-07-21 19:01:47,900 INFO 1539 stories, 0 pending (1539 already on disk)
+2026-07-21 19:02:52,753 INFO aggregated 171 emotions x 20 layers -> results/emotion_vectors
