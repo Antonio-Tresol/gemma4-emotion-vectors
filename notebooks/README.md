@@ -11,6 +11,7 @@ verdict and has a collapsible "How to read" underneath.
 | 03 | `03_probes.ipynb` | Do the vectors detect implicit emotion in scenarios? (No configuration passed the pre-registered bar across seven experiments; what survives is coarse valence.) |
 | 04 | `04_parity.ipynb` | Where does every figure from the two source papers stand? |
 | 05 | `05_trajectories.ipynb` | Q3 substrate: per-token emotion trajectories over three-emotion stories (exhibits only; reads pending registration) |
+| 06 | `06_trajectories_base.ipynb` | The base-model arm of 05: same corpus, same figures, same controls, base-lineage probes |
 
 ## Running them (laptop or the shared pod)
 
