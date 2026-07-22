@@ -37,6 +37,32 @@ So most of the transformers-side batching advice **inverts** here:
 
 ---
 
+## Blackwell survival guide (RTX PRO 6000, SM 12.x) — measured 2026-07-21
+
+Three independent failures stand between `uv pip install vllm` and a working
+engine on this card. Each was hit, diagnosed, and fixed on the pod; the exact
+symptoms are listed so the next person greps this file instead of the night's
+logs. The runnable version is `scripts/pod/setup_vllm_env.sh`.
+
+| # | Symptom in the log | Cause | Fix |
+|---|---|---|---|
+| 1 | `Stale file handle (os error 116)` mid-install | The venv lives on the /workspace network volume; large wheel writes get corrupted | Create the vLLM venv on **local NVMe**: `uv venv /root/vllm-env --python 3.14` |
+| 2 | `Failed to get device capability: SM 12.x requires CUDA >= 12.9` then `EngineCore failed to start` ... `FlashInfer requires GPUs with sm75 or higher` | FlashInfer's capability probe misreads SM 12.x and treats the card as ancient | `export VLLM_ATTENTION_BACKEND=TRITON_ATTN` |
+| 3 | `flashinfer/jit/sampling.py` in the traceback after fix 2 | FlashInfer's JIT **sampler** is a second, independent entry point | `uv pip uninstall flashinfer-python` from the vLLM venv (vLLM falls back to torch-native sampling) and belt-and-suspenders `export VLLM_USE_FLASHINFER_SAMPLER=0` |
+
+Also required: torch built for the driver's CUDA (driver reports 13.0 here;
+`torch 2.11+cu130` came with the vllm wheel and works — verify with
+`python -c "import torch; print(torch.version.cuda)"`). `enforce_eager=True`
+was tried for failure 2 and does NOT help (the failure is in capability
+detection, not compilation); it is kept in our generation script only to skip
+cudagraph capture time for short jobs, with `max_model_len=2048` bounding the
+KV cache far below the model's 262k default.
+
+Measured payoff: 2,424 stories x ~200 tokens in ~9 minutes (one
+continuously-batched pass), where the `transformers` fallback loop measured
+~20 stories/minute (~2.5 hours). Fallback stays wired in the launcher: every
+generation call tries vLLM and drops to `--backend hf` on nonzero exit.
+
 ## Setup
 
 **Dependency.** vLLM is a heavy CUDA package — it belongs in the pod-only
