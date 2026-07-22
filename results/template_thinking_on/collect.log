@@ -1,0 +1,4 @@
+2026-07-22 11:15:06,897 INFO loading google/gemma-4-31b-it (bf16)...
+2026-07-22 11:15:56,403 INFO model loaded in 50s
+2026-07-22 11:16:15,923 INFO collected 37 template prompts, thinking ON
+2026-07-22 11:16:23,157 INFO saved -> results/template_thinking_on

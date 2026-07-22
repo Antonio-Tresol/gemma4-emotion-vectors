@@ -400,3 +400,37 @@ links, and it's reproducible by *re-reading*, not by *re-rolling*.
 - [ ] Findings reported to the orchestrator for TREE.md / RESEARCH_LOG.md — not
       written from the pod.
 ```
+
+---
+
+## Activation extraction with vLLM (investigated 2026-07-22)
+
+Two routes exist; both were investigated because the queued expensive items
+(Figure 1 corpus sweep, Q3 per-token trajectories) are prefill-heavy
+activation jobs where the HF loop's measured rate is ~0.30 s/story.
+
+**Route A — forward hooks (works today, benched).** With `enforce_eager=True`
+and the in-process V0 engine (`VLLM_USE_V1=0`,
+`VLLM_ENABLE_V1_MULTIPROCESSING=0`), the torch modules are reachable at
+`llm.llm_engine.model_executor.driver_worker.model_runner.model` and standard
+`register_forward_hook` fires. Costs the CUDA-graph speedup. Bench:
+`scripts/bench_vllm_activations.py` (feasibility, exact last-token parity vs
+the HF-path sweep values, hooked prefill throughput); results in
+`results/vllm_activation_bench.json`.
+
+**Route B — official hidden-states extraction (vLLM >= 0.18; pod has
+0.22.1).** First-class API reusing the EAGLE draft pathway: `speculative_config
+{"method": "extract_hidden_states", "eagle_aux_hidden_state_layer_ids": [...]}`
+plus `kv_transfer_config {"kv_connector": "ExampleHiddenStatesConnector",
+"kv_role": "kv_producer", "shared_storage_path": ...}`. Writes safetensors
+`[prompt_seq_len, num_layers, hidden]` per request, prompt tokens only
+(`max_tokens=1`), selectable layers. No eager requirement, so CUDA graphs
+stay. Caveats from the docs and the 2026-03-30 vLLM blog post: chunked
+prefill must be disabled; the example connector does blocking disk writes
+(fine for our batch sizes, bad at scale). Untested on Blackwell + our
+survival settings — test before relying on it.
+
+Decision rule: if Route A's bench shows clean numerics (cosine > 0.99) and a
+material speedup over 0.30 s/story, hooks are enough for the sprint. Route B
+is the upgrade path if disk-write overhead beats hook overhead at corpus
+scale, or if eager mode proves too slow.
