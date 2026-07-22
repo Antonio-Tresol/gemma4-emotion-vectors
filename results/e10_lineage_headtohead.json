@@ -1,0 +1,224 @@
+{
+  "experiment": "Q1.H2.E10",
+  "r1_centered_battery": {
+    "0": {
+      "corpus": [
+        2,
+        4
+      ],
+      "self": [
+        5,
+        5
+      ]
+    },
+    "3": {
+      "corpus": [
+        6,
+        2
+      ],
+      "self": [
+        4,
+        1
+      ]
+    },
+    "6": {
+      "corpus": [
+        8,
+        6
+      ],
+      "self": [
+        7,
+        6
+      ]
+    },
+    "9": {
+      "corpus": [
+        6,
+        6
+      ],
+      "self": [
+        7,
+        6
+      ]
+    },
+    "12": {
+      "corpus": [
+        6,
+        9
+      ],
+      "self": [
+        8,
+        7
+      ]
+    },
+    "15": {
+      "corpus": [
+        5,
+        7
+      ],
+      "self": [
+        7,
+        5
+      ]
+    },
+    "18": {
+      "corpus": [
+        6,
+        6
+      ],
+      "self": [
+        6,
+        4
+      ]
+    },
+    "21": {
+      "corpus": [
+        7,
+        6
+      ],
+      "self": [
+        5,
+        5
+      ]
+    },
+    "24": {
+      "corpus": [
+        5,
+        4
+      ],
+      "self": [
+        4,
+        5
+      ]
+    },
+    "27": {
+      "corpus": [
+        2,
+        3
+      ],
+      "self": [
+        3,
+        5
+      ]
+    },
+    "30": {
+      "corpus": [
+        5,
+        3
+      ],
+      "self": [
+        9,
+        7
+      ]
+    },
+    "33": {
+      "corpus": [
+        3,
+        4
+      ],
+      "self": [
+        11,
+        9
+      ]
+    },
+    "36": {
+      "corpus": [
+        4,
+        6
+      ],
+      "self": [
+        8,
+        8
+      ]
+    },
+    "39": {
+      "corpus": [
+        7,
+        6
+      ],
+      "self": [
+        10,
+        11
+      ]
+    },
+    "42": {
+      "corpus": [
+        7,
+        6
+      ],
+      "self": [
+        8,
+        8
+      ]
+    },
+    "45": {
+      "corpus": [
+        4,
+        8
+      ],
+      "self": [
+        7,
+        7
+      ]
+    },
+    "48": {
+      "corpus": [
+        5,
+        7
+      ],
+      "self": [
+        7,
+        10
+      ]
+    },
+    "51": {
+      "corpus": [
+        4,
+        4
+      ],
+      "self": [
+        9,
+        10
+      ]
+    },
+    "54": {
+      "corpus": [
+        4,
+        6
+      ],
+      "self": [
+        8,
+        10
+      ]
+    },
+    "57": {
+      "corpus": [
+        2,
+        3
+      ],
+      "self": [
+        8,
+        7
+      ]
+    }
+  },
+  "r2_probe_elo_max_abs_r": {
+    "24": {
+      "corpus": 0.401,
+      "self": 0.45
+    },
+    "30": {
+      "corpus": 0.607,
+      "self": 0.562
+    },
+    "33": {
+      "corpus": 0.6,
+      "self": 0.618
+    },
+    "36": {
+      "corpus": 0.46,
+      "self": 0.485
+    }
+  },
+  "conventions": "R1: chat_last, per-battery scenario-mean centering, probes centered on the same 12-emotion pool; R2: fixed chat Elo, activity-token activations, 12-pool centering"
+}
