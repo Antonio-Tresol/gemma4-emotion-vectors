@@ -34,7 +34,9 @@ gpu = [
 packages = ["src/emotion_vectors"]
 
 [tool.ruff]
-extend-exclude = ["*.ipynb"]  # notebooks are explore-mode: exempt from polish by design
+# Report notebooks are promoted deliverables and get formatted like any code;
+# only the bench history in archive/ keeps its explore-mode exemption.
+extend-exclude = ["notebooks/archive"]
 line-length = 100
 target-version = "py311"
 
