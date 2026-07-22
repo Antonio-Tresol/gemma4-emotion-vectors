@@ -465,6 +465,29 @@ def trajectory_ternary_animation(
                 ],
             )
         ],
+        # token slider bound to the same frames: drag to see the path up to t
+        sliders=[
+            dict(
+                active=0,
+                currentvalue=dict(prefix="t = "),
+                pad=dict(t=30),
+                steps=[
+                    dict(
+                        method="animate",
+                        label=str(t),
+                        args=[
+                            [str(t)],
+                            dict(
+                                mode="immediate",
+                                frame=dict(duration=0, redraw=True),
+                                transition=dict(duration=0),
+                            ),
+                        ],
+                    )
+                    for t in ticks
+                ],
+            )
+        ],
     )
     return fig
 
