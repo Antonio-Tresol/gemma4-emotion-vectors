@@ -49,6 +49,7 @@ ROUTES: dict[str, str] = {
     "emotion_vectors_it_postfix": f"{HF_USER}/emotion-vectors-gemma-4-31b-it-postfix",
     "self_story_vectors_it_postfix": f"{HF_USER}/emotion-selfstory-vectors-gemma-4-31b-it-postfix",
     "neutral_vectors_it_postfix": f"{HF_USER}/neutral-vectors-gemma-4-31b-it-postfix",
+    "openrouter_stories": f"{HF_USER}/emotion-stories-deepseek-v4-pro",
 }
 
 
