@@ -10,6 +10,7 @@ verdict and has a collapsible "How to read" underneath.
 | 02 | `02_geometry.ipynb` | Does the emotion circumplex replicate? (Yes, strongly, on the base model; instruction tuning demotes it without destroying it.) |
 | 03 | `03_probes.ipynb` | Do the vectors detect implicit emotion in scenarios? (No configuration passed the pre-registered bar across seven experiments; what survives is coarse valence.) |
 | 04 | `04_parity.ipynb` | Where does every figure from the two source papers stand? |
+| 05 | `05_trajectories.ipynb` | Q3 substrate: per-token emotion trajectories over three-emotion stories (exhibits only; reads pending registration) |
 
 The three layers of the project, so nothing here is mistaken for something it
 is not: **notebooks are the report** (readable, story-ordered),
