@@ -101,6 +101,14 @@ ARTIFACTS: list[tuple[str, str]] = [
     ("e8_template_diagnostic_mean_content_base.json", "E8, base, mean-content"),
     ("e8_template_diagnostic_thinking_on.json", "E8, thinking-ON arm"),
     ("e9_centered_readout.json", "E9 centered-cosine readout grid + falsify reads, both models"),
+    (
+        "e5_cross_lineage_n256.json",
+        "cross-lineage comparison at converged scale: self-gen vs corpus directions cos 0.219",
+    ),
+    (
+        "e10_lineage_headtohead.json",
+        "lineage head-to-head under working readouts: own-story probes 11/12+9/12 at layer 33, corpus probes pass nowhere (matched conventions)",
+    ),
     ("logit_lens_base_L33.json", "logit lens tables, base layer 33 (partial positive)"),
     ("logit_lens_base_L57.json", "logit lens, base layer 57"),
     ("logit_lens_it_L33_normed.json", "logit lens, instruct layer 33 (negative)"),
