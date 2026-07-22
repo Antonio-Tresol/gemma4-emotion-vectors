@@ -430,16 +430,38 @@ prefill must be disabled; the example connector does blocking disk writes
 (fine for our batch sizes, bad at scale). Untested on Blackwell + our
 survival settings — test before relying on it.
 
-**Bench verdict (2026-07-22, results/vllm_activation_bench.json).** Route A
-works and is the sprint's answer: hooks fire on the V1 in-process engine
-(multiprocessing disabled; the V0 env vars are ignored on 0.22 and not
-needed), numerics are EXACT (cosine to the HF-path values: min 0.99999,
-mean 1.0 over the 37 sweep prompts), and hooked eager prefill runs ~3,400
-tokens/s vs the HF extraction loop's measured ~1,500 tokens/s — a
-token-normalized ~2.3x, with the caveat that the bench captured 1 layer vs
-the extraction's 20 (per-layer .cpu() copies are the marginal cost, so
-multi-layer capture narrows the gap). Practical rule: HF loop stays fine for
-small probe collections; use vLLM hooks for corpus-scale jobs (Figure 1
-sweep, Q3 per-token trajectories), where ~2x is an hour saved per pod-day.
-Route B (extract_hidden_states) remains the untested upgrade path if
-capture overhead dominates at 20 layers.
+**Bench verdicts (2026-07-22).** Two benches, and the second overturned the
+first — capture width decides everything:
+
+| arm (256 stories, 512-token cap) | layers captured | persisted? | tok/s |
+|---|---|---|---|
+| HF production loop (`run_batch`, batch 4) | 20, pooled in-batch | no (means only) | 1,014 |
+| vLLM + forward hooks, eager | 1, raw | no | ~3,400 |
+| vLLM + forward hooks, eager | 20, raw | no | 528 |
+| vLLM `extract_hidden_states` (official) | 20, full per-token | yes, safetensors to /workspace | 977 |
+
+(`results/vllm_activation_bench.json`, `results/activation_engine_bench.json`)
+
+- Numerics are exact on the hook route: cosine to the HF-path values min
+  0.99999 over 37 prompts. The official route was not numerics-checked here
+  (its output is per-token safetensors; check before first scientific use).
+- Hooks win big at 1-3 layers (~2-3x) and LOSE at 20 (blocking per-layer
+  `.cpu()` copies dominate; pooling inside the hook would help but was not
+  benched).
+- The official API matches the HF loop's throughput WHILE persisting the
+  full per-token activations (~25 GB for this batch) — the other arms pay
+  nothing for persistence. For corpus-scale per-token dumps it is strictly
+  the best option. Working 0.22.1 config (cost three schema iterations):
+  `speculative_config={"method": "extract_hidden_states",
+  "num_speculative_tokens": 1, "draft_model_config": {"hf_config":
+  {"eagle_aux_hidden_state_layer_ids": [...]}}}` plus
+  `kv_transfer_config={"kv_connector": "ExampleHiddenStatesConnector",
+  "kv_role": "kv_producer", "kv_connector_extra_config":
+  {"shared_storage_path": ...}}`, `enable_chunked_prefill=False`.
+  Dumps do NOT fit the pod's NVMe root disk — write to /workspace.
+
+Decision rule: pooled means at any scale -> HF loop (simplest, production
+path). A few layers, no persistence -> vLLM hooks. Corpus-scale per-token
+dumps (Figure 1 sweep, Q3 trajectories) -> official API, numerics check
+first. Canonical copy of this knowledge: research-harness
+`experiment-engineering` skill.
