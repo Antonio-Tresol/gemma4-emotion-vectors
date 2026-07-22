@@ -14,9 +14,7 @@ if TYPE_CHECKING:
 
 def _simulate(
     true_strengths: "Float[np.ndarray, 'items']",
-) -> tuple[
-    "Int[np.ndarray, 'pairs']", "Int[np.ndarray, 'pairs']", "Float[np.ndarray, 'pairs']"
-]:
+) -> tuple["Int[np.ndarray, 'pairs']", "Int[np.ndarray, 'pairs']", "Float[np.ndarray, 'pairs']"]:
     """All ordered pairs with exact Bradley-Terry win probabilities as soft wins."""
     n = len(true_strengths)
     pair_i, pair_j, p_first = [], [], []
