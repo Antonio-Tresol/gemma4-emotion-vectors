@@ -24,6 +24,7 @@ Writes results/steering_it/scores.json.
 from __future__ import annotations
 
 import json
+from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -53,33 +54,38 @@ def elo_from_logits(
     return elo(bradley_terry(win_matrix(pair_i, pair_j, p_first, n_items)))
 
 
-def collect_rows(
-    pair_i: "Int[np.ndarray, 'pairs']",
-    pair_j: "Int[np.ndarray, 'pairs']",
-    n_activities: int,
-    pos_idx: list[int],
-    baseline_elo: "Float[np.ndarray, 'items']",
-    baseline_gap: float,
-    probe_r: dict[str, float],
-) -> list[dict[str, object]]:
+@dataclass(frozen=True)
+class Baseline:
+    """Unsteered chat-run context every steered row is scored against."""
+
+    pair_i: "Int[np.ndarray, 'pairs']"
+    pair_j: "Int[np.ndarray, 'pairs']"
+    n_activities: int
+    pos_idx: list[int]
+    elo: "Float[np.ndarray, 'items']"
+    gap: float
+    probe_r: dict[str, float]
+
+
+def collect_rows(steer_dir: Path, base: Baseline) -> list[dict[str, object]]:
     """One scored row per steered emotion file."""
     vad = load_nrc_vad(LEXICON)
     rows = []
-    for f in sorted(STEER_DIR.glob("steered_*.npy")):
+    for f in sorted(steer_dir.glob("steered_*.npy")):
         emotion = f.stem.removeprefix("steered_")
         logits = np.load(f)
-        steered_elo = elo_from_logits(logits, pair_i, pair_j, n_activities)
-        delta = steered_elo - baseline_elo
+        steered_elo = elo_from_logits(logits, base.pair_i, base.pair_j, base.n_activities)
+        delta = steered_elo - base.elo
         gap = float(np.abs(logits[:, 0] - logits[:, 1]).mean())
         rows.append(
             {
                 "emotion": emotion,
-                "probe_elo_r": probe_r.get(emotion),
+                "probe_elo_r": base.probe_r.get(emotion),
                 "valence": vad.get(emotion, (None,))[0],
                 "mean_abs_gap": round(gap, 3),
-                "gap_ratio_vs_baseline": round(gap / baseline_gap, 3),
+                "gap_ratio_vs_baseline": round(gap / base.gap, 3),
                 "mean_delta_elo": round(float(delta.mean()), 2),
-                "mean_delta_elo_positive_categories": round(float(delta[pos_idx].mean()), 2),
+                "mean_delta_elo_positive_categories": round(float(delta[base.pos_idx].mean()), 2),
                 "delta_elo_per_activity": [round(float(d), 1) for d in delta],
             }
         )
@@ -87,7 +93,13 @@ def collect_rows(
 
 
 def main() -> int:
-    meta = json.loads((STEER_DIR / "run_meta.json").read_text())
+    import argparse  # noqa: PLC0415  (single-use CLI shim, mirrors the module docstring)
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--steer-dir", type=Path, default=STEER_DIR)
+    args = parser.parse_args()
+    steer_dir = args.steer_dir
+    meta = json.loads((steer_dir / "run_meta.json").read_text())
     pair_i = np.array(meta["pair_i"])
     pair_j = np.array(meta["pair_j"])
     activities = [json.loads(line) for line in open(BASELINE_DIR / "activities.jsonl")]
@@ -108,7 +120,8 @@ def main() -> int:
     best_block = next(b for b in e3["probe_elo_by_layer"] if b["layer"] == e3["p2_best_layer"])
     probe_r = dict(zip(e3["probe_emotions_matched"], best_block["per_probe_r"]))
     rows = collect_rows(
-        pair_i, pair_j, len(activities), pos_idx, baseline_elo, baseline_gap, probe_r
+        steer_dir,
+        Baseline(pair_i, pair_j, len(activities), pos_idx, baseline_elo, baseline_gap, probe_r),
     )
 
     p1_pass = all(r["gap_ratio_vs_baseline"] <= 3.0 for r in rows)
@@ -141,7 +154,7 @@ def main() -> int:
         "p3_pass": bool(p3_pass),
         "paper_reference": "bottom-scatter r=0.85; mean deltas +212 (blissful) / -303 (hostile)",
     }
-    (STEER_DIR / "scores.json").write_text(json.dumps(out, indent=2) + "\n")
+    (steer_dir / "scores.json").write_text(json.dumps(out, indent=2) + "\n")
     print(
         f"P1 {'PASS' if p1_pass else 'FAIL'} (max gap ratio {max(r['gap_ratio_vs_baseline'] for r in rows):.2f})"
     )

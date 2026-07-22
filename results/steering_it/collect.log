@@ -1,0 +1,25 @@
+2026-07-22 03:53:15,628 INFO loading google/gemma-4-31b-it (bf16)...
+2026-07-22 03:54:03,963 INFO model loaded in 48s
+2026-07-22 03:54:14,956 INFO median residual rms at layer 33: 4.322
+2026-07-22 03:54:38,681 INFO calib happy_a2: mean |A-B gap| 3.420
+2026-07-22 03:55:00,262 INFO calib happy_a4: mean |A-B gap| 3.320
+2026-07-22 03:55:21,888 INFO calib happy_a8: mean |A-B gap| 3.100
+2026-07-22 03:55:44,527 INFO calib angry_a2: mean |A-B gap| 3.572
+2026-07-22 03:56:06,002 INFO calib angry_a4: mean |A-B gap| 3.630
+2026-07-22 03:56:27,481 INFO calib angry_a8: mean |A-B gap| 3.668
+2026-07-22 04:01:01,989 INFO loading google/gemma-4-31b-it (bf16)...
+2026-07-22 04:01:20,068 INFO model loaded in 18s
+2026-07-22 04:01:23,362 INFO median residual rms at layer 33: 4.322
+2026-07-22 04:04:02,830 INFO happy: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 04:06:38,731 INFO inspired: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 04:09:12,604 INFO loving: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 04:12:00,430 INFO proud: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 04:14:49,867 INFO calm: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 04:17:39,223 INFO desperate: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 04:20:28,517 INFO angry: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 04:23:17,897 INFO guilty: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 04:26:06,958 INFO sad: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 04:28:55,778 INFO afraid: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 04:31:43,122 INFO nervous: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 04:34:29,823 INFO surprised: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 04:34:29,843 INFO steering collection complete
