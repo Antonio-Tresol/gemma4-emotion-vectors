@@ -154,3 +154,199 @@ def layer_table_scrubber(
         ],
     )
     return fig
+
+
+def trajectory_lines_scrubber(
+    layers: list[int],
+    cosines_by_layer: dict[int, Any],
+    emotions: list[str],
+    phase_starts: list[int],
+    *,
+    default_layer: int,
+    title: str = "",
+    colors: tuple[str, str, str] = ("#dc2626", "#6366f1", "#d97706"),
+) -> go.Figure:
+    """Per-token cosine lines with a layer slider.
+
+    ``cosines_by_layer`` maps a layer to a [tokens, 3] array (column j = phase
+    j's emotion). The y-range is fixed to the global extremes so amplitude
+    differences between layers stay visible while scrubbing.
+    """
+    n = len(cosines_by_layer[default_layer])
+    lo = min(float(np.min(c)) for c in cosines_by_layer.values())
+    hi = max(float(np.max(c)) for c in cosines_by_layer.values())
+    pad = 0.1 * (hi - lo)
+    fig = go.Figure()
+    for k, name in enumerate(emotions):
+        fig.add_trace(
+            go.Scatter(
+                x=list(range(n)),
+                y=_as_list(cosines_by_layer[default_layer][:, k]),
+                name=name,
+                line=dict(color=colors[k % 3], width=2),
+            )
+        )
+    for start in phase_starts[1:]:
+        fig.add_vline(x=start, line_dash="dash", line_color="gray")
+    steps = [
+        dict(
+            method="restyle",
+            label=str(layer),
+            args=[{"y": [_as_list(cosines_by_layer[layer][:, k]) for k in range(3)]}],
+        )
+        for layer in layers
+    ]
+    fig.update_layout(
+        title=title,
+        xaxis_title="token",
+        yaxis_title="centered cosine",
+        yaxis_range=[lo - pad, hi + pad],
+        width=720,
+        height=430,
+        sliders=[
+            dict(
+                active=layers.index(default_layer),
+                currentvalue={"prefix": "layer "},
+                pad={"t": 40},
+                steps=steps,
+            )
+        ],
+    )
+    return fig
+
+
+def trajectory_ternary_scrubber(
+    layers: list[int],
+    barycentric_by_layer: dict[int, Any],
+    emotions: list[str],
+    phase_starts: list[int],
+    *,
+    default_layer: int,
+    title: str = "",
+) -> go.Figure:
+    """Emotion-triangle trajectory with a layer slider.
+
+    ``barycentric_by_layer`` maps a layer to a [tokens, 3] barycentric array
+    (rows sum to 1 — the caller owns the softmax display transform).
+    """
+    bary0 = np.asarray(barycentric_by_layer[default_layer])
+    n = len(bary0)
+    fig = go.Figure(
+        go.Scatterternary(
+            a=_as_list(bary0[:, 0]),
+            b=_as_list(bary0[:, 1]),
+            c=_as_list(bary0[:, 2]),
+            mode="lines+markers",
+            marker=dict(
+                size=4,
+                color=list(range(n)),
+                colorscale="Viridis",
+                showscale=True,
+                colorbar=dict(title="token"),
+            ),
+            line=dict(width=1, color="rgba(120,120,120,0.4)"),
+            text=[f"t={t}" for t in range(n)],
+            hoverinfo="text",
+            showlegend=False,
+        )
+    )
+    starts_pts = {layer: np.asarray(barycentric_by_layer[layer])[phase_starts] for layer in layers}
+    fig.add_trace(
+        go.Scatterternary(
+            a=_as_list(starts_pts[default_layer][:, 0]),
+            b=_as_list(starts_pts[default_layer][:, 1]),
+            c=_as_list(starts_pts[default_layer][:, 2]),
+            mode="markers",
+            marker=dict(size=12, symbol="diamond", color="black"),
+            text=[f"phase start t={s}" for s in phase_starts],
+            hoverinfo="text",
+            showlegend=False,
+        )
+    )
+    steps = []
+    for layer in layers:
+        bary = np.asarray(barycentric_by_layer[layer])
+        steps.append(
+            dict(
+                method="restyle",
+                label=str(layer),
+                args=[
+                    {
+                        "a": [_as_list(bary[:, 0]), _as_list(starts_pts[layer][:, 0])],
+                        "b": [_as_list(bary[:, 1]), _as_list(starts_pts[layer][:, 1])],
+                        "c": [_as_list(bary[:, 2]), _as_list(starts_pts[layer][:, 2])],
+                    }
+                ],
+            )
+        )
+    fig.update_layout(
+        title=title,
+        ternary=dict(
+            aaxis=dict(title=emotions[0]),
+            baxis=dict(title=emotions[1]),
+            caxis=dict(title=emotions[2]),
+        ),
+        width=620,
+        height=560,
+        sliders=[
+            dict(
+                active=layers.index(default_layer),
+                currentvalue={"prefix": "layer "},
+                pad={"t": 30},
+                steps=steps,
+            )
+        ],
+    )
+    return fig
+
+
+def trajectory_heatmap_scrubber(
+    layers: list[int],
+    heat_by_layer: dict[int, Any],
+    probe_names: list[str],
+    phase_starts: list[int],
+    *,
+    default_layer: int,
+    title: str = "",
+) -> go.Figure:
+    """All-probe heatmap ([tokens, probes] per layer) with a layer slider.
+
+    The colour range is fixed to the global |max| so intensity is comparable
+    across layers while scrubbing.
+    """
+    zmax = max(float(np.abs(h).max()) for h in heat_by_layer.values())
+    fig = go.Figure(
+        go.Heatmap(
+            z=_as_list(np.asarray(heat_by_layer[default_layer]).T),
+            y=probe_names,
+            colorscale="RdBu",
+            zmin=-zmax,
+            zmax=zmax,
+            colorbar=dict(title="centered cosine"),
+        )
+    )
+    for start in phase_starts[1:]:
+        fig.add_vline(x=start, line_dash="dash", line_color="black")
+    steps = [
+        dict(
+            method="restyle",
+            label=str(layer),
+            args=[{"z": [_as_list(np.asarray(heat_by_layer[layer]).T)]}],
+        )
+        for layer in layers
+    ]
+    fig.update_layout(
+        title=title,
+        xaxis_title="token",
+        width=780,
+        height=470,
+        sliders=[
+            dict(
+                active=layers.index(default_layer),
+                currentvalue={"prefix": "layer "},
+                pad={"t": 30},
+                steps=steps,
+            )
+        ],
+    )
+    return fig
