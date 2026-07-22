@@ -143,8 +143,8 @@ def ternary_figure(
         },
         title=f"Emotion phase space (softmax display transform, T={temperature:g})",
         showlegend=False,
-        width=560,
-        height=520,
+        width=760,
+        height=680,
     )
     return fig
 
@@ -176,8 +176,8 @@ def lines_figure(
         xaxis_title="token",
         yaxis_title="centered cosine",
         title="Per-token probe trajectories",
-        width=700,
-        height=380,
+        width=940,
+        height=500,
     )
     return fig
 
@@ -223,7 +223,7 @@ def layer_ternaries(
         "early vs curved anticipatory arcs mid-late would support the paper's layer story.",
     )
     fig.update_layout(
-        width=320 * len(per_layer_cosines), height=380, title="Same story across layer bands"
+        width=400 * len(per_layer_cosines), height=500, title="Same story across layer bands"
     )
     return fig
 
@@ -279,8 +279,8 @@ def transition_locked_figure(
         title=f"Transition-locked average ({len(incoming)} transitions){' — ' + label if label else ''}",
         xaxis_title="tokens relative to phase start",
         yaxis_title="centered cosine",
-        width=700,
-        height=420,
+        width=940,
+        height=540,
     )
     _caption(
         fig,
@@ -312,7 +312,7 @@ def probe_heatmap_figure(
         fig.add_vline(x=start, line_dash="dash", line_color="black")
     if tokens is not None:
         fig.update_xaxes(tickvals=phase_starts, ticktext=[tokens[s] for s in phase_starts])
-    fig.update_layout(title="All probes over tokens", xaxis_title="token", width=750, height=420)
+    fig.update_layout(title="All probes over tokens", xaxis_title="token", width=960, height=600)
     _caption(
         fig,
         "How to read: rows are ALL probes, dashed lines are phase starts. The assigned emotion's "
@@ -354,8 +354,8 @@ def circumplex_figure(
         title="Trajectory on the Q1 circumplex plane",
         xaxis_title="PC1 of emotion means (valence-aligned, see H1)",
         yaxis_title="PC2 (arousal-aligned)",
-        width=620,
-        height=520,
+        width=760,
+        height=660,
     )
     _caption(
         fig,
@@ -408,8 +408,8 @@ def cosine_3d_figure(
         },
         title="Raw cosine coordinates (no display transform)",
         showlegend=False,
-        width=640,
-        height=560,
+        width=800,
+        height=700,
     )
     _caption(
         fig,
@@ -442,8 +442,8 @@ def speed_figure(
         title="Trajectory speed ||a(t) - a(t-1)||",
         xaxis_title="token",
         yaxis_title="residual-stream speed",
-        width=700,
-        height=320,
+        width=940,
+        height=420,
     )
     _caption(
         fig,
