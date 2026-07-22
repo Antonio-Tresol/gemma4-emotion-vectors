@@ -1,0 +1,221 @@
+{
+  "experiment": "Q1.H2.E8",
+  "config": "gemma-4-31b-it, chat format, last token, layer 33",
+  "neutral_pcs_removed": 5,
+  "panels": {
+    "dog_missing": {
+      "common_mode_share": 0.9201,
+      "tracked_spearman": {
+        "afraid": 0.943,
+        "calm": -0.371,
+        "happy": 1.0,
+        "sad": 1.0
+      },
+      "random_abs_rho_p95": 1.0,
+      "tracked_exceeding_null": [],
+      "per_curve_excursion": {
+        "afraid": 0.0031,
+        "calm": 0.0015,
+        "happy": 0.0041,
+        "sad": 0.0029
+      },
+      "norm_vs_n_spearman": 0.829,
+      "neutral_projected": {
+        "common_mode_share": 0.8692,
+        "tracked_spearman": {
+          "afraid": 0.086,
+          "calm": -1.0,
+          "happy": 1.0,
+          "sad": 1.0
+        },
+        "random_abs_rho_p95": 1.0,
+        "tracked_exceeding_null": [],
+        "per_curve_excursion": {
+          "afraid": 0.0007,
+          "calm": 0.0027,
+          "happy": 0.0033,
+          "sad": 0.002
+        }
+      }
+    },
+    "exam": {
+      "common_mode_share": 0.7856,
+      "tracked_spearman": {
+        "afraid": -0.6,
+        "calm": 0.943,
+        "happy": 1.0,
+        "sad": -0.771
+      },
+      "random_abs_rho_p95": 1.0,
+      "tracked_exceeding_null": [],
+      "per_curve_excursion": {
+        "afraid": 0.0051,
+        "calm": 0.013,
+        "happy": 0.0083,
+        "sad": 0.0027
+      },
+      "norm_vs_n_spearman": 0.086,
+      "neutral_projected": {
+        "common_mode_share": 0.8843,
+        "tracked_spearman": {
+          "afraid": -0.771,
+          "calm": 0.943,
+          "happy": 1.0,
+          "sad": -1.0
+        },
+        "random_abs_rho_p95": 1.0,
+        "tracked_exceeding_null": [],
+        "per_curve_excursion": {
+          "afraid": 0.0028,
+          "calm": 0.014,
+          "happy": 0.0058,
+          "sad": 0.0059
+        }
+      }
+    },
+    "fasting": {
+      "common_mode_share": 0.6819,
+      "tracked_spearman": {
+        "afraid": 0.857,
+        "calm": -0.964,
+        "happy": -0.893,
+        "sad": 0.964
+      },
+      "random_abs_rho_p95": 1.0,
+      "tracked_exceeding_null": [],
+      "per_curve_excursion": {
+        "afraid": 0.0083,
+        "calm": 0.0134,
+        "happy": 0.0046,
+        "sad": 0.0033
+      },
+      "norm_vs_n_spearman": -0.607,
+      "neutral_projected": {
+        "common_mode_share": 0.9544,
+        "tracked_spearman": {
+          "afraid": 1.0,
+          "calm": -1.0,
+          "happy": -0.964,
+          "sad": 0.964
+        },
+        "random_abs_rho_p95": 1.0,
+        "tracked_exceeding_null": [],
+        "per_curve_excursion": {
+          "afraid": 0.0074,
+          "calm": 0.0155,
+          "happy": 0.0048,
+          "sad": 0.0029
+        }
+      }
+    },
+    "runway": {
+      "common_mode_share": 0.9883,
+      "tracked_spearman": {
+        "afraid": -0.943,
+        "calm": 0.943,
+        "happy": 1.0,
+        "sad": 0.6
+      },
+      "random_abs_rho_p95": 1.0,
+      "tracked_exceeding_null": [],
+      "per_curve_excursion": {
+        "afraid": 0.0065,
+        "calm": 0.0162,
+        "happy": 0.0083,
+        "sad": 0.0022
+      },
+      "norm_vs_n_spearman": -0.543,
+      "neutral_projected": {
+        "common_mode_share": 0.9855,
+        "tracked_spearman": {
+          "afraid": -0.943,
+          "calm": 1.0,
+          "happy": 1.0,
+          "sad": -0.829
+        },
+        "random_abs_rho_p95": 1.0,
+        "tracked_exceeding_null": [],
+        "per_curve_excursion": {
+          "afraid": 0.0041,
+          "calm": 0.0184,
+          "happy": 0.0058,
+          "sad": 0.0018
+        }
+      }
+    },
+    "sister": {
+      "common_mode_share": 0.523,
+      "tracked_spearman": {
+        "afraid": -0.829,
+        "calm": 1.0,
+        "happy": 0.6,
+        "sad": -0.829
+      },
+      "random_abs_rho_p95": 0.943,
+      "tracked_exceeding_null": [
+        "calm"
+      ],
+      "per_curve_excursion": {
+        "afraid": 0.0073,
+        "calm": 0.0085,
+        "happy": 0.0062,
+        "sad": 0.0027
+      },
+      "norm_vs_n_spearman": -0.6,
+      "neutral_projected": {
+        "common_mode_share": 0.905,
+        "tracked_spearman": {
+          "afraid": -0.943,
+          "calm": 0.943,
+          "happy": 0.486,
+          "sad": -1.0
+        },
+        "random_abs_rho_p95": 1.0,
+        "tracked_exceeding_null": [],
+        "per_curve_excursion": {
+          "afraid": 0.0048,
+          "calm": 0.0107,
+          "happy": 0.0044,
+          "sad": 0.004
+        }
+      }
+    },
+    "tylenol": {
+      "common_mode_share": 0.1877,
+      "tracked_spearman": {
+        "afraid": 0.943,
+        "calm": -1.0,
+        "happy": -0.771,
+        "sad": 1.0
+      },
+      "random_abs_rho_p95": 1.0,
+      "tracked_exceeding_null": [],
+      "per_curve_excursion": {
+        "afraid": 0.0087,
+        "calm": 0.009,
+        "happy": 0.002,
+        "sad": 0.004
+      },
+      "norm_vs_n_spearman": 0.6,
+      "neutral_projected": {
+        "common_mode_share": 0.9414,
+        "tracked_spearman": {
+          "afraid": 1.0,
+          "calm": -1.0,
+          "happy": -0.829,
+          "sad": 0.943
+        },
+        "random_abs_rho_p95": 1.0,
+        "tracked_exceeding_null": [],
+        "per_curve_excursion": {
+          "afraid": 0.0058,
+          "calm": 0.0117,
+          "happy": 0.0026,
+          "sad": 0.0028
+        }
+      }
+    }
+  },
+  "r1_read": "common-mode share median 0.734; 4/6 panels below 0.8",
+  "r4_paper_reference_range": 0.16
+}
