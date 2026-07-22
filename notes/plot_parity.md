@@ -47,3 +47,59 @@ QUEUED (planned, infrastructure exists), OUT (not replicable here, reason given)
 Update this table whenever a QUEUED item lands or a new figure appears in
 either source. The notebook restyle (plotly, skimmable cells) references this
 inventory so each notebook states which paper figure it corresponds to.
+
+## Complete census: every numbered item in the Anthropic paper (audited 2026-07-22)
+
+The paper contains **86 numbered figures and 16 numbered tables** (main text:
+Figures 1-39, Tables 1-5; appendix: Figures 40-86, Tables 6-16). The tables
+above cover the main results; this census classifies everything else so no
+gap is silent. Classification rules: benign per-token illustrations get a
+Gemma-it analogue (QUEUED); anything needing blackmail/reward-hacking/
+sycophancy rollouts or large on-policy Claude transcript corpora is OUT;
+post-training (base vs RLHF) panels become base-vs-instruct proxies
+(QUEUED-SUB, same substitution class as Figure 8).
+
+### Main text, beyond the table above (Figures 10-39, Tables 3-5)
+
+| Item | What it shows | Status | Why / cost |
+|---|---|---|---|
+| Figure 10 + Table 3 | User-token vs assistant-token probe activations differ on mismatch prompts | QUEUED | Author Table 3-style prompts + dual-token readout; pod hours |
+| Figure 11 + Table 4 | Assistant token predicts response emotion better than user token | QUEUED | Generate responses (vLLM) + score both tokens; ~pod day |
+| Figures 12-15 | Per-token/layer dynamics: prefix carry-over, dosage, negation, entity binding | QUEUED | All ride on the per-token projection infrastructure (Q3) |
+| Table 5 + Figure 16 | Mixed logistic-regression probe, 15-way accuracy + max-activating snippets | QUEUED | Train mixed probe on dialogue data; ~1 pod day |
+| Figures 17-20 | Self- vs other-speaker probe structure | QUEUED | Present/other-speaker extraction; dialogue infra half-built; ~1 pod day |
+| Figures 21-25 | Per-token illustrations on assistant transcripts (surprise, happy, anger, agentic) | QUEUED (Gemma analogue) | Constructed analogous prompts; rides on per-token infra |
+| Figures 26-35 | Blackmail / reward-hacking / sycophancy transcripts and steering rates | OUT | Production alignment evals and rollout behavior; the known blocker |
+| Figures 36-39 | Post-training preserves probe structure; per-prompt activation shifts | QUEUED-SUB | Base-vs-instruct proxy for RLHF; directly validates our C2 finding; ~1 pod day; high value |
+
+### Appendix (Figures 40-86, Tables 6-16)
+
+| Item | What it shows | Status | Why / cost |
+|---|---|---|---|
+| Figures 40-51 | Per-token activation of 12 vectors on their own training stories | QUEUED (one infra) | All variants of one per-token sweep (the inventory's token-level localization item) |
+| Figures 52-53 + Tables 6-8 | Steering delta-log-prob of emotion words + steered completions | QUEUED | The causal test we have never run; vectors + vLLM ready; ~1 pod day; highest value |
+| Table 9 | 64 activities sorted by Elo + probe activations | DONE (ours) | results/preferences_it*/scores.json, self-authored activity substitute |
+| Figure 54 + Tables 10-11 | Preference change vs steering + steered completions | QUEUED | Q1.H3.E2 (runnable, awaiting go) |
+| Figure 55 | Preference correlation + steering across layers | QUEUED | Rides on Q1.H3 + E2 |
+| Figure 56, Figure 58 | LLM-judged valence/arousal validation (vs preference r, vs human norms) | SUB | We use NRC VAD directly as the instrument; documented in Q1.H1.C1 |
+| Table 12, Figure 57 | k-means cluster membership; PC1/PC2 circumplex projection | DONE | notebooks/02 sections 4-5 |
+| Tables 13-14, Figure 59 | Present- vs other-speaker steering and vector similarity | QUEUED | Rides on Figures 17-20 extraction |
+| Figures 60-65, 69-74, Table 15 | Deflection vectors: extraction, orthogonalization, antagonistic prompts | QUEUED (new vector class) | Needs a new deflection-vector extraction; ~2 pod days |
+| Figures 66-68 | Deflection vectors on blackmail/reward-hacking transcripts | OUT | Same production-eval blocker |
+| Figure 75 | Story vs present-speaker probes on implicit scenarios | QUEUED | Rides on present-speaker extraction |
+| Figures 76-79 | Probe comparisons over large on-policy Claude transcript corpora | OUT | Corpora not public |
+| Figures 80-83 | Per-token illustrations (sad user, self-aware monologue, danger, suicide care) | QUEUED (Gemma analogue) | Rides on per-token infra |
+| Table 16, Figure 84 | Post-training per-emotion probe deltas; per-layer training-diff heatmap | QUEUED-SUB | Base-vs-instruct proxy; complements C2; high value |
+| Figures 85-86 | Preference experiment on the base model + base-vs-post-trained consistency | QUEUED | Variant of Figure 4 (base arm of Q1.H3) |
+
+### Census summary
+
+~11 DONE or substituted-done, ~74 QUEUED (including appendix variants,
+Gemma analogues, and post-training proxies), ~15 OUT (all on one blocker
+class: blackmail/reward-hacking/sycophancy rollouts and on-policy Claude
+corpora), 2 in progress. Top three queued items by scientific value:
+1. Figures 52-53 (steering delta-log-prob) — the never-run causal leg.
+2. Figures 36-39/84 + Table 16 (post-training proxy) — the paper's own
+   quantities for our C2 instruction-tuning finding.
+3. Figures 17-19/59 (self- vs other-speaker structure) — untouched Part-2
+   claim with infra half-built.
