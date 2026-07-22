@@ -67,7 +67,10 @@ def ab_logit_pass(
         inputs = lm.tokenizer(batch, return_tensors="pt", padding=True).to(lm.model.device)
         with torch.inference_mode():
             logits = lm.model(**inputs).logits
-        last = inputs["attention_mask"].sum(1) - 1
+        # padding-agnostic last-real-token index (sum-1 is wrong under left
+        # padding — the instrument bug behind TREE Q1.H3.E4)
+        mask = inputs["attention_mask"]
+        last = mask.shape[1] - 1 - mask.flip(1).float().argmax(1)
         rows = logits[torch.arange(len(batch)), last]
         out.append(rows[:, [tok_a, tok_b]].float().cpu().numpy())
     return np.concatenate(out)
