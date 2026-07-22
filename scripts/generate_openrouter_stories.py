@@ -38,7 +38,10 @@ def one_story(model: str, emotion: str, temperature: float, key: str) -> dict:
             "model": model,
             "messages": [{"role": "user", "content": INSTRUCTION.format(emotion=emotion)}],
             "temperature": temperature,
-            "max_tokens": 400,
+            # v4-pro spends completion tokens on hidden reasoning; a tight cap
+            # truncates stories mid-sentence (caught 2026-07-22, ~2% of rows)
+            "max_tokens": 1500,
+            "reasoning": {"enabled": False},
         }
     ).encode()
     req = Request(
