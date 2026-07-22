@@ -15,7 +15,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from dotenv import load_dotenv
 from huggingface_hub import hf_hub_download, snapshot_download
+
+# Notebook kernels don't inherit a sourced .env; the datasets are private
+# until sprint end, so resolve the project .env (repo root) for HF_TOKEN.
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 HF_USER = "abotresol"
 ARTIFACTS_REPO = f"{HF_USER}/emotion-vectors-experiment-artifacts"
