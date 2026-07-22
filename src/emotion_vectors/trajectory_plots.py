@@ -190,6 +190,7 @@ def layer_ternaries(
     layer_names: list[str],
     emotions: list[str],
     temperature: float = DEFAULT_TEMPERATURE,
+    tokens: list[str] | None = None,
 ) -> go.Figure:
     """Small multiples across layer bands — the layer-contrast picture."""
     fig = make_subplots(
@@ -209,6 +210,8 @@ def layer_ternaries(
                 mode="lines+markers",
                 marker={"size": 3, "color": np.arange(len(bary)), "colorscale": "Viridis"},
                 line={"width": 1, "color": "rgba(120,120,120,0.35)"},
+                text=_hover(tokens, len(bary)),
+                hoverinfo="text",
                 showlegend=False,
             ),
             row=1,
@@ -333,6 +336,7 @@ def circumplex_figure(
     projection: Float[np.ndarray, "tokens two"],
     phase_starts: list[int],
     phase_emotions: list[str],
+    tokens: list[str] | None = None,
 ) -> go.Figure:
     """The bridge to Q1: the token state wandering the valence/arousal plane."""
     n = len(projection)
@@ -349,7 +353,7 @@ def circumplex_figure(
                 "colorbar": {"title": "token"},
             },
             line={"width": 1, "color": "rgba(120,120,120,0.4)"},
-            text=[f"t={t}" for t in range(n)],
+            text=_hover(tokens, n),
             hoverinfo="text",
         )
     )
@@ -405,7 +409,7 @@ def cosine_3d_figure(
             z=cosines[: t_end + 1, 2],
             mode="lines+markers",
             marker={
-                "size": 3,
+                "size": 4,
                 "color": np.arange(t_end + 1),
                 "colorscale": "Viridis",
                 "cmin": 0,
@@ -413,7 +417,13 @@ def cosine_3d_figure(
                 "showscale": True,
                 "colorbar": {"title": "token"},
             },
-            line={"width": 2, "color": "rgba(120,120,120,0.5)"},
+            line={
+                "width": 5,
+                "color": np.arange(t_end + 1),
+                "colorscale": "Viridis",
+                "cmin": 0,
+                "cmax": n - 1,
+            },
             text=_hover(tokens, n)[: t_end + 1],
             hoverinfo="text",
             showlegend=False,
