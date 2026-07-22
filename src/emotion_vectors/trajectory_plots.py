@@ -282,7 +282,7 @@ def transition_locked_figure(
         fig.add_trace(go.Scatter(x=x, y=mean, name=name, line={"color": color, "width": 2.5}))
     fig.add_vline(x=0, line_dash="dash", line_color="gray")
     fig.update_layout(
-        title=f"Transition-locked average ({len(incoming)} transitions){' — ' + label if label else ''}",
+        title=f"Transition-locked average ({len(incoming)} transitions){': ' + label if label else ''}",
         xaxis_title="tokens relative to phase start",
         yaxis_title="centered cosine",
         width=940,
@@ -367,7 +367,7 @@ def circumplex_figure(
         fig,
         "How to read: axes are the PCA plane of the 171 emotion means (Q1.H1's circumplex). "
         "The story should drift toward each phase emotion's known position; same-valence "
-        "transitions move little here by design — this view buys interpretable axes, not "
+        "transitions move little here by design; this view buys interpretable axes, not "
         "per-emotion resolution.",
     )
     return fig
