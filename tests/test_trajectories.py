@@ -93,3 +93,37 @@ def test_kept_rows_filter_and_story_ids() -> None:
     ids = [story_id(row) for row in rows]
     assert len(set(ids)) == len(ids)
     assert all(id_.startswith("t") and ("_seq_" in id_ or "_sim_" in id_) for id_ in ids)
+
+
+def test_story_cosines_centered_matches_manual() -> None:
+    from emotion_vectors.trajectory_plots import barycentric, smooth, story_cosines
+
+    rng = np.random.default_rng(3)
+    acts = rng.standard_normal((10, 2, 8)).astype(np.float32)
+    probes = random_unit_directions(3, 2, 8, seed=4)
+    dots, norms = token_probe_dots(acts, probes)
+    centered_acts = acts - acts.mean(axis=0, keepdims=True)
+    shard = {
+        "dots": dots.astype(np.float16),
+        "norms": norms.astype(np.float16),
+        "norms_centered": np.linalg.norm(centered_acts, axis=-1).astype(np.float16),
+    }
+    labels = ["selfgen:a", "selfgen:b", "selfgen:c"]
+    cos = story_cosines(shard, labels, ["a", "b", "c"], layer_pos=1)
+    manual = np.sum(centered_acts[0, 1] * probes[0, 1]) / np.linalg.norm(centered_acts[0, 1])
+    assert cos.shape == (10, 3)
+    assert np.isclose(cos[0, 0], manual, atol=2e-3)  # fp16 substrate tolerance
+    bary = barycentric(cos)
+    assert np.allclose(bary.sum(axis=1), 1.0, atol=1e-6)
+    assert smooth(cos, window=4).shape == cos.shape
+
+
+def test_trajectory_figures_build() -> None:
+    from emotion_vectors.trajectory_plots import layer_ternaries, lines_figure, ternary_figure
+
+    rng = np.random.default_rng(5)
+    cos = rng.standard_normal((30, 3)).astype(np.float32) * 0.02
+    fig1 = ternary_figure(cos, ["a", "b", "c"], [0, 10, 20])
+    fig2 = lines_figure(cos, ["a", "b", "c"], [0, 10, 20])
+    fig3 = layer_ternaries([cos, cos], ["layer 6", "layer 33"], ["a", "b", "c"])
+    assert fig1.data and fig2.data and fig3.data

@@ -112,13 +112,19 @@ def process_batch(batch: list[dict], lm: LoadedModel, bank: ProbeBank, args) -> 
     )
     for i, (row, story) in enumerate(zip(batch, parsed)):
         n_tokens = lengths[i]
-        dots, norms = token_probe_dots(acts[i, :n_tokens], bank.directions)
+        story_acts = acts[i, :n_tokens]
+        dots, norms = token_probe_dots(story_acts, bank.directions)
+        # centered-cosine substrate: centered dots are linear in the stored dots,
+        # but the centered activation norm is not — store it explicitly
+        centered = story_acts - story_acts.mean(axis=0, keepdims=True)
+        norms_centered = np.linalg.norm(centered, axis=-1)
         starts = phase_token_starts(story.phase_char_starts, offsets[i][:n_tokens])
         sid = story_id(row)
         np.savez_compressed(
             args.out_dir / "shards" / f"{sid}.npz",
             dots=dots.astype(np.float16),
             norms=norms.astype(np.float16),
+            norms_centered=norms_centered.astype(np.float16),
             token_ids=ids[i, :n_tokens],
             phase_token_starts=np.array(starts),
         )
