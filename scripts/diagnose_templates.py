@@ -87,39 +87,50 @@ def panel_diagnostics(
     }
 
 
+def load_probes(
+    model: str,
+) -> tuple[
+    list[str], "Float[np.ndarray, 'emotions d_model']", "Float[np.ndarray, 'emotions d_model']", int
+]:
+    """(emotions, probes, neutral-projected probes, n PCs removed) for one model arm."""
+    bundle_path = (
+        "results/emotion_vectors_it_means.npz"
+        if model == "it"
+        else "results/emotion_vectors/emotion_means.npz"
+    )
+    bundle = np.load(bundle_path, allow_pickle=True)
+    emotions = list(map(str, bundle["emotions"]))
+    probes = bundle["means"][:, list(map(int, bundle["layers"])).index(LAYER), :].astype(np.float64)
+    if model != "it":
+        # no base neutral transcripts were collected; R5 is instruct-only
+        return emotions, probes, probes, 0
+    neutral = np.load("results/e7_neutral_bundle.npz", allow_pickle=True)
+    neutral_vecs = neutral["vectors"][:, list(map(int, neutral["layers"])).index(LAYER), :].astype(
+        np.float64
+    )
+    projected, n_removed = project_out_neutral(probes, neutral_vecs)
+    return emotions, probes, projected, n_removed
+
+
 def main() -> int:
     import argparse  # noqa: PLC0415  (single-use CLI shim, mirrors the module docstring)
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--readout", choices=("last", "mean_all", "mean_content"), default="last")
     parser.add_argument("--model", choices=("it", "base"), default="it")
+    parser.add_argument("--sweep-dir", default=None, help="override the activations dir")
+    parser.add_argument("--tag", default=None, help="suffix for the output file name")
     args = parser.parse_args()
-    sweep_dir = "results/probe_sweep_it" if args.model == "it" else "results/probe_sweep"
+    sweep_dir = args.sweep_dir or (
+        "results/probe_sweep_it" if args.model == "it" else "results/probe_sweep"
+    )
     fmt = "chat" if args.model == "it" else "plain"  # the base model has no chat template
     prompts = [json.loads(line) for line in open(f"{sweep_dir}/prompts.jsonl")]
     sweep = np.load(f"{sweep_dir}/activations.npz", allow_pickle=True)
     layer_pos = list(map(int, sweep["layers"])).index(LAYER)
     acts_all = sweep[f"{fmt}_{args.readout}"].astype(np.float64)[:, layer_pos, :]
 
-    if args.model == "it":
-        bundle = np.load("results/emotion_vectors_it_means.npz", allow_pickle=True)
-        emotions = list(map(str, bundle["emotions"]))
-        probes = bundle["means"][:, list(map(int, bundle["layers"])).index(LAYER), :].astype(
-            np.float64
-        )
-        neutral = np.load("results/e7_neutral_bundle.npz", allow_pickle=True)
-        neutral_vecs = neutral["vectors"][
-            :, list(map(int, neutral["layers"])).index(LAYER), :
-        ].astype(np.float64)
-        projected, n_removed = project_out_neutral(probes, neutral_vecs)
-    else:
-        bundle = np.load("results/emotion_vectors/emotion_means.npz", allow_pickle=True)
-        emotions = list(map(str, bundle["emotions"]))
-        probes = bundle["means"][:, list(map(int, bundle["layers"])).index(LAYER), :].astype(
-            np.float64
-        )
-        # no base neutral transcripts were collected; R5 is instruct-only
-        projected, n_removed = probes, 0
+    emotions, probes, projected, n_removed = load_probes(args.model)
 
     panels: dict[str, dict[str, object]] = {}
     for name in sorted({p["name"] for p in prompts if p["kind"] == "template"}):
@@ -141,15 +152,17 @@ def main() -> int:
     out = {
         "experiment": "Q1.H2.E8",
         "config": f"gemma-4-31b{'-it' if args.model == 'it' else ' (base)'}, {fmt} format, "
-        f"{args.readout} readout, layer 33",
+        f"{args.readout} readout, layer 33" + (f", {args.tag}" if args.tag else ""),
         "neutral_pcs_removed": int(n_removed),
         "panels": panels,
         "r1_read": f"common-mode share median {float(np.median(shares)):.3f}; "
         f"{sum(s < 0.8 for s in shares)}/{len(shares)} panels below 0.8",
         "r4_paper_reference_range": 0.16,
     }
-    suffix = ("" if args.readout == "last" else f"_{args.readout}") + (
-        "" if args.model == "it" else "_base"
+    suffix = (
+        ("" if args.readout == "last" else f"_{args.readout}")
+        + ("" if args.model == "it" else "_base")
+        + (f"_{args.tag}" if args.tag else "")
     )
     Path(f"results/e8_template_diagnostic{suffix}.json").write_text(
         json.dumps(out, indent=2) + "\n"
