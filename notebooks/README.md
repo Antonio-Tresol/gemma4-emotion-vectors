@@ -1,0 +1,37 @@
+# Notebooks
+
+Four report notebooks tell the whole story, in reading order. Each opens with
+its purpose, the key concepts you need, and an index; every figure carries its
+verdict and has a collapsible "How to read" underneath.
+
+| # | Notebook | The question it answers |
+|---|---|---|
+| 01 | `01_data.ipynb` | What data exists, who generated it, and is it clean? |
+| 02 | `02_geometry.ipynb` | Does the emotion circumplex replicate? (Yes, strongly, on the base model; instruction tuning demotes it without destroying it.) |
+| 03 | `03_probes.ipynb` | Do the vectors detect implicit emotion in scenarios? (No configuration passed the pre-registered bar across seven experiments; what survives is coarse valence.) |
+| 04 | `04_parity.ipynb` | Where does every figure from the two source papers stand? |
+
+The three layers of the project, so nothing here is mistaken for something it
+is not: **notebooks are the report** (readable, story-ordered),
+**`results/` is the evidence** (every number traces to a file),
+**`TREE.md` is the record** (questions, hypotheses, experiments, claims, with
+registered predictions and statuses). When a notebook and the tree disagree,
+the tree wins and the notebook has a bug.
+
+## archive/
+
+The bench layer: one notebook per experiment, in the order the work actually
+happened, kept unchanged because TREE.md evidence links point into them.
+Numbering reflects session history, not reading order.
+
+| Bench notebook | What it was |
+|---|---|
+| `01_corpus_exploration` | first look at the published story corpus |
+| `02_vector_geometry` | base-model geometry (superseded by report 02) |
+| `03_probe_validation` | first battery run, base model (E1) |
+| `04_probe_sweep` | layer/readout sweep, base model (E2) |
+| `05_dialogue_probes` | dialogue-transfer test, base arm (E3) |
+| `06_probe_sweep_it` | instruct-model sweep with chat template (E4) |
+| `07_selfgen_probes_it` | self-generated probe pilot (E5) |
+| `08_scale_and_projection` | scale curve and neutral projection (E6, E7) |
+| `09_paper_parity` | first parity pass (superseded by report 04) |
