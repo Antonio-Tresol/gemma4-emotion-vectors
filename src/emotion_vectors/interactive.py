@@ -710,3 +710,147 @@ def trajectory_3d_scrubber(
         font=dict(size=11, color="gray"),
     )
     return fig
+
+
+def trajectory_3d_animation(
+    cosines: Any,
+    emotions: list[str],
+    phase_starts: list[int],
+    *,
+    stride: int = 3,
+    frame_ms: int = 60,
+    title: str = "",
+) -> go.Figure:
+    """The raw 3D path drawing itself over tokens: Play or drag the t slider.
+
+    Faint line = full path; the bright trail grows to token t with a cone
+    arrow at the tip pointing in the direction of motion. Frames replace
+    whole traces, so this composes with the cone (unlike restyle sliders).
+    """
+    c = np.asarray(cosines)
+    n = len(c)
+    ticks = list(range(1, n, stride)) + ([n - 1] if (n - 1 - 1) % stride else [])
+    sizeref = float(np.abs(c).max()) * 0.15
+
+    def trail(t: int) -> go.Scatter3d:
+        return go.Scatter3d(
+            x=_as_list(c[: t + 1, 0]),
+            y=_as_list(c[: t + 1, 1]),
+            z=_as_list(c[: t + 1, 2]),
+            mode="lines+markers",
+            marker=dict(size=3, color=list(range(t + 1)), colorscale="Viridis", cmin=0, cmax=n - 1),
+            line=dict(width=3, color="rgba(99,102,241,0.6)"),
+            text=[f"t={i}" for i in range(t + 1)],
+            hoverinfo="text",
+            showlegend=False,
+        )
+
+    def tip(t: int) -> go.Cone:
+        d = c[t] - c[t - 1]
+        return go.Cone(
+            x=[float(c[t, 0])],
+            y=[float(c[t, 1])],
+            z=[float(c[t, 2])],
+            u=[float(d[0])],
+            v=[float(d[1])],
+            w=[float(d[2])],
+            sizemode="absolute",
+            sizeref=sizeref,
+            showscale=False,
+            colorscale=[[0, "#111"], [1, "#111"]],
+            hoverinfo="skip",
+        )
+
+    fig = go.Figure(
+        data=[
+            go.Scatter3d(
+                x=_as_list(c[:, 0]),
+                y=_as_list(c[:, 1]),
+                z=_as_list(c[:, 2]),
+                mode="lines",
+                line=dict(width=1, color="rgba(120,120,120,0.25)"),
+                hoverinfo="skip",
+                showlegend=False,
+            ),
+            trail(1),
+            tip(1),
+            go.Scatter3d(
+                x=_as_list(c[phase_starts, 0]),
+                y=_as_list(c[phase_starts, 1]),
+                z=_as_list(c[phase_starts, 2]),
+                mode="markers",
+                marker=dict(size=6, symbol="diamond", color="black"),
+                text=[f"phase start t={s}" for s in phase_starts],
+                hoverinfo="text",
+                showlegend=False,
+            ),
+        ],
+        frames=[go.Frame(data=[trail(t), tip(t)], traces=[1, 2], name=str(t)) for t in ticks],
+    )
+    fig.update_layout(
+        title=title,
+        scene=dict(xaxis_title=emotions[0], yaxis_title=emotions[1], zaxis_title=emotions[2]),
+        width=800,
+        height=760,
+        margin=dict(b=130),
+        updatemenus=[
+            dict(
+                type="buttons",
+                direction="left",
+                x=0.05,
+                y=-0.04,
+                buttons=[
+                    dict(
+                        label="Play",
+                        method="animate",
+                        args=[
+                            None,
+                            dict(
+                                frame=dict(duration=frame_ms, redraw=True),
+                                fromcurrent=True,
+                                transition=dict(duration=0),
+                            ),
+                        ],
+                    ),
+                    dict(
+                        label="Pause",
+                        method="animate",
+                        args=[[None], dict(frame=dict(duration=0), mode="immediate")],
+                    ),
+                ],
+            )
+        ],
+        sliders=[
+            dict(
+                active=0,
+                currentvalue=dict(prefix="t = "),
+                pad=dict(t=30),
+                steps=[
+                    dict(
+                        method="animate",
+                        label=str(t),
+                        args=[
+                            [str(t)],
+                            dict(
+                                mode="immediate",
+                                frame=dict(duration=0, redraw=True),
+                                transition=dict(duration=0),
+                            ),
+                        ],
+                    )
+                    for t in ticks
+                ],
+            )
+        ],
+    )
+    fig.add_annotation(
+        text="Faint line = full path; bright trail = path up to t; cone = direction of motion; diamonds = phase starts.",
+        xref="paper",
+        yref="paper",
+        x=0,
+        y=-0.24,
+        showarrow=False,
+        align="left",
+        font=dict(size=11, color="gray"),
+    )
+    return fig
