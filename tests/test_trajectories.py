@@ -9,13 +9,28 @@ import numpy as np
 import pytest
 
 from emotion_vectors.trajectories import (
+    circumplex_weights,
     kept_rows,
     parse_story,
     phase_token_starts,
     random_unit_directions,
     story_id,
     token_probe_dots,
+    transition_windows,
     unit_contrast_probes,
+)
+from emotion_vectors.trajectory_plots import (
+    barycentric,
+    circumplex_figure,
+    cosine_3d_figure,
+    layer_ternaries,
+    lines_figure,
+    probe_heatmap_figure,
+    smooth,
+    speed_figure,
+    story_cosines,
+    ternary_figure,
+    transition_locked_figure,
 )
 
 FIXTURES = Path(__file__).parent / "fixtures" / "combined_stories_sample.jsonl"
@@ -96,8 +111,6 @@ def test_kept_rows_filter_and_story_ids() -> None:
 
 
 def test_story_cosines_centered_matches_manual() -> None:
-    from emotion_vectors.trajectory_plots import barycentric, smooth, story_cosines
-
     rng = np.random.default_rng(3)
     acts = rng.standard_normal((10, 2, 8)).astype(np.float32)
     probes = random_unit_directions(3, 2, 8, seed=4)
@@ -119,11 +132,53 @@ def test_story_cosines_centered_matches_manual() -> None:
 
 
 def test_trajectory_figures_build() -> None:
-    from emotion_vectors.trajectory_plots import layer_ternaries, lines_figure, ternary_figure
-
     rng = np.random.default_rng(5)
     cos = rng.standard_normal((30, 3)).astype(np.float32) * 0.02
     fig1 = ternary_figure(cos, ["a", "b", "c"], [0, 10, 20])
     fig2 = lines_figure(cos, ["a", "b", "c"], [0, 10, 20])
     fig3 = layer_ternaries([cos, cos], ["layer 6", "layer 33"], ["a", "b", "c"])
     assert fig1.data and fig2.data and fig3.data
+
+
+def test_transition_windows_alignment() -> None:
+    cos = np.zeros((20, 3), dtype=np.float32)
+    cos[:, 1] = np.arange(20)  # phase-2 emotion counts tokens
+    incoming, outgoing = transition_windows(cos, [0, 10, 18], window=3)
+    assert incoming.shape == (2, 7) and outgoing.shape == (2, 7)
+    assert np.allclose(incoming[0], np.arange(7, 14))  # col 1 around t=10
+    assert np.allclose(outgoing[0], 0.0)  # col 0 is flat zero
+    assert np.isnan(incoming[1][-1])  # t=18+3 runs off the 20-token story
+    assert np.allclose(outgoing[1][:5], np.arange(15, 20))  # col 1 exits at t=18
+
+
+def test_circumplex_weights_reconstruct_pca_projection() -> None:
+    rng = np.random.default_rng(7)
+    means = rng.standard_normal((9, 16)).astype(np.float32)
+    contrast = means - means.mean(axis=0, keepdims=True)
+    units = contrast / np.linalg.norm(contrast, axis=-1, keepdims=True)
+    _, _, vt = np.linalg.svd(contrast, full_matrices=False)
+    token = rng.standard_normal(16).astype(np.float32)
+    weights = circumplex_weights(means)
+    via_dots = weights @ (units @ token)
+    direct = vt[:2] @ token
+    assert np.allclose(via_dots, direct, atol=1e-4)
+
+
+def test_new_figures_build() -> None:
+    rng = np.random.default_rng(9)
+    cos = rng.standard_normal((40, 3)).astype(np.float32) * 0.02
+    incoming, outgoing = transition_windows(cos, [0, 15, 30], window=5)
+    figs = [
+        transition_locked_figure(incoming, outgoing, window=5, n_boot=50),
+        probe_heatmap_figure(
+            rng.standard_normal((40, 12)).astype(np.float32),
+            [f"e{i}" for i in range(12)],
+            [0, 15, 30],
+        ),
+        circumplex_figure(
+            rng.standard_normal((40, 2)).astype(np.float32), [0, 15, 30], ["a", "b", "c"]
+        ),
+        cosine_3d_figure(cos, ["a", "b", "c"], [0, 15, 30]),
+        speed_figure(np.abs(rng.standard_normal(39)).astype(np.float32), [0, 15, 30]),
+    ]
+    assert all(fig.data for fig in figs)

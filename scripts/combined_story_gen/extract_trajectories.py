@@ -118,6 +118,9 @@ def process_batch(batch: list[dict], lm: LoadedModel, bank: ProbeBank, args) -> 
         # but the centered activation norm is not — store it explicitly
         centered = story_acts - story_acts.mean(axis=0, keepdims=True)
         norms_centered = np.linalg.norm(centered, axis=-1)
+        # trajectory speed ||a_t - a_{t-1}|| per layer: like the centered norm,
+        # not derivable from dots+norms, so it is part of the stored substrate
+        speed = np.linalg.norm(np.diff(story_acts, axis=0), axis=-1)
         starts = phase_token_starts(story.phase_char_starts, offsets[i][:n_tokens])
         sid = story_id(row)
         np.savez_compressed(
@@ -125,6 +128,7 @@ def process_batch(batch: list[dict], lm: LoadedModel, bank: ProbeBank, args) -> 
             dots=dots.astype(np.float16),
             norms=norms.astype(np.float16),
             norms_centered=norms_centered.astype(np.float16),
+            speed=speed.astype(np.float16),
             token_ids=ids[i, :n_tokens],
             phase_token_starts=np.array(starts),
         )

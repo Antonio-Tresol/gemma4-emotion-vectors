@@ -141,3 +141,49 @@ def token_probe_dots(
     )
     norms = np.linalg.norm(acts, axis=-1)
     return dots, norms
+
+
+def transition_windows(
+    cosines: Float[np.ndarray, "tokens phases"],
+    phase_starts: list[int],
+    window: int,
+) -> tuple[Float[np.ndarray, "trans width"], Float[np.ndarray, "trans width"]]:
+    """(incoming, outgoing) cosine windows around each phase transition.
+
+    Column j of ``cosines`` must be phase j's emotion. For transition k (the
+    start of phase k, k >= 1), incoming = column k, outgoing = column k-1,
+    both sliced to [start - window, start + window] and NaN-padded where the
+    slice runs off the story. Row order matches transitions in story order.
+    """
+    width = 2 * window + 1
+    incoming, outgoing = [], []
+    for k, start in enumerate(phase_starts[1:], start=1):
+        for column, bucket in ((k, incoming), (k - 1, outgoing)):
+            row = np.full(width, np.nan, dtype=np.float32)
+            lo, hi = start - window, start + window + 1
+            src_lo, src_hi = max(lo, 0), min(hi, len(cosines))
+            row[src_lo - lo : src_hi - lo] = cosines[src_lo:src_hi, column]
+            bucket.append(row)
+    empty = np.empty((0, width), dtype=np.float32)
+    return (
+        np.stack(incoming) if incoming else empty,
+        np.stack(outgoing) if outgoing else empty,
+    )
+
+
+def circumplex_weights(
+    means: Float[np.ndarray, "emotions d_model"],
+) -> Float[np.ndarray, "two emotions"]:
+    """Weights expressing the PC1/PC2 circumplex axes over the unit probes.
+
+    PCA axes of the centered emotion means lie in the span of the contrast
+    directions, so a token's projection onto PC1/PC2 equals a weighted sum of
+    its stored probe dots: proj = weights @ dots. This is what lets the
+    circumplex view be computed from published shards alone.
+    """
+    contrast = means - means.mean(axis=0, keepdims=True)
+    _, _, vt = np.linalg.svd(contrast, full_matrices=False)
+    axes = vt[:2]  # [2, d_model]
+    units = contrast / np.clip(np.linalg.norm(contrast, axis=-1, keepdims=True), 1e-8, None)
+    weights, *_ = np.linalg.lstsq(units.T, axes.T, rcond=None)
+    return weights.T
