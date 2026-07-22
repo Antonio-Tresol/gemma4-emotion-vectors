@@ -1,6 +1,6 @@
 {
   "experiment": "Q1.H2.E8",
-  "config": "gemma-4-31b-it, chat format, last token, layer 33",
+  "config": "gemma-4-31b-it, chat format, last readout, layer 33",
   "neutral_pcs_removed": 5,
   "panels": {
     "dog_missing": {

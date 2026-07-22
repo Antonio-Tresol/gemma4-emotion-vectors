@@ -9,6 +9,12 @@ This tree holds the sprint's research project only. The harness
 self-evaluation (skill evals, containment incident) lives in the harness
 repo's own TREE.md — separated 2026-07-20, see the log.
 
+Project-coined terms used in the nodes below (canonical mech-interp and ML
+vocabulary is used as-is; these are our own and are defined here once):
+
+- **battery**: the scenario test set — the Anthropic paper's 12
+  implicit-emotion prompts (its Table 2), plus our own held-out set of 12.
+
 - Q1: Do difference-of-means emotion-concept vectors extracted from Gemma-4-31B's residual stream reproduce the reported circumplex geometry, and does their cosine similarity against the residual stream respond predictably on control prompts? (~2 days; the GATE for Q2 — method and assets in notes/emotion-vectors-brief.md) [open] | log: 2026-07-20
   - Q1.H1: PC1/PC2 of the contrast vectors correlate with NRC valence/arousal at some layer, in line with the Anthropic (r=0.81/0.66) and open-replication (up to r=0.83) results (C1 survived the falsify gate 2026-07-22) [supported]
     - Q1.H1.E1: Adapt sinievanderben/emotion_experiment to Gemma-4-31B; extract vectors from the published Gemma story corpus over a layer sweep (every 3rd of 60); correlate per layer against NRC VAD — extraction 2026-07-21: 1539/1539 stories, 0 errors, 171 emotions x 20 layers, bf16 + resumable per-story shards (full vectors in the private HF dataset abotresol/emotion-vectors-gemma-4-31b; pipeline src/emotion_vectors/extraction.py); correlation sweep same day, 164/171 emotions matched to NRC VAD v2.1 (analysis src/emotion_vectors/analysis.py) [done] | evidence: results/emotion_vectors/run_config.json, results/emotion_vectors/manifest.jsonl, results/emotion_vectors/extract.log, results/emotion_geometry_correlations.json | log: 2026-07-21
