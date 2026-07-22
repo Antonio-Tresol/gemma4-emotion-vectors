@@ -1,0 +1,12 @@
+{
+  // Point VS Code (and the Jupyter extension's kernel picker) at the project
+  // venv so notebooks never land on an unrelated kernel like conda arena-env.
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "python.terminal.activateEnvironment": true,
+  // Hide non-project kernels from the notebook kernel picker.
+  "jupyter.kernels.excludePythonEnvironments": [
+    "/opt/conda/**",
+    "/usr/bin/python*",
+    "/usr/local/bin/python*"
+  ]
+}
