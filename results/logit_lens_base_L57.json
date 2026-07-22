@@ -1,0 +1,200 @@
+{
+  "model": "google/gemma-4-31b",
+  "layer": 57,
+  "probes": "results/emotion_vectors",
+  "note": "final-RMSNorm scale applied (gemma 1+w convention); softcapping ignored",
+  "table": {
+    "happy": {
+      "up": [
+        "intriguing",
+        "intrigued",
+        "intrigue",
+        "intrig",
+        "smiling"
+      ],
+      "down": [
+        "angrily",
+        "\ud83d\ude21",
+        "furious",
+        "\u72e0\u72e0",
+        "impot"
+      ]
+    },
+    "inspired": {
+      "up": [
+        "excitedly",
+        "exhilar",
+        "\u5174\u594b",
+        "\ud83c\udfd9",
+        "exhilarating"
+      ],
+      "down": [
+        "my",
+        "\u2019",
+        "meiner",
+        "meines",
+        "\u79c1\u306e"
+      ]
+    },
+    "loving": {
+      "up": [
+        "softening",
+        "soften",
+        "warmth",
+        "softness",
+        "tender"
+      ],
+      "down": [
+        "frantically",
+        "depressing",
+        "sobbing",
+        "disgusting",
+        "screaming"
+      ]
+    },
+    "proud": {
+      "up": [
+        "heritage",
+        "grandfather",
+        "Grandpa",
+        "grandfather",
+        "grandeur"
+      ],
+      "down": [
+        "jol",
+        "\u75d9",
+        "anxiety",
+        "frantic",
+        "anxious"
+      ]
+    },
+    "calm": {
+      "up": [
+        "garden",
+        "wood",
+        "\u7c6c",
+        "\u0b87\u0baf\u0bb1\u0bcd\u0b95",
+        "gardening"
+      ],
+      "down": [
+        "nause",
+        "nausea",
+        "angrily",
+        "bile",
+        "frantically"
+      ]
+    },
+    "desperate": {
+      "up": [
+        "desesper",
+        "hopelessness",
+        "apartment",
+        "desperate",
+        "desperately"
+      ],
+      "down": [
+        "intrigued",
+        "playfully",
+        "intrig",
+        "subtly",
+        "\u5fae\u7b11"
+      ]
+    },
+    "angry": {
+      "up": [
+        "fury",
+        "rage",
+        "\u6012",
+        "\u61a4",
+        "anger"
+      ],
+      "down": [
+        "\u817c",
+        "whimsical",
+        "cosy",
+        "intrig",
+        "silly"
+      ]
+    },
+    "guilty": {
+      "up": [
+        "obsess",
+        "paranoia",
+        "spotless",
+        "terrified",
+        "obsessive"
+      ],
+      "down": [
+        "fence",
+        "hammock",
+        "\u8301",
+        "\u0902\u091a\u0902",
+        "contented"
+      ]
+    },
+    "sad": {
+      "up": [
+        "numb",
+        "impot",
+        "futile",
+        "pointless",
+        "angry"
+      ],
+      "down": [
+        "\u0435\u0451",
+        "beaming",
+        "Smiling",
+        "\u0443\u043b\u044b",
+        "\u7b11\u9854"
+      ]
+    },
+    "afraid": {
+      "up": [
+        "constellations",
+        "stuffed",
+        "terrified",
+        "constellation",
+        "dusty"
+      ],
+      "down": [
+        "thoughtfulness",
+        "vibe",
+        "muros",
+        "reverber",
+        "vibes"
+      ]
+    },
+    "nervous": {
+      "up": [
+        "paper",
+        "chaf",
+        "faculty",
+        "institutional",
+        "manuscript"
+      ],
+      "down": [
+        "delight",
+        "rekl",
+        "intrigue",
+        "neighbors",
+        "neighbor"
+      ]
+    },
+    "surprised": {
+      "up": [
+        "patent",
+        "PATENT",
+        "patented",
+        "Patent",
+        "stage"
+      ],
+      "down": [
+        "worn",
+        "yearbook",
+        "yard",
+        "chores",
+        "boxes"
+      ]
+    }
+  }
+}
