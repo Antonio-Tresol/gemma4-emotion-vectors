@@ -10,3 +10,13 @@ results/emotion_vectors/emotion_means.npz
 results/dialogue_vectors/shards/
 results/dialogue_vectors/emotion_vectors.json
 results/emotion_vectors_it_means.npz
+
+# Data lives on Hugging Face (fetch() resolves it), not in git — 2026-07-22.
+# Evidence files (scores, scorecards, manifests, run_configs, logs) stay tracked.
+results/**/*.npz
+results/*.npz
+results/**/stories_raw.jsonl
+results/**/stories_grouped.jsonl
+results/**/dialogues_raw.jsonl
+results/**/dialogues_grouped.jsonl
+results/**/prompts.jsonl
