@@ -1,0 +1,23 @@
+{
+  "experiment": "Q1.H2.E5 registered comparison, completed at converged scale (E6 n=256)",
+  "layer": 33,
+  "raw_mean_cosine": 0.999,
+  "centered_contrast_cosine_mean": 0.219,
+  "centered_contrast_per_emotion": {
+    "happy": 0.385,
+    "inspired": 0.224,
+    "loving": 0.276,
+    "proud": -0.025,
+    "calm": 0.204,
+    "desperate": 0.071,
+    "angry": 0.455,
+    "guilty": 0.403,
+    "sad": 0.033,
+    "afraid": 0.195,
+    "nervous": 0.173,
+    "surprised": 0.232
+  },
+  "rsa_between_lineage_structures": 0.332,
+  "pilot_reference": "E5 at n=16 measured ~0.22; E6 stability at n=256 is 0.997",
+  "read": "the lineage disagreement is NOT sampling noise: converged self-generated directions still barely align with external-corpus directions; emotion vectors on this model are corpus-dependent objects"
+}
