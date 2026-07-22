@@ -41,7 +41,6 @@ from emotion_vectors.trajectories import (
     phase_token_starts,
     random_unit_directions,
     story_id,
-    token_probe_dots,
     unit_contrast_probes,
 )
 
@@ -99,28 +98,35 @@ def forward_tokens(
     finally:
         for hook in hooks:
             hook.remove()
-    acts = torch.stack([captured[i] for i in layers], dim=2).cpu().numpy()
+    # stay on the GPU: the projections reduce ~200 MB of activations per batch
+    # to ~2 MB of dots, so device-side math avoids the PCIe bottleneck that
+    # left the GPU at 0% utilization (first-launch lesson, 2026-07-22)
+    acts = torch.stack([captured[i] for i in layers], dim=2)
     lengths = [int(n) for n in inputs["attention_mask"].sum(dim=1).tolist()]
     return acts, offsets, lengths, inputs["input_ids"].cpu().numpy()
 
 
-def process_batch(batch: list[dict], lm: LoadedModel, bank: ProbeBank, args) -> int:
-    """Extract, project, and shard one batch; returns tokens processed."""
+def process_batch(batch: list[dict], lm: LoadedModel, probes: torch.Tensor, args) -> int:
+    """Extract, project on-device, and shard one batch; returns tokens processed.
+
+    Numerically identical to the numpy path in emotion_vectors.trajectories
+    (token_probe_dots) — verified against the pre-fix smoke shards."""
     parsed = [parse_story(row["text"], row["mode"]) for row in batch]
     acts, offsets, lengths, ids = forward_tokens(
         lm, [p.clean_text for p in parsed], args.layers, args.max_length
     )
     for i, (row, story) in enumerate(zip(batch, parsed)):
         n_tokens = lengths[i]
-        story_acts = acts[i, :n_tokens]
-        dots, norms = token_probe_dots(story_acts, bank.directions)
-        # centered-cosine substrate: centered dots are linear in the stored dots,
-        # but the centered activation norm is not — store it explicitly
-        centered = story_acts - story_acts.mean(axis=0, keepdims=True)
-        norms_centered = np.linalg.norm(centered, axis=-1)
-        # trajectory speed ||a_t - a_{t-1}|| per layer: like the centered norm,
-        # not derivable from dots+norms, so it is part of the stored substrate
-        speed = np.linalg.norm(np.diff(story_acts, axis=0), axis=-1)
+        story_acts = acts[i, :n_tokens]  # [tokens, layers, d_model] on device
+        with torch.inference_mode():
+            dots = torch.einsum("tld,pld->tlp", story_acts, probes).cpu().numpy()
+            norms = story_acts.norm(dim=-1).cpu().numpy()
+            # centered-cosine substrate: centered dots are linear in the stored
+            # dots, but the centered activation norm is not — store it explicitly
+            centered = story_acts - story_acts.mean(dim=0, keepdim=True)
+            norms_centered = centered.norm(dim=-1).cpu().numpy()
+            # trajectory speed ||a_t - a_{t-1}|| per layer: same reason
+            speed = (story_acts[1:] - story_acts[:-1]).norm(dim=-1).cpu().numpy()
         starts = phase_token_starts(story.phase_char_starts, offsets[i][:n_tokens])
         sid = story_id(row)
         np.savez_compressed(
@@ -193,11 +199,12 @@ def main() -> int:
     bank = load_probe_bank(args.layers)
     (args.out_dir / "probe_labels.json").write_text(json.dumps(bank.labels))
     lm, _ = load_model_bf16(args.model, logger.info)
+    probes = torch.as_tensor(bank.directions, device=lm.model.device, dtype=torch.float32)
     t0 = time.monotonic()
     tokens = 0
     for start in range(0, len(pending), args.batch_size):
         batch = pending[start : start + args.batch_size]
-        tokens += process_batch(batch, lm, bank, args)
+        tokens += process_batch(batch, lm, probes, args)
         done_n = start + len(batch)
         rate = tokens / max(time.monotonic() - t0, 1e-6)
         logger.info("%d/%d stories | %.0f tok/s", done_n, len(pending), rate)
