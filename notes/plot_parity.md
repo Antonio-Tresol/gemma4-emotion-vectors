@@ -20,7 +20,7 @@ QUEUED (planned, infrastructure exists), OUT (not replicable here, reason given)
 | Figure 2 | Probe x scenario cosine matrix, strong diagonal | DONE | notebooks/03_probes.ipynb sections 1 and 3 (dual-model); our diagonals are weaker, which is a finding (TREE Q1.H2) |
 | Table 2 | The 12 implicit-emotion scenarios | DONE | Used verbatim, src/emotion_vectors/probe_prompts.py |
 | Figure 3 | Numerical-intensity template curves | DONE | notebooks/03_probes.ipynb section 2 (dual-model): instruct tracks 11/11 registered directions, base 7/11 |
-| Figure 4 | Activity-preference Elo + steering shifts | SPLIT: Elo half DONE (below-bar), steering half DECISION | notebooks/04_parity.ipynb section 3, both prompt formats (TREE Q1.H3, refuted at the registered bar): chat-format preferences coherent and probe-Elo valence-organized (perm p<1e-4) but max abs r 0.41 vs paper 0.71-0.74. Activity list self-authored (paper's unpublished). Steering half (E2) runnable since chat P1 passed; awaiting go decision |
+| Figure 4 | Activity-preference Elo + steering shifts | DONE, both halves negative-to-weak | notebooks/04_parity.ipynb sections 3-4 (TREE Q1.H3): correlational half weak-but-organized (max abs r 0.41 vs paper 0.71-0.74, valence organization perm p<1e-4); causal half a dose-robust null at alphas 2-8 (redistribution ~2% of paper's, r vs probe profile -0.03/+0.15, coherence intact). Activity list self-authored (paper's unpublished) |
 | Figure 5 | Pairwise cosine similarity, clustered | DONE | notebooks/02_geometry.ipynb section 3 |
 | Figure 6 | UMAP of k-means emotion clusters | SUB, DONE | notebooks/02_geometry.ipynb section 4: t-SNE embedding instead of UMAP (dependency), identical k-means k=10; clusters interpretable (joy/hope family, calm/content family), matching the paper's qualitative result |
 | Figure 7 | PC1/PC2 loading bars per emotion | DONE | notebooks/02_geometry.ipynb section 5: each model in its own valence-best/arousal-best component plane |
@@ -79,7 +79,7 @@ post-training (base vs RLHF) panels become base-vs-instruct proxies
 | Figures 40-51 | Per-token activation of 12 vectors on their own training stories | QUEUED (one infra) | All variants of one per-token sweep (the inventory's token-level localization item) |
 | Figures 52-53 + Tables 6-8 | Steering delta-log-prob of emotion words + steered completions | QUEUED | The causal test we have never run; vectors + vLLM ready; ~1 pod day; highest value |
 | Table 9 | 64 activities sorted by Elo + probe activations | DONE (ours) | results/preferences_it*/scores.json, self-authored activity substitute |
-| Figure 54 + Tables 10-11 | Preference change vs steering + steered completions | QUEUED | Q1.H3.E2 (runnable, awaiting go) |
+| Figure 54 + Tables 10-11 | Preference change vs steering + steered completions | Figure 54 DONE (negative, A/B-logit variant); Tables 10-11 QUEUED | Q1.H3.E2 ran at alphas 2/8: dose-robust causal null (notebooks/04 section 4). Steered free completions (the tables) not generated |
 | Figure 55 | Preference correlation + steering across layers | QUEUED | Rides on Q1.H3 + E2 |
 | Figure 56, Figure 58 | LLM-judged valence/arousal validation (vs preference r, vs human norms) | SUB | We use NRC VAD directly as the instrument; documented in Q1.H1.C1 |
 | Table 12, Figure 57 | k-means cluster membership; PC1/PC2 circumplex projection | DONE | notebooks/02 sections 4-5 |
