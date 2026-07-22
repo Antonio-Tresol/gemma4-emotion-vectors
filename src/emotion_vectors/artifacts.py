@@ -33,6 +33,8 @@ ROUTES: dict[str, str] = {
     "dialogue_vectors": f"{HF_USER}/emotion-dialogue-vectors-gemma-4-31b",
     "dialogue_vectors_it": f"{HF_USER}/emotion-dialogue-vectors-gemma-4-31b-it",
     "neutral_vectors_it": f"{HF_USER}/neutral-vectors-gemma-4-31b-it",
+    "combined_stories": f"{HF_USER}/emotion-combined-stories-gemma-4-31b-it",
+    "combined_trajectories": f"{HF_USER}/emotion-combined-trajectories-gemma-4-31b-it",
 }
 
 
