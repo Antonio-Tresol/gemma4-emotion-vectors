@@ -22,6 +22,7 @@ import json
 import time
 from dataclasses import dataclass
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import numpy as np
 import torch
@@ -43,6 +44,9 @@ from emotion_vectors.trajectories import (
     story_id,
     unit_contrast_probes,
 )
+
+if TYPE_CHECKING:
+    from jaxtyping import Float, Int
 
 MODEL = "google/gemma-4-31b-it"
 DEFAULT_LAYERS = [6, 15, 24, 33, 42, 51]  # early -> mid-late bands
@@ -78,7 +82,12 @@ def load_probe_bank(layers: list[int]) -> ProbeBank:
 
 def forward_tokens(
     lm: LoadedModel, texts: list[str], layers: list[int], max_length: int
-) -> tuple[np.ndarray, list[list[tuple[int, int]]], list[int], np.ndarray]:
+) -> tuple[
+    Float[torch.Tensor, "batch seq layers d_model"],
+    list[list[tuple[int, int]]],
+    list[int],
+    Int[np.ndarray, "batch seq"],
+]:
     """(acts [batch, seq, layers, d_model], per-row offsets, valid lengths, ids)."""
     encoded = lm.tokenizer(
         texts,
@@ -106,7 +115,9 @@ def forward_tokens(
     return acts, offsets, lengths, inputs["input_ids"].cpu().numpy()
 
 
-def process_batch(batch: list[dict], lm: LoadedModel, probes: torch.Tensor, args) -> int:
+def process_batch(
+    batch: list[dict], lm: LoadedModel, probes: Float[torch.Tensor, "probes layers d_model"], args
+) -> int:
     """Extract, project on-device, and shard one batch; returns tokens processed.
 
     Numerically identical to the numpy path in emotion_vectors.trajectories
