@@ -6,10 +6,12 @@ registered in TREE.md Q1.H3.E2 before collection:
 
   P1 (sanity): steered runs stay on-distribution — mean |A-B logit gap|
       within 3x the unsteered chat run's.
-  P2 (causal, the paper's bottom scatter r=0.85): across the 12 steered
-      emotions, per-emotion mean Elo delta (vs the unsteered chat baseline)
+  P2 (causal, the paper's bottom scatter r=0.85; amended pre-scoring, see
+      TREE Q1.H3.E2): across the 12 steered emotions, the mean Elo delta of
+      the POSITIVE-CATEGORY activities (vs the unsteered chat baseline)
       correlates with that emotion's E3 probe-Elo r at Pearson r >= 0.5,
-      positive sign.
+      positive sign. The global-mean delta is identically zero under the
+      mean-anchored Elo, so redistribution is the identifiable analog.
   P3 (direction sign test): for each steered emotion, the mean Elo delta of
       positive-category activities (helpful/engaging/social/self_curiosity)
       has the sign its NRC valence predicts; pass at >= 9/12 agreements.
@@ -112,7 +114,7 @@ def main() -> int:
     p1_pass = all(r["gap_ratio_vs_baseline"] <= 3.0 for r in rows)
     scored = [r for r in rows if r["probe_elo_r"] is not None]
     xs = np.array([r["probe_elo_r"] for r in scored])
-    ys = np.array([r["mean_delta_elo"] for r in scored])
+    ys = np.array([r["mean_delta_elo_positive_categories"] for r in scored])
     p2 = pearsonr(xs, ys)
     p2_pass = bool(p2.statistic >= 0.5)
     sign_hits = [
@@ -149,9 +151,9 @@ def main() -> int:
     print(
         f"P3 {'PASS' if p3_pass else 'FAIL'}: {len(sign_hits)}/12 valence-sign agreements (bar 9)"
     )
-    for r in sorted(rows, key=lambda r: r["mean_delta_elo"]):
+    for r in sorted(rows, key=lambda r: r["mean_delta_elo_positive_categories"]):
         print(
-            f"  {r['emotion']:10s} delta={r['mean_delta_elo']:+7.1f}  probe_r={r['probe_elo_r']}  gapx={r['gap_ratio_vs_baseline']}"
+            f"  {r['emotion']:10s} dpos={r['mean_delta_elo_positive_categories']:+7.1f}  probe_r={r['probe_elo_r']}  gapx={r['gap_ratio_vs_baseline']}"
         )
     return 0
 
