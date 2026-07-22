@@ -81,9 +81,18 @@ ARTIFACTS: list[tuple[str, str]] = [
         "steering_it_a8_fixed/",
         "E2 alpha=8 rerun with the padding fix — the evidence-bearing version",
     ),
-    ("emotion_vectors_it_means.npz", "instruct-model emotion means [171, 20, 5376] fp16"),
-    ("e6_scale_means.npz", "E6 scale-test probe means at n in {16,64,128,256} stories/emotion"),
-    ("e7_neutral_bundle.npz", "E7 neutral-transcript activation vectors [128, 20, 5376]"),
+    (
+        "emotion_vectors_it_means.npz",
+        "instruct-model emotion means [171, 20, 5376] fp16 — LINEAGE: extracted from the EXTERNAL gemma-4-4B story corpus (snae/emotion_stories_gemma_4_4B)",
+    ),
+    (
+        "e6_scale_means.npz",
+        "E6 scale-test probe means at n in {16,64,128,256} stories/emotion — LINEAGE: SELF-GENERATED stories (written by the probed model, abotresol/emotion-stories-gemma-4-31b-it)",
+    ),
+    (
+        "e7_neutral_bundle.npz",
+        "E7 neutral-transcript activation vectors [128, 20, 5376] — LINEAGE: neutral transcripts written by the probed model",
+    ),
     ("e8_template_diagnostic.json", "E8 confound diagnostic, instruct last-token readout"),
     ("e8_template_diagnostic_mean_all.json", "E8, mean-all readout"),
     ("e8_template_diagnostic_mean_content.json", "E8, mean-content readout"),
