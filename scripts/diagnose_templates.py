@@ -88,10 +88,15 @@ def panel_diagnostics(
 
 
 def main() -> int:
+    import argparse  # noqa: PLC0415  (single-use CLI shim, mirrors the module docstring)
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--readout", choices=("last", "mean_all", "mean_content"), default="last")
+    args = parser.parse_args()
     prompts = [json.loads(line) for line in open("results/probe_sweep_it/prompts.jsonl")]
     sweep = np.load("results/probe_sweep_it/activations.npz", allow_pickle=True)
     layer_pos = list(map(int, sweep["layers"])).index(LAYER)
-    acts_all = sweep["chat_last"].astype(np.float64)[:, layer_pos, :]
+    acts_all = sweep[f"chat_{args.readout}"].astype(np.float64)[:, layer_pos, :]
 
     bundle = np.load("results/emotion_vectors_it_means.npz", allow_pickle=True)
     emotions = list(map(str, bundle["emotions"]))
@@ -122,14 +127,18 @@ def main() -> int:
     shares = [p["common_mode_share"] for p in panels.values()]
     out = {
         "experiment": "Q1.H2.E8",
-        "config": "gemma-4-31b-it, chat format, last token, layer 33",
+        "config": f"gemma-4-31b-it, chat format, {args.readout} readout, layer 33",
         "neutral_pcs_removed": int(n_removed),
         "panels": panels,
         "r1_read": f"common-mode share median {float(np.median(shares)):.3f}; "
         f"{sum(s < 0.8 for s in shares)}/{len(shares)} panels below 0.8",
         "r4_paper_reference_range": 0.16,
     }
-    Path("results/e8_template_diagnostic.json").write_text(json.dumps(out, indent=2) + "\n")
+    Path(
+        f"results/e8_template_diagnostic_{args.readout}.json"
+        if args.readout != "last"
+        else "results/e8_template_diagnostic.json"
+    ).write_text(json.dumps(out, indent=2) + "\n")
     for name, p in panels.items():
         print(
             f"{name:10s} common={p['common_mode_share']:.2f} "
