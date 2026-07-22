@@ -131,3 +131,20 @@ def analyze(results_dir: Path, lexicon_file: Path, out_file: Path) -> dict[str, 
     out_file.parent.mkdir(parents=True, exist_ok=True)
     out_file.write_text(json.dumps(result, indent=2) + "\n")
     return result
+
+
+def project_out_neutral(
+    probe_means: "Float[np.ndarray, 'emotions d_model']",
+    neutral_vectors: "Float[np.ndarray, 'stories d_model']",
+    variance_threshold: float = 0.5,
+) -> tuple["Float[np.ndarray, 'emotions d_model']", int]:
+    """The paper's confound-removal step, absent from the reference code (a
+    deviation we inherited, caught 2026-07-21): PCA the pooled activations of
+    emotionally neutral transcripts, take the top components up to
+    variance_threshold cumulative explained variance, and project them out of
+    the probe vectors. Returns (projected probes, n_components_removed)."""
+    centered = neutral_vectors - neutral_vectors.mean(axis=0)
+    pca = PCA(n_components=min(centered.shape)).fit(centered)
+    k = int(np.searchsorted(np.cumsum(pca.explained_variance_ratio_), variance_threshold)) + 1
+    basis = pca.components_[:k]
+    return probe_means - (probe_means @ basis.T) @ basis, k

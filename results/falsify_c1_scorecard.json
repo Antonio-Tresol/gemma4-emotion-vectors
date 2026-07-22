@@ -1,0 +1,14 @@
+{
+  "claim": "Q1.H1.C1",
+  "observed_abs_r": 0.8328,
+  "permutation_p": 0.0,
+  "n_permutations": 10000,
+  "bootstrap_ci95": [
+    0.7769,
+    0.8791
+  ],
+  "spearman_r": 0.6815,
+  "drop5_extreme_valence_abs_r": 0.8254,
+  "thresholds": "p<0.001, ci_low>0.6, drop5>0.6",
+  "verdict": "survived"
+}

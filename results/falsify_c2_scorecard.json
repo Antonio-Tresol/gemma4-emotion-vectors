@@ -1,0 +1,24 @@
+{
+  "claim": "Q1.H2.C2",
+  "prediction": "battery best scores rise with stories-per-emotion if noise binds",
+  "best_scores_by_n": {
+    "16": [
+      5,
+      6
+    ],
+    "64": [
+      5,
+      4
+    ],
+    "128": [
+      5,
+      5
+    ],
+    "256": [
+      4,
+      5
+    ]
+  },
+  "probe_convergence_note": "directions converge to cos 0.997 by n=128 (notebook 08)",
+  "verdict": "failed"
+}

@@ -9,6 +9,16 @@ is appended as it is produced, so the run is resumable; the grouped
 {emotion, stories} file the extraction pipeline reads is assembled at the end.
 
     uv run python scripts/generate_dialogue_stories.py  # on the pod, tmux
+
+Backends: --backend vllm (default; continuous batching — measured ~9 min for
+2,424 stories where the HF loop needed hours) or --backend hf (dependency-free
+fallback; launchers auto-fall-back on nonzero vllm exit).
+
+vllm setup is NOT pip-install-and-go on the Blackwell pod: run
+scripts/pod/setup_vllm_env.sh once and export VLLM_ATTENTION_BACKEND=TRITON_ATTN
+and VLLM_USE_FLASHINFER_SAMPLER=0 in the launcher. Symptom table for the three
+failure modes: notes/vllm-parallel-inference-template.md (Blackwell survival
+guide). vllm stays out of pyproject: no macOS wheels, generation-only.
 """
 
 from __future__ import annotations
@@ -24,20 +34,34 @@ try:
 except ModuleNotFoundError as exc:  # torch lives in the gpu extra; this is a GPU entry point
     raise SystemExit(f"missing {exc.name}: this entry point needs `uv sync --extra gpu`") from exc
 
-GEN_INSTRUCTION = (
-    "Write a short scene of dialogue between two people, around 150 words, in which one of "
-    "them is experiencing {emotion}. Do not name the emotion anywhere in the text. Use the "
-    "format:\nA: ...\nB: ..."
-)
+INSTRUCTIONS = {
+    "dialogue": (
+        "Write a short scene of dialogue between two people, around 150 words, in which one of "
+        "them is experiencing {emotion}. Do not name the emotion anywhere in the text. Use the "
+        "format:\nA: ...\nB: ..."
+    ),
+    "story": (
+        "Write a short third-person story, around 150 words, about a person experiencing "
+        "{emotion}. Do not name the emotion anywhere in the text."
+    ),
+    "neutral": (
+        "Write a short, emotionally neutral third-person transcript of an everyday activity "
+        "(for example: assembling furniture, following a recipe, describing a commute, "
+        "documenting an inventory), around 150 words. Keep it strictly factual and free of "
+        "emotional content."
+    ),
+}
 
 
-def gen_prompt(tokenizer: object, emotion: str) -> str:
-    instruction = GEN_INSTRUCTION.format(emotion=emotion)
+def gen_prompt(tokenizer: object, emotion: str, style: str) -> str:
+    instruction = (
+        INSTRUCTIONS[style].format(emotion=emotion) if style != "neutral" else INSTRUCTIONS[style]
+    )
     if tokenizer.chat_template:
         return tokenizer.apply_chat_template(
             [{"role": "user", "content": instruction}], tokenize=False, add_generation_prompt=True
         )
-    return f"Task: {instruction}\n\nDialogue:\nA:"
+    return f"Task: {instruction}\n\n" + ("Dialogue:\nA:" if style == "dialogue" else "Story:")
 
 
 def existing_counts(path: Path) -> dict[str, int]:
@@ -67,9 +91,60 @@ def generate_batch(lm: object, prompt: str, n: int, seed: int, max_new: int) -> 
     return [c.strip() for c in completions if len(c.strip()) > 100]
 
 
+def pending_prompts(
+    counts: dict[str, int], emotions: list[str], args: object, tokenizer: object
+) -> list[tuple[str, str]]:
+    todo: list[tuple[str, str]] = []
+    for emotion in emotions:
+        need = args.per_emotion - counts.get(emotion, 0)
+        todo += [(emotion, gen_prompt(tokenizer, emotion, args.style))] * max(0, need)
+    return todo
+
+
+def run_vllm(args: object, emotions: list[str], raw_path: Path, logger: object) -> None:
+    """Generate every pending completion in one continuously-batched pass,
+    with one top-up round for completions the length filter rejects."""
+    from transformers import AutoTokenizer  # noqa: PLC0415
+    from vllm import LLM, SamplingParams  # noqa: PLC0415 — pod-only dependency
+
+    tokenizer = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
+    # enforce_eager: this card (SM 12.x Blackwell) trips vLLM's compile path on
+    # CUDA < 12.9 wheels; eager mode skips it. max_model_len bounds the KV cache
+    # (defaults to the model's 262k context, far beyond these ~500-token prompts).
+    llm = LLM(
+        model=args.model, dtype="bfloat16", seed=args.seed, enforce_eager=True, max_model_len=2048
+    )
+    for round_idx in range(2):
+        counts = existing_counts(raw_path)
+        todo = pending_prompts(counts, emotions, args, tokenizer)
+        if not todo:
+            break
+        logger.info(f"vllm round {round_idx}: {len(todo)} completions pending")
+        params = [
+            SamplingParams(
+                temperature=0.9,
+                top_p=0.95,
+                max_tokens=args.max_new_tokens,
+                seed=args.seed + round_idx * 100_000 + i,
+            )
+            for i in range(len(todo))
+        ]
+        outputs = llm.generate([prompt for _, prompt in todo], params)
+        kept = 0
+        with open(raw_path, "a") as f:
+            for (emotion, _), out in zip(todo, outputs):
+                text = out.outputs[0].text.strip()
+                if len(text) > 100:
+                    f.write(json.dumps({"emotion": emotion, "text": text}) + "\n")
+                    kept += 1
+        logger.info(f"vllm round {round_idx}: kept {kept}/{len(todo)}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", default="google/gemma-4-31b")
+    parser.add_argument("--backend", choices=["vllm", "hf"], default="vllm")
+    parser.add_argument("--style", choices=list(INSTRUCTIONS), default="dialogue")
     parser.add_argument("--per-emotion", type=int, default=16)
     parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--max-new-tokens", type=int, default=300)
@@ -79,17 +154,24 @@ def main() -> int:
 
     logger = setup_logger(args.out_dir / "generate.log")
     raw_path = args.out_dir / "dialogues_raw.jsonl"
-    emotions = [target for _, target, _ in SCENARIOS]
+    emotions = ["neutral"] if args.style == "neutral" else [target for _, target, _ in SCENARIOS]
     counts = existing_counts(raw_path)
     logger.info(f"{len(emotions)} emotions x {args.per_emotion}; resuming from {counts or '{}'}")
-    lm, _ = load_model_bf16(args.model, logger.info)
+    if args.backend == "vllm":
+        run_vllm(args, emotions, raw_path, logger)
+        counts = existing_counts(raw_path)
+        emotions_hf: list[str] = []  # vllm path handles everything
+    else:
+        emotions_hf = emotions
+    if emotions_hf:
+        lm, _ = load_model_bf16(args.model, logger.info)
 
-    for emotion in emotions:
+    for emotion in emotions_hf:
         batch_idx = 0
         while counts.get(emotion, 0) < args.per_emotion:
             texts = generate_batch(
                 lm,
-                gen_prompt(lm.tokenizer, emotion),
+                gen_prompt(lm.tokenizer, emotion, args.style),
                 min(args.batch_size, args.per_emotion - counts.get(emotion, 0)),
                 args.seed + hash(emotion) % 10_000 + batch_idx,
                 args.max_new_tokens,

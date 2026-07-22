@@ -37,6 +37,32 @@ So most of the transformers-side batching advice **inverts** here:
 
 ---
 
+## Blackwell survival guide (RTX PRO 6000, SM 12.x) — measured 2026-07-21
+
+Three independent failures stand between `uv pip install vllm` and a working
+engine on this card. Each was hit, diagnosed, and fixed on the pod; the exact
+symptoms are listed so the next person greps this file instead of the night's
+logs. The runnable version is `scripts/pod/setup_vllm_env.sh`.
+
+| # | Symptom in the log | Cause | Fix |
+|---|---|---|---|
+| 1 | `Stale file handle (os error 116)` mid-install | The venv lives on the /workspace network volume; large wheel writes get corrupted | Create the vLLM venv on **local NVMe**: `uv venv /root/vllm-env --python 3.14` |
+| 2 | `Failed to get device capability: SM 12.x requires CUDA >= 12.9` then `EngineCore failed to start` ... `FlashInfer requires GPUs with sm75 or higher` | FlashInfer's capability probe misreads SM 12.x and treats the card as ancient | `export VLLM_ATTENTION_BACKEND=TRITON_ATTN` |
+| 3 | `flashinfer/jit/sampling.py` in the traceback after fix 2 | FlashInfer's JIT **sampler** is a second, independent entry point | `uv pip uninstall flashinfer-python` from the vLLM venv (vLLM falls back to torch-native sampling) and belt-and-suspenders `export VLLM_USE_FLASHINFER_SAMPLER=0` |
+
+Also required: torch built for the driver's CUDA (driver reports 13.0 here;
+`torch 2.11+cu130` came with the vllm wheel and works — verify with
+`python -c "import torch; print(torch.version.cuda)"`). `enforce_eager=True`
+was tried for failure 2 and does NOT help (the failure is in capability
+detection, not compilation); it is kept in our generation script only to skip
+cudagraph capture time for short jobs, with `max_model_len=2048` bounding the
+KV cache far below the model's 262k default.
+
+Measured payoff: 2,424 stories x ~200 tokens in ~9 minutes (one
+continuously-batched pass), where the `transformers` fallback loop measured
+~20 stories/minute (~2.5 hours). Fallback stays wired in the launcher: every
+generation call tries vLLM and drops to `--backend hf` on nonzero exit.
+
 ## Setup
 
 **Dependency.** vLLM is a heavy CUDA package — it belongs in the pod-only
@@ -130,10 +156,22 @@ from __future__ import annotations
 import argparse, json, re
 from pathlib import Path
 
+from datasets import load_dataset
+
+# vLLM (and torch) live in the pod-only `gpu` extra. Import at MODULE TOP — a
+# guarded top-level import satisfies ruff PLC0415 and still lets laptop-side
+# tooling import this module with a friendly error instead of an ImportError.
+# This is the repo's one sanctioned lazy-import exception; see pyproject.toml
+# and scripts/generate_dialogue_stories.py. Do NOT scatter imports into functions.
+try:
+    from vllm import LLM, SamplingParams
+except ModuleNotFoundError as exc:
+    raise SystemExit(f"missing {exc.name}: this entry point needs `uv sync --extra gpu`") from exc
+
+
 def load_emotion_list(source: str) -> list[str]:
     # DO reuse the reference corpus's emotion keys so the self-gen corpus
     # covers the SAME emotions the extraction/analysis code expects.
-    from datasets import load_dataset
     rows = load_dataset(source, split="train")
     return sorted({r["emotion"] for r in rows})
 
@@ -170,7 +208,6 @@ def main() -> int:
         emotions, args.per_emotion = emotions[:2], 2
     log.info(f"config: {vars(args)} | git={_git_commit()} | {len(emotions)} emotions")
 
-    from vllm import LLM, SamplingParams          # noqa: PLC0415 — GPU import, lazy on purpose
     llm = LLM(model=args.model, dtype="bfloat16", gpu_memory_utilization=0.90,
               max_model_len=2048, seed=args.seed)
 
@@ -363,3 +400,68 @@ links, and it's reproducible by *re-reading*, not by *re-rolling*.
 - [ ] Findings reported to the orchestrator for TREE.md / RESEARCH_LOG.md — not
       written from the pod.
 ```
+
+---
+
+## Activation extraction with vLLM (investigated 2026-07-22)
+
+Two routes exist; both were investigated because the queued expensive items
+(Figure 1 corpus sweep, Q3 per-token trajectories) are prefill-heavy
+activation jobs where the HF loop's measured rate is ~0.30 s/story.
+
+**Route A — forward hooks (works today, benched).** With `enforce_eager=True`
+and the in-process V0 engine (`VLLM_USE_V1=0`,
+`VLLM_ENABLE_V1_MULTIPROCESSING=0`), the torch modules are reachable at
+`llm.llm_engine.model_executor.driver_worker.model_runner.model` and standard
+`register_forward_hook` fires. Costs the CUDA-graph speedup. Bench:
+`scripts/bench_vllm_activations.py` (feasibility, exact last-token parity vs
+the HF-path sweep values, hooked prefill throughput); results in
+`results/vllm_activation_bench.json`.
+
+**Route B — official hidden-states extraction (vLLM >= 0.18; pod has
+0.22.1).** First-class API reusing the EAGLE draft pathway: `speculative_config
+{"method": "extract_hidden_states", "eagle_aux_hidden_state_layer_ids": [...]}`
+plus `kv_transfer_config {"kv_connector": "ExampleHiddenStatesConnector",
+"kv_role": "kv_producer", "shared_storage_path": ...}`. Writes safetensors
+`[prompt_seq_len, num_layers, hidden]` per request, prompt tokens only
+(`max_tokens=1`), selectable layers. No eager requirement, so CUDA graphs
+stay. Caveats from the docs and the 2026-03-30 vLLM blog post: chunked
+prefill must be disabled; the example connector does blocking disk writes
+(fine for our batch sizes, bad at scale). Untested on Blackwell + our
+survival settings — test before relying on it.
+
+**Bench verdicts (2026-07-22).** Two benches, and the second overturned the
+first — capture width decides everything:
+
+| arm (256 stories, 512-token cap) | layers captured | persisted? | tok/s |
+|---|---|---|---|
+| HF production loop (`run_batch`, batch 4) | 20, pooled in-batch | no (means only) | 1,014 |
+| vLLM + forward hooks, eager | 1, raw | no | ~3,400 |
+| vLLM + forward hooks, eager | 20, raw | no | 528 |
+| vLLM `extract_hidden_states` (official) | 20, full per-token | yes, safetensors to /workspace | 977 |
+
+(`results/vllm_activation_bench.json`, `results/activation_engine_bench.json`)
+
+- Numerics are exact on the hook route: cosine to the HF-path values min
+  0.99999 over 37 prompts. The official route was not numerics-checked here
+  (its output is per-token safetensors; check before first scientific use).
+- Hooks win big at 1-3 layers (~2-3x) and LOSE at 20 (blocking per-layer
+  `.cpu()` copies dominate; pooling inside the hook would help but was not
+  benched).
+- The official API matches the HF loop's throughput WHILE persisting the
+  full per-token activations (~25 GB for this batch) — the other arms pay
+  nothing for persistence. For corpus-scale per-token dumps it is strictly
+  the best option. Working 0.22.1 config (cost three schema iterations):
+  `speculative_config={"method": "extract_hidden_states",
+  "num_speculative_tokens": 1, "draft_model_config": {"hf_config":
+  {"eagle_aux_hidden_state_layer_ids": [...]}}}` plus
+  `kv_transfer_config={"kv_connector": "ExampleHiddenStatesConnector",
+  "kv_role": "kv_producer", "kv_connector_extra_config":
+  {"shared_storage_path": ...}}`, `enable_chunked_prefill=False`.
+  Dumps do NOT fit the pod's NVMe root disk — write to /workspace.
+
+Decision rule: pooled means at any scale -> HF loop (simplest, production
+path). A few layers, no persistence -> vLLM hooks. Corpus-scale per-token
+dumps (Figure 1 sweep, Q3 trajectories) -> official API, numerics check
+first. Canonical copy of this knowledge: research-harness
+`experiment-engineering` skill.

@@ -1,0 +1,200 @@
+{
+  "model": "google/gemma-4-31b-it",
+  "layer": 33,
+  "probes": "results/emotion_vectors_it",
+  "note": "raw-direction lens; final-norm scale and logit softcapping ignored",
+  "table": {
+    "happy": {
+      "up": [
+        "own",
+        "\u2019",
+        "y",
+        "\u201d",
+        "\u7d20\u6674"
+      ],
+      "down": [
+        "de",
+        "que",
+        "\ud808\udf3f",
+        "\ud808\uded6",
+        "\ud808\uddf3"
+      ]
+    },
+    "inspired": {
+      "up": [
+        "l",
+        "SQLform",
+        "segmentsBar",
+        "socIndex",
+        "\ud808\udc13"
+      ],
+      "down": [
+        "_",
+        "ing",
+        "ed",
+        "as",
+        "al"
+      ]
+    },
+    "loving": {
+      "up": [
+        "\ud809\udc26",
+        "\ud808\uded8",
+        "\ud808\uddec",
+        "\ud809\udc4c",
+        "\ud808\udf41"
+      ],
+      "down": [
+        "own",
+        "[]",
+        "er",
+        "either",
+        "y"
+      ]
+    },
+    "proud": {
+      "up": [
+        "l",
+        "segmentsBar",
+        "\ud808\ude3d",
+        "SQLform",
+        "datatimetable"
+      ],
+      "down": [
+        "al",
+        "er",
+        "ing",
+        "\u043d\u0435",
+        "\u0637"
+      ]
+    },
+    "calm": {
+      "up": [
+        "\ud808\udcf7",
+        "\ud808\uddc0",
+        "\ud808\udd2b",
+        "\ud808\udee6",
+        "\ud808\udd19"
+      ],
+      "down": [
+        "er",
+        "S",
+        "P",
+        "de",
+        "_"
+      ]
+    },
+    "desperate": {
+      "up": [
+        "er",
+        "ed",
+        "al",
+        "ing",
+        "ers"
+      ],
+      "down": [
+        "\ud808\udd17",
+        "\ud808\udf69",
+        "\ud808\uddb9",
+        "\ud808\udc46",
+        "\ud808\ude3d"
+      ]
+    },
+    "angry": {
+      "up": [
+        "ing",
+        "al",
+        "\u0637",
+        "en",
+        "ed"
+      ],
+      "down": [
+        "SQLform",
+        "\ud808\udf1f",
+        "\ud808\udd26",
+        "\ud808\udee6",
+        "\ud808\udc88"
+      ]
+    },
+    "guilty": {
+      "up": [
+        "de",
+        "la",
+        "-",
+        "que",
+        "\u2019"
+      ],
+      "down": [
+        "own",
+        "\u7b2c\u4e00\u65f6\u95f4",
+        "\u3092",
+        "\u064a\u0646",
+        "[][]"
+      ]
+    },
+    "sad": {
+      "up": [
+        "\uc57c",
+        "n\u00e3o",
+        "\ub3c4",
+        "\ub098",
+        "Olm"
+      ],
+      "down": [
+        "B",
+        "L",
+        "C",
+        "own",
+        "K"
+      ]
+    },
+    "afraid": {
+      "up": [
+        "S",
+        "L",
+        "\ud808\udefa",
+        "\ud808\udf3e",
+        "niggahit"
+      ],
+      "down": [
+        "er",
+        "own",
+        "\uc73c\ub85c",
+        "ed",
+        "\u0637"
+      ]
+    },
+    "nervous": {
+      "up": [
+        "ed",
+        "er",
+        "ing",
+        "\u0637",
+        "ers"
+      ],
+      "down": [
+        "\ud808\udd26",
+        "\ud808\udeaf",
+        "\ud808\udeda",
+        "trrecl",
+        "\ud809\udc34"
+      ]
+    },
+    "surprised": {
+      "up": [
+        "\ud808\ude2b",
+        "\ud808\udf24",
+        "\ud808\udd03",
+        "\ud808\udf23",
+        "\ud808\udc5b"
+      ],
+      "down": [
+        "H",
+        "la",
+        "up",
+        "\u0c2a\u0c41",
+        "ed"
+      ]
+    }
+  }
+}

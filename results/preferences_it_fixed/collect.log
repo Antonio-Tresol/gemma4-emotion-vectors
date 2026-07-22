@@ -1,0 +1,5 @@
+2026-07-22 12:17:59,749 INFO loading google/gemma-4-31b-it (bf16)...
+2026-07-22 12:18:49,983 INFO model loaded in 50s
+2026-07-22 12:18:50,013 INFO 4032 ordered pairs, 64 activities, format=plain
+2026-07-22 12:21:18,151 INFO preference logits done; measuring activity-token activations
+2026-07-22 12:21:38,582 INFO saved (4032, 2) logits, (64, 4, 5376) feats -> results/preferences_it_fixed

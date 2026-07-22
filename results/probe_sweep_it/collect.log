@@ -1,0 +1,11 @@
+2026-07-21 21:36:01,273 INFO loading google/gemma-4-31b-it (bf16)...
+2026-07-21 21:36:20,536 INFO model loaded in 19s
+2026-07-21 21:36:20,539 INFO 61 prompts x ['plain', 'chat'] x 20 layers
+2026-07-21 21:36:25,041 INFO 10/61 prompts collected
+2026-07-21 21:36:28,322 INFO 20/61 prompts collected
+2026-07-21 21:36:30,616 INFO 30/61 prompts collected
+2026-07-21 21:36:33,192 INFO 40/61 prompts collected
+2026-07-21 21:36:35,448 INFO 50/61 prompts collected
+2026-07-21 21:36:37,735 INFO 60/61 prompts collected
+2026-07-21 21:36:37,956 INFO 61/61 prompts collected
+2026-07-21 21:36:41,269 INFO saved 61 x 20 layers x ['plain_last', 'plain_mean_all', 'plain_mean_content', 'chat_last', 'chat_mean_all', 'chat_mean_content'] -> results/probe_sweep_it

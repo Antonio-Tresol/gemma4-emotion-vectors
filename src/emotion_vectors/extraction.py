@@ -140,6 +140,11 @@ def load_model_bf16(
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
+    # Gemma-4 tokenizers default to LEFT padding, which silently breaks both
+    # the TOKEN_OFFSET column mask in pool_batch and any sum-1 last-token
+    # index (instrument bug caught 2026-07-22 via the ARENA persona-vectors
+    # audit, TREE Q1.H3.E4). Everything downstream assumes right padding.
+    tokenizer.padding_side = "right"
     log(f"loading {model_name} (bf16)...")
     t0 = time.monotonic()
     model = AutoModelForCausalLM.from_pretrained(
