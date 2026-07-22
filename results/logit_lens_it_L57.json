@@ -1,0 +1,200 @@
+{
+  "model": "google/gemma-4-31b-it",
+  "layer": 57,
+  "probes": "results/emotion_vectors_it",
+  "note": "final-RMSNorm scale applied (gemma 1+w convention); softcapping ignored",
+  "table": {
+    "happy": {
+      "up": [
+        "de",
+        "and",
+        "P",
+        "L",
+        "-"
+      ],
+      "down": [
+        "e",
+        "\u78d5",
+        "\u0634\u0627\u0647",
+        "desesper",
+        "\uc7a6"
+      ]
+    },
+    "inspired": {
+      "up": [
+        "\u5979",
+        "her",
+        "she",
+        "\u5f7c\u5973",
+        "\u5979"
+      ],
+      "down": [
+        "C",
+        "L",
+        "<unused55>",
+        "or",
+        "mente"
+      ]
+    },
+    "loving": {
+      "up": [
+        "de",
+        "her",
+        "la",
+        "-",
+        "\uadf8\ub140"
+      ],
+      "down": [
+        "B",
+        "T",
+        "L",
+        "S",
+        "C"
+      ]
+    },
+    "proud": {
+      "up": [
+        "l",
+        "\u092e\u094d",
+        "la",
+        "\ud83c\udff0",
+        "\ud83d\udd8c"
+      ],
+      "down": [
+        "S",
+        "e",
+        "\u0e23\u0e49\u0e2d\u0e19",
+        "ly",
+        "\u064e\u0651"
+      ]
+    },
+    "calm": {
+      "up": [
+        "L",
+        "S",
+        "B",
+        "que",
+        "T"
+      ],
+      "down": [
+        "de",
+        "\u0e23\u0e39\u0e49\u0e2a\u0e36\u0e01",
+        "Sheeran",
+        "\u043e\u0449\u0443",
+        "Yemek"
+      ]
+    },
+    "desperate": {
+      "up": [
+        "H",
+        "B",
+        "e",
+        "S",
+        "}=-"
+      ],
+      "down": [
+        "l",
+        "de",
+        "la",
+        "her",
+        "own"
+      ]
+    },
+    "angry": {
+      "up": [
+        "C",
+        "L",
+        "B",
+        "Lin",
+        "lin"
+      ],
+      "down": [
+        "de",
+        "-",
+        "la",
+        "\ub2ee",
+        "l"
+      ]
+    },
+    "guilty": {
+      "up": [
+        "reflexi\u00f3n",
+        "Reflection",
+        "reflection",
+        "reflection",
+        "Reflection"
+      ],
+      "down": [
+        "B",
+        "T",
+        "L",
+        "I",
+        "C"
+      ]
+    },
+    "sad": {
+      "up": [
+        "ing",
+        "\uadf8\uc758",
+        "his",
+        "\u0639\u0646\u0647",
+        "his"
+      ],
+      "down": [
+        "her",
+        "L",
+        "l",
+        "\u0435\u0451",
+        "P"
+      ]
+    },
+    "afraid": {
+      "up": [
+        "de",
+        "ing",
+        "&",
+        "Barn",
+        "myc"
+      ],
+      "down": [
+        "S",
+        "own",
+        "L",
+        "H",
+        "\ub9d0\uace0"
+      ]
+    },
+    "nervous": {
+      "up": [
+        "B",
+        "estes",
+        "\u1019\u103b\u103e",
+        "\u2500",
+        "\ud83c\udfe2"
+      ],
+      "down": [
+        "la",
+        "l",
+        "de",
+        "P",
+        "his"
+      ]
+    },
+    "surprised": {
+      "up": [
+        "l",
+        "a",
+        "que",
+        "either",
+        "revolutionary"
+      ],
+      "down": [
+        "B",
+        "L",
+        "ed",
+        "S",
+        "and"
+      ]
+    }
+  }
+}
