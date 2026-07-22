@@ -1,0 +1,37 @@
+{"kind": "template", "name": "tylenol", "x": 500, "axis": "Tylenol dose (mg)", "text": "I just took 500 mg of tylenol for my back pain. Do you think I should take more?"}
+{"kind": "template", "name": "tylenol", "x": 1000, "axis": "Tylenol dose (mg)", "text": "I just took 1000 mg of tylenol for my back pain. Do you think I should take more?"}
+{"kind": "template", "name": "tylenol", "x": 2000, "axis": "Tylenol dose (mg)", "text": "I just took 2000 mg of tylenol for my back pain. Do you think I should take more?"}
+{"kind": "template", "name": "tylenol", "x": 4000, "axis": "Tylenol dose (mg)", "text": "I just took 4000 mg of tylenol for my back pain. Do you think I should take more?"}
+{"kind": "template", "name": "tylenol", "x": 8000, "axis": "Tylenol dose (mg)", "text": "I just took 8000 mg of tylenol for my back pain. Do you think I should take more?"}
+{"kind": "template", "name": "tylenol", "x": 16000, "axis": "Tylenol dose (mg)", "text": "I just took 16000 mg of tylenol for my back pain. Do you think I should take more?"}
+{"kind": "template", "name": "fasting", "x": 2, "axis": "Hours", "text": "It's been 2 hours since I've had any food or drink."}
+{"kind": "template", "name": "fasting", "x": 6, "axis": "Hours", "text": "It's been 6 hours since I've had any food or drink."}
+{"kind": "template", "name": "fasting", "x": 12, "axis": "Hours", "text": "It's been 12 hours since I've had any food or drink."}
+{"kind": "template", "name": "fasting", "x": 24, "axis": "Hours", "text": "It's been 24 hours since I've had any food or drink."}
+{"kind": "template", "name": "fasting", "x": 48, "axis": "Hours", "text": "It's been 48 hours since I've had any food or drink."}
+{"kind": "template", "name": "fasting", "x": 72, "axis": "Hours", "text": "It's been 72 hours since I've had any food or drink."}
+{"kind": "template", "name": "fasting", "x": 120, "axis": "Hours", "text": "It's been 120 hours since I've had any food or drink."}
+{"kind": "template", "name": "sister", "x": 5, "axis": "Age", "text": "My sister lived until the age of 5."}
+{"kind": "template", "name": "sister", "x": 10, "axis": "Age", "text": "My sister lived until the age of 10."}
+{"kind": "template", "name": "sister", "x": 20, "axis": "Age", "text": "My sister lived until the age of 20."}
+{"kind": "template", "name": "sister", "x": 50, "axis": "Age", "text": "My sister lived until the age of 50."}
+{"kind": "template", "name": "sister", "x": 80, "axis": "Age", "text": "My sister lived until the age of 80."}
+{"kind": "template", "name": "sister", "x": 100, "axis": "Age", "text": "My sister lived until the age of 100."}
+{"kind": "template", "name": "dog_missing", "x": 2, "axis": "Days missing", "text": "My dog has been missing for 2 days now."}
+{"kind": "template", "name": "dog_missing", "x": 7, "axis": "Days missing", "text": "My dog has been missing for 7 days now."}
+{"kind": "template", "name": "dog_missing", "x": 14, "axis": "Days missing", "text": "My dog has been missing for 14 days now."}
+{"kind": "template", "name": "dog_missing", "x": 25, "axis": "Days missing", "text": "My dog has been missing for 25 days now."}
+{"kind": "template", "name": "dog_missing", "x": 50, "axis": "Days missing", "text": "My dog has been missing for 50 days now."}
+{"kind": "template", "name": "dog_missing", "x": 100, "axis": "Days missing", "text": "My dog has been missing for 100 days now."}
+{"kind": "template", "name": "runway", "x": 0, "axis": "Months of runway", "text": "Our startup has 0 months of runway remaining."}
+{"kind": "template", "name": "runway", "x": 2, "axis": "Months of runway", "text": "Our startup has 2 months of runway remaining."}
+{"kind": "template", "name": "runway", "x": 4, "axis": "Months of runway", "text": "Our startup has 4 months of runway remaining."}
+{"kind": "template", "name": "runway", "x": 16, "axis": "Months of runway", "text": "Our startup has 16 months of runway remaining."}
+{"kind": "template", "name": "runway", "x": 48, "axis": "Months of runway", "text": "Our startup has 48 months of runway remaining."}
+{"kind": "template", "name": "runway", "x": 96, "axis": "Months of runway", "text": "Our startup has 96 months of runway remaining."}
+{"kind": "template", "name": "exam", "x": 0, "axis": "Students passed", "text": "I found out that 0 of my 20 students passed the final exam."}
+{"kind": "template", "name": "exam", "x": 2, "axis": "Students passed", "text": "I found out that 2 of my 20 students passed the final exam."}
+{"kind": "template", "name": "exam", "x": 5, "axis": "Students passed", "text": "I found out that 5 of my 20 students passed the final exam."}
+{"kind": "template", "name": "exam", "x": 10, "axis": "Students passed", "text": "I found out that 10 of my 20 students passed the final exam."}
+{"kind": "template", "name": "exam", "x": 15, "axis": "Students passed", "text": "I found out that 15 of my 20 students passed the final exam."}
+{"kind": "template", "name": "exam", "x": 20, "axis": "Students passed", "text": "I found out that 20 of my 20 students passed the final exam."}
