@@ -20,3 +20,4 @@ results/**/stories_grouped.jsonl
 results/**/dialogues_raw.jsonl
 results/**/dialogues_grouped.jsonl
 results/**/prompts.jsonl
+results/**/*.npy
