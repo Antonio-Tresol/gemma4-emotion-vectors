@@ -24,6 +24,7 @@ centered norms.
 from __future__ import annotations
 
 import html
+import textwrap
 
 import numpy as np
 import plotly.graph_objects as go
@@ -196,6 +197,7 @@ def layer_ternaries(
         cols=len(per_layer_cosines),
         specs=[[{"type": "ternary"}] * len(per_layer_cosines)],
         subplot_titles=layer_names,
+        horizontal_spacing=0.14,
     )
     for col, cosines in enumerate(per_layer_cosines, start=1):
         bary = barycentric(cosines, temperature)
@@ -231,18 +233,21 @@ def layer_ternaries(
 
 
 def _caption(fig: go.Figure, text: str) -> None:
-    """One-line 'how to read' note pinned under the plot area."""
+    """A 'how to read' note pinned under the plot area, wrapped to fit."""
+    wrapped = "<br>".join(textwrap.wrap(text, width=110))
     fig.add_annotation(
-        text=text,
+        text=wrapped,
         xref="paper",
         yref="paper",
         x=0,
-        y=-0.18,
+        y=0,
+        yanchor="top",
+        yshift=-78,  # pixels below the plot area: clears tick labels and the axis title
         showarrow=False,
         align="left",
         font={"size": 11, "color": "gray"},
     )
-    fig.update_layout(margin={"b": 90})
+    fig.update_layout(margin={"b": 150})
 
 
 def transition_locked_figure(
@@ -278,7 +283,7 @@ def transition_locked_figure(
         fig.add_trace(go.Scatter(x=x, y=mean, name=name, line={"color": color, "width": 2.5}))
     fig.add_vline(x=0, line_dash="dash", line_color="gray")
     fig.update_layout(
-        title=f"Transition-locked average ({len(incoming)} transitions){' — ' + label if label else ''}",
+        title=f"Transition-locked average ({len(incoming)} transitions){': ' + label if label else ''}",
         xaxis_title="tokens relative to phase start",
         yaxis_title="centered cosine",
         width=940,
@@ -363,7 +368,7 @@ def circumplex_figure(
         fig,
         "How to read: axes are the PCA plane of the 171 emotion means (Q1.H1's circumplex). "
         "The story should drift toward each phase emotion's known position; same-valence "
-        "transitions move little here by design — this view buys interpretable axes, not "
+        "transitions move little here by design; this view buys interpretable axes, not "
         "per-emotion resolution.",
     )
     return fig
@@ -374,21 +379,63 @@ def cosine_3d_figure(
     emotions: list[str],
     phase_starts: list[int],
     tokens: list[str] | None = None,
+    up_to: int | None = None,
 ) -> go.Figure:
-    """The untransformed view: raw centered cosines as 3D coordinates."""
+    """The untransformed view: raw centered cosines as 3D coordinates.
+
+    ``up_to`` renders the path only through token t (the rest stays faint) and
+    puts a cone arrow at t pointing in the direction of motion."""
     n = len(cosines)
+    t_end = n - 1 if up_to is None else min(up_to, n - 1)
     fig = go.Figure(
         go.Scatter3d(
             x=cosines[:, 0],
             y=cosines[:, 1],
             z=cosines[:, 2],
-            mode="lines+markers",
-            marker={"size": 3, "color": np.arange(n), "colorscale": "Viridis"},
-            line={"width": 2, "color": "rgba(120,120,120,0.5)"},
-            text=_hover(tokens, n),
-            hoverinfo="text",
+            mode="lines",
+            line={"width": 1, "color": "rgba(120,120,120,0.25)"},
+            hoverinfo="skip",
+            showlegend=False,
         )
     )
+    fig.add_trace(
+        go.Scatter3d(
+            x=cosines[: t_end + 1, 0],
+            y=cosines[: t_end + 1, 1],
+            z=cosines[: t_end + 1, 2],
+            mode="lines+markers",
+            marker={
+                "size": 3,
+                "color": np.arange(t_end + 1),
+                "colorscale": "Viridis",
+                "cmin": 0,
+                "cmax": n - 1,
+                "showscale": True,
+                "colorbar": {"title": "token"},
+            },
+            line={"width": 2, "color": "rgba(120,120,120,0.5)"},
+            text=_hover(tokens, n)[: t_end + 1],
+            hoverinfo="text",
+            showlegend=False,
+        )
+    )
+    if t_end >= 1:
+        direction = cosines[t_end] - cosines[t_end - 1]
+        fig.add_trace(
+            go.Cone(
+                x=[float(cosines[t_end, 0])],
+                y=[float(cosines[t_end, 1])],
+                z=[float(cosines[t_end, 2])],
+                u=[float(direction[0])],
+                v=[float(direction[1])],
+                w=[float(direction[2])],
+                sizemode="absolute",
+                sizeref=float(np.abs(cosines).max()) * 0.15,
+                showscale=False,
+                colorscale=[[0, "#111"], [1, "#111"]],
+                hoverinfo="skip",
+            )
+        )
     for start in phase_starts:
         fig.add_trace(
             go.Scatter3d(
@@ -415,9 +462,9 @@ def cosine_3d_figure(
     )
     _caption(
         fig,
-        "How to read: your original mental image — actual measured coordinates, magnitude "
-        "preserved, no softmax. Interactive only (camera-dependent); axes are oblique in "
-        "activation space, so read positions and order, not distances.",
+        "How to read: actual measured coordinates, magnitude preserved, no softmax. Color runs "
+        "dark (start) to yellow; the cone arrow points in the direction of motion at t. Rotate "
+        "it; axes are oblique in activation space, so read positions and order, not distances.",
     )
     return fig
 
