@@ -60,7 +60,9 @@ def story_cosines(
     return picked / np.clip(norms[:, None], 1e-6, None)
 
 
-def smooth(x: Float[np.ndarray, "tokens three"], window: int = 8) -> np.ndarray:
+def smooth(
+    x: Float[np.ndarray, "tokens three"], window: int = 8
+) -> Float[np.ndarray, "tokens three"]:
     """Centered moving average per column; window <= 1 is a no-op."""
     if window <= 1:
         return x
@@ -78,7 +80,7 @@ def smooth(x: Float[np.ndarray, "tokens three"], window: int = 8) -> np.ndarray:
 
 def barycentric(
     cosines: Float[np.ndarray, "tokens three"], temperature: float = DEFAULT_TEMPERATURE
-) -> np.ndarray:
+) -> Float[np.ndarray, "tokens three"]:
     """Softmax over the three cosines — the ternary display transform."""
     z = cosines * temperature
     z = z - z.max(axis=1, keepdims=True)
