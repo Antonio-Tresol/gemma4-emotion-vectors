@@ -35,6 +35,13 @@ paper's Figure 4 reproduces in substance. Also completed E5's registered cross-l
 converged scale: self-generated vs external-corpus contrast directions still cos 0.219 at stability
 0.997 — emotion vectors on this model are corpus-dependent objects (results/e5_cross_lineage_n256.json).
 
+Lineage addendum (user-prompted, same day): registered head-to-head E10 under the working readouts
+answers "own stories or others' stories?" decisively for detection — self-generated n=256 probes pass
+the dual-battery bar across a band of layers (11/12+9/12 at layer 33, the sprint's best battery
+result) while corpus probes under matched conventions pass nowhere; preference correlation is a tie
+(~0.6 both). Generator = probed model, the reference's convention, is the better extraction recipe;
+C4's gate should run on the self-generated lineage.
+
 * What I will do next: When the corrected re-collections land: rescore E1/E3/E2 with the original registered reads and record H3's true verdict; run C4's falsify gate (bootstrap over scenarios, selection-adjusted null, dialogue-probe cross-check); quantify the extraction offset impact (re-extract battery emotions, cosine-compare); the two remaining audit items (equal-weight recombination check, raw-text vs chat-template extraction cosine); then rebuild the notebook 03/04 sections and the sprint headline around whatever survives. Q3 scope decision and census queue unchanged, now with C4's outcome as an input. Publication decision (2026-07-22): all 13 Hugging Face datasets (corpora, vectors, and the new experiment-artifacts repo covering every activation/prompt/score so replication needs no re-inference) STAY PRIVATE until sprint end; they flip public together once the final headline passes the validate-claims gate.
 
 ### 2026-07-21
