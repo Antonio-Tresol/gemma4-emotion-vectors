@@ -1,0 +1,28 @@
+[
+  {
+    "arm": "hf",
+    "engine": "transformers, production run_batch, batch 4",
+    "n_stories": 256,
+    "n_tokens": 43568,
+    "seconds": 42.98,
+    "tokens_per_s": 1014
+  },
+  {
+    "arm": "hooks",
+    "engine": "vllm eager + 20 forward hooks (Route A)",
+    "n_stories": 256,
+    "n_tokens": 43568,
+    "seconds": 82.54,
+    "tokens_per_s": 528,
+    "n_captures": 80
+  },
+  {
+    "arm": "official",
+    "engine": "vllm extract_hidden_states + ExampleHiddenStatesConnector (Route B)",
+    "n_stories": 256,
+    "n_tokens": 43568,
+    "seconds": 44.59,
+    "tokens_per_s": 977,
+    "n_safetensors_files": 235
+  }
+]
