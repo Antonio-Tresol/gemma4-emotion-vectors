@@ -44,7 +44,7 @@ import plotly.graph_objects as go
 from emotion_vectors.trajectory_plots import barycentric
 
 SERIES_COLORS = ("#6366f1", "#dc2626", "#d97706")  # one palette for lines, triangle, AND text
-TEXT_COLOR = "#d4d4d4"  # light grey: readable on a dark host theme, ok on light
+TEXT_COLOR = "#000000"  # black text on the enforced white panel (theme-independent)
 
 _LINES_HEIGHT = 500  # plot + native layer slider
 _TERN_HEIGHT = 580
@@ -80,7 +80,7 @@ _JS = Template(
 
   function markSpan(i, on) {
     if (!spans || i < 0 || i >= spans.length) return;
-    spans[i].style.outline = on ? "2px solid #d4d4d4" : "none";
+    spans[i].style.outline = on ? "2px solid #111" : "none";
   }
 
   function showHL(i) {
@@ -108,7 +108,7 @@ _JS = Template(
     for (var k = 0; k < buttons.length; k++) {
       var active = parseInt(buttons[k].dataset.emo, 10) === e;
       buttons[k].style.fontWeight = active ? "700" : "400";
-      buttons[k].style.outline = active ? "2px solid #d4d4d4" : "none";
+      buttons[k].style.outline = active ? "2px solid #111" : "none";
     }
     paint();
   }
@@ -425,7 +425,8 @@ def _inner_html(
     )
     text_div = (
         f'<div id="{text_id}" style="font-family:ui-monospace,monospace;line-height:2.0;'
-        f'color:{TEXT_COLOR};max-width:940px;white-space:pre-wrap;padding:10px 4px">{span_html}</div>'
+        f"color:{TEXT_COLOR};background:#ffffff;max-width:940px;white-space:pre-wrap;"
+        f'padding:10px 12px;border-radius:4px">{span_html}</div>'
     )
     triangle_note = " (or a point on the triangle)" if show_ternary else ""
     caption = (
