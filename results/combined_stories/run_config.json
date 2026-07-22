@@ -1,15 +1,17 @@
 {
   "model": "google/gemma-4-31b-it",
   "triples_file": "/root/cbai-cambria-project/scripts/combined_story_gen/emotions_triples_v1.json",
-  "per_triple": 12,
-  "max_new_tokens": 350,
+  "per_triple": 36,
+  "max_new_tokens": 450,
+  "temperature": 1.3,
+  "top_p": 0.97,
   "gpu_memory_utilization": 0.9,
   "max_model_len": 2048,
   "seed": 20260721,
-  "enforce_eager": true,
-  "smoke": true,
+  "enforce_eager": false,
+  "smoke": false,
   "out_dir": "results/combined_stories",
   "n_combos": 12,
-  "samples_per_combo": 1,
-  "git_commit": "bc72319"
+  "samples_per_combo": 3,
+  "git_commit": "b9bcd77"
 }

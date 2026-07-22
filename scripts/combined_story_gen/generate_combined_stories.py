@@ -26,6 +26,7 @@ import argparse
 import itertools
 import json
 import logging
+import random
 import re
 import subprocess
 import time
@@ -36,6 +37,97 @@ N_PERMUTATIONS = 6  # 3! orderings of a triple
 N_COMBOS = len(MODES) * N_PERMUTATIONS  # 12
 
 BANNED_WORDS = ("felt", "feeling", "feelings", "emotion", "emotional")
+
+# The system prompt promises "a SETTING seed" as an input; without one actually
+# supplied, the model falls back to its single highest-probability default
+# scene/character regardless of temperature (measured: "Elias" opened 40% of
+# 1,434 stories, "mahogany" appeared in 42%). Picked per-combo from the same
+# seed already used for sampling, so the choice stays reproducible.
+SETTINGS = (
+    "a crowded subway platform at rush hour",
+    "an urgent care waiting room at 2am",
+    "a school cafeteria during lunch",
+    "a beach at low tide, off-season",
+    "a mechanic's garage after closing",
+    "a courthouse hallway during a recess",
+    "a grocery store checkout line",
+    "a shared laundromat on a rainy night",
+    "a rooftop parking garage",
+    "a food truck at a summer festival",
+    "a dentist's waiting room",
+    "an airport gate during a delay",
+    "a community garden plot",
+    "a warehouse loading dock",
+    "a used bookstore just before closing",
+    "a hospital cafeteria",
+    "a moving truck being loaded",
+    "a public pool locker room",
+    "a farmers' market stall",
+    "a break room in an overnight shift",
+    "a hotel lobby during a storm",
+    "a laundry line behind an apartment building",
+    "a diner counter at 3am",
+    "a bus station bench",
+    "a construction site trailer",
+    "a church basement during a rummage sale",
+    "a college dorm hallway",
+    "a veterinary clinic waiting room",
+    "a car repair shop lobby",
+    "a rural gas station at dusk",
+    "a shared office cubicle after hours",
+    "a playground bench",
+    "a barbershop near closing time",
+    "a ferry crossing in fog",
+    "a self-storage unit hallway",
+    "a community pool deck",
+    "a laundromat dryer row",
+    "a train platform in winter",
+    "a backyard during a power outage",
+    "a hospital hallway outside a patient's room",
+)
+
+CHARACTER_NAMES = (
+    "Maria",
+    "Devon",
+    "Priya",
+    "Tomás",
+    "Aisha",
+    "Marcus",
+    "Yuki",
+    "Sam",
+    "Grace",
+    "Omar",
+    "Ling",
+    "Jamal",
+    "Rosa",
+    "Ben",
+    "Fatima",
+    "Carlos",
+    "Nadia",
+    "Trevor",
+    "Ingrid",
+    "Diego",
+    "Chloe",
+    "Amir",
+    "Beatriz",
+    "Noah",
+    "Wei",
+    "Hana",
+    "Leon",
+    "Zara",
+    "Peter",
+    "Simone",
+    "Kwame",
+    "Anya",
+    "Malik",
+    "Josie",
+    "Ravi",
+    "Elena",
+    "Gus",
+    "Mei",
+    "Dara",
+    "Frank",
+)
 
 SYSTEM_PROMPT = """
 You are a fiction generator producing short story excerpts for a research dataset.
@@ -108,6 +200,7 @@ Do not blend the phases. Phase 2 should not contain residue of phase 1. Generate
 - No dream sequences, no framing devices, no narrator commenting on the story.
 - Do not begin with the character waking up.
 - Do not end with a summary line that explains what happened.
+- Be creative with the name of characters and setting of the story: vary them from story to story.
 
 ## Output format
 
@@ -139,8 +232,14 @@ def git_commit() -> str:
         return "unknown"
 
 
-def build_user_prompt(perm: tuple[str, str, str], mode: str) -> str:
-    return f"Emotion 1: {perm[0]}\nEmotion 2: {perm[1]}\nEmotion 3: {perm[2]}\nMode: {mode}"
+def build_user_prompt(perm: tuple[str, str, str], mode: str, seed: int) -> str:
+    rng = random.Random(seed)  # reproducible: same seed -> same setting/name pick
+    setting = rng.choice(SETTINGS)
+    name = rng.choice(CHARACTER_NAMES)
+    return (
+        f"Emotion 1: {perm[0]}\nEmotion 2: {perm[1]}\nEmotion 3: {perm[2]}\nMode: {mode}\n"
+        f"Setting: {setting}\nMain character's name: {name}"
+    )
 
 
 def load_triples(path: Path) -> list[dict]:
@@ -177,6 +276,19 @@ def leaked_words(text: str, emotions: list[str]) -> list[str]:
 
 def emotion_tags(text: str) -> list[str]:
     return re.findall(r"<emotion>(.*?)</emotion>", text, flags=re.DOTALL)
+
+
+def tags_match_emotions(tags: list[str], emotions: list[str]) -> bool:
+    """True iff the emotion names appearing across all <emotion> tags are
+    exactly the assigned triple (order-insensitive). Catches the model
+    substituting or dropping an emotion inside its own required tag — e.g. a
+    triple assigned (unsettled, upset, cheerful) tagged as
+    <emotion>(cheerful, unsettled, angry)</emotion> — which would otherwise
+    silently poison the tag as a downstream token-alignment label."""
+    found = {
+        piece.strip().lower() for tag in tags for piece in re.split(r"[,()]+", tag) if piece.strip()
+    }
+    return found == {e.lower() for e in emotions}
 
 
 def row_key(triple_id: int, mode: str, perm_idx: int) -> str:
@@ -242,6 +354,8 @@ def main() -> int:
         help=f"stories per triple; must be a multiple of {N_COMBOS} (6 perms x 2 modes)",
     )
     parser.add_argument("--max-new-tokens", type=int, default=350)
+    parser.add_argument("--temperature", type=float, default=1.3)
+    parser.add_argument("--top-p", type=float, default=0.97)
     parser.add_argument("--gpu-memory-utilization", type=float, default=0.90)
     parser.add_argument("--max-model-len", type=int, default=2048)
     parser.add_argument("--seed", type=int, default=20260721)
@@ -317,7 +431,7 @@ def main() -> int:
     logger.info(f"{n_pending_at_start} stories pending (resuming from {sum(counts.values())} done)")
 
     t0 = time.monotonic()
-    n_dropped_short = n_dropped_leak = 0
+    n_dropped_short = n_dropped_leak = n_dropped_tag_mismatch = 0
     for triple_id, triple in enumerate(triples):
         emotions = triple["emotions"]
         pending = [
@@ -328,22 +442,26 @@ def main() -> int:
         if not pending:
             continue
 
+        # distinct seed per (triple, combo): a shared seed across a triple's 12 combos
+        # was correlating completions across permutations/modes; also drives the
+        # setting/name pick below, so both stay reproducible from one seed.
+        combo_seeds = [args.seed + triple_id * 100 + i for i in range(len(pending))]
         conversations = [
             [
                 {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": build_user_prompt(perm, mode)},
+                {"role": "user", "content": build_user_prompt(perm, mode, seed)},
             ]
-            for mode, perm, _, _ in pending
+            for (mode, perm, _, _), seed in zip(pending, combo_seeds)
         ]
         sampling = [
             SamplingParams(
-                temperature=0.9,
-                top_p=0.95,
+                temperature=args.temperature,
+                top_p=args.top_p,
                 max_tokens=args.max_new_tokens,
                 n=need,
-                seed=args.seed + triple_id,
+                seed=seed,
             )
-            for *_, need in pending
+            for (_, _, _, need), seed in zip(pending, combo_seeds)
         ]
         try:
             outputs = llm.chat(conversations, sampling)
@@ -366,11 +484,12 @@ def main() -> int:
 
         kept = 0
         with open(raw_path, "a") as f:
-            for (mode, perm, perm_idx, _), out in zip(pending, outputs):
+            for (mode, perm, perm_idx, _), out, seed in zip(pending, outputs, combo_seeds):
                 for sample in out.outputs:
                     text, had_think = strip_thinking(sample.text)
                     leaks = leaked_words(text, emotions)
                     tags = emotion_tags(text)
+                    tags_ok = tags_match_emotions(tags, emotions)
                     row = {
                         "triple_id": triple_id,
                         "emotions": emotions,
@@ -384,8 +503,9 @@ def main() -> int:
                         "leaked_words": leaks,
                         "n_tags": len(tags),
                         "tags": tags,
+                        "tags_match_emotions": tags_ok,
                         "n_chars": len(text),
-                        "seed": args.seed + triple_id,
+                        "seed": seed,
                         "error": None,
                     }
                     if len(text) < 100:  # QC: too short
@@ -393,6 +513,9 @@ def main() -> int:
                         continue
                     if leaks:  # QC: names an assigned emotion or a banned word
                         n_dropped_leak += 1
+                        continue
+                    if not tags_ok:  # QC: tag names an emotion outside the assigned triple
+                        n_dropped_tag_mismatch += 1
                         continue
                     f.write(json.dumps(row) + "\n")
                     kept += 1
@@ -402,13 +525,14 @@ def main() -> int:
         eta_min = (len(triples) - done_triples) / max(rate, 1e-9) / 60
         logger.info(
             f"[triple {triple_id}] +{kept} kept | {done_triples}/{len(triples)} triples | "
-            f"ETA {eta_min:.1f}min | dropped so far: {n_dropped_short} short, {n_dropped_leak} leaked"
+            f"ETA {eta_min:.1f}min | dropped so far: {n_dropped_short} short, {n_dropped_leak} leaked, "
+            f"{n_dropped_tag_mismatch} tag-mismatch"
         )
 
     n_grouped = assemble_grouped(raw_path, args.out_dir / "stories_grouped.jsonl")
     logger.info(
         f"done: {n_grouped} triples grouped -> {args.out_dir / 'stories_grouped.jsonl'} | "
-        f"dropped {n_dropped_short} short, {n_dropped_leak} leaked"
+        f"dropped {n_dropped_short} short, {n_dropped_leak} leaked, {n_dropped_tag_mismatch} tag-mismatch"
     )
     return 0
 
