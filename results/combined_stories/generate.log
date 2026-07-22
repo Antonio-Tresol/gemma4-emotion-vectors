@@ -1,2 +1,8 @@
-2026-07-22 15:27:32,586 INFO config: {"model": "google/gemma-4-31b-it", "triples_file": "/root/cbai-cambria-project/scripts/combined_story_gen/emotions_triples_v1.json", "per_triple": 12, "max_new_tokens": 350, "gpu_memory_utilization": 0.9, "max_model_len": 2048, "seed": 20260721, "smoke": true, "out_dir": "results/combined_stories", "n_combos": 12, "samples_per_combo": 1, "git_commit": "d38f790"}
-2026-07-22 15:27:32,586 INFO 2 triples x 12 combos x 1 samples/combo = 24 target stories
+2026-07-22 15:38:31,309 INFO config: {"model": "google/gemma-4-31b-it", "triples_file": "/root/cbai-cambria-project/scripts/combined_story_gen/emotions_triples_v1.json", "per_triple": 12, "max_new_tokens": 350, "gpu_memory_utilization": 0.9, "max_model_len": 2048, "seed": 20260721, "enforce_eager": true, "smoke": true, "out_dir": "results/combined_stories", "n_combos": 12, "samples_per_combo": 1, "git_commit": "bc72319"}
+2026-07-22 15:38:31,309 INFO 2 triples x 12 combos x 1 samples/combo = 24 target stories
+2026-07-22 15:38:40,832 INFO loading google/gemma-4-31b-it into vLLM (enforce_eager=True) — weight load is ~1 min from a local/warm HF cache; CUDA graph capture (skipped if enforce_eager) can add several more minutes on a cold cache with no further log output until it completes
+2026-07-22 15:40:07,661 INFO vLLM engine ready in 87s
+2026-07-22 15:40:07,662 INFO 24 stories pending (resuming from 0 done)
+2026-07-22 15:40:42,866 INFO [triple 0] +12 kept | 1/2 triples | ETA 0.6min | dropped so far: 0 short, 0 leaked
+2026-07-22 15:41:09,167 INFO [triple 1] +12 kept | 2/2 triples | ETA 0.0min | dropped so far: 0 short, 0 leaked
+2026-07-22 15:41:09,169 INFO done: 2 triples grouped -> results/combined_stories/stories_grouped.jsonl | dropped 0 short, 0 leaked
