@@ -430,7 +430,16 @@ prefill must be disabled; the example connector does blocking disk writes
 (fine for our batch sizes, bad at scale). Untested on Blackwell + our
 survival settings — test before relying on it.
 
-Decision rule: if Route A's bench shows clean numerics (cosine > 0.99) and a
-material speedup over 0.30 s/story, hooks are enough for the sprint. Route B
-is the upgrade path if disk-write overhead beats hook overhead at corpus
-scale, or if eager mode proves too slow.
+**Bench verdict (2026-07-22, results/vllm_activation_bench.json).** Route A
+works and is the sprint's answer: hooks fire on the V1 in-process engine
+(multiprocessing disabled; the V0 env vars are ignored on 0.22 and not
+needed), numerics are EXACT (cosine to the HF-path values: min 0.99999,
+mean 1.0 over the 37 sweep prompts), and hooked eager prefill runs ~3,400
+tokens/s vs the HF extraction loop's measured ~1,500 tokens/s — a
+token-normalized ~2.3x, with the caveat that the bench captured 1 layer vs
+the extraction's 20 (per-layer .cpu() copies are the marginal cost, so
+multi-layer capture narrows the gap). Practical rule: HF loop stays fine for
+small probe collections; use vLLM hooks for corpus-scale jobs (Figure 1
+sweep, Q3 per-token trajectories), where ~2x is an hour saved per pod-day.
+Route B (extract_hidden_states) remains the untested upgrade path if
+capture overhead dominates at 20 layers.
