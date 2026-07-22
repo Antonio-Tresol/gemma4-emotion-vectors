@@ -42,6 +42,13 @@ result) while corpus probes under matched conventions pass nowhere; preference c
 (~0.6 both). Generator = probed model, the reference's convention, is the better extraction recipe;
 C4's gate should run on the self-generated lineage.
 
+Publication addendum (user decision, same day, superseding the entry below): all project
+datasets flipped PUBLIC today, ahead of the validate-claims gate — the published material is
+substrate (stories, activations, shards, configs) with lineage-documented cards, not claims;
+claim documents still wait for their gates. Also published today: the Q3 combined-story corpus
+(5,888 stories) and the per-token trajectory substrate (5,888 shards, 6 layers x 207 probes),
+with the fetch() resolver routing both.
+
 Parked question addendum (user-prompted, same day): recorded Q4 in the tree — do emotion-concept
 vectors causally modulate assistant behaviors, sycophancy first? Sparked by the paper's Figure 10
 observation that "loving" activation rises at the Assistant colon regardless of user emotion (quote
