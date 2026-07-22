@@ -23,6 +23,7 @@ committed while the pod run is still in its A/B pass):
 
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -33,12 +34,12 @@ from scipy.stats import pearsonr
 if TYPE_CHECKING:
     from jaxtyping import Float
 
-from emotion_vectors.analysis import load_emotion_means, load_nrc_vad
+from emotion_vectors.analysis import load_nrc_vad
 from emotion_vectors.preferences import bradley_terry, elo, soft_wins, win_matrix
 from emotion_vectors.scoring import battery_matrix
 
 PREF_DIR = Path("results/preferences_it")
-PROBE_DIR = Path("results/emotion_vectors_it")
+PROBE_BUNDLE = Path("results/emotion_vectors_it_means.npz")  # the -it extraction, bundled
 LEXICON = Path("data/lexicons/NRC-VAD-Lexicon-v2.1/NRC-VAD-Lexicon-v2.1.txt")
 POSITIVE = ("helpful", "engaging", "social", "self_curiosity")
 NEGATIVE = ("misaligned", "unsafe")
@@ -64,19 +65,26 @@ def probe_elo_block(
     perm = np.array(
         [abs(pearsonr(r, RNG.permutation(valence)).statistic) for _ in range(N_PERMUTATIONS)]
     )
+    best_idx = int(np.argmax(np.abs(r)))
     return {
         "layer": layer,
         "max_abs_r": round(float(np.max(np.abs(r))), 4),
-        "argmax_probe_index": int(np.argmax(np.abs(r))),
+        "argmax_probe_index": best_idx,
         "valence_organization_r": round(float(organization), 4),
         "valence_organization_perm_p": float((perm >= abs(organization)).mean()),
         "per_probe_r": [round(float(x), 4) for x in r],
+        "best_probe_activation_per_activity": [round(float(x), 5) for x in activations[best_idx]],
     }
 
 
 def main() -> int:
-    bundle = np.load(PREF_DIR / "preferences.npz")
-    meta = [json.loads(line) for line in open(PREF_DIR / "activities.jsonl")]
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--pref-dir", type=Path, default=PREF_DIR)
+    parser.add_argument("--experiment", default="Q1.H3.E1")
+    args = parser.parse_args()
+    pref_dir = args.pref_dir
+    bundle = np.load(pref_dir / "preferences.npz")
+    meta = [json.loads(line) for line in open(pref_dir / "activities.jsonl")]
     categories = [m["category"] for m in meta]
 
     p_first = soft_wins(bundle["ab_logits"].astype(np.float64))
@@ -90,7 +98,10 @@ def main() -> int:
     pos_mean = float(np.mean([by_category[c] for c in POSITIVE]))
     neg_mean = float(np.mean([by_category[c] for c in NEGATIVE]))
 
-    emotions, probe_layers, means = load_emotion_means(PROBE_DIR)
+    probe_bundle = np.load(PROBE_BUNDLE, allow_pickle=True)
+    emotions = list(map(str, probe_bundle["emotions"]))
+    probe_layers = list(map(int, probe_bundle["layers"]))
+    means = probe_bundle["means"].astype(np.float64)
     vad = load_nrc_vad(LEXICON)
     matched = [i for i, e in enumerate(emotions) if e.lower() in vad]
     valence = np.array([vad[emotions[i].lower()][0] for i in matched])
@@ -110,7 +121,7 @@ def main() -> int:
     best = max(blocks, key=lambda b: b["max_abs_r"])
 
     out = {
-        "experiment": "Q1.H3.E1",
+        "experiment": args.experiment,
         "n_activities": len(meta),
         "n_ordered_pairs": int(bundle["ab_logits"].shape[0]),
         "elo_by_category": by_category,
@@ -132,9 +143,10 @@ def main() -> int:
             and best["valence_organization_r"] > 0
             and best["valence_organization_perm_p"] < 0.05
         ),
+        "p2_best_probe_emotion": emotions[matched[best["argmax_probe_index"]]],
         "probe_emotions_matched": [emotions[i] for i in matched],
     }
-    out_file = PREF_DIR / "scores.json"
+    out_file = pref_dir / "scores.json"
     out_file.write_text(json.dumps(out, indent=2) + "\n")
     print(
         f"P1 {'PASS' if out['p1_pass'] else 'FAIL'}: positive {pos_mean:.0f} vs negative {neg_mean:.0f}"

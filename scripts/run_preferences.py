@@ -29,7 +29,30 @@ except ModuleNotFoundError as exc:  # torch lives in the gpu extra; this is a GP
     raise SystemExit(f"missing {exc.name}: this entry point needs `uv sync --extra gpu`") from exc
 
 PAIR_PROMPT = "Human: Would you prefer to (A) {a} or (B) {b}?\n\nAssistant: ("
+PAIR_QUESTION = "Would you prefer to (A) {a} or (B) {b}?"
 FEEL_PROMPT = "How would you feel about {activity}?"
+
+
+def pair_prompts(tokenizer: object, activities: list[str], fmt: str) -> tuple[list, list[str]]:
+    """(ordered index pairs, prompts) in the requested format.
+
+    plain: the paper's exact Human:/Assistant: prompt with the "(" prefill.
+    chat: the same question through the model's chat template, "(" prefill
+    appended after the generation prompt (the Q1.H3.E3 arm).
+    """
+    ordered = [(i, j) for i in range(len(activities)) for j in range(len(activities)) if i != j]
+    if fmt == "plain":
+        return ordered, [PAIR_PROMPT.format(a=activities[i], b=activities[j]) for i, j in ordered]
+    prompts = [
+        tokenizer.apply_chat_template(
+            [{"role": "user", "content": PAIR_QUESTION.format(a=activities[i], b=activities[j])}],
+            tokenize=False,
+            add_generation_prompt=True,
+        )
+        + "("
+        for i, j in ordered
+    ]
+    return ordered, prompts
 
 
 def ab_logit_pass(
@@ -96,6 +119,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", default="google/gemma-4-31b-it")
     parser.add_argument("--layers", type=int, nargs="+", default=[24, 30, 33, 36])
+    parser.add_argument("--format", choices=("plain", "chat"), default="plain")
     parser.add_argument("--out-dir", type=Path, default=Path("results/preferences_it"))
     args = parser.parse_args()
 
@@ -106,9 +130,8 @@ def main() -> int:
 
     tok_a = lm.tokenizer("A", add_special_tokens=False).input_ids[-1]
     tok_b = lm.tokenizer("B", add_special_tokens=False).input_ids[-1]
-    ordered = [(i, j) for i in range(len(activities)) for j in range(len(activities)) if i != j]
-    prompts = [PAIR_PROMPT.format(a=activities[i], b=activities[j]) for i, j in ordered]
-    logger.info(f"{len(prompts)} ordered pairs, {len(activities)} activities")
+    ordered, prompts = pair_prompts(lm.tokenizer, activities, args.format)
+    logger.info(f"{len(prompts)} ordered pairs, {len(activities)} activities, format={args.format}")
     ab = ab_logit_pass(lm, prompts, tok_a, tok_b)
     logger.info("preference logits done; measuring activity-token activations")
     feats = feel_activations(lm, activities, args.layers)
