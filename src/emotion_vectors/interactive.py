@@ -467,3 +467,72 @@ def trajectory_ternary_animation(
         ],
     )
     return fig
+
+
+def trajectory_story_dropdown(
+    entries: list[dict],
+    *,
+    title: str = "",
+    colors: tuple[str, str, str] = ("#dc2626", "#6366f1", "#d97706"),
+) -> go.Figure:
+    """Cosine-lines view with a dropdown over stories.
+
+    Each entry: ``label``, ``emotions`` (3), ``cosines`` [tokens, 3] (column j
+    = phase j's emotion), ``starts`` (phase token starts). Phase markers are
+    per-story shapes swapped through the dropdown's relayout args.
+    """
+    first = entries[0]
+    fig = go.Figure()
+    for k in range(3):
+        fig.add_trace(
+            go.Scatter(
+                x=list(range(len(first["cosines"]))),
+                y=_as_list(np.asarray(first["cosines"])[:, k]),
+                name=first["emotions"][k],
+                line=dict(color=colors[k], width=2),
+            )
+        )
+
+    def shapes(entry: dict) -> list[dict]:
+        return [
+            dict(
+                type="line",
+                x0=s,
+                x1=s,
+                y0=0,
+                y1=1,
+                yref="paper",
+                line=dict(dash="dash", color="gray"),
+            )
+            for s in entry["starts"][1:]
+        ]
+
+    buttons = []
+    for entry in entries:
+        cos = np.asarray(entry["cosines"])
+        buttons.append(
+            dict(
+                label=entry["label"],
+                method="update",
+                args=[
+                    {
+                        "x": [list(range(len(cos)))] * 3,
+                        "y": [_as_list(cos[:, k]) for k in range(3)],
+                        "name": list(entry["emotions"]),
+                    },
+                    {"shapes": shapes(entry)},
+                ],
+            )
+        )
+    fig.update_layout(
+        title=title,
+        xaxis_title="token",
+        yaxis_title="centered cosine",
+        shapes=shapes(first),
+        width=760,
+        height=440,
+        updatemenus=[
+            dict(buttons=buttons, direction="down", x=1.0, xanchor="right", y=1.18, yanchor="top")
+        ],
+    )
+    return fig
