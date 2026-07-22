@@ -12,6 +12,25 @@ verdict and has a collapsible "How to read" underneath.
 | 04 | `04_parity.ipynb` | Where does every figure from the two source papers stand? |
 | 05 | `05_trajectories.ipynb` | Q3 substrate: per-token emotion trajectories over three-emotion stories (exhibits only; reads pending registration) |
 
+## Running them (laptop or the shared pod)
+
+Any clone works the same way — every input resolves through
+`emotion_vectors.artifacts.fetch()`: local `results/` first, the private HF
+datasets otherwise (they flip public at sprint end).
+
+1. `uv sync` (the venv already includes plotly, ipykernel, jupyterlab).
+2. Put an `HF_TOKEN=...` line in the repo-root `.env` — `fetch()` loads it
+   automatically, including inside notebook kernels (both pod clones already
+   have one).
+3. In VS Code / Jupyter, select the **project `.venv`** as the kernel — the
+   conda `arena-env` kernel does not have this package.
+4. Headless check: `.venv/bin/python -m nbconvert --to notebook --execute
+   notebooks/05_trajectories.ipynb --output /tmp/check.ipynb`.
+
+Known exception: notebook 02 needs the NRC VAD lexicon under
+`data/lexicons/`, which is deliberately NOT fetchable (third-party license) —
+download it from saifmohammad.com first.
+
 The three layers of the project, so nothing here is mistaken for something it
 is not: **notebooks are the report** (readable, story-ordered),
 **`results/` is the evidence** (every number traces to a file),
