@@ -201,8 +201,8 @@ def trajectory_lines_scrubber(
         xaxis_title="token",
         yaxis_title="centered cosine",
         yaxis_range=[lo - pad, hi + pad],
-        width=720,
-        height=430,
+        width=940,
+        height=540,
         sliders=[
             dict(
                 active=layers.index(default_layer),
@@ -286,8 +286,8 @@ def trajectory_ternary_scrubber(
             baxis=dict(title=emotions[1]),
             caxis=dict(title=emotions[2]),
         ),
-        width=620,
-        height=560,
+        width=760,
+        height=700,
         sliders=[
             dict(
                 active=layers.index(default_layer),
@@ -338,8 +338,8 @@ def trajectory_heatmap_scrubber(
     fig.update_layout(
         title=title,
         xaxis_title="token",
-        width=780,
-        height=470,
+        width=960,
+        height=620,
         sliders=[
             dict(
                 active=layers.index(default_layer),
@@ -436,8 +436,8 @@ def trajectory_ternary_animation(
             baxis=dict(title=emotions[1]),
             caxis=dict(title=emotions[2]),
         ),
-        width=620,
-        height=580,
+        width=760,
+        height=740,
         updatemenus=[
             dict(
                 type="buttons",
@@ -552,8 +552,8 @@ def trajectory_story_dropdown(
         xaxis_title="token",
         yaxis_title="centered cosine",
         shapes=shapes(first),
-        width=760,
-        height=440,
+        width=940,
+        height=540,
         updatemenus=[
             dict(buttons=buttons, direction="down", x=1.0, xanchor="right", y=1.18, yanchor="top")
         ],
