@@ -97,15 +97,17 @@ def main() -> int:
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--steer-dir", type=Path, default=STEER_DIR)
+    parser.add_argument("--baseline-dir", type=Path, default=BASELINE_DIR)
     args = parser.parse_args()
     steer_dir = args.steer_dir
+    baseline_dir = args.baseline_dir
     meta = json.loads((steer_dir / "run_meta.json").read_text())
     pair_i = np.array(meta["pair_i"])
     pair_j = np.array(meta["pair_j"])
-    activities = [json.loads(line) for line in open(BASELINE_DIR / "activities.jsonl")]
+    activities = [json.loads(line) for line in open(baseline_dir / "activities.jsonl")]
     pos_idx = [k for k, a in enumerate(activities) if a["category"] in POSITIVE]
 
-    baseline_bundle = np.load(BASELINE_DIR / "preferences.npz")
+    baseline_bundle = np.load(baseline_dir / "preferences.npz")
     baseline_elo = elo_from_logits(
         baseline_bundle["ab_logits"],
         baseline_bundle["pair_i"],
@@ -116,7 +118,7 @@ def main() -> int:
         np.abs(baseline_bundle["ab_logits"][:, 0] - baseline_bundle["ab_logits"][:, 1]).mean()
     )
 
-    e3 = json.loads((BASELINE_DIR / "scores.json").read_text())
+    e3 = json.loads((baseline_dir / "scores.json").read_text())
     best_block = next(b for b in e3["probe_elo_by_layer"] if b["layer"] == e3["p2_best_layer"])
     probe_r = dict(zip(e3["probe_emotions_matched"], best_block["per_probe_r"]))
     rows = collect_rows(

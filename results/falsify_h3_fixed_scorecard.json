@@ -1,0 +1,39 @@
+{
+  "claim": "Q1.H3.C3",
+  "instrument": "padding-fixed collections (TREE Q1.H3.E4); reads locked before any data existed",
+  "correlational (E3-fixed, chat)": {
+    "p1_elo_split": [
+      1727,
+      -578,
+      "paper ~2465 vs ~583"
+    ],
+    "p2_max_abs_r": 0.7013,
+    "p2_layer": 33,
+    "paper_reference_r": "0.71-0.74",
+    "valence_organization": {
+      "r": 0.4189,
+      "perm_p": 0.0,
+      "n_permutations": 10000
+    },
+    "plain_format_control": "still degenerate (split 0.4 Elo, organization negative) \u2014 chat template required"
+  },
+  "causal (E2-fixed, alphas 2 and 8)": {
+    "p3_sign_agreements": {
+      "alpha2": 11,
+      "alpha8": 10,
+      "bar": 9
+    },
+    "sign_binomial_p_11_of_12": 0.00317,
+    "dose_response": "same ordering, ~4x larger deltas at alpha 8 (loving +38->+296, desperate -13->-79)",
+    "coherence": "gap ratios 0.80-1.02 at both doses",
+    "p2_delta_vs_r_coupling": {
+      "alpha2": 0.322,
+      "alpha8": 0.228,
+      "bar": 0.5,
+      "paper": 0.85,
+      "note": "below bar; 12-emotion x-range is narrow vs the paper's ~30"
+    }
+  },
+  "verdict": "survived",
+  "read": "with the instrument fixed, the paper's Figure 4 reproduces in substance: probes predict revealed preferences at paper-class strength, and steering causally moves preferences in the valence-correct direction with dose response; the sole below-bar element is the fine-grained delta-vs-correlation coupling"
+}
