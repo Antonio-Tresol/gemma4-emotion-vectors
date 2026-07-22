@@ -1,24 +1,23 @@
-"""Q3 prep — generate the multi-emotion synthetic story battery (ungated pilot).
+"""Q3 prep — generate the multi-emotion synthetic story battery.
 
-This is INFRASTRUCTURE ONLY for Q3.H1.E1 ("synthetic story battery — matched-
-length stories with token-aligned transitions between 2-3 emotions"). Q3 stays
-[planned] in TREE.md until Q1.H1 and Q1.H2 reach survived status (currently
-H1 is [unvalidated], H2 is [weakened]) — see AGENTS.md's gate discipline and
-TREE.md:29. Running this script produces a corpus for pipeline development
-and smoke-testing; it does NOT graduate Q3, and no run from this script is
-logged as a Q3 experiment result until the orchestrator confirms the gate has
-cleared.
+Builds the generation pipeline for Q3.H1.E1 ("synthetic story battery —
+matched-length stories with token-aligned transitions between 2-3 emotions").
+Per TREE.md's Q3 gate note (2026-07-22): H1 is supported (C1 survived), H3 is
+supported (C3 survived), H2 is reopened with C4 pending its own falsify gate
+— the gate is close to satisfied and Q3 preparation is legitimate, though no
+run from this script counts as a logged Q3 experiment result until the
+orchestrator confirms the gate has fully cleared and registers predictions.
 
 Prompt design (system prompt, SIMULTANEOUS/SEQUENTIAL modes, permutation
-scheme) is carried over unchanged from scripts/test_combined_stories.ipynb
-(prototyped there against OpenRouter), swapped here to local vLLM per
-notes/vllm-parallel-inference-template.md. Each of the 173 triples in
-emotions_triples_v1.json is expanded into 6 permutations x 2 modes = 12 prompt
-combinations; --per-triple samples are split evenly across those 12, so
---per-triple must be a multiple of 12.
+scheme) is carried over unchanged from scripts/combined_story_gen/
+test_combined_stories.ipynb (prototyped there against OpenRouter by Peyton
+Li), swapped here to local vLLM per notes/vllm-parallel-inference-template.md.
+Each of the 173 triples in emotions_triples_v1.json is expanded into 6
+permutations x 2 modes = 12 prompt combinations; --per-triple samples are
+split evenly across those 12, so --per-triple must be a multiple of 12.
 
-    uv run --extra gpu python scripts/generate_combined_stories.py --smoke
-    uv run --extra gpu python scripts/generate_combined_stories.py --per-triple 36
+    uv run --extra gpu python scripts/combined_story_gen/generate_combined_stories.py --smoke
+    uv run --extra gpu python scripts/combined_story_gen/generate_combined_stories.py --per-triple 36
 """
 
 from __future__ import annotations
