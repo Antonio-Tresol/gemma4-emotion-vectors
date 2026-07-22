@@ -16,14 +16,14 @@ QUEUED (planned, infrastructure exists), OUT (not replicable here, reason given)
 | Item | What it shows | Status | Where / why |
 |---|---|---|---|
 | Figure 1 | Top-activating dataset snippets per emotion vector, external corpora | QUEUED (scaled down) | Needs a corpus sweep (LMSYS/Pile samples) with per-token projection; ~half a pod day; not gate-critical |
-| Table 1 | Logit-lens top/bottom tokens per emotion vector | ATTEMPTED, negative | notebooks/04_parity.ipynb: no emotion-word neighborhoods on -it vectors at layers 33 or 57, with final-norm scaling (softcapping ignored); base-arm run queued (needs the evicted base model reloaded) |
-| Figure 2 | Probe x scenario cosine matrix, strong diagonal | DONE | notebooks/archive/03 (base arm), 06/07 (-it arm); our diagonals are weaker, which is a finding (TREE Q1.H2) |
+| Table 1 | Logit-lens top/bottom tokens per emotion vector | SPLIT: base partial, instruct negative | notebooks/04_parity.ipynb section 2: base vectors show affective neighborhoods for ~5/12 emotions at layer 33 (results/logit_lens_base_L33.json); instruct vectors show none at layers 33 or 57. Final-norm scaling applied, softcapping ignored |
+| Figure 2 | Probe x scenario cosine matrix, strong diagonal | DONE | notebooks/03_probes.ipynb sections 1 and 3 (dual-model); our diagonals are weaker, which is a finding (TREE Q1.H2) |
 | Table 2 | The 12 implicit-emotion scenarios | DONE | Used verbatim, src/emotion_vectors/probe_prompts.py |
-| Figure 3 | Numerical-intensity template curves | DONE | notebooks/archive/03; -it rerun with projected probes pending E7 |
-| Figure 4 | Activity-preference Elo + steering shifts | OUT | Needs the paper's 64-activity appendix list, steering infrastructure, and measures an RLHF assistant's preferences; out of sprint scope |
+| Figure 3 | Numerical-intensity template curves | DONE | notebooks/03_probes.ipynb section 2 (dual-model): instruct tracks 11/11 registered directions, base 7/11 |
+| Figure 4 | Activity-preference Elo + steering shifts | IN PROGRESS (Elo half) | TREE Q1.H3.E1: paper's preference prompt over a self-authored 64-activity list (paper's list unpublished; ours follows its 8 named categories, src/emotion_vectors/activities.py, committed before scoring). Steering half (E2) gated on E1 |
 | Figure 5 | Pairwise cosine similarity, clustered | DONE | notebooks/02_geometry.ipynb section 3 |
 | Figure 6 | UMAP of k-means emotion clusters | SUB, DONE | notebooks/02_geometry.ipynb section 4: t-SNE embedding instead of UMAP (dependency), identical k-means k=10; clusters interpretable (joy/hope family, calm/content family), matching the paper's qualitative result |
-| Figure 7 | PC1/PC2 loading bars per emotion | DONE | notebooks/02_geometry.ipynb section 5, ordered bars with sparse labels, base layer 33 |
+| Figure 7 | PC1/PC2 loading bars per emotion | DONE | notebooks/02_geometry.ipynb section 5: each model in its own valence-best/arousal-best component plane |
 | Figure 8 | PC1/PC2 vs human valence/arousal ratings | SUB | We correlate against the NRC VAD lexicon (the replication's instrument), not Russell's 45-emotion ratings; documented in TREE Q1.H1.C1 |
 | Figure 9 | Representational similarity across layers | DONE | notebooks/02_geometry.ipynb section 6 |
 | Neutral-PC projection (methods) | Confound removal before probe use | DONE (late) | Missing from the reference code and our pipeline until 2026-07-21; E7 implements it |
