@@ -1,5 +1,10 @@
 """Battery scoring and corpus quality control — the promoted analysis layer.
 
+"Battery" means the scenario test set: the Anthropic paper's 12
+implicit-emotion prompts (Table 2) plus our held-out 12. Scoring asks, for
+each scenario, whether its target emotion's probe (per-emotion direction
+vector) ranks among the top 3 by cosine similarity.
+
 Every function here produced tree-linked evidence from inside notebooks before
 being promoted (the engineering contract's rule: logic that evidence rests on
 lives in the package, typed and lint-gated; notebooks narrate and call).
