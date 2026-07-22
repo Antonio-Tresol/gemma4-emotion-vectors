@@ -36,7 +36,7 @@ packages = ["src/emotion_vectors"]
 [tool.ruff]
 # Report notebooks are promoted deliverables and get formatted like any code;
 # only the bench history in archive/ keeps its explore-mode exemption.
-extend-exclude = ["notebooks/archive"]
+extend-exclude = ["notebooks/archive", ".claude/worktrees"]
 line-length = 100
 target-version = "py311"
 
