@@ -163,7 +163,11 @@ def strip_thinking(text: str) -> tuple[str, bool]:
 
 
 def leaked_words(text: str, emotions: list[str]) -> list[str]:
-    lower = text.lower()
+    """Leakage in the PROSE only — <emotion> tags are required by the system
+    prompt to name the emotion (needed downstream for token-alignment), so
+    tag content is not leakage and must be excluded before this check."""
+    prose = re.sub(r"<emotion>.*?</emotion>", "", text, flags=re.DOTALL)
+    lower = prose.lower()
     return [
         w
         for w in (*BANNED_WORDS, *(e.lower() for e in emotions))
@@ -242,6 +246,12 @@ def main() -> int:
     parser.add_argument("--max-model-len", type=int, default=2048)
     parser.add_argument("--seed", type=int, default=20260721)
     parser.add_argument(
+        "--enforce-eager",
+        action="store_true",
+        help="skip CUDA graph capture — much faster engine startup, some decode throughput lost; "
+        "on by default for --smoke, since a smoke test's job is proving the path, not throughput",
+    )
+    parser.add_argument(
         "--smoke",
         action="store_true",
         help="2 triples, 1 sample/combo (per-triple forced to 12) — prove the path first",
@@ -252,6 +262,7 @@ def main() -> int:
     # ---- FAIL FAST: cheap checks before the ~58 GB model load ---------------
     if args.smoke:
         args.per_triple = N_COMBOS
+        args.enforce_eager = True
     if args.per_triple % N_COMBOS != 0:
         raise SystemExit(
             f"--per-triple must be a multiple of {N_COMBOS} (6 perms x 2 modes), "
@@ -280,13 +291,21 @@ def main() -> int:
 
     from vllm import LLM, SamplingParams  # noqa: PLC0415 — GPU import, lazy on purpose
 
+    logger.info(
+        f"loading {args.model} into vLLM (enforce_eager={args.enforce_eager}) — weight load is "
+        f"~1 min from a local/warm HF cache; CUDA graph capture (skipped if enforce_eager) can add "
+        f"several more minutes on a cold cache with no further log output until it completes"
+    )
+    t_load = time.monotonic()
     llm = LLM(
         model=args.model,
         dtype="bfloat16",
         gpu_memory_utilization=args.gpu_memory_utilization,
         max_model_len=args.max_model_len,
         seed=args.seed,
+        enforce_eager=args.enforce_eager,
     )
+    logger.info(f"vLLM engine ready in {time.monotonic() - t_load:.0f}s")
 
     raw_path = args.out_dir / "stories_raw.jsonl"
     counts = existing_counts(raw_path)

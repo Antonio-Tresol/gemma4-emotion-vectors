@@ -6,9 +6,10 @@
   "gpu_memory_utilization": 0.9,
   "max_model_len": 2048,
   "seed": 20260721,
+  "enforce_eager": true,
   "smoke": true,
   "out_dir": "results/combined_stories",
   "n_combos": 12,
   "samples_per_combo": 1,
-  "git_commit": "d38f790"
+  "git_commit": "bc72319"
 }
