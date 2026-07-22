@@ -42,6 +42,16 @@ result) while corpus probes under matched conventions pass nowhere; preference c
 (~0.6 both). Generator = probed model, the reference's convention, is the better extraction recipe;
 C4's gate should run on the self-generated lineage.
 
+Parked question addendum (user-prompted, same day): recorded Q4 in the tree — do emotion-concept
+vectors causally modulate assistant behaviors, sycophancy first? Sparked by the paper's Figure 10
+observation that "loving" activation rises at the Assistant colon regardless of user emotion (quote
+verified verbatim against the paper in-session). Literature check (arXiv abstracts read in-session):
+sycophancy steering exists via CAA and via off-the-shelf persona vectors (2605.21006 — and the
+persona direction is largely independent of the sycophancy direction), emotion-vector steering is
+validated for expression only (2604.04064); emotion vectors as the steering family for sycophancy
+appears untested. No experiments scheduled this sprint; assets (layer-33 vectors, calibrated
+steering harness, self-gen probes) make it a cheap future pickup.
+
 Teammate note (recorded by the orchestrating session, single-writer rule): Peyton Li's Q3 prep landed
 in main yesterday evening (68b7d42) — 173 emotion triples with category structure and non-affect
 controls (scripts/emotions_triples_v1.json) plus an OpenRouter pilot notebook for three-emotion
