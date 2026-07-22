@@ -10,10 +10,15 @@ is appended as it is produced, so the run is resumable; the grouped
 
     uv run python scripts/generate_dialogue_stories.py  # on the pod, tmux
 
-Backends: --backend vllm (default; continuous batching, ~10-20x the naive HF
-loop at this volume — pod-side install via `uv pip install vllm`, kept out of
-pyproject because vllm ships no macOS wheels and is generation-only) or
---backend hf (the original loop, no extra dependency).
+Backends: --backend vllm (default; continuous batching — measured ~9 min for
+2,424 stories where the HF loop needed hours) or --backend hf (dependency-free
+fallback; launchers auto-fall-back on nonzero vllm exit).
+
+vllm setup is NOT pip-install-and-go on the Blackwell pod: run
+scripts/pod/setup_vllm_env.sh once and export VLLM_ATTENTION_BACKEND=TRITON_ATTN
+and VLLM_USE_FLASHINFER_SAMPLER=0 in the launcher. Symptom table for the three
+failure modes: notes/vllm-parallel-inference-template.md (Blackwell survival
+guide). vllm stays out of pyproject: no macOS wheels, generation-only.
 """
 
 from __future__ import annotations
