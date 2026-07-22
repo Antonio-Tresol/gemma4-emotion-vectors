@@ -41,6 +41,14 @@ ROUTES: dict[str, str] = {
     "combined_stories": f"{HF_USER}/emotion-combined-stories-gemma-4-31b-it",
     "combined_trajectories": f"{HF_USER}/emotion-combined-trajectories-gemma-4-31b-it",
     "combined_trajectories_base": f"{HF_USER}/emotion-combined-trajectories-gemma-4-31b",
+    # Post-padding-fix re-extractions (E4b): the blessed sets for all probe work
+    # from 2026-07-22 on. The unsuffixed repos above are their pre-fix
+    # predecessors, kept for the E4b before/after comparison and for
+    # reproducing pre-fix results; each -postfix repo carries a LINEAGE.md.
+    "emotion_vectors_postfix": f"{HF_USER}/emotion-vectors-gemma-4-31b-postfix",
+    "emotion_vectors_it_postfix": f"{HF_USER}/emotion-vectors-gemma-4-31b-it-postfix",
+    "self_story_vectors_it_postfix": f"{HF_USER}/emotion-selfstory-vectors-gemma-4-31b-it-postfix",
+    "neutral_vectors_it_postfix": f"{HF_USER}/neutral-vectors-gemma-4-31b-it-postfix",
 }
 
 
