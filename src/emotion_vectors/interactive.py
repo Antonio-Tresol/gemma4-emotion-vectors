@@ -37,6 +37,15 @@ def _axis_key(kind: str, col: int) -> str:
     return f"{kind}axis{suffix}.title.text"
 
 
+def _hover(tokens: list[str] | None, n: int) -> list[str]:
+    """Per-position hover label: the decoded token text if given, else just
+    the index. Token identity doesn't depend on which layer is scrubbed to,
+    so this is computed once and reused across every slider step."""
+    if tokens is None:
+        return [f"t={t}" for t in range(n)]
+    return [f"t={t} {tokens[t]!r}" for t in range(n)]
+
+
 def layer_scatter_scrubber(
     layers: list[int],
     panels: list[dict],
@@ -165,17 +174,22 @@ def trajectory_lines_scrubber(
     default_layer: int,
     title: str = "",
     colors: tuple[str, str, str] = ("#dc2626", "#6366f1", "#d97706"),
+    tokens: list[str] | None = None,
 ) -> go.Figure:
     """Per-token cosine lines with a layer slider.
 
     ``cosines_by_layer`` maps a layer to a [tokens, 3] array (column j = phase
     j's emotion). The y-range is fixed to the global extremes so amplitude
-    differences between layers stay visible while scrubbing.
+    differences between layers stay visible while scrubbing. ``tokens``, if
+    given, is the decoded token string at each position, shown on hover so a
+    point on the curve reads back to the word that produced it — token
+    identity is layer-independent, so this doesn't need updating per step.
     """
     n = len(cosines_by_layer[default_layer])
     lo = min(float(np.min(c)) for c in cosines_by_layer.values())
     hi = max(float(np.max(c)) for c in cosines_by_layer.values())
     pad = 0.1 * (hi - lo)
+    hover = _hover(tokens, n)
     fig = go.Figure()
     for k, name in enumerate(emotions):
         fig.add_trace(
@@ -184,6 +198,8 @@ def trajectory_lines_scrubber(
                 y=_as_list(cosines_by_layer[default_layer][:, k]),
                 name=name,
                 line=dict(color=colors[k % 3], width=2),
+                text=hover,
+                hoverinfo="text+y+name",
             )
         )
     for start in phase_starts[1:]:
@@ -223,11 +239,14 @@ def trajectory_ternary_scrubber(
     *,
     default_layer: int,
     title: str = "",
+    tokens: list[str] | None = None,
 ) -> go.Figure:
     """Emotion-triangle trajectory with a layer slider.
 
     ``barycentric_by_layer`` maps a layer to a [tokens, 3] barycentric array
     (rows sum to 1 — the caller owns the softmax display transform).
+    ``tokens``, if given, is the decoded token string at each position,
+    shown on hover instead of the bare index.
     """
     bary0 = np.asarray(barycentric_by_layer[default_layer])
     n = len(bary0)
@@ -245,7 +264,7 @@ def trajectory_ternary_scrubber(
                 colorbar=dict(title="token"),
             ),
             line=dict(width=1, color="rgba(120,120,120,0.4)"),
-            text=[f"t={t}" for t in range(n)],
+            text=_hover(tokens, n),
             hoverinfo="text",
             showlegend=False,
         )
@@ -308,25 +327,36 @@ def trajectory_heatmap_scrubber(
     *,
     default_layer: int,
     title: str = "",
+    tokens: list[str] | None = None,
 ) -> go.Figure:
     """All-probe heatmap ([tokens, probes] per layer) with a layer slider.
 
     The colour range is fixed to the global |max| so intensity is comparable
-    across layers while scrubbing.
+    across layers while scrubbing. ``tokens``, if given, labels the x-axis at
+    each phase start with its actual word and adds per-cell hover text —
+    token identity is layer-independent, so neither needs a slider step.
     """
     zmax = max(float(np.abs(h).max()) for h in heat_by_layer.values())
+    z0 = np.asarray(heat_by_layer[default_layer]).T
+    heat_kwargs: dict[str, Any] = {}
+    if tokens is not None:
+        heat_kwargs["text"] = [tokens] * len(probe_names)
+        heat_kwargs["hovertemplate"] = "%{y}<br>t=%{x} %{text}<br>cosine=%{z:.3f}<extra></extra>"
     fig = go.Figure(
         go.Heatmap(
-            z=_as_list(np.asarray(heat_by_layer[default_layer]).T),
+            z=_as_list(z0),
             y=probe_names,
             colorscale="RdBu",
             zmin=-zmax,
             zmax=zmax,
             colorbar=dict(title="centered cosine"),
+            **heat_kwargs,
         )
     )
     for start in phase_starts[1:]:
         fig.add_vline(x=start, line_dash="dash", line_color="black")
+    if tokens is not None:
+        fig.update_xaxes(tickvals=phase_starts, ticktext=[tokens[s] for s in phase_starts])
     steps = [
         dict(
             method="restyle",

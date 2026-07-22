@@ -23,6 +23,8 @@ centered norms.
 
 from __future__ import annotations
 
+import html
+
 import numpy as np
 import plotly.graph_objects as go
 from jaxtyping import Float
@@ -452,3 +454,47 @@ def speed_figure(
         "Works without choosing probes at all.",
     )
     return fig
+
+
+def text_panel_html(
+    clean_text: str,
+    phase_char_starts: list[int],
+    phase_emotions: list[str],
+    colors: list[str] = SERIES_COLORS,
+) -> str:
+    """The story's own text with each phase colored to match its trajectory
+    line/point color above — the "which words gave which curve" view a
+    per-token hover can't give at a glance. Meant to be displayed directly
+    under a lines/ternary/heatmap figure for the same story via
+    ``IPython.display.HTML``.
+
+    SEQUENTIAL stories (``len(phase_char_starts) > 1``) get one colored span
+    per phase, split at the same char offsets ``parse_story`` recorded.
+    SIMULTANEOUS stories (a single phase covering the whole text, per
+    ``ParsedStory``'s convention) get the whole text plain plus a 3-color
+    legend, since coloring by character position would misrepresent all
+    three emotions as co-active throughout rather than pick one span.
+    """
+    legend = " &nbsp; ".join(
+        f'<span style="border-bottom:3px solid {colors[i % len(colors)]};padding-bottom:1px">'
+        f"{html.escape(e)}</span>"
+        for i, e in enumerate(phase_emotions)
+    )
+    if len(phase_char_starts) == 1:
+        body = html.escape(clean_text)
+    else:
+        bounds = list(phase_char_starts) + [len(clean_text)]
+        spans = []
+        for i, emotion in enumerate(phase_emotions):
+            chunk = html.escape(clean_text[bounds[i] : bounds[i + 1]])
+            color = colors[i % len(colors)]
+            spans.append(
+                f'<span style="background-color:{color}22;border-bottom:2px solid {color}" '
+                f'title="{html.escape(emotion)}">{chunk}</span>'
+            )
+        body = "".join(spans)
+    return (
+        f'<div style="font-family:ui-monospace,monospace;line-height:1.9;'
+        f'max-width:940px;white-space:pre-wrap;padding:8px 0">{body}</div>'
+        f'<div style="font-size:12px;color:#666;margin-top:2px">{legend}</div>'
+    )
