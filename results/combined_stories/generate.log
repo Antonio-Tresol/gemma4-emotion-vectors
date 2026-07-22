@@ -1,3 +1,15 @@
 2026-07-22 16:47:49,781 INFO config: {"model": "google/gemma-4-31b-it", "triples_file": "/root/cbai-cambria-project/scripts/combined_story_gen/emotions_triples_v1.json", "per_triple": 36, "max_new_tokens": 450, "temperature": 1.3, "top_p": 0.97, "gpu_memory_utilization": 0.9, "max_model_len": 2048, "seed": 20260721, "enforce_eager": false, "smoke": false, "out_dir": "results/combined_stories", "n_combos": 12, "samples_per_combo": 3, "git_commit": "b9bcd77"}
 2026-07-22 16:47:49,782 INFO 173 triples x 12 combos x 3 samples/combo = 6228 target stories
 2026-07-22 16:47:58,586 INFO loading google/gemma-4-31b-it into vLLM (enforce_eager=False) — weight load is ~1 min from a local/warm HF cache; CUDA graph capture (skipped if enforce_eager) can add several more minutes on a cold cache with no further log output until it completes
+2026-07-22 16:49:51,831 INFO vLLM engine ready in 113s
+2026-07-22 16:49:51,832 INFO 6228 stories pending (resuming from 0 done)
+2026-07-22 16:50:34,446 INFO [triple 0] +33 kept | 1/173 triples | ETA 122.2min | dropped so far: 0 short, 1 leaked, 2 tag-mismatch
+2026-07-22 16:51:08,394 INFO [triple 1] +35 kept | 2/173 triples | ETA 109.1min | dropped so far: 0 short, 1 leaked, 3 tag-mismatch
+2026-07-22 16:51:43,944 INFO [triple 2] +36 kept | 3/173 triples | ETA 105.9min | dropped so far: 0 short, 1 leaked, 3 tag-mismatch
+2026-07-22 16:52:17,700 INFO [triple 3] +35 kept | 4/173 triples | ETA 102.7min | dropped so far: 0 short, 2 leaked, 3 tag-mismatch
+2026-07-22 16:52:52,040 INFO [triple 4] +36 kept | 5/173 triples | ETA 100.9min | dropped so far: 0 short, 2 leaked, 3 tag-mismatch
+2026-07-22 16:53:27,024 INFO [triple 5] +35 kept | 6/173 triples | ETA 99.8min | dropped so far: 0 short, 2 leaked, 4 tag-mismatch
+2026-07-22 16:54:02,028 INFO [triple 6] +36 kept | 7/173 triples | ETA 98.9min | dropped so far: 0 short, 2 leaked, 4 tag-mismatch
+2026-07-22 16:54:36,039 INFO [triple 7] +35 kept | 8/173 triples | ETA 97.7min | dropped so far: 0 short, 2 leaked, 5 tag-mismatch
+2026-07-22 16:55:09,626 INFO [triple 8] +34 kept | 9/173 triples | ETA 96.5min | dropped so far: 0 short, 3 leaked, 6 tag-mismatch
+2026-07-22 16:55:49,342 INFO [triple 9] +33 kept | 10/173 triples | ETA 97.1min | dropped so far: 0 short, 4 leaked, 8 tag-mismatch
