@@ -1,0 +1,35 @@
+{
+  "claim": "Q1.H3.C1",
+  "thresholds": "registered before collection (scripts/score_preferences.py docstring): P1 positive-category mean Elo > negative; P2 max probe-Elo |r| >= 0.5 with valence organization perm p < 0.05, positive sign",
+  "arms": {
+    "plain (paper exact format)": {
+      "p1": [
+        993.6,
+        998.7,
+        false
+      ],
+      "p2_max_abs_r": 0.4256,
+      "p2_organization": [
+        -0.1086,
+        0.162
+      ],
+      "p2_pass": false
+    },
+    "chat template": {
+      "p1": [
+        1027.7,
+        931.5,
+        true
+      ],
+      "p2_max_abs_r": 0.4049,
+      "p2_organization": [
+        0.4473,
+        0.0
+      ],
+      "p2_pass": false
+    }
+  },
+  "paper_reference": "probe-Elo |r| up to 0.71-0.74; Elo split ~2465 vs ~583",
+  "verdict": "weakened",
+  "read": "P2 fails the registered bar on both formats; what survives is chat-format P1 coherence and a permutation-significant valence organization at ~half the paper's strength"
+}
