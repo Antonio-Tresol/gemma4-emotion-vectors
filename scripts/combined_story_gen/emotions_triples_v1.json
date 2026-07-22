@@ -1,0 +1,1559 @@
+[
+ {
+  "emotions": [
+   "unsettled",
+   "upset",
+   "cheerful"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "relaxed",
+   "guilty",
+   "lonely"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "scornful",
+   "outraged",
+   "elated"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "jubilant",
+   "impatient",
+   "irate"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "heartbroken",
+   "fulfilled",
+   "vibrant"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "hope",
+   "desperate",
+   "dumbstruck"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "self-confident",
+   "infatuated",
+   "vengeful"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "hateful",
+   "enthusiastic",
+   "frustrated"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "grateful",
+   "rejuvenated",
+   "irritated"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "offended",
+   "disturbed",
+   "mortified"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "greedy",
+   "blissful",
+   "horrified"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "vigilant",
+   "nervous",
+   "perplexed"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "insulted",
+   "weary",
+   "greedy"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "sad",
+   "ashamed",
+   "content"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "vulnerable",
+   "relaxed",
+   "indignant"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "stuck",
+   "disgusted",
+   "jealous"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "joyful",
+   "worn out",
+   "stimulated"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "envious",
+   "furious",
+   "sad"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "anxious",
+   "exuberant",
+   "aroused"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "amused",
+   "horrified",
+   "astonished"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "happy",
+   "tired",
+   "shaken"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "hostile",
+   "hurt",
+   "guilty"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "valiant",
+   "scornful",
+   "energized"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "paranoid",
+   "heartbroken",
+   "grumpy"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "playful",
+   "bitter",
+   "hostile"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "worried",
+   "regretful",
+   "frightened"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "exasperated",
+   "troubled",
+   "tired"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "nostalgic",
+   "tormented",
+   "brooding"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "indifferent",
+   "stuck",
+   "remorseful"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "panicked",
+   "sullen",
+   "contemptuous"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "obstinate",
+   "self-confident",
+   "skeptical"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "compassionate",
+   "weary",
+   "listless"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "gloomy",
+   "worried",
+   "shaken"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "self-conscious",
+   "satisfied",
+   "weary"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "euphoric",
+   "desperate",
+   "spiteful"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "shocked",
+   "amazed",
+   "vengeful"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "miserable",
+   "hateful",
+   "playful"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "sensitive",
+   "envious",
+   "reflective"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "unhappy",
+   "furious",
+   "resigned"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "thankful",
+   "self-confident",
+   "suspicious"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "empathetic",
+   "euphoric",
+   "offended"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "proud",
+   "desperate",
+   "angry"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "tense",
+   "optimistic",
+   "relieved"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "inspired",
+   "serene",
+   "embarrassed"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "vindictive",
+   "kind",
+   "fulfilled"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "sluggish",
+   "refreshed",
+   "regretful"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "excited",
+   "defiant",
+   "indignant"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "hysterical",
+   "stuck",
+   "scornful"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "resentful",
+   "delighted",
+   "relieved"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "stubborn",
+   "disoriented",
+   "resigned"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "depressed",
+   "vigilant",
+   "exasperated"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "afraid",
+   "heartbroken",
+   "proud"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "annoyed",
+   "amused",
+   "infatuated"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "loving",
+   "joyful",
+   "tired"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "eager",
+   "troubled",
+   "suspicious"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "mad",
+   "bitter",
+   "restless"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "enraged",
+   "ashamed",
+   "infatuated"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "bewildered",
+   "hope",
+   "gloomy"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "sentimental",
+   "greedy",
+   "brooding"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "peaceful",
+   "empathetic",
+   "unnerved"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "alert",
+   "distressed",
+   "exuberant"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "stressed",
+   "enthusiastic",
+   "envious"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "overwhelmed",
+   "vindictive",
+   "happy"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "on edge",
+   "disturbed",
+   "furious"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "invigorated",
+   "horrified",
+   "ashamed"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "thrilled",
+   "hostile",
+   "rattled"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "grief-stricken",
+   "astonished",
+   "shaken"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "sympathetic",
+   "calm",
+   "self-critical"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "at ease",
+   "unnerved",
+   "relieved"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "alarmed",
+   "trapped",
+   "inspired"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "awestruck",
+   "terrified",
+   "ecstatic"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "triumphant",
+   "humiliated",
+   "jubilant"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "uneasy",
+   "resentful",
+   "excited"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "dependent",
+   "worthless",
+   "impatient"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "docile",
+   "upset",
+   "vibrant"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "droopy",
+   "suspicious",
+   "rattled"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "safe",
+   "stimulated",
+   "thankful"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "hopeful",
+   "worthless",
+   "outraged"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "dispirited",
+   "blissful",
+   "disgusted"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "surprised",
+   "triumphant",
+   "worried"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "puzzled",
+   "content",
+   "sorry"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "sleepy",
+   "hurt",
+   "excited"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "smug",
+   "thrilled",
+   "indifferent"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "patient",
+   "nostalgic",
+   "sullen"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "bored",
+   "outraged",
+   "self-conscious"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "scared",
+   "elated",
+   "docile"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "melancholy",
+   "patient",
+   "alert"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "lazy",
+   "impatient",
+   "joyful"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "disdainful",
+   "distressed",
+   "lonely"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "pleased",
+   "vibrant",
+   "perplexed"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "mystified",
+   "thrilled",
+   "sleepy"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "remorseful",
+   "sympathetic",
+   "eager"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "compassionate",
+   "indignant",
+   "enthusiastic"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "spiteful",
+   "fulfilled",
+   "jubilant"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "grateful",
+   "playful",
+   "ecstatic"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "sorry",
+   "bitter",
+   "mortified"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "hysterical",
+   "irate",
+   "guilty"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "dispirited",
+   "irate",
+   "worthless"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "annoyed",
+   "unhappy",
+   "dumbstruck"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "disoriented",
+   "grief-stricken",
+   "angry"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "obstinate",
+   "offended",
+   "optimistic"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "peaceful",
+   "depressed",
+   "reflective"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "shocked",
+   "unhappy",
+   "defiant"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "miserable",
+   "exuberant",
+   "safe"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "awestruck",
+   "invigorated",
+   "delighted"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "embarrassed",
+   "relaxed",
+   "alert"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "frightened",
+   "overwhelmed",
+   "defiant"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "hopeful",
+   "disgusted",
+   "nostalgic"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "puzzled",
+   "terrified",
+   "sensitive"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "anxious",
+   "indifferent",
+   "delighted"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "on edge",
+   "triumphant",
+   "reflective"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "amazed",
+   "vindictive",
+   "perplexed"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "surprised",
+   "elated",
+   "enraged"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "melancholy",
+   "nervous",
+   "frightened"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "vulnerable",
+   "mystified",
+   "invigorated"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "bored",
+   "lazy",
+   "cheerful"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "kind",
+   "resentful",
+   "surprised"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "grumpy",
+   "dumbstruck",
+   "serene"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "listless",
+   "disturbed",
+   "disdainful"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "stubborn",
+   "uneasy",
+   "enraged"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "loving",
+   "eager",
+   "ecstatic"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "jealous",
+   "euphoric",
+   "obstinate"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "sentimental",
+   "energized",
+   "safe"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "alarmed",
+   "droopy",
+   "spiteful"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "dependent",
+   "loving",
+   "tormented"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "insulted",
+   "vulnerable",
+   "panicked"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "afraid",
+   "happy",
+   "sleepy"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "skeptical",
+   "annoyed",
+   "lonely"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "pleased",
+   "bored",
+   "mystified"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "self-critical",
+   "resigned",
+   "puzzled"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "mad",
+   "optimistic",
+   "melancholy"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "scared",
+   "humiliated",
+   "sullen"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "sluggish",
+   "miserable",
+   "unnerved"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "contemptuous",
+   "scared",
+   "distressed"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "at ease",
+   "rejuvenated",
+   "blissful"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "satisfied",
+   "pleased",
+   "awestruck"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "bewildered",
+   "hopeful",
+   "docile"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "aroused",
+   "self-conscious",
+   "vigilant"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "tense",
+   "upset",
+   "dispirited"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "valiant",
+   "aroused",
+   "astonished"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "calm",
+   "brooding",
+   "lazy"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "irritated",
+   "regretful",
+   "stubborn"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "paranoid",
+   "hope",
+   "dependent"
+  ],
+  "category": "F_valence_spread",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "unsettled",
+   "sorry",
+   "insulted"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "trapped",
+   "remorseful",
+   "terrified"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "stressed",
+   "grief-stricken",
+   "irritated"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "smug",
+   "kind",
+   "amazed"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "restless",
+   "droopy",
+   "grumpy"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "worn out",
+   "disdainful",
+   "self-critical"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "frustrated",
+   "mortified",
+   "bewildered"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "refreshed",
+   "smug",
+   "patient"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "sensitive",
+   "disoriented",
+   "alarmed"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "restless",
+   "sad",
+   "vengeful"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "angry",
+   "afraid",
+   "unsettled"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "proud",
+   "valiant",
+   "peaceful"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "cheerful",
+   "energized",
+   "skeptical"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "empathetic",
+   "calm",
+   "stimulated"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "contemptuous",
+   "sluggish",
+   "hurt"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "humiliated",
+   "shocked",
+   "troubled"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "thankful",
+   "amused",
+   "satisfied"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "depressed",
+   "listless",
+   "nervous"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "at ease",
+   "compassionate",
+   "refreshed"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "panicked",
+   "embarrassed",
+   "trapped"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "hateful",
+   "on edge",
+   "exasperated"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "sentimental",
+   "rejuvenated",
+   "serene"
+  ],
+  "category": "D_timescale",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "frustrated",
+   "overwhelmed",
+   "paranoid"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "tense",
+   "tormented",
+   "jealous"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "anxious",
+   "rattled",
+   "mad"
+  ],
+  "category": "A_superposition",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "stressed",
+   "worn out",
+   "inspired"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "sympathetic",
+   "gloomy",
+   "uneasy"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "content",
+   "vulnerable",
+   "self-confident"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": false
+ },
+ {
+  "emotions": [
+   "grateful",
+   "tired",
+   "tense"
+  ],
+  "category": "B_conflict",
+  "has_nonaffect": true
+ },
+ {
+  "emotions": [
+   "hysterical",
+   "vigilant",
+   "melancholy"
+  ],
+  "category": "E_arousal_mismatch",
+  "has_nonaffect": false
+ }
+]
