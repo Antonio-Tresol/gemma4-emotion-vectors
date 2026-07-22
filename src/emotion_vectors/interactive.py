@@ -412,6 +412,7 @@ def trajectory_ternary_animation(
     stride: int = 2,
     frame_ms: int = 60,
     title: str = "",
+    tokens: list[str] | None = None,
 ) -> go.Figure:
     """A playable animation of the token state moving through the triangle.
 
@@ -451,9 +452,11 @@ def trajectory_ternary_animation(
             a=_as_list(bary[: t + 1, 0]),
             b=_as_list(bary[: t + 1, 1]),
             c=_as_list(bary[: t + 1, 2]),
-            mode="lines",
+            mode="lines+markers",
+            marker=dict(size=3, color="#6366f1", opacity=0.5),
             line=dict(width=2.5, color="#6366f1"),
-            hoverinfo="skip",
+            text=_hover(tokens, len(bary))[: t + 1],
+            hoverinfo="text",
             showlegend=False,
         )
 
@@ -564,8 +567,9 @@ def trajectory_story_dropdown(
     """Cosine-lines view with a dropdown over stories.
 
     Each entry: ``label``, ``emotions`` (3), ``cosines`` [tokens, 3] (column j
-    = phase j's emotion), ``starts`` (phase token starts). Phase markers are
-    per-story shapes swapped through the dropdown's relayout args.
+    = phase j's emotion), ``starts`` (phase token starts), and optionally
+    ``tokens`` (decoded token strings for hover). Phase markers are per-story
+    shapes swapped through the dropdown's relayout args.
     """
     first = entries[0]
     fig = go.Figure()
@@ -576,6 +580,8 @@ def trajectory_story_dropdown(
                 y=_as_list(np.asarray(first["cosines"])[:, k]),
                 name=first["emotions"][k],
                 line=dict(color=colors[k], width=2),
+                text=_hover(first.get("tokens"), len(first["cosines"])),
+                hoverinfo="text+y+name",
             )
         )
 
@@ -605,6 +611,7 @@ def trajectory_story_dropdown(
                         "x": [list(range(len(cos)))] * 3,
                         "y": [_as_list(cos[:, k]) for k in range(3)],
                         "name": list(entry["emotions"]),
+                        "text": [_hover(entry.get("tokens"), len(cos))] * 3,
                     },
                     {"shapes": shapes(entry)},
                 ],
@@ -643,6 +650,7 @@ def trajectory_3d_scrubber(
     *,
     default_layer: int,
     title: str = "",
+    tokens: list[str] | None = None,
 ) -> go.Figure:
     """Raw 3D cosine trajectory with a layer slider.
 
@@ -668,8 +676,8 @@ def trajectory_3d_scrubber(
                 showscale=True,
                 colorbar=dict(title="token"),
             ),
-            line=dict(width=2, color="rgba(120,120,120,0.5)"),
-            text=[f"t={t}" for t in range(n)],
+            line=dict(width=5, color=list(range(n)), colorscale="Viridis"),
+            text=_hover(tokens, n),
             hoverinfo="text",
             showlegend=False,
         )
@@ -750,6 +758,7 @@ def trajectory_3d_animation(
     stride: int = 3,
     frame_ms: int = 60,
     title: str = "",
+    tokens: list[str] | None = None,
 ) -> go.Figure:
     """The raw 3D path drawing itself over tokens: Play or drag the t slider.
 
@@ -769,8 +778,8 @@ def trajectory_3d_animation(
             z=_as_list(c[: t + 1, 2]),
             mode="lines+markers",
             marker=dict(size=3, color=list(range(t + 1)), colorscale="Viridis", cmin=0, cmax=n - 1),
-            line=dict(width=3, color="rgba(99,102,241,0.6)"),
-            text=[f"t={i}" for i in range(t + 1)],
+            line=dict(width=5, color=list(range(t + 1)), colorscale="Viridis", cmin=0, cmax=n - 1),
+            text=_hover(tokens, n)[: t + 1],
             hoverinfo="text",
             showlegend=False,
         )
