@@ -64,20 +64,22 @@ class ProbeBank:
     labels: list[str]  # "corpus:afraid", "selfgen:happy", "random:07", ...
 
 
-def load_probe_bank(layers: list[int]) -> ProbeBank:
-    corpus = np.load(CORPUS_PROBES)
+def load_probe_bank(layers: list[int], corpus_path: Path, selfgen_path: Path | None) -> ProbeBank:
+    """Probes must come from the probed model: pass the matching lineage
+    bundles (the base arm has no self-generated lineage — pass None)."""
+    corpus = np.load(corpus_path, allow_pickle=True)
     layer_idx = [list(corpus["layers"]).index(layer) for layer in layers]
     corpus_dirs = unit_contrast_probes(corpus["means"].astype(np.float32))[:, layer_idx]
-    selfgen = np.load(SELFGEN_PROBES, allow_pickle=True)
-    selfgen_dirs = unit_contrast_probes(selfgen["means"][-1].astype(np.float32))[:, layer_idx]
+    banks = [corpus_dirs]
+    labels = [f"corpus:{e}" for e in corpus["emotions"]]
+    if selfgen_path is not None:
+        selfgen = np.load(selfgen_path, allow_pickle=True)
+        banks.append(unit_contrast_probes(selfgen["means"][-1].astype(np.float32))[:, layer_idx])
+        labels += [f"selfgen:{e}" for e in selfgen["emotions"]]
     d_model = corpus_dirs.shape[-1]
-    random_dirs = random_unit_directions(N_RANDOM, len(layers), d_model, RANDOM_SEED)
-    labels = (
-        [f"corpus:{e}" for e in corpus["emotions"]]
-        + [f"selfgen:{e}" for e in selfgen["emotions"]]
-        + [f"random:{i:02d}" for i in range(N_RANDOM)]
-    )
-    return ProbeBank(np.concatenate([corpus_dirs, selfgen_dirs, random_dirs]), labels)
+    banks.append(random_unit_directions(N_RANDOM, len(layers), d_model, RANDOM_SEED))
+    labels += [f"random:{i:02d}" for i in range(N_RANDOM)]
+    return ProbeBank(np.concatenate(banks), labels)
 
 
 def forward_tokens(
@@ -175,6 +177,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--layers", type=int, nargs="+", default=DEFAULT_LAYERS)
     parser.add_argument("--batch-size", type=int, default=4)
     parser.add_argument("--max-length", type=int, default=1024)
+    parser.add_argument("--corpus-probes", type=Path, default=CORPUS_PROBES)
+    parser.add_argument(
+        "--selfgen-probes",
+        type=Path,
+        default=SELFGEN_PROBES,
+        help="self-generated-lineage bundle; pass --no-selfgen for the base arm",
+    )
+    parser.add_argument("--no-selfgen", action="store_true")
     parser.add_argument("--smoke", action="store_true", help="first 8 stories only")
     return parser
 
@@ -199,7 +209,8 @@ def main() -> int:
         "layers": args.layers,
         "n_random": N_RANDOM,
         "random_seed": RANDOM_SEED,
-        "probe_files": [str(CORPUS_PROBES), str(SELFGEN_PROBES)],
+        "probe_files": [str(args.corpus_probes)]
+        + ([] if args.no_selfgen else [str(args.selfgen_probes)]),
         "max_length": args.max_length,
         "smoke": args.smoke,
         "git_commit": git_commit(),
@@ -207,7 +218,9 @@ def main() -> int:
     (args.out_dir / "run_config.json").write_text(json.dumps(config, indent=2))
     logger.info("config: %s", json.dumps(config))
     logger.info("%d kept stories, %d pending (%d resumed)", len(rows), len(pending), len(done))
-    bank = load_probe_bank(args.layers)
+    bank = load_probe_bank(
+        args.layers, args.corpus_probes, None if args.no_selfgen else args.selfgen_probes
+    )
     (args.out_dir / "probe_labels.json").write_text(json.dumps(bank.labels))
     lm, _ = load_model_bf16(args.model, logger.info)
     probes = torch.as_tensor(bank.directions, device=lm.model.device, dtype=torch.float32)
