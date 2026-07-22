@@ -350,3 +350,120 @@ def trajectory_heatmap_scrubber(
         ],
     )
     return fig
+
+
+def trajectory_ternary_animation(
+    barycentric: Any,
+    emotions: list[str],
+    phase_starts: list[int],
+    *,
+    stride: int = 2,
+    frame_ms: int = 60,
+    title: str = "",
+) -> go.Figure:
+    """A playable animation of the token state moving through the triangle.
+
+    The full path sits faint underneath; Play sweeps a dot along it with the
+    trail brightening behind. Frames are strided (default every 2nd token) to
+    keep the saved notebook light. Self-contained: the play/pause buttons are
+    Plotly updatemenus, no kernel needed.
+    """
+    bary = np.asarray(barycentric)
+    n = len(bary)
+    ticks = list(range(0, n, stride)) + ([n - 1] if (n - 1) % stride else [])
+    path = dict(
+        a=_as_list(bary[:, 0]),
+        b=_as_list(bary[:, 1]),
+        c=_as_list(bary[:, 2]),
+        mode="lines",
+        line=dict(width=1, color="rgba(120,120,120,0.25)"),
+        hoverinfo="skip",
+        showlegend=False,
+    )
+
+    def dot(t: int) -> dict:
+        return dict(
+            a=[float(bary[t, 0])],
+            b=[float(bary[t, 1])],
+            c=[float(bary[t, 2])],
+            mode="markers+text",
+            marker=dict(size=13, color="#6366f1"),
+            text=[f"t={t}"],
+            textposition="top center",
+            hoverinfo="text",
+            showlegend=False,
+        )
+
+    def trail(t: int) -> dict:
+        return dict(
+            a=_as_list(bary[: t + 1, 0]),
+            b=_as_list(bary[: t + 1, 1]),
+            c=_as_list(bary[: t + 1, 2]),
+            mode="lines",
+            line=dict(width=2.5, color="#6366f1"),
+            hoverinfo="skip",
+            showlegend=False,
+        )
+
+    fig = go.Figure(
+        data=[go.Scatterternary(path), go.Scatterternary(trail(0)), go.Scatterternary(dot(0))],
+        frames=[
+            go.Frame(
+                data=[go.Scatterternary(trail(t)), go.Scatterternary(dot(t))],
+                traces=[1, 2],
+                name=str(t),
+            )
+            for t in ticks
+        ],
+    )
+    for start in phase_starts:
+        fig.add_trace(
+            go.Scatterternary(
+                a=[float(bary[start, 0])],
+                b=[float(bary[start, 1])],
+                c=[float(bary[start, 2])],
+                mode="markers",
+                marker=dict(size=11, symbol="diamond", color="black"),
+                text=[f"phase start t={start}"],
+                hoverinfo="text",
+                showlegend=False,
+            )
+        )
+    fig.update_layout(
+        title=title,
+        ternary=dict(
+            aaxis=dict(title=emotions[0]),
+            baxis=dict(title=emotions[1]),
+            caxis=dict(title=emotions[2]),
+        ),
+        width=620,
+        height=580,
+        updatemenus=[
+            dict(
+                type="buttons",
+                direction="left",
+                x=0.05,
+                y=-0.06,
+                buttons=[
+                    dict(
+                        label="Play",
+                        method="animate",
+                        args=[
+                            None,
+                            dict(
+                                frame=dict(duration=frame_ms, redraw=True),
+                                fromcurrent=True,
+                                transition=dict(duration=0),
+                            ),
+                        ],
+                    ),
+                    dict(
+                        label="Pause",
+                        method="animate",
+                        args=[[None], dict(frame=dict(duration=0), mode="immediate")],
+                    ),
+                ],
+            )
+        ],
+    )
+    return fig
