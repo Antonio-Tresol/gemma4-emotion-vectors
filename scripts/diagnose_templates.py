@@ -92,21 +92,34 @@ def main() -> int:
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--readout", choices=("last", "mean_all", "mean_content"), default="last")
+    parser.add_argument("--model", choices=("it", "base"), default="it")
     args = parser.parse_args()
-    prompts = [json.loads(line) for line in open("results/probe_sweep_it/prompts.jsonl")]
-    sweep = np.load("results/probe_sweep_it/activations.npz", allow_pickle=True)
+    sweep_dir = "results/probe_sweep_it" if args.model == "it" else "results/probe_sweep"
+    fmt = "chat" if args.model == "it" else "plain"  # the base model has no chat template
+    prompts = [json.loads(line) for line in open(f"{sweep_dir}/prompts.jsonl")]
+    sweep = np.load(f"{sweep_dir}/activations.npz", allow_pickle=True)
     layer_pos = list(map(int, sweep["layers"])).index(LAYER)
-    acts_all = sweep[f"chat_{args.readout}"].astype(np.float64)[:, layer_pos, :]
+    acts_all = sweep[f"{fmt}_{args.readout}"].astype(np.float64)[:, layer_pos, :]
 
-    bundle = np.load("results/emotion_vectors_it_means.npz", allow_pickle=True)
-    emotions = list(map(str, bundle["emotions"]))
-    probes = bundle["means"][:, list(map(int, bundle["layers"])).index(LAYER), :].astype(np.float64)
-
-    neutral = np.load("results/e7_neutral_bundle.npz", allow_pickle=True)
-    neutral_vecs = neutral["vectors"][:, list(map(int, neutral["layers"])).index(LAYER), :].astype(
-        np.float64
-    )
-    projected, n_removed = project_out_neutral(probes, neutral_vecs)
+    if args.model == "it":
+        bundle = np.load("results/emotion_vectors_it_means.npz", allow_pickle=True)
+        emotions = list(map(str, bundle["emotions"]))
+        probes = bundle["means"][:, list(map(int, bundle["layers"])).index(LAYER), :].astype(
+            np.float64
+        )
+        neutral = np.load("results/e7_neutral_bundle.npz", allow_pickle=True)
+        neutral_vecs = neutral["vectors"][
+            :, list(map(int, neutral["layers"])).index(LAYER), :
+        ].astype(np.float64)
+        projected, n_removed = project_out_neutral(probes, neutral_vecs)
+    else:
+        bundle = np.load("results/emotion_vectors/emotion_means.npz", allow_pickle=True)
+        emotions = list(map(str, bundle["emotions"]))
+        probes = bundle["means"][:, list(map(int, bundle["layers"])).index(LAYER), :].astype(
+            np.float64
+        )
+        # no base neutral transcripts were collected; R5 is instruct-only
+        projected, n_removed = probes, 0
 
     panels: dict[str, dict[str, object]] = {}
     for name in sorted({p["name"] for p in prompts if p["kind"] == "template"}):
@@ -127,18 +140,20 @@ def main() -> int:
     shares = [p["common_mode_share"] for p in panels.values()]
     out = {
         "experiment": "Q1.H2.E8",
-        "config": f"gemma-4-31b-it, chat format, {args.readout} readout, layer 33",
+        "config": f"gemma-4-31b{'-it' if args.model == 'it' else ' (base)'}, {fmt} format, "
+        f"{args.readout} readout, layer 33",
         "neutral_pcs_removed": int(n_removed),
         "panels": panels,
         "r1_read": f"common-mode share median {float(np.median(shares)):.3f}; "
         f"{sum(s < 0.8 for s in shares)}/{len(shares)} panels below 0.8",
         "r4_paper_reference_range": 0.16,
     }
-    Path(
-        f"results/e8_template_diagnostic_{args.readout}.json"
-        if args.readout != "last"
-        else "results/e8_template_diagnostic.json"
-    ).write_text(json.dumps(out, indent=2) + "\n")
+    suffix = ("" if args.readout == "last" else f"_{args.readout}") + (
+        "" if args.model == "it" else "_base"
+    )
+    Path(f"results/e8_template_diagnostic{suffix}.json").write_text(
+        json.dumps(out, indent=2) + "\n"
+    )
     for name, p in panels.items():
         print(
             f"{name:10s} common={p['common_mode_share']:.2f} "
