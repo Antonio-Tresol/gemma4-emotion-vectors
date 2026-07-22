@@ -1,0 +1,2 @@
+2026-07-22 15:27:32,586 INFO config: {"model": "google/gemma-4-31b-it", "triples_file": "/root/cbai-cambria-project/scripts/combined_story_gen/emotions_triples_v1.json", "per_triple": 12, "max_new_tokens": 350, "gpu_memory_utilization": 0.9, "max_model_len": 2048, "seed": 20260721, "smoke": true, "out_dir": "results/combined_stories", "n_combos": 12, "samples_per_combo": 1, "git_commit": "d38f790"}
+2026-07-22 15:27:32,586 INFO 2 triples x 12 combos x 1 samples/combo = 24 target stories
