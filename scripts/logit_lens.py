@@ -56,10 +56,25 @@ def main() -> int:
     import torch  # noqa: PLC0415
 
     w_unembed = lm.model.get_output_embeddings().weight.detach().float()  # [vocab, d_model]
+    # standard logit-lens correction: apply the final RMSNorm's per-dimension
+    # scale to the direction before unembedding (without it, output is junk)
+    final_norm = None
+    for attr in ("model.norm", "model.language_model.norm", "model.language_model.model.norm"):
+        obj = lm.model
+        try:
+            for part in attr.split("."):
+                obj = getattr(obj, part)
+            final_norm = obj.weight.detach().float()
+            break
+        except AttributeError:
+            continue
     table: dict[str, dict[str, list[str]]] = {}
     with torch.inference_mode():
         for emotion, probe in zip(emotions, probes):
-            logits = w_unembed @ torch.from_numpy(probe).float().to(w_unembed.device)
+            direction = torch.from_numpy(probe).float().to(w_unembed.device)
+            if final_norm is not None:
+                direction = direction * (1.0 + final_norm)  # gemma norm: weight is (1 + w)
+            logits = w_unembed @ direction
             top = torch.topk(logits, args.top_k).indices.tolist()
             bottom = torch.topk(-logits, args.top_k).indices.tolist()
             table[emotion] = {
@@ -74,7 +89,7 @@ def main() -> int:
                 "model": args.model,
                 "layer": args.layer,
                 "probes": str(args.results_dir),
-                "note": "raw-direction lens; final-norm scale and logit softcapping ignored",
+                "note": "final-RMSNorm scale applied (gemma 1+w convention); softcapping ignored",
                 "table": table,
             },
             indent=2,
