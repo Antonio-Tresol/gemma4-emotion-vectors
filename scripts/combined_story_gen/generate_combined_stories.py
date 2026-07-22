@@ -118,16 +118,10 @@ emotion appears where. Begin with the first word of the story.
 """
 
 
-def setup_logger(log_file: Path) -> logging.Logger:
-    log_file.parent.mkdir(parents=True, exist_ok=True)
-    logger = logging.getLogger("generate_combined_stories")
-    logger.setLevel(logging.INFO)
-    logger.handlers.clear()
-    fmt = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
-    for handler in (logging.FileHandler(log_file), logging.StreamHandler()):
-        handler.setFormatter(fmt)
-        logger.addHandler(handler)
-    return logger
+try:  # shared logger lives in the package (same pattern as generate_dialogue_stories)
+    from emotion_vectors.extraction import setup_logger
+except ModuleNotFoundError as exc:
+    raise SystemExit(f"missing {exc.name}: this entry point needs the project package") from exc
 
 
 def git_commit() -> str:
@@ -226,7 +220,7 @@ def assemble_grouped(raw_path: Path, grouped_path: Path) -> int:
     return len(grouped)
 
 
-def main() -> int:
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", default="google/gemma-4-31b-it")
     parser.add_argument(
@@ -248,9 +242,11 @@ def main() -> int:
         help="2 triples, 1 sample/combo (per-triple forced to 12) — prove the path first",
     )
     parser.add_argument("--out-dir", type=Path, default=Path("results/combined_stories"))
-    args = parser.parse_args()
+    return parser
 
-    # ---- FAIL FAST: cheap checks before the ~58 GB model load ---------------
+
+def prepare_run(args: argparse.Namespace) -> tuple[list[dict], int, "logging.Logger"]:
+    """Fail-fast checks, triple loading, logger + config file — before the model load."""
     if args.smoke:
         args.per_triple = N_COMBOS
     if args.per_triple % N_COMBOS != 0:
@@ -259,11 +255,9 @@ def main() -> int:
             f"got {args.per_triple}"
         )
     samples_per_combo = args.per_triple // N_COMBOS
-
     triples = load_triples(args.triples_file)
     if args.smoke:
         triples = triples[:2]
-
     args.out_dir.mkdir(parents=True, exist_ok=True)
     logger = setup_logger(args.out_dir / "generate.log")
     config = {
@@ -278,6 +272,71 @@ def main() -> int:
         f"{len(triples)} triples x {N_COMBOS} combos x {samples_per_combo} samples/combo "
         f"= {len(triples) * args.per_triple} target stories"
     )
+    return triples, samples_per_combo, logger
+
+
+def write_kept_rows(
+    raw_path: Path,
+    triple_id: int,
+    triple: dict[str, object],
+    pending: list[tuple[str, tuple[str, ...], int, int]],
+    outputs: list[object],
+    seed: int,
+) -> tuple[int, int, int]:
+    """Append QC-passing stories for one triple; returns (kept, dropped_short, dropped_leak)."""
+    emotions = triple["emotions"]
+    kept = d_short = d_leak = 0
+    with open(raw_path, "a") as f:
+        for (mode, perm, perm_idx, _), out in zip(pending, outputs):
+            for sample in out.outputs:
+                text, had_think = strip_thinking(sample.text)
+                leaks = leaked_words(text, emotions)
+                tags = emotion_tags(text)
+                if len(text) < 100:  # QC: too short
+                    d_short += 1
+                    continue
+                if leaks:  # QC: names an assigned emotion or a banned word
+                    d_leak += 1
+                    continue
+                row = {
+                    "triple_id": triple_id,
+                    "emotions": emotions,
+                    "category": triple.get("category"),
+                    "has_nonaffect": triple.get("has_nonaffect"),
+                    "mode": mode,
+                    "permutation": list(perm),
+                    "perm_idx": perm_idx,
+                    "text": text,
+                    "had_thinking_trace": had_think,
+                    "leaked_words": leaks,
+                    "n_tags": len(tags),
+                    "tags": tags,
+                    "n_chars": len(text),
+                    "seed": seed + triple_id,
+                    "error": None,
+                }
+                f.write(json.dumps(row) + "\n")
+                kept += 1
+    return kept, d_short, d_leak
+
+
+def log_resume_state(
+    raw_path: Path, triples: list[dict[str, object]], samples_per_combo: int, logger: object
+) -> dict[str, int]:
+    """Existing-story counts plus the resume log line."""
+    counts = existing_counts(raw_path)
+    n_pending = sum(
+        max(0, samples_per_combo - counts.get(row_key(tid, mode, i), 0))
+        for tid, t in enumerate(triples)
+        for mode, _, i in combos_for(t["emotions"])
+    )
+    logger.info(f"{n_pending} stories pending (resuming from {sum(counts.values())} done)")
+    return counts
+
+
+def main() -> int:
+    args = build_parser().parse_args()
+    triples, samples_per_combo, logger = prepare_run(args)
 
     from vllm import LLM, SamplingParams  # noqa: PLC0415 — GPU import, lazy on purpose
 
@@ -290,13 +349,7 @@ def main() -> int:
     )
 
     raw_path = args.out_dir / "stories_raw.jsonl"
-    counts = existing_counts(raw_path)
-    n_pending_at_start = sum(
-        max(0, samples_per_combo - counts.get(row_key(tid, mode, i), 0))
-        for tid, t in enumerate(triples)
-        for mode, _, i in combos_for(t["emotions"])
-    )
-    logger.info(f"{n_pending_at_start} stories pending (resuming from {sum(counts.values())} done)")
+    counts = log_resume_state(raw_path, triples, samples_per_combo, logger)
 
     t0 = time.monotonic()
     n_dropped_short = n_dropped_leak = 0
@@ -346,38 +399,11 @@ def main() -> int:
                 )
             continue
 
-        kept = 0
-        with open(raw_path, "a") as f:
-            for (mode, perm, perm_idx, _), out in zip(pending, outputs):
-                for sample in out.outputs:
-                    text, had_think = strip_thinking(sample.text)
-                    leaks = leaked_words(text, emotions)
-                    tags = emotion_tags(text)
-                    row = {
-                        "triple_id": triple_id,
-                        "emotions": emotions,
-                        "category": triple.get("category"),
-                        "has_nonaffect": triple.get("has_nonaffect"),
-                        "mode": mode,
-                        "permutation": list(perm),
-                        "perm_idx": perm_idx,
-                        "text": text,
-                        "had_thinking_trace": had_think,
-                        "leaked_words": leaks,
-                        "n_tags": len(tags),
-                        "tags": tags,
-                        "n_chars": len(text),
-                        "seed": args.seed + triple_id,
-                        "error": None,
-                    }
-                    if len(text) < 100:  # QC: too short
-                        n_dropped_short += 1
-                        continue
-                    if leaks:  # QC: names an assigned emotion or a banned word
-                        n_dropped_leak += 1
-                        continue
-                    f.write(json.dumps(row) + "\n")
-                    kept += 1
+        kept, d_short, d_leak = write_kept_rows(
+            raw_path, triple_id, triple, pending, outputs, args.seed
+        )
+        n_dropped_short += d_short
+        n_dropped_leak += d_leak
 
         done_triples = triple_id + 1
         rate = done_triples / max(time.monotonic() - t0, 1e-9)
