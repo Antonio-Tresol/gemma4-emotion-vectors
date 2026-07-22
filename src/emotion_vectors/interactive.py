@@ -288,6 +288,7 @@ def trajectory_ternary_scrubber(
         ),
         width=760,
         height=700,
+        margin=dict(b=120),
         sliders=[
             dict(
                 active=layers.index(default_layer),
@@ -296,6 +297,16 @@ def trajectory_ternary_scrubber(
                 steps=steps,
             )
         ],
+    )
+    fig.add_annotation(
+        text="Diamonds mark phase-start tokens; point color is the token index.",
+        xref="paper",
+        yref="paper",
+        x=0,
+        y=-0.16,
+        showarrow=False,
+        align="left",
+        font=dict(size=11, color="gray"),
     )
     return fig
 
@@ -340,6 +351,7 @@ def trajectory_heatmap_scrubber(
         xaxis_title="token",
         width=960,
         height=620,
+        margin=dict(b=130),
         sliders=[
             dict(
                 active=layers.index(default_layer),
@@ -348,6 +360,16 @@ def trajectory_heatmap_scrubber(
                 steps=steps,
             )
         ],
+    )
+    fig.add_annotation(
+        text="Rows are probes (corpus vs selfgen lineages labeled); dashed lines are phase starts.",
+        xref="paper",
+        yref="paper",
+        x=0,
+        y=-0.30,
+        showarrow=False,
+        align="left",
+        font=dict(size=11, color="gray"),
     )
     return fig
 
@@ -437,7 +459,8 @@ def trajectory_ternary_animation(
             caxis=dict(title=emotions[2]),
         ),
         width=760,
-        height=740,
+        height=760,
+        margin=dict(b=120),
         updatemenus=[
             dict(
                 type="buttons",
@@ -488,6 +511,16 @@ def trajectory_ternary_animation(
                 ],
             )
         ],
+    )
+    fig.add_annotation(
+        text="Faint line = full path; diamonds = phase starts. Press Play or drag the token slider.",
+        xref="paper",
+        yref="paper",
+        x=0,
+        y=-0.10,
+        showarrow=False,
+        align="left",
+        font=dict(size=11, color="gray"),
     )
     return fig
 
@@ -548,14 +581,132 @@ def trajectory_story_dropdown(
             )
         )
     fig.update_layout(
-        title=title,
+        title=dict(text=title, y=0.98, yanchor="top"),
         xaxis_title="token",
         yaxis_title="centered cosine",
         shapes=shapes(first),
         width=940,
-        height=540,
+        height=580,
+        margin=dict(t=150, b=100),
         updatemenus=[
-            dict(buttons=buttons, direction="down", x=1.0, xanchor="right", y=1.18, yanchor="top")
+            dict(buttons=buttons, direction="down", x=1.0, xanchor="right", y=1.13, yanchor="top")
         ],
+    )
+    fig.add_annotation(
+        text="Dashed lines are phase transitions; the legend gives the story's expected emotions in phase order.",
+        xref="paper",
+        yref="paper",
+        x=0,
+        y=-0.22,
+        showarrow=False,
+        align="left",
+        font=dict(size=11, color="gray"),
+    )
+    return fig
+
+
+def trajectory_3d_scrubber(
+    layers: list[int],
+    cosines_by_layer: dict[int, Any],
+    emotions: list[str],
+    phase_starts: list[int],
+    *,
+    default_layer: int,
+    title: str = "",
+) -> go.Figure:
+    """Raw 3D cosine trajectory with a layer slider.
+
+    Color encodes token order (dark start to yellow end); diamonds mark phase
+    starts and a large open circle marks the story's final token. The cone
+    arrow lives in the kernel-tier composed view (mixed trace types cannot be
+    restyled together by a slider).
+    """
+    first = np.asarray(cosines_by_layer[default_layer])
+    n = len(first)
+
+    def path(c):
+        return dict(x=_as_list(c[:, 0]), y=_as_list(c[:, 1]), z=_as_list(c[:, 2]))
+
+    fig = go.Figure(
+        go.Scatter3d(
+            **path(first),
+            mode="lines+markers",
+            marker=dict(
+                size=3,
+                color=list(range(n)),
+                colorscale="Viridis",
+                showscale=True,
+                colorbar=dict(title="token"),
+            ),
+            line=dict(width=2, color="rgba(120,120,120,0.5)"),
+            text=[f"t={t}" for t in range(n)],
+            hoverinfo="text",
+            showlegend=False,
+        )
+    )
+    fig.add_trace(
+        go.Scatter3d(
+            x=_as_list(first[phase_starts, 0]),
+            y=_as_list(first[phase_starts, 1]),
+            z=_as_list(first[phase_starts, 2]),
+            mode="markers",
+            marker=dict(size=6, symbol="diamond", color="black"),
+            text=[f"phase start t={s}" for s in phase_starts],
+            hoverinfo="text",
+            showlegend=False,
+        )
+    )
+    fig.add_trace(
+        go.Scatter3d(
+            x=[float(first[-1, 0])],
+            y=[float(first[-1, 1])],
+            z=[float(first[-1, 2])],
+            mode="markers",
+            marker=dict(size=9, symbol="circle-open", color="#b45309", line=dict(width=3)),
+            text=[f"end t={n - 1}"],
+            hoverinfo="text",
+            showlegend=False,
+        )
+    )
+    steps = []
+    for layer in layers:
+        c = np.asarray(cosines_by_layer[layer])
+        steps.append(
+            dict(
+                method="restyle",
+                label=str(layer),
+                args=[
+                    dict(
+                        x=[_as_list(c[:, 0]), _as_list(c[phase_starts, 0]), [float(c[-1, 0])]],
+                        y=[_as_list(c[:, 1]), _as_list(c[phase_starts, 1]), [float(c[-1, 1])]],
+                        z=[_as_list(c[:, 2]), _as_list(c[phase_starts, 2]), [float(c[-1, 2])]],
+                    )
+                ],
+            )
+        )
+    fig.update_layout(
+        title=title,
+        scene=dict(xaxis_title=emotions[0], yaxis_title=emotions[1], zaxis_title=emotions[2]),
+        width=800,
+        height=740,
+        margin=dict(b=150),
+        sliders=[
+            dict(
+                active=layers.index(default_layer),
+                currentvalue=dict(prefix="layer "),
+                pad=dict(t=30),
+                steps=steps,
+            )
+        ],
+    )
+    fig.add_annotation(
+        text="Color = token order (dark start, yellow end); diamonds = phase starts; open circle = final token.",
+        xref="paper",
+        yref="paper",
+        x=0,
+        y=-0.26,
+        showarrow=False,
+        align="left",
+        font=dict(size=11, color="gray"),
     )
     return fig
