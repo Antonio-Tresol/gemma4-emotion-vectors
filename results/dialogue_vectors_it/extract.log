@@ -1,0 +1,10 @@
+2026-07-21 22:04:19,456 INFO config: {"model": "google/gemma-4-31b-it", "dataset": "results/dialogue_stories_it/dialogues_grouped.jsonl", "split": "train", "layers": [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57], "d_model": 5376, "batch_size": 4, "max_length": 512, "seed": 20260720, "smoke": false, "git_commit": "8bf83d2", "token_offset": 50}
+2026-07-21 22:04:19,461 INFO 192 stories, 192 pending (0 already on disk)
+2026-07-21 22:04:31,021 INFO loading google/gemma-4-31b-it (bf16)...
+2026-07-21 22:05:17,474 INFO model loaded in 46s
+2026-07-21 22:05:34,851 INFO 40/192 stories | 2.30 stories/s | elapsed 17s | ETA 66s
+2026-07-21 22:05:46,310 INFO 80/192 stories | 2.77 stories/s | elapsed 29s | ETA 40s
+2026-07-21 22:05:58,509 INFO 120/192 stories | 2.92 stories/s | elapsed 41s | ETA 25s
+2026-07-21 22:06:10,355 INFO 160/192 stories | 3.03 stories/s | elapsed 53s | ETA 11s
+2026-07-21 22:06:19,546 INFO 192/192 stories | 3.09 stories/s | elapsed 62s | ETA 0s
+2026-07-21 22:06:29,457 INFO aggregated 12 emotions x 20 layers -> results/dialogue_vectors_it

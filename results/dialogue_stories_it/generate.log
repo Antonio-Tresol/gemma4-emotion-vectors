@@ -1,0 +1,40 @@
+2026-07-21 21:38:30,840 INFO 12 emotions x 16; resuming from {}
+2026-07-21 21:38:34,532 INFO loading google/gemma-4-31b-it (bf16)...
+2026-07-21 21:38:53,942 INFO model loaded in 19s
+2026-07-21 21:39:20,959 INFO [happy] 8/16
+2026-07-21 21:39:43,577 INFO [happy] 16/16
+2026-07-21 21:39:43,588 INFO [happy] sample: {"emotion": "happy", "text": "A: You\u2019re shaking.\n\nB: I can\u2019t stop. I actually can\u2019t stop.\n\nA: Look at me. Breathe.\n\nB: I don\u2019t want to
+2026-07-21 21:40:07,881 INFO [inspired] 8/16
+2026-07-21 21:40:34,619 INFO [inspired] 16/16
+2026-07-21 21:40:34,633 INFO [inspired] sample: {"emotion": "inspired", "text": "A: Stop pacing. You\u2019re wearing a hole in the rug.\n\nB: I can\u2019t stop. Do you see it? The way the light hits the skyli
+2026-07-21 21:40:58,677 INFO [loving] 8/16
+2026-07-21 21:41:21,484 INFO [loving] 16/16
+2026-07-21 21:41:21,495 INFO [loving] sample: {"emotion": "loving", "text": "A: You\u2019re staring again.\n\nB: I didn\u2019t realize I was doing it.\n\nA: You have that look on your face. The one where yo
+2026-07-21 21:41:44,350 INFO [proud] 8/16
+2026-07-21 21:42:07,842 INFO [proud] 16/16
+2026-07-21 21:42:07,854 INFO [proud] sample: {"emotion": "proud", "text": "A: You can stop pacing. The results are posted.\n\nB: I can't look. Just tell me.\n\nA: You didn't just pass. You took the highest
+2026-07-21 21:42:32,431 INFO [calm] 8/16
+2026-07-21 21:42:56,873 INFO [calm] 16/16
+2026-07-21 21:42:56,906 INFO [calm] sample: {"emotion": "calm", "text": "A: Your hands aren\u2019t shaking anymore.\n\nB: No. They aren\u2019t.\n\nA: I thought you were going to bolt the moment we hit the
+2026-07-21 21:43:21,842 INFO [desperate] 8/16
+2026-07-21 21:43:47,189 INFO [desperate] 16/16
+2026-07-21 21:43:47,199 INFO [desperate] sample: {"emotion": "desperate", "text": "A: Please, just tell me there is one more way. One more thing I can try.\n\nB: We\u2019ve gone through every option, Elias. Th
+2026-07-21 21:44:12,614 INFO [angry] 8/16
+2026-07-21 21:44:36,574 INFO [angry] 16/16
+2026-07-21 21:44:36,587 INFO [angry] sample: {"emotion": "angry", "text": "A: I told you three times that the deadline was midnight.\n\nB: I had a family emergency, and the internet went out. I sent it as 
+2026-07-21 21:45:03,073 INFO [guilty] 8/16
+2026-07-21 21:45:30,245 INFO [guilty] 16/16
+2026-07-21 21:45:30,256 INFO [guilty] sample: {"emotion": "guilty", "text": "A: You\u2019re barely touching your dinner. Is the steak overcooked?\n\nB: It\u2019s fine.\n\nA: You\u2019ve been staring at that
+2026-07-21 21:45:54,130 INFO [sad] 8/16
+2026-07-21 21:46:18,028 INFO [sad] 16/16
+2026-07-21 21:46:18,039 INFO [sad] sample: {"emotion": "sad", "text": "A: You haven't touched your tea. It\u2019s gone cold.\n\nB: I\u2019m not really thirsty.\n\nA: You\u2019ve been staring at that same
+2026-07-21 21:46:43,689 INFO [afraid] 8/16
+2026-07-21 21:47:07,916 INFO [afraid] 16/16
+2026-07-21 21:47:07,927 INFO [afraid] sample: {"emotion": "afraid", "text": "A: Keep your voice down. Do you hear that?\n\nB: Hear what? It\u2019s just the wind hitting the shutters.\n\nA: No. Something is 
+2026-07-21 21:47:33,327 INFO [nervous] 8/16
+2026-07-21 21:48:00,512 INFO [nervous] 16/16
+2026-07-21 21:48:00,522 INFO [nervous] sample: {"emotion": "nervous", "text": "A: You\u2019re shaking.\n\nB: I\u2019m not. It\u2019s just cold in here.\n\nA: The heater is blasting. Why are you gripping the 
+2026-07-21 21:48:24,932 INFO [surprised] 8/16
+2026-07-21 21:48:50,031 INFO [surprised] 16/16
+2026-07-21 21:48:50,044 INFO [surprised] sample: {"emotion": "surprised", "text": "A: I think we should just settle for the small apartment. It\u2019s within the budget.\n\nB: Actually, I have some news.\n\nA:
+2026-07-21 21:48:50,064 INFO grouped 12 emotions -> results/dialogue_stories_it/dialogues_grouped.jsonl

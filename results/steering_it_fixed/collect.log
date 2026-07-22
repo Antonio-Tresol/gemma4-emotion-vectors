@@ -1,0 +1,16 @@
+2026-07-22 12:30:09,208 INFO loading google/gemma-4-31b-it (bf16)...
+2026-07-22 12:30:26,287 INFO model loaded in 17s
+2026-07-22 12:30:29,502 INFO median residual rms at layer 33: 4.322
+2026-07-22 12:33:09,015 INFO happy: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 12:35:47,543 INFO inspired: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 12:38:26,588 INFO loving: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 12:41:05,536 INFO proud: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 12:43:45,219 INFO calm: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 12:46:24,017 INFO desperate: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 12:49:02,816 INFO angry: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 12:51:40,277 INFO guilty: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 12:54:18,038 INFO sad: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 12:56:54,515 INFO afraid: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 12:59:29,950 INFO nervous: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 13:02:06,819 INFO surprised: saved (4032, 2) (alpha=2 x rms)
+2026-07-22 13:02:06,834 INFO steering collection complete

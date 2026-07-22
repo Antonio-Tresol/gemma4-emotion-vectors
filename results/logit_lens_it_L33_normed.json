@@ -1,0 +1,200 @@
+{
+  "model": "google/gemma-4-31b-it",
+  "layer": 33,
+  "probes": "results/emotion_vectors_it",
+  "note": "final-RMSNorm scale applied (gemma 1+w convention); softcapping ignored",
+  "table": {
+    "happy": {
+      "up": [
+        "own",
+        "\u2019",
+        "de",
+        "'",
+        "que"
+      ],
+      "down": [
+        "C",
+        "the",
+        "S",
+        "est",
+        "\uac01\uc885"
+      ]
+    },
+    "inspired": {
+      "up": [
+        "de",
+        "own",
+        "l",
+        "la",
+        "a"
+      ],
+      "down": [
+        "C",
+        "tambi\u00e9n",
+        "tamb\u00e9m",
+        "\u092d\u0940",
+        "-"
+      ]
+    },
+    "loving": {
+      "up": [
+        "\u2019",
+        "'",
+        "_",
+        "ing",
+        "de"
+      ],
+      "down": [
+        "l",
+        "C",
+        "an",
+        "own",
+        "[]"
+      ]
+    },
+    "proud": {
+      "up": [
+        "l",
+        "B",
+        "S",
+        "\u2019",
+        "K"
+      ],
+      "down": [
+        "an",
+        "either",
+        "\u3092\u542b\u3080",
+        "Unlike",
+        "\u4e0d"
+      ]
+    },
+    "calm": {
+      "up": [
+        "ing",
+        "\ud568\uaed8",
+        "\u4e5f\u975e\u5e38",
+        "\u4e5f\u5f88",
+        "la"
+      ],
+      "down": [
+        "an",
+        "S",
+        "L",
+        "a",
+        "de"
+      ]
+    },
+    "desperate": {
+      "up": [
+        "C",
+        "P",
+        "\uc774\ub098",
+        "ho\u1eb7c",
+        "\u0915\u093f\u0902\u0935\u093e"
+      ],
+      "down": [
+        "de",
+        "l",
+        "own",
+        "\u2019",
+        "que"
+      ]
+    },
+    "angry": {
+      "up": [
+        "C",
+        "an",
+        "either",
+        "sebagaimana",
+        "many"
+      ],
+      "down": [
+        "\u2019",
+        "de",
+        "que",
+        "'",
+        "la"
+      ]
+    },
+    "guilty": {
+      "up": [
+        "-",
+        "an",
+        "de",
+        "S",
+        "/"
+      ],
+      "down": [
+        "own",
+        "ing",
+        "\u529b\u548c",
+        "\u7b2c\u4e00\u65f6\u95f4",
+        "appropriate"
+      ]
+    },
+    "sad": {
+      "up": [
+        "an",
+        "the",
+        "ization",
+        "\u4e0d",
+        "tidak"
+      ],
+      "down": [
+        "own",
+        "B",
+        "\u2019",
+        "\ud568\uaed8",
+        "ed"
+      ]
+    },
+    "afraid": {
+      "up": [
+        "S",
+        "L",
+        "T",
+        "P",
+        "C"
+      ],
+      "down": [
+        "de",
+        "l",
+        "\u2019",
+        "la",
+        "own"
+      ]
+    },
+    "nervous": {
+      "up": [
+        "C",
+        "ed",
+        "either",
+        "an",
+        "e"
+      ],
+      "down": [
+        "\u2019",
+        "la",
+        "'",
+        "H",
+        "able"
+      ]
+    },
+    "surprised": {
+      "up": [
+        "own",
+        "an",
+        "C",
+        "est",
+        "[]"
+      ],
+      "down": [
+        "\ud65c\ub3d9",
+        "helps",
+        "\uc2f6",
+        "ings",
+        "\u00e7e\u015fitli"
+      ]
+    }
+  }
+}

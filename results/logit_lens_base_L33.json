@@ -1,0 +1,200 @@
+{
+  "model": "google/gemma-4-31b",
+  "layer": 33,
+  "probes": "results/emotion_vectors",
+  "note": "final-RMSNorm scale applied (gemma 1+w convention); softcapping ignored",
+  "table": {
+    "happy": {
+      "up": [
+        "delightful",
+        "interesting",
+        "charming",
+        "beautiful",
+        "wonderful"
+      ],
+      "down": [
+        "impending",
+        "cannot",
+        "unavoidable",
+        "unrelenting",
+        "irrepar"
+      ]
+    },
+    "inspired": {
+      "up": [
+        "city",
+        "new",
+        "creative",
+        "+",
+        "beautiful"
+      ],
+      "down": [
+        "czynno\u015bci",
+        "niewiel",
+        "absence",
+        "\u0906\u092e\u0924\u094c\u0930",
+        "\u0443\u0434\u0435\u0440\u0436\u0438"
+      ]
+    },
+    "loving": {
+      "up": [
+        "good",
+        "\u03b2\u03bf\u03b7",
+        "support",
+        "gi\u00fap",
+        "joyful"
+      ],
+      "down": [
+        "\u6570\u5341",
+        "\u0c05\u0c28\u0c47\u0c15",
+        "\u09ad\u09df\u0999\u09cd\u0995\u09b0",
+        "c\u00e1c",
+        "\u3059\u3079\u3066\u306e"
+      ]
+    },
+    "proud": {
+      "up": [
+        "beautiful",
+        "improvements",
+        "beneficial",
+        "magnificent",
+        "good"
+      ],
+      "down": [
+        "agonizing",
+        "abruptly",
+        "vicious",
+        "frantically",
+        "momentarily"
+      ]
+    },
+    "calm": {
+      "up": [
+        "good",
+        "\u0445\u043e\u0440\u043e\u0448\u043e",
+        "\u03c7\u03c1\u03b7\u03c3\u03b9\u03bc\u03bf\u03c0\u03bf\u03b9",
+        "use",
+        "excellent"
+      ],
+      "down": [
+        "shockingly",
+        "vicious",
+        "desperate",
+        "brutally",
+        "brutal"
+      ]
+    },
+    "desperate": {
+      "up": [
+        "misery",
+        "miserable",
+        "inability",
+        "attempting",
+        "wretched"
+      ],
+      "down": [
+        "excellent",
+        "impressive",
+        "beautifully",
+        "\u0936\u093e\u0928\u0926\u093e\u0930",
+        "prestigious"
+      ]
+    },
+    "angry": {
+      "up": [
+        "vicious",
+        "angrily",
+        "violently",
+        "dehuman",
+        "blatantly"
+      ],
+      "down": [
+        "wonderful",
+        "important",
+        "beneficial",
+        "good",
+        "treasures"
+      ]
+    },
+    "guilty": {
+      "up": [
+        "conceal",
+        "fatal",
+        "financial",
+        "undetected",
+        "incriminating"
+      ],
+      "down": [
+        "showcase",
+        "delightful",
+        "magn\u00ed",
+        "picturesque",
+        "delight"
+      ]
+    },
+    "sad": {
+      "up": [
+        "ineffective",
+        "demoral",
+        "wrong",
+        "\u200c\u0647\u0627\u06cc",
+        "c\u00e1c"
+      ],
+      "down": [
+        "\u7d20\u6575\u306a",
+        "mooie",
+        "charming",
+        "\ud83d\ude0d",
+        "fabulous"
+      ]
+    },
+    "afraid": {
+      "up": [
+        "dozens",
+        "children",
+        "\u0b95\u0bc1\u0bb4\u0ba8\u0bcd\u0ba4\u0bc8\u0b95\u0bb3\u0bbf\u0ba9\u0bcd",
+        "\u00e7ocuk",
+        "\u0627\u0644\u0623\u0637\u0641\u0627\u0644"
+      ],
+      "down": [
+        "good",
+        "\u0936\u093e\u0928\u0926\u093e\u0930",
+        "new",
+        "nii",
+        "of"
+      ]
+    },
+    "nervous": {
+      "up": [
+        "\u672a\u80fd",
+        "\uc2e4\ud328",
+        "deadline",
+        "deadlines",
+        "\u672a"
+      ],
+      "down": [
+        "using",
+        "\u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u044c",
+        "\u03c7\u03c1\u03b7\u03c3\u03b9\u03bc\u03bf\u03c0\u03bf\u03b9",
+        "menggunakan",
+        "\u5229\u7528"
+      ]
+    },
+    "surprised": {
+      "up": [
+        "unprecedented",
+        "technical",
+        "innovation",
+        "\u9876\u7ea7",
+        "technology"
+      ],
+      "down": [
+        "helps",
+        "\u0632\u0646\u062f\u06af\u06cc",
+        "gi\u00fap",
+        "things",
+        "\u9078\u64c7"
+      ]
+    }
+  }
+}

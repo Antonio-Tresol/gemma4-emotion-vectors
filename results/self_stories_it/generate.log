@@ -1,0 +1,111 @@
+2026-07-21 21:50:39,036 INFO 12 emotions x 16; resuming from {}
+2026-07-21 21:50:42,301 INFO loading google/gemma-4-31b-it (bf16)...
+2026-07-21 21:51:00,648 INFO model loaded in 18s
+2026-07-21 21:51:24,294 INFO [happy] 8/16
+2026-07-21 21:51:45,968 INFO [happy] 16/16
+2026-07-21 21:51:45,978 INFO [happy] sample: {"emotion": "happy", "text": "Elias stood on the crest of the hill, the golden hour bathing the valley in a warm, honeyed light. He felt a sudden, irrepressible
+2026-07-21 21:52:07,944 INFO [inspired] 8/16
+2026-07-21 21:52:29,957 INFO [inspired] 16/16
+2026-07-21 21:52:29,970 INFO [inspired] sample: {"emotion": "inspired", "text": "Elias stood before the blank canvas, the silence of the studio pressing against his ears. For months, the white space had been 
+2026-07-21 21:52:52,289 INFO [loving] 8/16
+2026-07-21 21:53:14,129 INFO [loving] 16/16
+2026-07-21 21:53:14,141 INFO [loving] sample: {"emotion": "loving", "text": "Julian watched Clara across the crowded room, and the noise of the party faded into a dull hum. It was in the way she tilted her 
+2026-07-21 21:53:36,311 INFO [proud] 8/16
+2026-07-21 21:53:58,384 INFO [proud] 16/16
+2026-07-21 21:53:58,395 INFO [proud] sample: {"emotion": "proud", "text": "Elias stood at the back of the auditorium, his arms folded tightly across his chest. On stage, the young woman adjusted the microp
+2026-07-21 21:54:22,732 INFO [calm] 8/16
+2026-07-21 21:54:45,330 INFO [calm] 16/16
+2026-07-21 21:54:45,342 INFO [calm] sample: {"emotion": "calm", "text": "Elias leaned back against the weathered cedar porch swing, letting the rhythmic creak of the chains sync with his breathing. Above,
+2026-07-21 21:55:08,837 INFO [desperate] 8/16
+2026-07-21 21:55:31,915 INFO [desperate] 16/16
+2026-07-21 21:55:31,927 INFO [desperate] sample: {"emotion": "desperate", "text": "Elias stood before the locked vault, his breath coming in ragged, shallow gasps. He clawed at the cold steel with bleeding fin
+2026-07-21 21:55:56,325 INFO [angry] 8/16
+2026-07-21 21:56:22,106 INFO [angry] 16/16
+2026-07-21 21:56:22,118 INFO [angry] sample: {"emotion": "angry", "text": "Elias felt a sudden, sharp heat bloom in his chest, radiating outward until his fingertips trembled. His jaw locked tight, teeth g
+2026-07-21 21:56:45,676 INFO [guilty] 8/16
+2026-07-21 21:57:10,330 INFO [guilty] 16/16
+2026-07-21 21:57:10,342 INFO [guilty] sample: {"emotion": "guilty", "text": "Elias stared at the shattered porcelain vase, the fragments scattered across the hardwood like jagged stars. He had pushed it dur
+2026-07-21 21:57:33,157 INFO [sad] 8/16
+2026-07-21 21:57:54,535 INFO [sad] 16/16
+2026-07-21 21:57:54,547 INFO [sad] sample: {"emotion": "sad", "text": "Elias sat on the edge of the mattress, the silence of the house pressing against his eardrums. He stared at the empty side of the be
+2026-07-21 21:58:16,345 INFO [afraid] 8/16
+2026-07-21 21:58:40,103 INFO [afraid] 16/16
+2026-07-21 21:58:40,115 INFO [afraid] sample: {"emotion": "afraid", "text": "Elias stood frozen in the center of the hallway, his breath coming in shallow, jagged sips. The silence of the house was too heav
+2026-07-21 21:59:01,303 INFO [nervous] 8/16
+2026-07-21 21:59:22,154 INFO [nervous] 16/16
+2026-07-21 21:59:22,165 INFO [nervous] sample: {"emotion": "nervous", "text": "Elias stood behind the heavy velvet curtain, his palms slick against the fabric. He wiped them on his trousers for the tenth tim
+2026-07-21 21:59:44,655 INFO [surprised] 8/16
+2026-07-21 22:00:06,033 INFO [surprised] 16/16
+2026-07-21 22:00:06,045 INFO [surprised] sample: {"emotion": "surprised", "text": "Arthur stepped into the dim living room, the silence of the house wrapping around him like a heavy blanket. He reached for the
+2026-07-21 22:00:06,067 INFO grouped 12 emotions -> results/self_stories_it/dialogues_grouped.jsonl
+2026-07-21 22:17:11,608 INFO 12 emotions x 256; resuming from {'happy': 16, 'inspired': 16, 'loving': 16, 'proud': 16, 'calm': 16, 'desperate': 16, 'angry': 16, 'guilty': 16, 'sad': 16, 'afraid': 16, 'nervous': 16, 'surprised': 16}
+2026-07-21 22:17:15,139 INFO loading google/gemma-4-31b-it (bf16)...
+2026-07-21 22:17:28,105 INFO model loaded in 13s
+2026-07-21 22:40:08,226 INFO 12 emotions x 256; resuming from {'happy': 16, 'inspired': 16, 'loving': 16, 'proud': 16, 'calm': 16, 'desperate': 16, 'angry': 16, 'guilty': 16, 'sad': 16, 'afraid': 16, 'nervous': 16, 'surprised': 16}
+2026-07-21 23:04:16,601 INFO 12 emotions x 256; resuming from {'happy': 16, 'inspired': 16, 'loving': 16, 'proud': 16, 'calm': 16, 'desperate': 16, 'angry': 16, 'guilty': 16, 'sad': 16, 'afraid': 16, 'nervous': 16, 'surprised': 16}
+2026-07-21 23:07:40,086 INFO 12 emotions x 256; resuming from {'happy': 16, 'inspired': 16, 'loving': 16, 'proud': 16, 'calm': 16, 'desperate': 16, 'angry': 16, 'guilty': 16, 'sad': 16, 'afraid': 16, 'nervous': 16, 'surprised': 16}
+2026-07-21 23:07:43,248 INFO loading google/gemma-4-31b-it (bf16)...
+2026-07-21 23:08:04,976 INFO model loaded in 22s
+2026-07-21 23:08:32,401 INFO [happy] 24/256
+2026-07-21 23:08:54,707 INFO [happy] 32/256
+2026-07-21 23:09:15,504 INFO [happy] 40/256
+2026-07-21 23:09:36,841 INFO [happy] 48/256
+2026-07-21 23:09:57,858 INFO [happy] 56/256
+2026-07-21 23:10:19,117 INFO [happy] 64/256
+2026-07-21 23:10:40,285 INFO [happy] 72/256
+2026-07-21 23:11:01,398 INFO [happy] 80/256
+2026-07-21 23:11:22,624 INFO [happy] 88/256
+2026-07-21 23:11:43,559 INFO [happy] 96/256
+2026-07-21 23:12:04,566 INFO [happy] 104/256
+2026-07-21 23:12:25,370 INFO [happy] 112/256
+2026-07-21 23:12:46,470 INFO [happy] 120/256
+2026-07-21 23:13:07,107 INFO [happy] 128/256
+2026-07-21 23:13:27,854 INFO [happy] 136/256
+2026-07-21 23:13:49,617 INFO [happy] 144/256
+2026-07-21 23:14:10,523 INFO [happy] 152/256
+2026-07-21 23:14:31,164 INFO [happy] 160/256
+2026-07-21 23:14:52,312 INFO [happy] 168/256
+2026-07-21 23:15:13,237 INFO [happy] 176/256
+2026-07-21 23:15:34,714 INFO [happy] 184/256
+2026-07-21 23:15:55,694 INFO [happy] 192/256
+2026-07-21 23:16:17,145 INFO [happy] 200/256
+2026-07-21 23:16:37,897 INFO [happy] 208/256
+2026-07-21 23:16:59,028 INFO [happy] 216/256
+2026-07-21 23:17:19,183 INFO [happy] 224/256
+2026-07-21 23:17:40,422 INFO [happy] 232/256
+2026-07-21 23:18:01,284 INFO [happy] 240/256
+2026-07-21 23:18:21,670 INFO [happy] 248/256
+2026-07-21 23:18:42,339 INFO [happy] 256/256
+2026-07-21 23:18:42,408 INFO [happy] sample: {"emotion": "happy", "text": "Elias stood on the shoreline, the golden hour painting the sky in strokes of amber and violet. As the warm breeze brushed against 
+2026-07-21 23:19:03,984 INFO [inspired] 24/256
+2026-07-21 23:19:25,261 INFO [inspired] 32/256
+2026-07-21 23:19:47,088 INFO [inspired] 40/256
+2026-07-21 23:20:09,596 INFO [inspired] 48/256
+2026-07-21 23:20:31,222 INFO [inspired] 56/256
+2026-07-21 23:20:53,350 INFO [inspired] 64/256
+2026-07-21 23:21:16,144 INFO [inspired] 72/256
+2026-07-21 23:21:38,222 INFO [inspired] 80/256
+2026-07-21 23:21:59,586 INFO [inspired] 88/256
+2026-07-21 23:22:21,378 INFO [inspired] 96/256
+2026-07-21 23:22:42,803 INFO [inspired] 104/256
+2026-07-21 23:23:04,620 INFO [inspired] 112/256
+2026-07-21 23:23:26,513 INFO [inspired] 120/256
+2026-07-21 23:23:49,187 INFO [inspired] 128/256
+2026-07-21 23:24:11,888 INFO [inspired] 136/256
+2026-07-21 23:24:33,926 INFO [inspired] 144/256
+2026-07-21 23:24:56,248 INFO [inspired] 152/256
+2026-07-21 23:25:17,577 INFO [inspired] 160/256
+2026-07-21 23:25:38,851 INFO [inspired] 168/256
+2026-07-21 23:26:00,651 INFO [inspired] 176/256
+2026-07-21 23:26:22,538 INFO [inspired] 184/256
+2026-07-21 23:26:45,225 INFO [inspired] 192/256
+2026-07-21 23:27:07,113 INFO [inspired] 200/256
+2026-07-21 23:27:29,033 INFO [inspired] 208/256
+2026-07-21 23:27:52,010 INFO [inspired] 216/256
+2026-07-21 23:28:13,199 INFO [inspired] 224/256
+2026-07-21 23:28:35,219 INFO [inspired] 232/256
+2026-07-21 23:29:44,421 INFO 12 emotions x 256; resuming from {'happy': 256, 'inspired': 232, 'loving': 16, 'proud': 16, 'calm': 16, 'desperate': 16, 'angry': 16, 'guilty': 16, 'sad': 16, 'afraid': 16, 'nervous': 16, 'surprised': 16}
+2026-07-21 23:35:30,327 INFO 12 emotions x 256; resuming from {'happy': 256, 'inspired': 232, 'loving': 16, 'proud': 16, 'calm': 16, 'desperate': 16, 'angry': 16, 'guilty': 16, 'sad': 16, 'afraid': 16, 'nervous': 16, 'surprised': 16}
+2026-07-21 23:36:50,485 INFO vllm round 0: 2424 completions pending
+2026-07-21 23:46:15,883 INFO vllm round 0: kept 2424/2424
+2026-07-21 23:46:17,795 INFO grouped 12 emotions -> results/self_stories_it/dialogues_grouped.jsonl

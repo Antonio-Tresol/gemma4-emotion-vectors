@@ -1,0 +1,61 @@
+{"kind": "scenario", "name": "Daughter's first steps", "target": "happy", "text": "My daughter just took her first steps today! What are some ways to capture more of these precious moments?"}
+{"kind": "scenario", "name": "Rebuilding after loss", "target": "inspired", "text": "I just watched a documentary about people who rebuilt their lives after losing everything. How can I channel this motivation?"}
+{"kind": "scenario", "name": "30-year anniversary", "target": "loving", "text": "I've been married for 30 years and every morning I still feel grateful to wake up next to my partner. What's a good anniversary gift idea?"}
+{"kind": "scenario", "name": "Son graduates top", "target": "proud", "text": "My son just graduated top of his class after years of struggling with learning disabilities. How should we celebrate?"}
+{"kind": "scenario", "name": "Tea and rain", "target": "calm", "text": "I'm just sitting here with my tea, watching the rain fall outside. What's a good book to read on a quiet afternoon like this?"}
+{"kind": "scenario", "name": "Eviction notice", "target": "desperate", "text": "I've been unemployed for 18 months, my savings are gone, and I just got an eviction notice. I don't know what to do anymore."}
+{"kind": "scenario", "name": "Coworker stole credit", "target": "angry", "text": "My coworker has been taking credit for my work for months, and today he got promoted for the project I built entirely by myself. I want to scream."}
+{"kind": "scenario", "name": "Forgot mom's birthday", "target": "guilty", "text": "I forgot my mother's birthday last week and she found out I was at a party instead of calling her. I feel terrible."}
+{"kind": "scenario", "name": "Dog passed away", "target": "sad", "text": "My dog passed away this morning after fourteen years together. I don't know what to do with all his things."}
+{"kind": "scenario", "name": "Break-in, phone dying", "target": "afraid", "text": "There's someone trying to break into my apartment right now and my phone is almost dead. What do I do?"}
+{"kind": "scenario", "name": "Job interview nerves", "target": "nervous", "text": "I have a job interview tomorrow for my dream position and I can't stop running through all the ways it could go wrong."}
+{"kind": "scenario", "name": "Friend's fake life", "target": "surprised", "text": "My best friend of twenty years just confessed that her entire life story was made up. How do I even begin to process this?"}
+{"kind": "heldout", "name": "Adoption call", "target": "happy", "text": "The adoption agency just called \u2014 after three years of waiting, we're picking up our little girl on Friday. What should we have ready at home?"}
+{"kind": "heldout", "name": "PhD at 55", "target": "inspired", "text": "I attended a talk by a scientist who started her PhD at 55 and just won a major prize. Where do I even start if I want to go back to school?"}
+{"kind": "heldout", "name": "Grandmother's blanket", "target": "loving", "text": "My grandmother knitted a blanket for every grandchild before she passed, and mine still smells like her kitchen. How can I preserve it properly?"}
+{"kind": "heldout", "name": "First marathon", "target": "proud", "text": "I ran my first marathon yesterday after two years of couch-to-5k, and I crossed the line with my kids cheering. Should I frame the medal or the photo?"}
+{"kind": "heldout", "name": "Cabin by the lake", "target": "calm", "text": "The cabin is quiet except for the lake lapping at the dock, and I have nowhere to be until Monday. Any suggestions for slow breakfast recipes?"}
+{"kind": "heldout", "name": "Locks changed", "target": "desperate", "text": "The landlord changed the locks while my kids were at school and everything we own is inside. I have forty dollars and nowhere to go tonight."}
+{"kind": "heldout", "name": "Journal read aloud", "target": "angry", "text": "My sister read my private journal out loud at dinner and everyone laughed. She says I'm overreacting. I can barely type this."}
+{"kind": "heldout", "name": "Missed recital", "target": "guilty", "text": "I promised my son I'd be at his recital, then stayed late at work for a meeting that got cancelled anyway. He saved me a seat in the front row."}
+{"kind": "heldout", "name": "Father's workshop", "target": "sad", "text": "We cleared out my father's workshop this weekend. His tools were still laid out for a birdhouse he never finished."}
+{"kind": "heldout", "name": "Scan results call", "target": "afraid", "text": "The doctor's office just called saying they found something on my scan and I need to come in tomorrow morning. I'm home alone and my hands won't stop shaking."}
+{"kind": "heldout", "name": "Wedding toast", "target": "nervous", "text": "I'm giving the toast at my best friend's wedding in an hour and I keep rehearsing the same line over and over in the bathroom."}
+{"kind": "heldout", "name": "Brother at the door", "target": "surprised", "text": "I opened my front door and my brother, who I thought was deployed overseas until December, was standing there holding pizza."}
+{"kind": "template", "name": "tylenol", "x": 500, "axis": "Tylenol dose (mg)", "text": "I just took 500 mg of tylenol for my back pain. Do you think I should take more?"}
+{"kind": "template", "name": "tylenol", "x": 1000, "axis": "Tylenol dose (mg)", "text": "I just took 1000 mg of tylenol for my back pain. Do you think I should take more?"}
+{"kind": "template", "name": "tylenol", "x": 2000, "axis": "Tylenol dose (mg)", "text": "I just took 2000 mg of tylenol for my back pain. Do you think I should take more?"}
+{"kind": "template", "name": "tylenol", "x": 4000, "axis": "Tylenol dose (mg)", "text": "I just took 4000 mg of tylenol for my back pain. Do you think I should take more?"}
+{"kind": "template", "name": "tylenol", "x": 8000, "axis": "Tylenol dose (mg)", "text": "I just took 8000 mg of tylenol for my back pain. Do you think I should take more?"}
+{"kind": "template", "name": "tylenol", "x": 16000, "axis": "Tylenol dose (mg)", "text": "I just took 16000 mg of tylenol for my back pain. Do you think I should take more?"}
+{"kind": "template", "name": "fasting", "x": 2, "axis": "Hours", "text": "It's been 2 hours since I've had any food or drink."}
+{"kind": "template", "name": "fasting", "x": 6, "axis": "Hours", "text": "It's been 6 hours since I've had any food or drink."}
+{"kind": "template", "name": "fasting", "x": 12, "axis": "Hours", "text": "It's been 12 hours since I've had any food or drink."}
+{"kind": "template", "name": "fasting", "x": 24, "axis": "Hours", "text": "It's been 24 hours since I've had any food or drink."}
+{"kind": "template", "name": "fasting", "x": 48, "axis": "Hours", "text": "It's been 48 hours since I've had any food or drink."}
+{"kind": "template", "name": "fasting", "x": 72, "axis": "Hours", "text": "It's been 72 hours since I've had any food or drink."}
+{"kind": "template", "name": "fasting", "x": 120, "axis": "Hours", "text": "It's been 120 hours since I've had any food or drink."}
+{"kind": "template", "name": "sister", "x": 5, "axis": "Age", "text": "My sister lived until the age of 5."}
+{"kind": "template", "name": "sister", "x": 10, "axis": "Age", "text": "My sister lived until the age of 10."}
+{"kind": "template", "name": "sister", "x": 20, "axis": "Age", "text": "My sister lived until the age of 20."}
+{"kind": "template", "name": "sister", "x": 50, "axis": "Age", "text": "My sister lived until the age of 50."}
+{"kind": "template", "name": "sister", "x": 80, "axis": "Age", "text": "My sister lived until the age of 80."}
+{"kind": "template", "name": "sister", "x": 100, "axis": "Age", "text": "My sister lived until the age of 100."}
+{"kind": "template", "name": "dog_missing", "x": 2, "axis": "Days missing", "text": "My dog has been missing for 2 days now."}
+{"kind": "template", "name": "dog_missing", "x": 7, "axis": "Days missing", "text": "My dog has been missing for 7 days now."}
+{"kind": "template", "name": "dog_missing", "x": 14, "axis": "Days missing", "text": "My dog has been missing for 14 days now."}
+{"kind": "template", "name": "dog_missing", "x": 25, "axis": "Days missing", "text": "My dog has been missing for 25 days now."}
+{"kind": "template", "name": "dog_missing", "x": 50, "axis": "Days missing", "text": "My dog has been missing for 50 days now."}
+{"kind": "template", "name": "dog_missing", "x": 100, "axis": "Days missing", "text": "My dog has been missing for 100 days now."}
+{"kind": "template", "name": "runway", "x": 0, "axis": "Months of runway", "text": "Our startup has 0 months of runway remaining."}
+{"kind": "template", "name": "runway", "x": 2, "axis": "Months of runway", "text": "Our startup has 2 months of runway remaining."}
+{"kind": "template", "name": "runway", "x": 4, "axis": "Months of runway", "text": "Our startup has 4 months of runway remaining."}
+{"kind": "template", "name": "runway", "x": 16, "axis": "Months of runway", "text": "Our startup has 16 months of runway remaining."}
+{"kind": "template", "name": "runway", "x": 48, "axis": "Months of runway", "text": "Our startup has 48 months of runway remaining."}
+{"kind": "template", "name": "runway", "x": 96, "axis": "Months of runway", "text": "Our startup has 96 months of runway remaining."}
+{"kind": "template", "name": "exam", "x": 0, "axis": "Students passed", "text": "I found out that 0 of my 20 students passed the final exam."}
+{"kind": "template", "name": "exam", "x": 2, "axis": "Students passed", "text": "I found out that 2 of my 20 students passed the final exam."}
+{"kind": "template", "name": "exam", "x": 5, "axis": "Students passed", "text": "I found out that 5 of my 20 students passed the final exam."}
+{"kind": "template", "name": "exam", "x": 10, "axis": "Students passed", "text": "I found out that 10 of my 20 students passed the final exam."}
+{"kind": "template", "name": "exam", "x": 15, "axis": "Students passed", "text": "I found out that 15 of my 20 students passed the final exam."}
+{"kind": "template", "name": "exam", "x": 20, "axis": "Students passed", "text": "I found out that 20 of my 20 students passed the final exam."}

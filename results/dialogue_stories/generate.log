@@ -1,0 +1,40 @@
+2026-07-21 20:10:07,130 INFO 12 emotions x 16; resuming from {}
+2026-07-21 20:10:18,294 INFO loading google/gemma-4-31b (bf16)...
+2026-07-21 20:11:07,697 INFO model loaded in 49s
+2026-07-21 20:12:41,137 INFO [happy] 8/16
+2026-07-21 20:14:03,817 INFO [happy] 16/16
+2026-07-21 20:14:03,832 INFO [happy] sample: {"emotion": "happy", "text": "I made you some of my favorite pumpkin bread! I figured you might be craving some comfort food.\nB: Wow, thank you! You always kno
+2026-07-21 20:15:27,103 INFO [inspired] 8/16
+2026-07-21 20:16:50,407 INFO [inspired] 16/16
+2026-07-21 20:16:50,423 INFO [inspired] sample: {"emotion": "inspired", "text": "I feel like I just had an epiphany!\nB: What do you mean?\nA: I've been struggling with this decision for months, but I just ha
+2026-07-21 20:18:13,988 INFO [loving] 8/16
+2026-07-21 20:19:38,833 INFO [loving] 16/16
+2026-07-21 20:19:38,847 INFO [loving] sample: {"emotion": "loving", "text": "We're all grown up and you still need to have a bedtime story.\nB: I know! It's a bit stupid really, but I just love that book.\n
+2026-07-21 20:21:02,232 INFO [proud] 8/16
+2026-07-21 20:22:25,554 INFO [proud] 16/16
+2026-07-21 20:22:25,571 INFO [proud] sample: {"emotion": "proud", "text": "I've been meaning to tell you, you know I just got promoted to team leader? I'm so excited, it was such a big deal, I've been wait
+2026-07-21 20:23:49,350 INFO [calm] 8/16
+2026-07-21 20:25:13,369 INFO [calm] 16/16
+2026-07-21 20:25:13,386 INFO [calm] sample: {"emotion": "calm", "text": "I'm feeling really peaceful right now.\nB: That's great to hear! What are you doing to stay calm?\nA: Just taking some deep breaths
+2026-07-21 20:26:35,492 INFO [desperate] 8/16
+2026-07-21 20:27:59,393 INFO [desperate] 16/16
+2026-07-21 20:27:59,410 INFO [desperate] sample: {"emotion": "desperate", "text": "\"I didn't know you're pregnant. It's been a long time since we broke up, right? So, whose kid is this?\"\nB: \"It's yours, yo
+2026-07-21 20:29:24,027 INFO [angry] 8/16
+2026-07-21 20:30:47,512 INFO [angry] 16/16
+2026-07-21 20:30:47,533 INFO [angry] sample: {"emotion": "angry", "text": "When are you going to give my money back?\nB: I told you a million times, I can't afford to give it to you back yet. I'll give it 
+2026-07-21 20:32:05,723 INFO [guilty] 8/16
+2026-07-21 20:33:28,942 INFO [guilty] 16/16
+2026-07-21 20:33:28,958 INFO [guilty] sample: {"emotion": "guilty", "text": "I really don't know what to say. I... I think I might have caused that accident.\nB: What accident? What do you mean?\nA: That ac
+2026-07-21 20:34:51,464 INFO [sad] 8/16
+2026-07-21 20:36:13,346 INFO [sad] 16/16
+2026-07-21 20:36:13,362 INFO [sad] sample: {"emotion": "sad", "text": "Hey, are you okay? You seem a bit down.\nB: (softly) I just lost my best friend today. We were really close.\nA: Oh no, I'm so sorry
+2026-07-21 20:37:34,974 INFO [afraid] 8/16
+2026-07-21 20:38:59,082 INFO [afraid] 16/16
+2026-07-21 20:38:59,097 INFO [afraid] sample: {"emotion": "afraid", "text": "You know, I have this exam coming up soon and I'm just feeling so overwhelmed.\nB: Oh, I totally understand. Exams can be really 
+2026-07-21 20:40:24,142 INFO [nervous] 8/16
+2026-07-21 20:41:49,031 INFO [nervous] 16/16
+2026-07-21 20:41:49,049 INFO [nervous] sample: {"emotion": "nervous", "text": "(nervously taps fingers on the table) So, are you excited for the upcoming presentation?\nB: (maintains a calm demeanor) Yes, I'
+2026-07-21 20:43:13,903 INFO [surprised] 8/16
+2026-07-21 20:44:37,242 INFO [surprised] 16/16
+2026-07-21 20:44:37,259 INFO [surprised] sample: {"emotion": "surprised", "text": "Why do you look so happy?\nB: I'm not sure. I just feel like I've been given a chance to prove myself.\nA: What kind of chance
+2026-07-21 20:44:37,290 INFO grouped 12 emotions -> results/dialogue_stories/dialogues_grouped.jsonl

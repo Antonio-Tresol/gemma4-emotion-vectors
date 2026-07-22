@@ -1,0 +1,17 @@
+{
+  "claim": "Q1.H2.C3",
+  "recomputed_best_at_n256": [
+    4,
+    5
+  ],
+  "registered_bar": [
+    8,
+    8
+  ],
+  "no_configuration_passes": true,
+  "binomial_p_best_vs_rank_null": 0.35122,
+  "binomial_p_bar_vs_rank_null": 0.00278,
+  "power_if_paper_like_probes": 0.9914,
+  "thresholds": "no pass AND best above chance (p<0.05) AND power>0.95",
+  "verdict": "weakened"
+}

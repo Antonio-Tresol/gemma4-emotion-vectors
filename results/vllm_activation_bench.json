@@ -1,0 +1,17 @@
+{
+  "model": "google/gemma-4-31b-it",
+  "layer": 33,
+  "n_layers_found": 60,
+  "hooks_fire": true,
+  "captured_shape": [
+    4,
+    5376
+  ],
+  "numerics_cosine_min": 0.99999,
+  "numerics_cosine_mean": 1.0,
+  "numerics_n_prompts": 37,
+  "vllm_hooked_prefill_s": 2.56,
+  "vllm_hooked_prefill_n": 256,
+  "vllm_s_per_prompt": 0.01,
+  "hf_reference_s_per_story": 0.3
+}
