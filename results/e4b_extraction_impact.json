@@ -1,0 +1,650 @@
+{
+  "registered_bars": {
+    "working_layers": [
+      24,
+      30,
+      33,
+      36,
+      39,
+      42,
+      57
+    ],
+    "no_reruns_min_contrast_cos": 0.995,
+    "tier1_min_contrast_cos": 0.98,
+    "geometry_peak_abs_r_delta_max": 0.02,
+    "note": "bars registered before any post-fix vector was seen"
+  },
+  "verdicts": {
+    "corpus_base": "tier2_gpu_reruns_on_the_table",
+    "corpus_it": "tier2_gpu_reruns_on_the_table",
+    "selfgen_n256_it": "tier1_recompute_reads"
+  },
+  "lineages": {
+    "corpus_base": {
+      "n_emotions_compared": 171,
+      "working_min_contrast_cos": 0.881766,
+      "per_layer": {
+        "0": {
+          "raw_cos_mean": 0.999885,
+          "raw_cos_min": 0.999583,
+          "contrast_cos_mean": 0.940308,
+          "contrast_cos_min": 0.757437,
+          "contrast_cos_argmin": "grumpy"
+        },
+        "3": {
+          "raw_cos_mean": 0.999912,
+          "raw_cos_min": 0.99971,
+          "contrast_cos_mean": 0.950497,
+          "contrast_cos_min": 0.849881,
+          "contrast_cos_argmin": "puzzled"
+        },
+        "6": {
+          "raw_cos_mean": 0.999966,
+          "raw_cos_min": 0.999879,
+          "contrast_cos_mean": 0.952734,
+          "contrast_cos_min": 0.826619,
+          "contrast_cos_argmin": "embarrassed"
+        },
+        "9": {
+          "raw_cos_mean": 0.999971,
+          "raw_cos_min": 0.999893,
+          "contrast_cos_mean": 0.954921,
+          "contrast_cos_min": 0.797223,
+          "contrast_cos_argmin": "embarrassed"
+        },
+        "12": {
+          "raw_cos_mean": 0.99998,
+          "raw_cos_min": 0.999918,
+          "contrast_cos_mean": 0.950938,
+          "contrast_cos_min": 0.752912,
+          "contrast_cos_argmin": "embarrassed"
+        },
+        "15": {
+          "raw_cos_mean": 0.999979,
+          "raw_cos_min": 0.999906,
+          "contrast_cos_mean": 0.944725,
+          "contrast_cos_min": 0.706037,
+          "contrast_cos_argmin": "elated"
+        },
+        "18": {
+          "raw_cos_mean": 0.999979,
+          "raw_cos_min": 0.999911,
+          "contrast_cos_mean": 0.959281,
+          "contrast_cos_min": 0.839718,
+          "contrast_cos_argmin": "elated"
+        },
+        "21": {
+          "raw_cos_mean": 0.99998,
+          "raw_cos_min": 0.999907,
+          "contrast_cos_mean": 0.96442,
+          "contrast_cos_min": 0.850228,
+          "contrast_cos_argmin": "embarrassed"
+        },
+        "24": {
+          "raw_cos_mean": 0.999975,
+          "raw_cos_min": 0.999894,
+          "contrast_cos_mean": 0.968359,
+          "contrast_cos_min": 0.882509,
+          "contrast_cos_argmin": "alert"
+        },
+        "27": {
+          "raw_cos_mean": 0.999963,
+          "raw_cos_min": 0.999869,
+          "contrast_cos_mean": 0.965203,
+          "contrast_cos_min": 0.870526,
+          "contrast_cos_argmin": "alert"
+        },
+        "30": {
+          "raw_cos_mean": 0.999968,
+          "raw_cos_min": 0.99989,
+          "contrast_cos_mean": 0.972322,
+          "contrast_cos_min": 0.881766,
+          "contrast_cos_argmin": "alert"
+        },
+        "33": {
+          "raw_cos_mean": 0.999975,
+          "raw_cos_min": 0.999917,
+          "contrast_cos_mean": 0.977735,
+          "contrast_cos_min": 0.906551,
+          "contrast_cos_argmin": "contemptuous"
+        },
+        "36": {
+          "raw_cos_mean": 0.999956,
+          "raw_cos_min": 0.999859,
+          "contrast_cos_mean": 0.97874,
+          "contrast_cos_min": 0.912793,
+          "contrast_cos_argmin": "contemptuous"
+        },
+        "39": {
+          "raw_cos_mean": 0.999806,
+          "raw_cos_min": 0.999389,
+          "contrast_cos_mean": 0.983055,
+          "contrast_cos_min": 0.942172,
+          "contrast_cos_argmin": "contemptuous"
+        },
+        "42": {
+          "raw_cos_mean": 0.999916,
+          "raw_cos_min": 0.999722,
+          "contrast_cos_mean": 0.982492,
+          "contrast_cos_min": 0.941046,
+          "contrast_cos_argmin": "astonished"
+        },
+        "45": {
+          "raw_cos_mean": 0.999907,
+          "raw_cos_min": 0.999698,
+          "contrast_cos_mean": 0.982568,
+          "contrast_cos_min": 0.943055,
+          "contrast_cos_argmin": "astonished"
+        },
+        "48": {
+          "raw_cos_mean": 0.999925,
+          "raw_cos_min": 0.999751,
+          "contrast_cos_mean": 0.981744,
+          "contrast_cos_min": 0.942431,
+          "contrast_cos_argmin": "contemptuous"
+        },
+        "51": {
+          "raw_cos_mean": 0.999847,
+          "raw_cos_min": 0.999489,
+          "contrast_cos_mean": 0.981292,
+          "contrast_cos_min": 0.937633,
+          "contrast_cos_argmin": "contemptuous"
+        },
+        "54": {
+          "raw_cos_mean": 0.999823,
+          "raw_cos_min": 0.999387,
+          "contrast_cos_mean": 0.980889,
+          "contrast_cos_min": 0.931314,
+          "contrast_cos_argmin": "contemptuous"
+        },
+        "57": {
+          "raw_cos_mean": 0.999273,
+          "raw_cos_min": 0.997506,
+          "contrast_cos_mean": 0.981001,
+          "contrast_cos_min": 0.923685,
+          "contrast_cos_argmin": "contemptuous"
+        }
+      },
+      "geometry": {
+        "per_layer": {
+          "0": {
+            "pc1_valence_abs_r_before": 0.3451,
+            "pc1_valence_abs_r_after": 0.2886
+          },
+          "3": {
+            "pc1_valence_abs_r_before": 0.4592,
+            "pc1_valence_abs_r_after": 0.3976
+          },
+          "6": {
+            "pc1_valence_abs_r_before": 0.5937,
+            "pc1_valence_abs_r_after": 0.5537
+          },
+          "9": {
+            "pc1_valence_abs_r_before": 0.6187,
+            "pc1_valence_abs_r_after": 0.5814
+          },
+          "12": {
+            "pc1_valence_abs_r_before": 0.619,
+            "pc1_valence_abs_r_after": 0.5608
+          },
+          "15": {
+            "pc1_valence_abs_r_before": 0.4891,
+            "pc1_valence_abs_r_after": 0.3781
+          },
+          "18": {
+            "pc1_valence_abs_r_before": 0.6493,
+            "pc1_valence_abs_r_after": 0.6153
+          },
+          "21": {
+            "pc1_valence_abs_r_before": 0.7625,
+            "pc1_valence_abs_r_after": 0.7573
+          },
+          "24": {
+            "pc1_valence_abs_r_before": 0.3086,
+            "pc1_valence_abs_r_after": 0.2286
+          },
+          "27": {
+            "pc1_valence_abs_r_before": 0.3048,
+            "pc1_valence_abs_r_after": 0.2411
+          },
+          "30": {
+            "pc1_valence_abs_r_before": 0.799,
+            "pc1_valence_abs_r_after": 0.7977
+          },
+          "33": {
+            "pc1_valence_abs_r_before": 0.8328,
+            "pc1_valence_abs_r_after": 0.8285
+          },
+          "36": {
+            "pc1_valence_abs_r_before": 0.6676,
+            "pc1_valence_abs_r_after": 0.6653
+          },
+          "39": {
+            "pc1_valence_abs_r_before": 0.796,
+            "pc1_valence_abs_r_after": 0.7936
+          },
+          "42": {
+            "pc1_valence_abs_r_before": 0.786,
+            "pc1_valence_abs_r_after": 0.7942
+          },
+          "45": {
+            "pc1_valence_abs_r_before": 0.793,
+            "pc1_valence_abs_r_after": 0.8009
+          },
+          "48": {
+            "pc1_valence_abs_r_before": 0.807,
+            "pc1_valence_abs_r_after": 0.814
+          },
+          "51": {
+            "pc1_valence_abs_r_before": 0.7901,
+            "pc1_valence_abs_r_after": 0.7974
+          },
+          "54": {
+            "pc1_valence_abs_r_before": 0.7906,
+            "pc1_valence_abs_r_after": 0.7935
+          },
+          "57": {
+            "pc1_valence_abs_r_before": 0.8046,
+            "pc1_valence_abs_r_after": 0.805
+          }
+        },
+        "peak_abs_r_before": 0.8328,
+        "peak_abs_r_after": 0.8285,
+        "peak_abs_r_delta": 0.0043
+      }
+    },
+    "corpus_it": {
+      "n_emotions_compared": 171,
+      "working_min_contrast_cos": 0.624177,
+      "per_layer": {
+        "0": {
+          "raw_cos_mean": 0.999961,
+          "raw_cos_min": 0.999854,
+          "contrast_cos_mean": 0.957879,
+          "contrast_cos_min": 0.853782,
+          "contrast_cos_argmin": "bored"
+        },
+        "3": {
+          "raw_cos_mean": 0.999963,
+          "raw_cos_min": 0.99988,
+          "contrast_cos_mean": 0.950671,
+          "contrast_cos_min": 0.86883,
+          "contrast_cos_argmin": "astonished"
+        },
+        "6": {
+          "raw_cos_mean": 0.999979,
+          "raw_cos_min": 0.999929,
+          "contrast_cos_mean": 0.952366,
+          "contrast_cos_min": 0.825688,
+          "contrast_cos_argmin": "elated"
+        },
+        "9": {
+          "raw_cos_mean": 0.999984,
+          "raw_cos_min": 0.99994,
+          "contrast_cos_mean": 0.956311,
+          "contrast_cos_min": 0.778695,
+          "contrast_cos_argmin": "embarrassed"
+        },
+        "12": {
+          "raw_cos_mean": 0.999985,
+          "raw_cos_min": 0.999938,
+          "contrast_cos_mean": 0.954308,
+          "contrast_cos_min": 0.643093,
+          "contrast_cos_argmin": "embarrassed"
+        },
+        "15": {
+          "raw_cos_mean": 0.999987,
+          "raw_cos_min": 0.999945,
+          "contrast_cos_mean": 0.945986,
+          "contrast_cos_min": 0.656357,
+          "contrast_cos_argmin": "embarrassed"
+        },
+        "18": {
+          "raw_cos_mean": 0.999985,
+          "raw_cos_min": 0.999939,
+          "contrast_cos_mean": 0.954006,
+          "contrast_cos_min": 0.765064,
+          "contrast_cos_argmin": "embarrassed"
+        },
+        "21": {
+          "raw_cos_mean": 0.999986,
+          "raw_cos_min": 0.999942,
+          "contrast_cos_mean": 0.958084,
+          "contrast_cos_min": 0.786482,
+          "contrast_cos_argmin": "grumpy"
+        },
+        "24": {
+          "raw_cos_mean": 0.999983,
+          "raw_cos_min": 0.99994,
+          "contrast_cos_mean": 0.974839,
+          "contrast_cos_min": 0.894624,
+          "contrast_cos_argmin": "contemptuous"
+        },
+        "27": {
+          "raw_cos_mean": 0.999975,
+          "raw_cos_min": 0.999918,
+          "contrast_cos_mean": 0.966902,
+          "contrast_cos_min": 0.846169,
+          "contrast_cos_argmin": "contemptuous"
+        },
+        "30": {
+          "raw_cos_mean": 0.999965,
+          "raw_cos_min": 0.999896,
+          "contrast_cos_mean": 0.971547,
+          "contrast_cos_min": 0.881565,
+          "contrast_cos_argmin": "contemptuous"
+        },
+        "33": {
+          "raw_cos_mean": 0.999976,
+          "raw_cos_min": 0.99993,
+          "contrast_cos_mean": 0.968255,
+          "contrast_cos_min": 0.802195,
+          "contrast_cos_argmin": "trapped"
+        },
+        "36": {
+          "raw_cos_mean": 0.999958,
+          "raw_cos_min": 0.999874,
+          "contrast_cos_mean": 0.963819,
+          "contrast_cos_min": 0.846575,
+          "contrast_cos_argmin": "embarrassed"
+        },
+        "39": {
+          "raw_cos_mean": 0.999866,
+          "raw_cos_min": 0.999561,
+          "contrast_cos_mean": 0.96336,
+          "contrast_cos_min": 0.816588,
+          "contrast_cos_argmin": "embarrassed"
+        },
+        "42": {
+          "raw_cos_mean": 0.999911,
+          "raw_cos_min": 0.99973,
+          "contrast_cos_mean": 0.961559,
+          "contrast_cos_min": 0.7891,
+          "contrast_cos_argmin": "embarrassed"
+        },
+        "45": {
+          "raw_cos_mean": 0.999926,
+          "raw_cos_min": 0.999746,
+          "contrast_cos_mean": 0.959366,
+          "contrast_cos_min": 0.745952,
+          "contrast_cos_argmin": "suspicious"
+        },
+        "48": {
+          "raw_cos_mean": 0.999922,
+          "raw_cos_min": 0.999616,
+          "contrast_cos_mean": 0.954081,
+          "contrast_cos_min": 0.703417,
+          "contrast_cos_argmin": "suspicious"
+        },
+        "51": {
+          "raw_cos_mean": 0.999883,
+          "raw_cos_min": 0.999281,
+          "contrast_cos_mean": 0.951539,
+          "contrast_cos_min": 0.640696,
+          "contrast_cos_argmin": "enraged"
+        },
+        "54": {
+          "raw_cos_mean": 0.999823,
+          "raw_cos_min": 0.998785,
+          "contrast_cos_mean": 0.954463,
+          "contrast_cos_min": 0.67898,
+          "contrast_cos_argmin": "suspicious"
+        },
+        "57": {
+          "raw_cos_mean": 0.999349,
+          "raw_cos_min": 0.995155,
+          "contrast_cos_mean": 0.949683,
+          "contrast_cos_min": 0.624177,
+          "contrast_cos_argmin": "suspicious"
+        }
+      },
+      "geometry": {
+        "per_layer": {
+          "0": {
+            "pc1_valence_abs_r_before": 0.1883,
+            "pc1_valence_abs_r_after": 0.1268
+          },
+          "3": {
+            "pc1_valence_abs_r_before": 0.5392,
+            "pc1_valence_abs_r_after": 0.475
+          },
+          "6": {
+            "pc1_valence_abs_r_before": 0.6446,
+            "pc1_valence_abs_r_after": 0.6049
+          },
+          "9": {
+            "pc1_valence_abs_r_before": 0.2831,
+            "pc1_valence_abs_r_after": 0.2665
+          },
+          "12": {
+            "pc1_valence_abs_r_before": 0.1044,
+            "pc1_valence_abs_r_after": 0.073
+          },
+          "15": {
+            "pc1_valence_abs_r_before": 0.0405,
+            "pc1_valence_abs_r_after": 0.0312
+          },
+          "18": {
+            "pc1_valence_abs_r_before": 0.154,
+            "pc1_valence_abs_r_after": 0.2506
+          },
+          "21": {
+            "pc1_valence_abs_r_before": 0.2781,
+            "pc1_valence_abs_r_after": 0.3781
+          },
+          "24": {
+            "pc1_valence_abs_r_before": 0.1583,
+            "pc1_valence_abs_r_after": 0.2055
+          },
+          "27": {
+            "pc1_valence_abs_r_before": 0.0995,
+            "pc1_valence_abs_r_after": 0.0845
+          },
+          "30": {
+            "pc1_valence_abs_r_before": 0.1446,
+            "pc1_valence_abs_r_after": 0.1463
+          },
+          "33": {
+            "pc1_valence_abs_r_before": 0.0903,
+            "pc1_valence_abs_r_after": 0.113
+          },
+          "36": {
+            "pc1_valence_abs_r_before": 0.0427,
+            "pc1_valence_abs_r_after": 0.078
+          },
+          "39": {
+            "pc1_valence_abs_r_before": 0.0029,
+            "pc1_valence_abs_r_after": 0.022
+          },
+          "42": {
+            "pc1_valence_abs_r_before": 0.0325,
+            "pc1_valence_abs_r_after": 0.0834
+          },
+          "45": {
+            "pc1_valence_abs_r_before": 0.0158,
+            "pc1_valence_abs_r_after": 0.0512
+          },
+          "48": {
+            "pc1_valence_abs_r_before": 0.0071,
+            "pc1_valence_abs_r_after": 0.0213
+          },
+          "51": {
+            "pc1_valence_abs_r_before": 0.0519,
+            "pc1_valence_abs_r_after": 0.0262
+          },
+          "54": {
+            "pc1_valence_abs_r_before": 0.0477,
+            "pc1_valence_abs_r_after": 0.0266
+          },
+          "57": {
+            "pc1_valence_abs_r_before": 0.0321,
+            "pc1_valence_abs_r_after": 0.0223
+          }
+        },
+        "peak_abs_r_before": 0.6446,
+        "peak_abs_r_after": 0.6049,
+        "peak_abs_r_delta": 0.0397
+      }
+    },
+    "selfgen_n256_it": {
+      "n_emotions_compared": 12,
+      "working_min_contrast_cos": 0.994998,
+      "per_layer": {
+        "0": {
+          "raw_cos_mean": 0.999994,
+          "raw_cos_min": 0.999989,
+          "contrast_cos_mean": 0.9977,
+          "contrast_cos_min": 0.995761,
+          "contrast_cos_argmin": "happy"
+        },
+        "3": {
+          "raw_cos_mean": 0.999996,
+          "raw_cos_min": 0.99999,
+          "contrast_cos_mean": 0.996439,
+          "contrast_cos_min": 0.991482,
+          "contrast_cos_argmin": "nervous"
+        },
+        "6": {
+          "raw_cos_mean": 0.999998,
+          "raw_cos_min": 0.999996,
+          "contrast_cos_mean": 0.998102,
+          "contrast_cos_min": 0.996217,
+          "contrast_cos_argmin": "surprised"
+        },
+        "9": {
+          "raw_cos_mean": 0.999999,
+          "raw_cos_min": 0.999997,
+          "contrast_cos_mean": 0.998422,
+          "contrast_cos_min": 0.996603,
+          "contrast_cos_argmin": "surprised"
+        },
+        "12": {
+          "raw_cos_mean": 0.999999,
+          "raw_cos_min": 0.999998,
+          "contrast_cos_mean": 0.998797,
+          "contrast_cos_min": 0.997291,
+          "contrast_cos_argmin": "surprised"
+        },
+        "15": {
+          "raw_cos_mean": 0.999999,
+          "raw_cos_min": 0.999998,
+          "contrast_cos_mean": 0.998192,
+          "contrast_cos_min": 0.995351,
+          "contrast_cos_argmin": "nervous"
+        },
+        "18": {
+          "raw_cos_mean": 0.999999,
+          "raw_cos_min": 0.999997,
+          "contrast_cos_mean": 0.998548,
+          "contrast_cos_min": 0.996571,
+          "contrast_cos_argmin": "nervous"
+        },
+        "21": {
+          "raw_cos_mean": 0.999999,
+          "raw_cos_min": 0.999997,
+          "contrast_cos_mean": 0.998705,
+          "contrast_cos_min": 0.996807,
+          "contrast_cos_argmin": "nervous"
+        },
+        "24": {
+          "raw_cos_mean": 0.999998,
+          "raw_cos_min": 0.999995,
+          "contrast_cos_mean": 0.998754,
+          "contrast_cos_min": 0.99695,
+          "contrast_cos_argmin": "nervous"
+        },
+        "27": {
+          "raw_cos_mean": 0.999997,
+          "raw_cos_min": 0.999995,
+          "contrast_cos_mean": 0.998193,
+          "contrast_cos_min": 0.996771,
+          "contrast_cos_argmin": "nervous"
+        },
+        "30": {
+          "raw_cos_mean": 0.999996,
+          "raw_cos_min": 0.999994,
+          "contrast_cos_mean": 0.998504,
+          "contrast_cos_min": 0.997476,
+          "contrast_cos_argmin": "happy"
+        },
+        "33": {
+          "raw_cos_mean": 0.999998,
+          "raw_cos_min": 0.999996,
+          "contrast_cos_mean": 0.998401,
+          "contrast_cos_min": 0.996275,
+          "contrast_cos_argmin": "nervous"
+        },
+        "36": {
+          "raw_cos_mean": 0.999996,
+          "raw_cos_min": 0.999993,
+          "contrast_cos_mean": 0.998102,
+          "contrast_cos_min": 0.996575,
+          "contrast_cos_argmin": "nervous"
+        },
+        "39": {
+          "raw_cos_mean": 0.999988,
+          "raw_cos_min": 0.999977,
+          "contrast_cos_mean": 0.997917,
+          "contrast_cos_min": 0.995961,
+          "contrast_cos_argmin": "nervous"
+        },
+        "42": {
+          "raw_cos_mean": 0.999992,
+          "raw_cos_min": 0.999984,
+          "contrast_cos_mean": 0.998242,
+          "contrast_cos_min": 0.996007,
+          "contrast_cos_argmin": "nervous"
+        },
+        "45": {
+          "raw_cos_mean": 0.999993,
+          "raw_cos_min": 0.999987,
+          "contrast_cos_mean": 0.998243,
+          "contrast_cos_min": 0.995879,
+          "contrast_cos_argmin": "nervous"
+        },
+        "48": {
+          "raw_cos_mean": 0.999993,
+          "raw_cos_min": 0.999988,
+          "contrast_cos_mean": 0.997987,
+          "contrast_cos_min": 0.996003,
+          "contrast_cos_argmin": "nervous"
+        },
+        "51": {
+          "raw_cos_mean": 0.99999,
+          "raw_cos_min": 0.999984,
+          "contrast_cos_mean": 0.997808,
+          "contrast_cos_min": 0.995738,
+          "contrast_cos_argmin": "nervous"
+        },
+        "54": {
+          "raw_cos_mean": 0.999987,
+          "raw_cos_min": 0.999979,
+          "contrast_cos_mean": 0.997873,
+          "contrast_cos_min": 0.99624,
+          "contrast_cos_argmin": "nervous"
+        },
+        "57": {
+          "raw_cos_mean": 0.999955,
+          "raw_cos_min": 0.999932,
+          "contrast_cos_mean": 0.99745,
+          "contrast_cos_min": 0.994998,
+          "contrast_cos_argmin": "nervous"
+        }
+      }
+    },
+    "neutral_it": {
+      "n_stories_compared": 128,
+      "story_cos_mean_L33": 0.999957,
+      "story_cos_min_L33": 0.999431,
+      "n_pcs_before": 5,
+      "n_pcs_after": 5,
+      "principal_cosines_L33": [
+        0.9989,
+        0.9969,
+        0.9949,
+        0.9938,
+        0.9632
+      ]
+    }
+  }
+}
