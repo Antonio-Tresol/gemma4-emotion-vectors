@@ -124,6 +124,28 @@ the E4b session throughout: shared GPU serialized, post-fix convention agreed pr
 two battery-leg rescores covered by this run, one working-tree collision disclosed and repaired
 (1e08190/7bc6518), this session moved to a worktree after.
 
+E12 verdict addendum (same day, after the diverse corpus landed): the saturation branch fired,
+and the diversity read fired in reverse. Fixed-prompt DeepSeek probes saturate at n~64 stories per
+emotion (8.6 seed-mean passing layers vs 9 at full n); the diverse-prompt arm (12,262 stories kept
+of 12,288 generated, 0 API errors, ~$2.30) sits BELOW the fixed arm at every matched n (6.2 vs 9.0
+at n=256) and never reaches the fixed ceiling even at n=1018 — prompt-pinned personas/settings add
+non-emotional per-story variance, a detection tax. The exploratory preference read dissociates
+cleanly: probe-Elo max |r| is monotone in corpus quality/diversity (selfgen 0.616 < fixed 0.706 <
+diverse 0.772) and survives matching n (diverse@256 = 0.760), so the same diversity that hurts
+coarse detection helps the fine-grained behavioral correlate. Recipe: 64-256 fixed-prompt
+strong-generator stories for detection; diversity only for fine-grained reads. Comparison exhibit:
+notebooks/07_generator_lineages.ipynb (index, per-lineage story samples, all four registered
+reads). Also today: Q3 prep, user-requested — the combined-story battery regenerated with
+DeepSeek-v4-pro through Peyton's exact recipe (prompt/QC imported verbatim, only the generator
+swapped; 3,724 kept of 6,228 first-pass, DeepSeek leaks the assigned emotion ~33% at temp 1.3, QC
+top-up running), plus a constant-emotion (e,e,e) CONTROL arm: same SEQUENTIAL scaffold and marked
+transition events with no emotion change, so any transition-locked trajectory signal appearing in
+it is scene-change artifact, not emotion tracking. No Q3 reads registered yet; generation is prep.
+GPU coordination: card ceded to the E4b session's steering reruns overnight, taken back for the
+E12 diverse extraction (63.5 min, 12,262 stories), ceded again for their raw-text-vs-chat-template
+audit slot. H3's amended 0.6448 headline noted here as the current number for the pre-fix 0.7013
+(the E11/E12 preference numbers in this entry are all post-fix and unaffected).
+
 E12 registration addendum (user-prompted, same day): the MORE/DIVERSE half of the E11 question,
 registered as Q1.H2.E12 before the diverse corpus exists. Two arms: E11's fixed-prompt DeepSeek
 corpus (n=256, per-story residuals already on the pod — the n-curve below 256 is free, CPU-only
