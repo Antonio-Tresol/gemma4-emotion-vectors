@@ -6,12 +6,12 @@ verdict and has a collapsible "How to read" underneath.
 
 | # | Notebook | The question it answers |
 |---|---|---|
-| 01 | `01_data.ipynb` | What data exists, who generated it, and is it clean? |
-| 02 | `02_geometry.ipynb` | Does the emotion circumplex replicate? (Yes, strongly, on the base model; instruction tuning demotes it without destroying it.) |
-| 03 | `03_probes.ipynb` | Do the vectors detect implicit emotion in scenarios? (No configuration passed the pre-registered bar across seven experiments; what survives is coarse valence.) |
-| 04 | `04_parity.ipynb` | Where does every figure from the two source papers stand? |
-| 05 | `05_trajectories.ipynb` | Q3 substrate: per-token emotion trajectories over three-emotion stories (exhibits only; reads pending registration) |
-| 06 | `06_trajectories_base.ipynb` | The base-model arm of 05: same corpus, same figures, same controls, base-lineage probes |
+| 01 | `01_corpora_and_extraction.ipynb` | What data exists, who generated it, and is it clean? |
+| 02 | `02_circumplex_geometry.ipynb` | Does the emotion circumplex replicate? (Yes, strongly, on the base model; instruction tuning demotes it without destroying it.) |
+| 03 | `03_detection_probe_campaign.ipynb` | Do the vectors detect implicit emotion in scenarios? (No configuration passed the pre-registered bar across seven experiments; what survives is coarse valence.) |
+| 04 | `04_paper_plot_parity.ipynb` | Where does every figure from the two source papers stand? |
+| 05 | `05_trajectory_explorer_instruct.ipynb` | Q3 substrate: per-token emotion trajectories over three-emotion stories (exhibits only; reads pending registration) |
+| 06 | `06_trajectory_explorer_base.ipynb` | The base-model arm of 05: same corpus, same figures, same controls, base-lineage probes |
 
 ## Running them (laptop or the shared pod)
 
@@ -26,7 +26,7 @@ datasets otherwise (they flip public at sprint end).
 3. In VS Code / Jupyter, select the **project `.venv`** as the kernel — the
    conda `arena-env` kernel does not have this package.
 4. Headless check: `.venv/bin/python -m nbconvert --to notebook --execute
-   notebooks/05_trajectories.ipynb --output /tmp/check.ipynb`.
+   notebooks/05_trajectory_explorer_instruct.ipynb --output /tmp/check.ipynb`.
 
 Known exception: notebook 02 needs the NRC VAD lexicon under
 `data/lexicons/`, which is deliberately NOT fetchable (third-party license) —

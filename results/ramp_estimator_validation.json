@@ -1,0 +1,233 @@
+{
+ "sigma": 0.002111802576109767,
+ "phi": 0.21907944977283478,
+ "window": 48,
+ "n_transitions": 200,
+ "jitter_sd": 4.0,
+ "n_boot": 500,
+ "width_grid": [
+  1e-06,
+  2.0,
+  4.0,
+  6.0,
+  8.0,
+  12.0,
+  16.0,
+  24.0
+ ],
+ "cells": {
+  "w0_amp1sd": {
+   "true_width": 0.0,
+   "amp_sd": 1,
+   "frac_null": 0.0,
+   "width": 1e-06,
+   "ci95": [
+    1e-06,
+    1e-06
+   ],
+   "boot_median": 1e-06,
+   "n_transitions": 200,
+   "verdict": "step",
+   "passes": true
+  },
+  "w0_amp2sd": {
+   "true_width": 0.0,
+   "amp_sd": 2,
+   "frac_null": 0.0,
+   "width": 2.0,
+   "ci95": [
+    1e-06,
+    2.0
+   ],
+   "boot_median": 2.0,
+   "n_transitions": 200,
+   "verdict": "step",
+   "passes": true
+  },
+  "w0_amp4sd": {
+   "true_width": 0.0,
+   "amp_sd": 4,
+   "frac_null": 0.0,
+   "width": 2.0,
+   "ci95": [
+    2.0,
+    2.0
+   ],
+   "boot_median": 2.0,
+   "n_transitions": 200,
+   "verdict": "step",
+   "passes": true
+  },
+  "w8_amp1sd": {
+   "true_width": 8,
+   "amp_sd": 1,
+   "frac_null": 0.0,
+   "width": 1e-06,
+   "ci95": [
+    1e-06,
+    1e-06
+   ],
+   "boot_median": 1e-06,
+   "n_transitions": 200,
+   "verdict": "step",
+   "passes": false
+  },
+  "w8_amp2sd": {
+   "true_width": 8,
+   "amp_sd": 2,
+   "frac_null": 0.0,
+   "width": 4.0,
+   "ci95": [
+    2.0,
+    4.0
+   ],
+   "boot_median": 4.0,
+   "n_transitions": 200,
+   "verdict": "undecided",
+   "passes": true
+  },
+  "w8_amp4sd": {
+   "true_width": 8,
+   "amp_sd": 4,
+   "frac_null": 0.0,
+   "width": 8.0,
+   "ci95": [
+    8.0,
+    8.0
+   ],
+   "boot_median": 8.0,
+   "n_transitions": 200,
+   "verdict": "ramp",
+   "passes": true
+  },
+  "w16_amp1sd": {
+   "true_width": 16,
+   "amp_sd": 1,
+   "frac_null": 0.0,
+   "width": 1e-06,
+   "ci95": [
+    1e-06,
+    1e-06
+   ],
+   "boot_median": 1e-06,
+   "n_transitions": 200,
+   "verdict": "step",
+   "passes": false
+  },
+  "w16_amp2sd": {
+   "true_width": 16,
+   "amp_sd": 2,
+   "frac_null": 0.0,
+   "width": 12.0,
+   "ci95": [
+    8.0,
+    12.0
+   ],
+   "boot_median": 12.0,
+   "n_transitions": 200,
+   "verdict": "ramp",
+   "passes": true
+  },
+  "w16_amp4sd": {
+   "true_width": 16,
+   "amp_sd": 4,
+   "frac_null": 0.0,
+   "width": 16.0,
+   "ci95": [
+    12.0,
+    16.0
+   ],
+   "boot_median": 16.0,
+   "n_transitions": 200,
+   "verdict": "ramp",
+   "passes": true
+  },
+  "w24_amp1sd": {
+   "true_width": 24,
+   "amp_sd": 1,
+   "frac_null": 0.0,
+   "width": 1e-06,
+   "ci95": [
+    1e-06,
+    1e-06
+   ],
+   "boot_median": 1e-06,
+   "n_transitions": 200,
+   "verdict": "step",
+   "passes": false
+  },
+  "w24_amp2sd": {
+   "true_width": 24,
+   "amp_sd": 2,
+   "frac_null": 0.0,
+   "width": 16.0,
+   "ci95": [
+    1e-06,
+    16.0
+   ],
+   "boot_median": 12.0,
+   "n_transitions": 200,
+   "verdict": "undecided",
+   "passes": true
+  },
+  "w24_amp4sd": {
+   "true_width": 24,
+   "amp_sd": 4,
+   "frac_null": 0.0,
+   "width": 24.0,
+   "ci95": [
+    24.0,
+    24.0
+   ],
+   "boot_median": 24.0,
+   "n_transitions": 200,
+   "verdict": "ramp",
+   "passes": true
+  },
+  "w16_amp2sd_mix": {
+   "true_width": 16.0,
+   "amp_sd": 2.0,
+   "frac_null": 0.5,
+   "width": 1e-06,
+   "ci95": [
+    1e-06,
+    12.0
+   ],
+   "boot_median": 1e-06,
+   "n_transitions": 200,
+   "verdict": "undecided",
+   "passes": false
+  },
+  "w16_amp2sd_mix_gated": {
+   "true_width": 16.0,
+   "amp_sd": 2.0,
+   "frac_null": 0.5,
+   "width": 8.0,
+   "ci95": [
+    1e-06,
+    12.0
+   ],
+   "boot_median": 6.0,
+   "n_transitions": 56,
+   "verdict": "undecided",
+   "retained_frac": 0.28,
+   "passes": true
+  },
+  "w0_amp2sd_mix_gated": {
+   "true_width": 0.0,
+   "amp_sd": 2.0,
+   "frac_null": 0.5,
+   "width": 1e-06,
+   "ci95": [
+    1e-06,
+    2.0
+   ],
+   "boot_median": 1e-06,
+   "n_transitions": 52,
+   "verdict": "step",
+   "retained_frac": 0.26,
+   "passes": true
+  }
+ },
+ "all_pass": false
+}

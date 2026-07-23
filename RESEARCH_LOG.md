@@ -18,6 +18,47 @@ one lives in the harness repo's own tree and log.
 
 Newest entry first. Every entry answers the same four questions.
 
+### 2026-07-23
+
+* What I did: The overnight tail of yesterday's session ran past local midnight, so two addenda
+physically live under the 2026-07-22 entry by the same split-session pattern that entry itself
+documents: the E12 verdict (diversity is a detection tax at matched n, saturation at n~64) and
+the Q3 prep record (DeepSeek combined corpus + constant-emotion control arm). Everything after
+belongs here. (1) Q3.H1.E1 first tranche SCORED on both substrates under the registered
+conventions: identity tracking is strong with good probes (selfgen/deepseek 12-banks, median
+rank 1-6, N2 p<0.001) and fails with the corpus-171 bank; anticipation exists only on
+Gemma-written stories, vanishes on the DeepSeek substrate, and is absent in the constant-emotion
+control, which reads as textual-foreshadowing detection pending the cue-referenced twin. Ladder
+adjudication deliberately open. (2) The v2 primary-substrate re-extraction launched (post-fix
+corpus probes + the fixed-DeepSeek bank added; retires the E4b probe-version caveat on fresh
+reads); first launch crashed on missing probe/story files, both diagnosed and relaunched. (3)
+Notebooks: 07 (E11/E12 generator-lineage exhibit) and 08 (Q3 first-tranche exhibit with layer
+sliders on every per-layer view) built, executed, visually audited (three real figure defects
+caught by looking); all notebooks renamed to meaningful names; a two-agent style audit swept
+01-08, and the two correctness-critical findings in 03/04 (a pre-fix causal-null caption
+contradicting the tree, stale C3/C4 statuses) were fixed by the sibling session on their 01-04
+rebuild lane. (4) A three-agent readability sweep decompressed dense one-liners across 11
+files, verified by bit-identical scorer reruns, 13/13 trajectory tests, and live smokes. (5)
+Repo hygiene: six TREE-cited evidence files existed only on this laptop, never committed
+(validator checks existence, not tracking) — now tracked, with transient logs and HF-resident
+corpora gitignored. (6) E12 corpora and both DeepSeek vector sets published public on HF
+(per-story shards repacked per-emotion after the 10k-files-per-directory limit).
+* What I expected vs what happened: Expected the diverse corpus to at least match the fixed one
+on detection; it lost at every matched n (6.2 vs 9.0 passing layers at n=256) while winning the
+preference read at matched n (0.760 vs 0.706) — a clean two-read dissociation. Expected Q3
+anticipation to be a model property; the DeepSeek-substrate collapse says it is a text property,
+exactly the confound the registered cue-referenced twin was designed for. Expected the style
+audit to find cosmetics; it found a notebook asserting the opposite of the tree's causal verdict.
+* What this changes about my thinking: Corpus design for probes has two regimes — coarse
+detection wants clean low-variance corpora and saturates by ~64 stories, fine-grained reads want
+coverage — so "better data" is read-dependent, not a scalar. Prose numbers rot precisely where
+they are hand-copied; every number a notebook states must be computed in the cell beside it.
+Cross-generator substrates double as controls: the cheapest way to test whether an effect lives
+in the model or the text is to swap the author of the text.
+* What I will do next: v2 substrate finishing (~10:30); rescore G/R1 on it; publish the three new
+trajectory sets; notebook 09 (DeepSeek-arm explorer); ladder adjudication + cue-judge bulk pass
+with Antonio; C4-style falsify gate before any Q3 claim graduates.
+
 ### 2026-07-22
 
 * What I did: Continuation of the 2026-07-21 session past local midnight — same working session, split across entries by the log's date convention; everything below happened on the 22nd, everything before (the falsify gate, the notebook overhaul, preferences, steering, the first E8 diagnostics) is recorded in yesterday's entry and its addenda. An infrastructure-and-audit stretch that ended up moving the science more than any planned experiment. (1) E8 thinking-mode arm: gemma-4-it's tokenizer defaults to thinking-OFF, whose prompt ends by closing an empty thought channel — re-collecting the numerical templates thinking-ON doubles most excursions, produces the first panels to beat the random-direction null, and keeps 10/11 registered signs; every prior -it measurement used the (slightly worse) OFF read position. (2) The vLLM investigation the user requested: docs read (official extract_hidden_states API exists, >= 0.18, we run 0.22.1), then a definitive three-arm bench — HF loop 1,014 tok/s at 20 layers; vLLM hooks 3,400 tok/s at 1 layer but 528 at 20 (per-layer copies invert the advantage); vLLM official API 977 tok/s while persisting full per-token safetensors (~25 GB) — knowledge written to the research-harness experiment-engineering skill as two separate sections (generation vs extraction, independent capabilities, sources linked) plus runnable references, and the notebook communication contract ported to the communicate-results skill. (3) Terminology rule with a correction absorbed: define our own coinages ("battery"), leave canonical mech-interp vocabulary alone. (4) The user asked for a sanity check of our extraction against ARENA's persona-vectors material — a 16-item audit that produced the day's two biggest events.

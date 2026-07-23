@@ -37,58 +37,77 @@ N_SEEDS = 5
 
 def load_shards(shard_dir: Path) -> dict[str, np.ndarray]:
     """Per-emotion stacks of per-story mean residuals, [stories, 20, 5376]."""
-    by_emotion: dict[str, list[Path]] = defaultdict(list)
-    for f in sorted(shard_dir.glob("*.npy")):
-        by_emotion[f.stem.rsplit("__", 1)[0]].append(f)
-    return {e: np.stack([np.load(f) for f in files]) for e, files in by_emotion.items()}
+    # shard filename convention: <emotion>__<idx>.npy
+    files_by_emotion: dict[str, list[Path]] = defaultdict(list)
+    for shard_file in sorted(shard_dir.glob("*.npy")):
+        emotion = shard_file.stem.rsplit("__", 1)[0]
+        files_by_emotion[emotion].append(shard_file)
+
+    stacks = {}
+    for emotion, files in files_by_emotion.items():
+        stacks[emotion] = np.stack([np.load(shard_file) for shard_file in files])
+    return stacks
 
 
 def grid_read(probes_by_layer: np.ndarray, sweep: dict, layers: list[int]) -> dict:
     """E11's R1 on one probe bundle: per-layer dual-battery counts + passes."""
-    order = [
-        (kind, target)
-        for kind, battery in (("scenario", SCENARIOS), ("heldout", HELDOUT_SCENARIOS))
-        for _, target, _ in battery
-    ]
-    acts = sweep["chat_last"].astype(np.float32)
+    # The sweep's activation rows are ordered: all paper-battery scenarios,
+    # then all held-out scenarios. Rebuild that order with each row's target.
+    order: list[tuple[str, str]] = []
+    for kind, battery in (("scenario", SCENARIOS), ("heldout", HELDOUT_SCENARIOS)):
+        for _name, target, _prompt in battery:
+            order.append((kind, target))
     rows = {
-        k: [i for i, (kind, _) in enumerate(order) if kind == k] for k in ("scenario", "heldout")
+        battery_kind: [i for i, (kind, _) in enumerate(order) if kind == battery_kind]
+        for battery_kind in ("scenario", "heldout")
     }
-    targets = {k: [order[i][1] for i in rows[k]] for k in rows}
-    per_layer, passes = {}, []
-    for lp, layer in enumerate(layers):
-        probes = contrast_probes_12pool(probes_by_layer[:, lp])
-        paper = battery_counts(acts[rows["scenario"], lp], probes, targets["scenario"])
-        held = battery_counts(acts[rows["heldout"], lp], probes, targets["heldout"])
-        per_layer[layer] = [paper, held]
-        if paper >= 8 and held >= 8:
-            passes.append(layer)
-    best = max(per_layer.items(), key=lambda kv: sum(kv[1]))
+    targets = {battery_kind: [order[i][1] for i in rows[battery_kind]] for battery_kind in rows}
+
+    acts = sweep["chat_last"].astype(np.float32)
+    per_layer, passing_layers = {}, []
+    for layer_pos, layer in enumerate(layers):
+        probes = contrast_probes_12pool(probes_by_layer[:, layer_pos])
+        paper_count = battery_counts(acts[rows["scenario"], layer_pos], probes, targets["scenario"])
+        held_count = battery_counts(acts[rows["heldout"], layer_pos], probes, targets["heldout"])
+        per_layer[layer] = [paper_count, held_count]
+        if paper_count >= 8 and held_count >= 8:
+            passing_layers.append(layer)
+    best_layer, best_counts = max(per_layer.items(), key=lambda kv: sum(kv[1]))
     return {
         "per_layer": per_layer,
-        "passing_layers": passes,
-        "best": {"layer": best[0], "counts": best[1]},
+        "passing_layers": passing_layers,
+        "best": {"layer": best_layer, "counts": best_counts},
     }
 
 
-def curve_for_arm(stacks: dict[str, np.ndarray], sweep, layers, selfgen, l33) -> dict:
-    n_avail = min(len(stacks[e]) for e in BATTERY)
+def curve_for_arm(
+    stacks: dict[str, np.ndarray], sweep, layers, selfgen_probes, layer33_pos
+) -> dict:
+    n_avail = min(len(stacks[emotion]) for emotion in BATTERY)
     curve: dict[str, list] = {"n_available_min": n_avail, "points": []}
+
     # seeded subsample points, plus one deterministic full-corpus anchor
     # (seed -1) so the top of the curve survives dropped-story off-by-a-few
     jobs = [(n, seed) for n in N_GRID if n <= n_avail for seed in range(N_SEEDS)]
     jobs.append((n_avail, -1))
+
     for n, seed in jobs:
         if seed == -1:
-            means = np.stack([stacks[e].mean(0) for e in BATTERY])
+            # full-corpus anchor: mean over every story, no sampling
+            means = np.stack([stacks[emotion].mean(0) for emotion in BATTERY])
         else:
+            # subsample n stories per emotion (without replacement), then mean
             rng = np.random.default_rng(1000 * n + seed)
-            means = np.stack(
-                [stacks[e][rng.choice(len(stacks[e]), n, replace=False)].mean(0) for e in BATTERY]
-            )
+            per_emotion_means = []
+            for emotion in BATTERY:
+                stack = stacks[emotion]
+                chosen = rng.choice(len(stack), n, replace=False)
+                per_emotion_means.append(stack[chosen].mean(0))
+            means = np.stack(per_emotion_means)
+
         r1 = grid_read(means, sweep, layers)
-        probes33 = contrast_probes_12pool(means[:, l33])
-        cos_selfgen = float(np.sum(probes33 * selfgen, axis=1).mean())
+        probes33 = contrast_probes_12pool(means[:, layer33_pos])
+        cos_selfgen = float(np.sum(probes33 * selfgen_probes, axis=1).mean())
         curve["points"].append(
             {
                 "n": n,
@@ -115,19 +134,25 @@ def main() -> int:
     args = parser.parse_args()
     sweep = np.load(args.results_root / "probe_sweep_it/activations.npz", allow_pickle=True)
     layers = [int(x) for x in sweep["layers"]]
-    l33 = layers.index(33)
-    selfgen = contrast_probes_12pool(load_battery_means(args.selfgen)[:, l33])
+    layer33_pos = layers.index(33)
+    selfgen_probes = contrast_probes_12pool(load_battery_means(args.selfgen)[:, layer33_pos])
+
     result = {"experiment": "Q1.H2.E12", "n_grid": N_GRID, "n_seeds": N_SEEDS, "arms": {}}
     for spec in args.arm:
         name, shard_dir = spec.split("=", 1)
         stacks = load_shards(Path(shard_dir))
-        result["arms"][name] = curve_for_arm(stacks, sweep, layers, selfgen, l33)
-        pts = result["arms"][name]["points"]
-        for n in sorted({p["n"] for p in pts}):
-            ns = [p["n_passing_layers"] for p in pts if p["n"] == n]
-            cs = [p["mean_contrast_cos_to_selfgen_L33"] for p in pts if p["n"] == n]
+        result["arms"][name] = curve_for_arm(stacks, sweep, layers, selfgen_probes, layer33_pos)
+
+        # console summary: per n, the range of passing-layer counts across seeds
+        points = result["arms"][name]["points"]
+        for n in sorted({point["n"] for point in points}):
+            pass_counts = [point["n_passing_layers"] for point in points if point["n"] == n]
+            cosines = [
+                point["mean_contrast_cos_to_selfgen_L33"] for point in points if point["n"] == n
+            ]
             print(
-                f"{name:8s} n={n:5d}: passing layers {min(ns)}-{max(ns)} (mean {np.mean(ns):.1f}) | cos-to-selfgen {np.mean(cs):.3f}"
+                f"{name:8s} n={n:5d}: passing layers {min(pass_counts)}-{max(pass_counts)} "
+                f"(mean {np.mean(pass_counts):.1f}) | cos-to-selfgen {np.mean(cosines):.3f}"
             )
     args.out.write_text(json.dumps(result, indent=2))
     return 0

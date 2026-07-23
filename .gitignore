@@ -21,3 +21,12 @@ results/**/dialogues_raw.jsonl
 results/**/dialogues_grouped.jsonl
 results/**/prompts.jsonl
 results/**/*.npy
+
+# transient process logs and superseded corpus backups (data lives on HF)
+results/**/extract.log
+results/**/collect.log
+results/**/generate.log
+results/combined_stories_prefix_backup_*/
+results/openrouter_stories/stories_*.jsonl
+results/openrouter_stories_diverse/stories_*.jsonl
+results/combined_stories_deepseek*/stories_*.jsonl
