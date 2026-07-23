@@ -80,9 +80,9 @@ MODEL = "google/gemma-4-31b-it"
 
 def load_json(name):
     for base in (RES, MAIN_RES):
-        p = base / name
-        if p.exists():
-            return json.loads(p.read_text())
+        path = base / name
+        if path.exists():
+            return json.loads(path.read_text())
     raise FileNotFoundError(name)
 
 e11 = load_json("e11_lineage.json")
@@ -96,16 +96,21 @@ except FileNotFoundError:
 
 def load_grouped(name):
     for base in (RES, MAIN_RES):
-        p = base / name / "stories_grouped.jsonl"
-        if p.exists():
-            return {r["emotion"]: r["stories"] for r in map(json.loads, p.read_text().splitlines())}
+        path = base / name / "stories_grouped.jsonl"
+        if path.exists():
+            rows = [json.loads(line) for line in path.read_text().splitlines()]
+            return {row["emotion"]: row["stories"] for row in rows}
     return None
 
 corpora = {
     "fixed DeepSeek (E11)": load_grouped("openrouter_stories"),
     "diverse DeepSeek (E12)": load_grouped("openrouter_stories_diverse"),
 }
-print({k: (sum(map(len, v.values())) if v else None) for k, v in corpora.items()})
+# total story count per corpus (None where the corpus files are absent)
+story_counts = {}
+for name, corpus in corpora.items():
+    story_counts[name] = sum(len(stories) for stories in corpus.values()) if corpus else None
+print(story_counts)
 """
 
 S1_MD = """\
@@ -154,8 +159,13 @@ S2_CODE = """\
 r4 = e11["r4_diversity_EXPLORATORY"]
 names = ["selfgen", "weak_external", "strong_external"]
 labels = ["self-generated\\n(gemma-it)", "weak external\\n(gemma-4-4B corpus)", "fixed DeepSeek"]
-jac = [r4[n]["mean_pairwise_jaccard"] if r4.get(n) else None for n in names]
-fig = go.Figure(go.Bar(x=labels, y=jac, text=[f"{v:.4f}" if v else "n/a" for v in jac], textposition="outside"))
+# per-lineage Jaccard overlap, None where the lineage was not measured
+jaccard_values = []
+for name in names:
+    lineage_stats = r4.get(name)
+    jaccard_values.append(lineage_stats["mean_pairwise_jaccard"] if lineage_stats else None)
+bar_labels = [f"{value:.4f}" if value else "n/a" for value in jaccard_values]
+fig = go.Figure(go.Bar(x=labels, y=jaccard_values, text=bar_labels, textposition="outside"))
 fig.update_layout(
     title=f"Within-corpus 5-gram Jaccard overlap (higher = more repetitive) | probes read from {MODEL}",
     yaxis_title="mean pairwise Jaccard", width=850, height=420, margin=dict(t=80))
@@ -183,12 +193,20 @@ rows = {
     "fixed DeepSeek n=256": e11["r1_dual_battery"]["strong_external"]["per_layer"],
     "diverse DeepSeek n=1024": full_grid["r1_dual_battery"]["diverse_deepseek_n1024"]["per_layer"],
 }
-layers = sorted(int(k) for k in next(iter(rows.values())))
+first_lineage = next(iter(rows.values()))
+layers = sorted(int(layer_key) for layer_key in first_lineage)
 z, text = [], []
 for per_layer in rows.values():
-    counts = [per_layer[str(L)] if str(L) in per_layer else per_layer[L] for L in layers]
-    z.append([min(p, h) for p, h in counts])
-    text.append([f"{p}/{h}" + (" *" if p >= 8 and h >= 8 else "") for p, h in counts])
+    # (paper, held-out) count pair per layer; keys may be str or int per source JSON
+    counts = []
+    for layer in layers:
+        key = str(layer) if str(layer) in per_layer else layer
+        counts.append(per_layer[key])
+    z.append([min(paper, held_out) for paper, held_out in counts])
+    text.append([
+        f"{paper}/{held_out}" + (" *" if paper >= 8 and held_out >= 8 else "")
+        for paper, held_out in counts
+    ])
 fig = go.Figure(go.Heatmap(
     z=z, x=[str(L) for L in layers], y=list(rows), text=text, texttemplate="%{text}",
     colorscale="Blues", zmin=0, zmax=12, colorbar_title="min(paper, held-out)"))
@@ -227,14 +245,20 @@ fig = make_subplots(rows=1, cols=2, subplot_titles=(
     "probe direction cosine to self-generated probes (layer 33)"))
 colors = {"fixed": "#1f77b4", "diverse": "#d62728"}
 for arm, curve in src.items():
-    pts = curve["points"]
-    ns = sorted({p["n"] for p in pts})
-    for col, key in ((1, "n_passing_layers"), (2, "mean_contrast_cos_to_selfgen_L33")):
-        mean = [np.mean([p[key] for p in pts if p["n"] == n]) for n in ns]
-        fig.add_scatter(x=[p["n"] for p in pts], y=[p[key] for p in pts], mode="markers",
+    points = curve["points"]
+    corpus_sizes = sorted({point["n"] for point in points})
+    for col, metric in ((1, "n_passing_layers"), (2, "mean_contrast_cos_to_selfgen_L33")):
+        # one marker per seeded subsample, plus the seed mean at each corpus size
+        seed_sizes = [point["n"] for point in points]
+        seed_values = [point[metric] for point in points]
+        seed_means = []
+        for size in corpus_sizes:
+            values_at_size = [point[metric] for point in points if point["n"] == size]
+            seed_means.append(np.mean(values_at_size))
+        fig.add_scatter(x=seed_sizes, y=seed_values, mode="markers",
                         marker=dict(color=colors.get(arm, "gray"), opacity=0.4),
                         name=f"{arm} seeds", legendgroup=arm, showlegend=(col == 1), row=1, col=col)
-        fig.add_scatter(x=ns, y=mean, mode="lines+markers",
+        fig.add_scatter(x=corpus_sizes, y=seed_means, mode="lines+markers",
                         line=dict(color=colors.get(arm, "gray")),
                         name=f"{arm} mean", legendgroup=arm, showlegend=(col == 1), row=1, col=col)
 fig.add_hline(y=9, line_dash="dot", annotation_text="fixed-corpus ceiling (9)", row=1, col=1)
@@ -266,15 +290,26 @@ short = {"selfgen": "self-gen", "selfgen_postfix": "self-gen",
          "weak_external": "weak ext", "fixed_deepseek_n256": "fixed DS",
          "strong_external": "fixed DS", "diverse_deepseek_n1024": "diverse DS"}
 names = ["self-gen", "weak ext", "fixed DS", "diverse DS"]
-cos = np.full((4, 4), np.nan); rsa = np.full((4, 4), np.nan)
-for k, v in pairs.items():
-    a, b = k.split("_vs_")
-    if short.get(a) in names and short.get(b) in names:
-        i, j = names.index(short[a]), names.index(short[b])
-        cos[i, j] = cos[j, i] = v["mean_contrast_cos"]
-        rsa[i, j] = rsa[j, i] = v["rsa_12x12"]
-text = [[("" if np.isnan(cos[i][j]) else f"cos {cos[i][j]:.2f}<br>RSA {rsa[i][j]:.2f}")
-         for j in range(4)] for i in range(4)]
+cos = np.full((4, 4), np.nan)
+rsa = np.full((4, 4), np.nan)
+# fill both symmetric matrices from the "A_vs_B" pair keys
+for pair_key, pair_stats in pairs.items():
+    lineage_a, lineage_b = pair_key.split("_vs_")
+    if short.get(lineage_a) in names and short.get(lineage_b) in names:
+        row = names.index(short[lineage_a])
+        col = names.index(short[lineage_b])
+        cos[row, col] = cos[col, row] = pair_stats["mean_contrast_cos"]
+        rsa[row, col] = rsa[col, row] = pair_stats["rsa_12x12"]
+# cell labels: cosine + RSA where the pair was measured, blank otherwise
+text = []
+for row in range(4):
+    row_labels = []
+    for col in range(4):
+        if np.isnan(cos[row][col]):
+            row_labels.append("")
+        else:
+            row_labels.append(f"cos {cos[row][col]:.2f}<br>RSA {rsa[row][col]:.2f}")
+    text.append(row_labels)
 fig = go.Figure(go.Heatmap(z=cos, x=names, y=names, text=text, texttemplate="%{text}",
                            colorscale="RdBu", zmid=0, colorbar_title="contrast cos"))
 fig.update_layout(title=f"Cross-lineage probe agreement at layer 33 | {MODEL}",
@@ -305,8 +340,8 @@ r3 = {"self-generated": e11["r3_preference_probe_elo"]["selfgen"],
       "fixed DeepSeek": full_grid["r3_preference_probe_elo"]["fixed_deepseek_n256"],
       "diverse DeepSeek": full_grid["r3_preference_probe_elo"]["diverse_deepseek_n1024"]}
 fig = go.Figure(go.Bar(
-    x=list(r3), y=[v["abs_r"] for v in r3.values()],
-    text=[f"{v['abs_r']:.3f}<br>L{v['layer']} {v['emotion']}" for v in r3.values()],
+    x=list(r3), y=[stats["abs_r"] for stats in r3.values()],
+    text=[f"{stats['abs_r']:.3f}<br>L{stats['layer']} {stats['emotion']}" for stats in r3.values()],
     textposition="outside"))
 fig.update_layout(
     title=f"Max |r| between probe cosine and preference Elo (64 activities) | {MODEL}",

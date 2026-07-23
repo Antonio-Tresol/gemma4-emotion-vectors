@@ -243,16 +243,18 @@ def build_user_prompt(perm: tuple[str, str, str], mode: str, seed: int) -> str:
 
 def load_triples(path: Path) -> list[dict]:
     triples = json.loads(path.read_text())
-    for t in triples:
-        if len(t.get("emotions", [])) != 3:
-            raise ValueError(f"triple missing 3 emotions: {t}")
+    for triple in triples:
+        if len(triple.get("emotions", [])) != 3:
+            raise ValueError(f"triple missing 3 emotions: {triple}")
     return triples
 
 
 def combos_for(emotions: list[str]) -> list[tuple[str, tuple[str, str, str], int]]:
     """The 12 (mode, permutation, perm_idx) combinations for one triple, stable order."""
     perms = list(itertools.permutations(emotions))
-    return [(mode, perms[i], i) for mode in MODES for i in range(N_PERMUTATIONS)]
+    return [
+        (mode, perms[perm_idx], perm_idx) for mode in MODES for perm_idx in range(N_PERMUTATIONS)
+    ]
 
 
 def strip_thinking(text: str) -> tuple[str, bool]:
@@ -265,12 +267,10 @@ def leaked_words(text: str, emotions: list[str]) -> list[str]:
     prompt to name the emotion (needed downstream for token-alignment), so
     tag content is not leakage and must be excluded before this check."""
     prose = re.sub(r"<emotion>.*?</emotion>", "", text, flags=re.DOTALL)
-    lower = prose.lower()
-    return [
-        w
-        for w in (*BANNED_WORDS, *(e.lower() for e in emotions))
-        if re.search(rf"\b{re.escape(w)}\b", lower)
-    ]
+    prose_lower = prose.lower()
+    forbidden = (*BANNED_WORDS, *(emotion.lower() for emotion in emotions))
+    # whole-word match only: "sad" must not flag "Sadie"
+    return [word for word in forbidden if re.search(rf"\b{re.escape(word)}\b", prose_lower)]
 
 
 def emotion_tags(text: str) -> list[str]:
@@ -284,10 +284,15 @@ def tags_match_emotions(tags: list[str], emotions: list[str]) -> bool:
     triple assigned (unsettled, upset, cheerful) tagged as
     <emotion>(cheerful, unsettled, angry)</emotion> — which would otherwise
     silently poison the tag as a downstream token-alignment label."""
-    found = {
-        piece.strip().lower() for tag in tags for piece in re.split(r"[,()]+", tag) if piece.strip()
-    }
-    return found == {e.lower() for e in emotions}
+    # split every tag on commas/parens into individual emotion names
+    found_names: set[str] = set()
+    for tag in tags:
+        for piece in re.split(r"[,()]+", tag):
+            name = piece.strip().lower()
+            if name:
+                found_names.add(name)
+    assigned_names = {emotion.lower() for emotion in emotions}
+    return found_names == assigned_names
 
 
 def row_key(triple_id: int, mode: str, perm_idx: int) -> str:
@@ -317,18 +322,18 @@ def assemble_grouped(raw_path: Path, grouped_path: Path) -> int:
             row = json.loads(line)
             if row.get("error"):
                 continue
-            tid = row["triple_id"]
+            triple_id = row["triple_id"]
             grouped.setdefault(
-                tid,
+                triple_id,
                 {
-                    "triple_id": tid,
+                    "triple_id": triple_id,
                     "emotions": row["emotions"],
                     "category": row["category"],
                     "has_nonaffect": row["has_nonaffect"],
                     "stories": [],
                 },
             )
-            grouped[tid]["stories"].append(
+            grouped[triple_id]["stories"].append(
                 {
                     "mode": row["mode"],
                     "permutation": row["permutation"],
@@ -336,7 +341,7 @@ def assemble_grouped(raw_path: Path, grouped_path: Path) -> int:
                     "tags": row["tags"],
                 }
             )
-    grouped_path.write_text("".join(json.dumps(g) + "\n" for g in grouped.values()))
+    grouped_path.write_text("".join(json.dumps(group) + "\n" for group in grouped.values()))
     return len(grouped)
 
 
@@ -389,8 +394,12 @@ def prepare_run(args: argparse.Namespace) -> tuple[list[dict], int, "logging.Log
         triples = triples[:2]
     args.out_dir.mkdir(parents=True, exist_ok=True)
     logger = _setup_logger(args.out_dir / "generate.log")
+    # args with Paths stringified so the config dict is JSON-serializable
+    args_jsonable = {
+        key: (str(value) if isinstance(value, Path) else value) for key, value in vars(args).items()
+    }
     config = {
-        **{k: (str(v) if isinstance(v, Path) else v) for k, v in vars(args).items()},
+        **args_jsonable,
         "n_combos": N_COMBOS,
         "samples_per_combo": samples_per_combo,
         "git_commit": git_commit(),
@@ -416,9 +425,9 @@ def write_kept_rows(
     (kept, dropped_short, dropped_leak, dropped_tag_mismatch)."""
     emotions = triple["emotions"]
     kept = d_short = d_leak = d_tag_mismatch = 0
-    with open(raw_path, "a") as f:
-        for (mode, perm, perm_idx, _), out, seed in zip(pending, outputs, combo_seeds):
-            for sample in out.outputs:
+    with open(raw_path, "a") as raw_file:
+        for (mode, perm, perm_idx, _), combo_output, seed in zip(pending, outputs, combo_seeds):
+            for sample in combo_output.outputs:
                 text, had_think = strip_thinking(sample.text)
                 leaks = leaked_words(text, emotions)
                 tags = emotion_tags(text)
@@ -450,7 +459,7 @@ def write_kept_rows(
                     "seed": seed,
                     "error": None,
                 }
-                f.write(json.dumps(row) + "\n")
+                raw_file.write(json.dumps(row) + "\n")
                 kept += 1
     return kept, d_short, d_leak, d_tag_mismatch
 
@@ -460,11 +469,12 @@ def log_resume_state(
 ) -> dict[str, int]:
     """Existing-story counts plus the resume log line."""
     counts = existing_counts(raw_path)
-    n_pending = sum(
-        max(0, samples_per_combo - counts.get(row_key(tid, mode, i), 0))
-        for tid, t in enumerate(triples)
-        for mode, _, i in combos_for(t["emotions"])
-    )
+    # pending = samples still missing, summed over every (triple, mode, permutation)
+    n_pending = 0
+    for triple_id, triple in enumerate(triples):
+        for mode, _, perm_idx in combos_for(triple["emotions"]):
+            have = counts.get(row_key(triple_id, mode, perm_idx), 0)
+            n_pending += max(0, samples_per_combo - have)
     logger.info(f"{n_pending} stories pending (resuming from {sum(counts.values())} done)")
     return counts
 
@@ -480,7 +490,7 @@ def main() -> int:
         f"~1 min from a local/warm HF cache; CUDA graph capture (skipped if enforce_eager) can add "
         f"several more minutes on a cold cache with no further log output until it completes"
     )
-    t_load = time.monotonic()
+    load_start = time.monotonic()
     llm = LLM(
         model=args.model,
         dtype="bfloat16",
@@ -489,27 +499,29 @@ def main() -> int:
         seed=args.seed,
         enforce_eager=args.enforce_eager,
     )
-    logger.info(f"vLLM engine ready in {time.monotonic() - t_load:.0f}s")
+    logger.info(f"vLLM engine ready in {time.monotonic() - load_start:.0f}s")
 
     raw_path = args.out_dir / "stories_raw.jsonl"
     counts = log_resume_state(raw_path, triples, samples_per_combo, logger)
 
-    t0 = time.monotonic()
+    run_start = time.monotonic()
     n_dropped_short = n_dropped_leak = n_dropped_tag_mismatch = 0
     for triple_id, triple in enumerate(triples):
         emotions = triple["emotions"]
-        pending = [
-            (mode, perm, perm_idx, need)
-            for mode, perm, perm_idx in combos_for(emotions)
-            if (need := samples_per_combo - counts.get(row_key(triple_id, mode, perm_idx), 0)) > 0
-        ]
+        # pending = the combos still short of samples_per_combo, with how many they need
+        pending = []
+        for mode, perm, perm_idx in combos_for(emotions):
+            have = counts.get(row_key(triple_id, mode, perm_idx), 0)
+            need = samples_per_combo - have
+            if need > 0:
+                pending.append((mode, perm, perm_idx, need))
         if not pending:
             continue
 
         # distinct seed per (triple, combo): a shared seed across a triple's 12 combos
         # was correlating completions across permutations/modes; also drives the
         # setting/name pick below, so both stay reproducible from one seed.
-        combo_seeds = [args.seed + triple_id * 100 + i for i in range(len(pending))]
+        combo_seeds = [args.seed + triple_id * 100 + combo_pos for combo_pos in range(len(pending))]
         conversations = [
             [
                 {"role": "system", "content": SYSTEM_PROMPT},
@@ -531,8 +543,8 @@ def main() -> int:
             outputs = llm.chat(conversations, sampling)
         except Exception as exc:  # one triple can't kill the run
             logger.error(f"[triple {triple_id}] failed: {exc!r}")
-            with open(raw_path, "a") as f:
-                f.write(
+            with open(raw_path, "a") as raw_file:
+                raw_file.write(
                     json.dumps(
                         {
                             "triple_id": triple_id,
@@ -554,7 +566,7 @@ def main() -> int:
         n_dropped_tag_mismatch += d_tag_mismatch
 
         done_triples = triple_id + 1
-        rate = done_triples / max(time.monotonic() - t0, 1e-9)
+        rate = done_triples / max(time.monotonic() - run_start, 1e-9)
         eta_min = (len(triples) - done_triples) / max(rate, 1e-9) / 60
         logger.info(
             f"[triple {triple_id}] +{kept} kept | {done_triples}/{len(triples)} triples | "
