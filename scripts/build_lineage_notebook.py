@@ -336,7 +336,13 @@ S7_MD = """\
    stories per emotion from any strong generator; add prompt diversity only
    when the downstream read is fine-grained, and expect a detection tax.
 
-**Caveats.** One strong external generator tested (DeepSeek-v4-pro);
+**Caveats.** "The emotion direction" is a three-convention-qualified object:
+corpus lineage (this notebook), readout centering (E9), and extraction
+format — the E4b raw-text-versus-chat-template audit found contrast
+directions agreeing at only mean cos 0.52-0.75 (min 0.18, angry at layer
+33) across formats, while raw means stay at 0.92-0.99; every number here is
+raw-text extraction (`results/raw_vs_chat_extraction_cosine.json`). One
+strong external generator tested (DeepSeek-v4-pro);
 "quality" is operationalized by that single point plus the weak 4B corpus.
 The diverse arm changed the prompt, not just diversity (persona and setting
 content are shared across emotions and removed by 12-pool centering, but
