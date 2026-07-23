@@ -105,6 +105,17 @@ the E4b session throughout: shared GPU serialized, post-fix convention agreed pr
 two battery-leg rescores covered by this run, one working-tree collision disclosed and repaired
 (1e08190/7bc6518), this session moved to a worktree after.
 
+E12 registration addendum (user-prompted, same day): the MORE/DIVERSE half of the E11 question,
+registered as Q1.H2.E12 before the diverse corpus exists. Two arms: E11's fixed-prompt DeepSeek
+corpus (n=256, per-story residuals already on the pod — the n-curve below 256 is free, CPU-only
+subsampling) and a new n=1024/emotion diverse-prompt corpus (deterministic 8-personas x
+8-settings grid pinned per slot; the grid is identical across emotions so 12-pool contrast
+centering removes setting-content confounds by construction). Reads locked before scoring:
+dual-battery pass-layer count vs n (5 seeds per n), contrast-cos-to-selfgen vs n at layer 33, and
+the matched-n=256 diversity read. Smoke passed (24 stories: slot->variant verified, 0 leaks, 0
+truncations, v4-pro resolved). Generation is laptop-side OpenRouter (~$2.3 of the $40); extraction
+queues behind the E4b session's steering card.
+
 Parked question addendum (user-prompted, same day): recorded Q4 in the tree — do emotion-concept
 vectors causally modulate assistant behaviors, sycophancy first? Sparked by the paper's Figure 10
 observation that "loving" activation rises at the Assistant colon regardless of user emotion (quote
