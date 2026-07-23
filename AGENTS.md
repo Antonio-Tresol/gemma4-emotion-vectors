@@ -71,6 +71,30 @@ Phases iterate; the gates do not.
   repository; and keep a **single writer** for TREE.md and RESEARCH_LOG.md —
   subagents report findings back, the orchestrator records them.
 
+## Code and notebook conventions
+
+Distilled from working practice (and the working-agreements style of
+codeberg.org/haplesshero13/rosetta-stone); the validator does not check these,
+reviewers do:
+
+- **No machine-local absolute paths in committed code.** Path resolution lives
+  in the package (`emotion_vectors.artifacts.fetch` resolves local `results/`
+  then HF); a notebook must run unchanged on any clone.
+- **Notebook cells are load-call-show.** Analysis and figure code is written
+  as importable functions under `src/`, so it can be tested by importing and
+  calling with parameters; notebooks import, call, and narrate.
+- **Every figure is self-explanatory**: axis titles with units, legends for
+  every color encoding, titled colorbars, chance/zero reference lines, a layer
+  slider on per-layer measures, and a collapsible "How to read" block after it.
+- **Start with common words**; define each technical term before first use,
+  and never state a number in prose that is not computed in the cell beside it.
+- **Fail loudly.** No silent fallbacks or defaults; a missing input is an
+  explicit error or an explicit printed degradation, never a quiet skip.
+- **Readable code.** Descriptive names (no one-letter or cryptic
+  abbreviations), a short intention comment above every non-obvious block,
+  docstrings naming inputs/outputs, and named tensor axes (einops/jaxtyping)
+  everywhere an array changes shape.
+
 ## Non-negotiables
 
 - No claim in any deliverable that is not a node in TREE.md with linked evidence.

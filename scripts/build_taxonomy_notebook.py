@@ -118,114 +118,31 @@ because stories from one triple share a text lineage.
 """)
 
 code("""
-# this cell loads the four record dumps and the VAD lexicon, and defines
-# the small helpers every section reuses
-import json
-from pathlib import Path
-
+# this cell loads the record dumps, the VAD lexicon, and the designed-triples
+# flag through the notebook-11 exhibit library; every section below is
+# load-call-show over emotion_vectors.taxonomy_report
 import numpy as np
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
-from emotion_vectors.analysis import load_nrc_vad
-from emotion_vectors.artifacts import fetch
+from emotion_vectors import taxonomy_report as tr
 
-ROOT = Path.cwd().parent if Path.cwd().name == "notebooks" else Path.cwd()
+LAYERS, PRIMARY_LAYER = tr.LAYERS, tr.PRIMARY_LAYER
 
-LAYERS = [6, 15, 24, 33, 42, 51]
-PRIMARY_LAYER = 33
+# one shared generator, threaded through the section builders in notebook
+# order (S2, S3, S4, S5) so every bootstrap CI reproduces exactly
 RNG = np.random.default_rng(20260723)
-N_BOOT = 2000
 
-ARMS = {}
-for arm in ["it_v2", "it", "deepseek", "deepseek_constant", "base"]:
-    z = np.load(fetch(f"q3_records_{arm}.npz"))
-    meta = json.loads(fetch(f"q3_records_{arm}_meta.json").read_text())
-    ARMS[arm] = {
-        "phase_scores": z["phase_scores"],  # [records, layers, probes]
-        "phase_thirds": z["phase_third_scores"],  # [records, 3, layers, probes]
-        "trans_lead": z["trans_lead"],  # [records, layers, probes]
-        "phases": meta["phase_records"],
-        "transitions": meta["transition_records"],
-        "labels": meta["probe_labels"],
-    }
+ARMS = tr.load_arms(["it_v2", "it", "deepseek", "deepseek_constant", "base"])
+for arm, records in ARMS.items():
     print(
-        f"{arm}: {len(meta['phase_records'])} phases, "
-        f"{len(meta['transition_records'])} transitions, "
-        f"{len(meta['probe_labels'])} probes"
+        f"{arm}: {len(records['phases'])} phases, "
+        f"{len(records['transitions'])} transitions, "
+        f"{len(records['labels'])} probes"
     )
 
-# NRC VAD lexicon: valence/arousal in [-1, 1] per emotion word. Third-party
-# license, so it is NOT fetchable — data/lexicons is populated manually.
-VAD = load_nrc_vad(ROOT / "data/lexicons/NRC-VAD-Lexicon-v2.1/NRC-VAD-Lexicon-v2.1.txt")
-
-# triple_id -> has_nonaffect, joined from the designed triples file
-TRIPLES = json.loads((ROOT / "scripts/combined_story_gen/emotions_triples_v1.json").read_text())
-HAS_NONAFFECT = {i: t["has_nonaffect"] for i, t in enumerate(TRIPLES)}
-
-FAMILIES = ["A_superposition", "B_conflict", "D_timescale", "E_arousal_mismatch", "F_valence_spread"]
-
-
-def bank_columns(arm: str, bank: str) -> tuple[list[int], list[str]]:
-    \"\"\"Probe columns belonging to one bank, plus their emotion names.\"\"\"
-    cols = [i for i, lab in enumerate(ARMS[arm]["labels"]) if lab.startswith(bank + ":")]
-    names = [ARMS[arm]["labels"][i].split(":", 1)[1] for i in cols]
-    return cols, names
-
-
-def gate_ranks(arm: str, bank: str) -> tuple[np.ndarray, np.ndarray, list[dict]]:
-    \"\"\"Per kept phase: rank of the tagged emotion within the bank, [kept, layers];
-    also the winner probe index per (kept, layer) and the kept metadata rows.\"\"\"
-    cols, names = bank_columns(arm, bank)
-    keep = [i for i, r in enumerate(ARMS[arm]["phases"]) if r["emotion"] in names]
-    scores = ARMS[arm]["phase_scores"][keep][:, :, cols]  # [kept, layers, bank]
-    target = np.array([names.index(ARMS[arm]["phases"][i]["emotion"]) for i in keep])
-    target_score = scores[np.arange(len(keep)), :, target]
-    ranks = (scores > target_score[:, :, None]).sum(axis=2) + 1
-    winner = scores.argmax(axis=2)  # [kept, layers]
-    rows = [ARMS[arm]["phases"][i] for i in keep]
-    return ranks, winner, rows
-
-
-def true_leads(arm: str, bank: str) -> tuple[np.ndarray, list[dict]]:
-    \"\"\"Per kept transition: anticipation lead of the incoming emotion, [kept, layers].\"\"\"
-    cols, names = bank_columns(arm, bank)
-    keep = [i for i, r in enumerate(ARMS[arm]["transitions"]) if r["to_emotion"] in names]
-    leads = ARMS[arm]["trans_lead"][keep][:, :, cols]
-    target = np.array([names.index(ARMS[arm]["transitions"][i]["to_emotion"]) for i in keep])
-    rows = [ARMS[arm]["transitions"][i] for i in keep]
-    return leads[np.arange(len(keep)), :, target], rows
-
-
-def cluster_boot_ci(values: np.ndarray, triple_ids: list[int], stat=np.mean) -> tuple[float, float]:
-    \"\"\"95% CI for stat(values) from a cluster bootstrap over triple_id.\"\"\"
-    by_triple: dict[int, list[int]] = {}
-    for i, t in enumerate(triple_ids):
-        by_triple.setdefault(t, []).append(i)
-    clusters = list(by_triple.values())
-    stats = []
-    for _ in range(N_BOOT):
-        pick = RNG.integers(0, len(clusters), size=len(clusters))
-        idx = np.concatenate([clusters[p] for p in pick])
-        stats.append(stat(values[idx]))
-    return float(np.percentile(stats, 2.5)), float(np.percentile(stats, 97.5))
-
-
-def layer_slider(fig: go.Figure, traces_per_layer: int, prefix: str = "layer ") -> go.Figure:
-    \"\"\"Show one layer's trace block at a time via a slider (house pattern).\"\"\"
-    n = len(fig.data)
-    assert n == traces_per_layer * len(LAYERS), (n, traces_per_layer)
-    for i, tr in enumerate(fig.data):
-        tr.visible = i // traces_per_layer == LAYERS.index(PRIMARY_LAYER)
-    steps = []
-    for li, layer in enumerate(LAYERS):
-        vis = [i // traces_per_layer == li for i in range(n)]
-        steps.append(dict(method="update", args=[{"visible": vis}], label=str(layer)))
-    fig.update_layout(
-        sliders=[dict(active=LAYERS.index(PRIMARY_LAYER), steps=steps,
-                      currentvalue={"prefix": prefix}, pad={"t": 40})]
-    )
-    return fig
+# NRC VAD lexicon (third-party license, populated manually) and the
+# triple_id -> has_nonaffect map from the designed triples file
+VAD = tr.load_vad()
+HAS_NONAFFECT = tr.load_has_nonaffect()
 """)
 
 md("""
@@ -246,47 +163,7 @@ probe wins outright) and its median rank.
 code("""
 # this cell computes per-emotion top-1 rate and median rank for the selfgen
 # and deepseek banks on the primary arm, one bar chart per bank, layer slider
-BANK_DATA = {bank: gate_ranks("it_v2", bank) for bank in ["selfgen", "deepseek"]}
-S1 = {"selfgen": {}, "deepseek": {}}
-fig = make_subplots(rows=1, cols=2, subplot_titles=["selfgen bank", "deepseek bank"])
-# traces added layer-major (both banks per layer) so the slider can toggle blocks
-for li, layer in enumerate(LAYERS):
-    for col_i, bank in enumerate(["selfgen", "deepseek"]):
-        ranks, _, rows = BANK_DATA[bank]
-        emotions = sorted({r["emotion"] for r in rows})
-        top1, med, ns = [], [], []
-        for emo in emotions:
-            idx = [i for i, r in enumerate(rows) if r["emotion"] == emo]
-            r_here = ranks[idx, li]
-            top1.append(float((r_here == 1).mean()))
-            med.append(float(np.median(r_here)))
-            ns.append(len(idx))
-        order = np.argsort(top1)[::-1]
-        S1[bank][layer] = {
-            "emotions": [emotions[o] for o in order],
-            "top1": [top1[o] for o in order],
-            "median_rank": [med[o] for o in order],
-            "n": [ns[o] for o in order],
-        }
-        d = S1[bank][layer]
-        fig.add_trace(
-            go.Bar(
-                x=d["emotions"], y=d["top1"],
-                text=[f"med {m:.0f}<br>n={n}" for m, n in zip(d["median_rank"], d["n"])],
-                textposition="outside", marker_color="#4c78a8" if bank == "selfgen" else "#f58518",
-                showlegend=False,
-            ),
-            row=1, col=col_i + 1,
-        )
-for col_i in (1, 2):
-    fig.update_yaxes(title="top-1 rate (fraction of phases)", range=[0, 1.05], row=1, col=col_i)
-    fig.update_xaxes(title="tagged emotion (sorted by top-1 rate)", row=1, col=col_i)
-    fig.add_hline(y=1 / 12, line_dash="dot", line_color="#888", row=1, col=col_i,
-                  annotation_text="chance 1/12", annotation_position="top right")
-fig.update_layout(height=440,
-                  title="S1: how often the tagged emotion's probe wins its bank outright "
-                        "(Gemma stories, v2 probes; bar label = median rank and n)")
-layer_slider(fig, traces_per_layer=2)
+fig, S1 = tr.s1_top1_figure(ARMS)
 fig.show()
 """)
 
@@ -337,59 +214,7 @@ lead (anticipation), each with a 95% cluster-bootstrap CI over triples.
 code("""
 # this cell computes gate median rank and R1 mean lead per designed family,
 # selfgen bank, primary arm vs deepseek-story arm, with cluster bootstrap CIs
-BANK = "selfgen"
-S2 = {}
-fig = make_subplots(rows=1, cols=2, subplot_titles=[
-    "gate: median rank of tagged emotion (lower = better)",
-    "R1: mean anticipation lead (cosine units)",
-])
-colors = {"it_v2": "#4c78a8", "deepseek": "#f58518"}
-for arm in ["it_v2", "deepseek"]:
-    ranks, _, prows = gate_ranks(arm, BANK)
-    leads, trows = true_leads(arm, BANK)
-    S2[arm] = {}
-    for li, layer in enumerate(LAYERS):
-        fam_stats = {}
-        for fam in FAMILIES:
-            pidx = [i for i, r in enumerate(prows) if r["category"] == fam]
-            tidx = [i for i, r in enumerate(trows) if r["category"] == fam]
-            g_med = float(np.median(ranks[pidx, li])) if pidx else None
-            g_ci = cluster_boot_ci(ranks[pidx, li], [prows[i]["triple_id"] for i in pidx], np.median) if pidx else None
-            l_mean = float(leads[tidx, li].mean()) if tidx else None
-            l_ci = cluster_boot_ci(leads[tidx, li], [trows[i]["triple_id"] for i in tidx]) if tidx else None
-            fam_stats[fam] = {"gate_median": g_med, "gate_ci": g_ci, "n_phases": len(pidx),
-                              "lead_mean": l_mean, "lead_ci": l_ci, "n_transitions": len(tidx)}
-        S2[arm][layer] = fam_stats
-for li, layer in enumerate(LAYERS):
-    for arm in ["it_v2", "deepseek"]:
-        fs = S2[arm][layer]
-        g = [fs[f]["gate_median"] for f in FAMILIES]
-        gci = [fs[f]["gate_ci"] for f in FAMILIES]
-        fig.add_trace(go.Bar(
-            x=FAMILIES, y=g,
-            name="Gemma stories (v2 probes)" if arm == "it_v2" else "DeepSeek stories",
-            legendgroup=arm, marker_color=colors[arm],
-            error_y=dict(array=[c[1] - v for v, c in zip(g, gci)],
-                         arrayminus=[v - c[0] for v, c in zip(g, gci)]),
-            showlegend=True,
-        ), row=1, col=1)
-        m = [fs[f]["lead_mean"] for f in FAMILIES]
-        mci = [fs[f]["lead_ci"] for f in FAMILIES]
-        fig.add_trace(go.Bar(
-            x=FAMILIES, y=m, legendgroup=arm, marker_color=colors[arm], showlegend=False,
-            error_y=dict(array=[c[1] - v for v, c in zip(m, mci)],
-                         arrayminus=[v - c[0] for v, c in zip(m, mci)]),
-        ), row=1, col=2)
-fig.update_yaxes(title="median rank of tagged probe (1 = best of 12)", row=1, col=1)
-fig.update_yaxes(title="mean R1 lead (centered-cosine units)", row=1, col=2)
-for col_i in (1, 2):
-    fig.update_xaxes(title="designed triple family", row=1, col=col_i)
-fig.add_hline(y=0, line_color="#888", line_width=1, row=1, col=2)
-fig.update_layout(height=470, barmode="group",
-                  legend=dict(orientation="h", y=1.12),
-                  title=f"S2: gate rank and anticipation lead per designed family "
-                        f"({BANK} bank; error bars = cluster-bootstrap 95% CI over triples)")
-layer_slider(fig, traces_per_layer=4)
+fig, S2 = tr.s2_family_figure(ARMS, RNG)
 fig.show()
 """)
 
@@ -439,56 +264,7 @@ below the figure.
 code("""
 # this cell relates each transition's R1 lead (selfgen bank, primary arm)
 # to the VAD geometry of its from->to pair
-leads, trows = true_leads("it_v2", "selfgen")
-have_vad = [i for i, r in enumerate(trows) if r["from_emotion"] in VAD and r["to_emotion"] in VAD]
-dval = np.array([abs(VAD[trows[i]["to_emotion"]][0] - VAD[trows[i]["from_emotion"]][0]) for i in have_vad])
-darr = np.array([abs(VAD[trows[i]["to_emotion"]][1] - VAD[trows[i]["from_emotion"]][1]) for i in have_vad])
-cross_val = np.array([
-    (VAD[trows[i]["from_emotion"]][0] > 0) != (VAD[trows[i]["to_emotion"]][0] > 0) for i in have_vad
-])
-tid = [trows[i]["triple_id"] for i in have_vad]
-
-fig = make_subplots(rows=1, cols=2, subplot_titles=[
-    "lead vs |delta valence| (binned)", "cross-valence vs same-valence lead",
-])
-S3 = {}
-edges = np.array([0.0, 0.4, 0.8, 1.2, 2.0])
-centers = [f"{a:.1f}-{b:.1f}" for a, b in zip(edges[:-1], edges[1:])]
-for li, layer in enumerate(LAYERS):
-    lead_l = leads[have_vad, li]
-    binned = []
-    for a, b in zip(edges[:-1], edges[1:]):
-        m = (dval >= a) & (dval < b)
-        ci = cluster_boot_ci(lead_l[m], [t for t, mm in zip(tid, m) if mm]) if m.sum() > 5 else (np.nan, np.nan)
-        binned.append((float(lead_l[m].mean()) if m.any() else np.nan, ci, int(m.sum())))
-    r_val = float(np.corrcoef(dval, lead_l)[0, 1])
-    r_arr = float(np.corrcoef(darr, lead_l)[0, 1])
-    cuts = {}
-    for name, mask in [("cross-valence", cross_val), ("same-valence", ~cross_val)]:
-        ci = cluster_boot_ci(lead_l[mask], [t for t, mm in zip(tid, mask) if mm])
-        cuts[name] = (float(lead_l[mask].mean()), ci, int(mask.sum()))
-    S3[layer] = {"binned": binned, "r_dval": r_val, "r_darr": r_arr, "cuts": cuts}
-    fig.add_trace(go.Bar(
-        x=centers, y=[b[0] for b in binned], marker_color="#4c78a8",
-        error_y=dict(array=[b[1][1] - b[0] for b in binned], arrayminus=[b[0] - b[1][0] for b in binned]),
-        text=[f"n={b[2]}" for b in binned], showlegend=False,
-    ), row=1, col=1)
-    fig.add_trace(go.Bar(
-        x=list(cuts), y=[cuts[k][0] for k in cuts], marker_color=["#54a24b", "#b79a20"],
-        error_y=dict(array=[cuts[k][1][1] - cuts[k][0] for k in cuts],
-                     arrayminus=[cuts[k][0] - cuts[k][1][0] for k in cuts]),
-        text=[f"n={cuts[k][2]}" for k in cuts], showlegend=False,
-    ), row=1, col=2)
-fig.update_yaxes(title="mean R1 lead (centered-cosine units)", row=1, col=1)
-fig.update_yaxes(title="mean R1 lead (centered-cosine units)", row=1, col=2)
-fig.update_xaxes(title="|NRC valence difference| of the from-to pair", row=1, col=1)
-fig.update_xaxes(title="transition type (bar label = n transitions)", row=1, col=2)
-for col_i in (1, 2):
-    fig.add_hline(y=0, line_color="#888", line_width=1, row=1, col=col_i)
-fig.update_layout(height=450,
-                  title="S3: is anticipation larger for affectively bigger jumps? "
-                        "(selfgen bank, Gemma stories; error bars = cluster-bootstrap 95% CI)")
-layer_slider(fig, traces_per_layer=2)
+fig, S3 = tr.s3_affective_distance_figure(ARMS, VAD, RNG)
 fig.show()
 print("pearson r(lead, |dV|) and r(lead, |dA|) per layer:")
 for layer in LAYERS:
@@ -540,53 +316,13 @@ failure.
 code("""
 # this cell builds the confusion matrix and the winner-vs-shuffle VAD
 # distance comparison, selfgen bank, primary arm
-ranks, winner, rows = gate_ranks("it_v2", "selfgen")
-_, names = bank_columns("it_v2", "selfgen")
-S4 = {}
-fig = make_subplots(rows=1, cols=2, column_widths=[0.55, 0.45],
-                    subplot_titles=["confusion (row-normalized)", "winner->target VAD distance vs shuffle"])
-for li, layer in enumerate(LAYERS):
-    conf = np.zeros((len(names), len(names)))
-    wrong_dist, shuffle_dist = [], []
-    for i, r in enumerate(rows):
-        t = names.index(r["emotion"])
-        w = int(winner[i, li])
-        conf[t, w] += 1
-        if w != t and names[w] in VAD and names[t] in VAD:
-            wrong_dist.append(float(np.hypot(VAD[names[w]][0] - VAD[names[t]][0],
-                                             VAD[names[w]][1] - VAD[names[t]][1])))
-            others = [n for n in names if n != r["emotion"] and n in VAD]
-            pick = others[RNG.integers(0, len(others))]
-            shuffle_dist.append(float(np.hypot(VAD[pick][0] - VAD[names[t]][0],
-                                               VAD[pick][1] - VAD[names[t]][1])))
-    row_norm = conf / np.clip(conf.sum(axis=1, keepdims=True), 1, None)
-    S4[layer] = {
-        "top1_rate": float(np.trace(conf) / conf.sum()),
-        "wrong_mean": float(np.mean(wrong_dist)),
-        "shuffle_mean": float(np.mean(shuffle_dist)),
-        "n_wrong": len(wrong_dist),
-    }
-    fig.add_trace(go.Heatmap(z=row_norm, x=names, y=names, colorscale="Blues",
-                             zmin=0, zmax=1, showscale=(li == 0)), row=1, col=1)
-    fig.add_trace(go.Bar(
-        x=["actual winners", "random wrong probe"],
-        y=[S4[layer]["wrong_mean"], S4[layer]["shuffle_mean"]],
-        marker_color=["#4c78a8", "#9d9d9d"],
-        text=[f"n={S4[layer]['n_wrong']}"] * 2, showlegend=False,
-    ), row=1, col=2)
-fig.update_yaxes(autorange="reversed", title="expected (tagged) emotion", row=1, col=1)
-fig.update_xaxes(title="emotion the model reports (winning probe)", row=1, col=1)
-fig.update_yaxes(title="mean valence-arousal distance to target", row=1, col=2)
-fig.update_xaxes(title="wrong winners vs matched random draw", row=1, col=2)
-fig.update_layout(height=540,
-                  title="S4: what gets confused with what, and are confusions affective neighbors? "
-                        "(selfgen bank, Gemma stories; left colorbar = fraction of that row's phases)")
-layer_slider(fig, traces_per_layer=2)
+fig, S4 = tr.s4_confusion_figure(ARMS, VAD, RNG)
 fig.show()
 for layer in LAYERS:
-    s = S4[layer]
-    print(f"L{layer}: top-1 {s['top1_rate']:.2f}; wrong-winner VAD dist {s['wrong_mean']:.2f} "
-          f"vs shuffle {s['shuffle_mean']:.2f} (n_wrong={s['n_wrong']})")
+    layer_stats = S4[layer]
+    print(f"L{layer}: top-1 {layer_stats['top1_rate']:.2f}; "
+          f"wrong-winner VAD dist {layer_stats['wrong_mean']:.2f} "
+          f"vs shuffle {layer_stats['shuffle_mean']:.2f} (n_wrong={layer_stats['n_wrong']})")
 """)
 
 md("""
@@ -634,43 +370,7 @@ a purely affective probe bank if the distractor competes.
 code("""
 # this cell splits gate rank and R1 lead by transition position and by the
 # has_nonaffect triple flag, selfgen bank, primary arm
-ranks, _, prows = gate_ranks("it_v2", "selfgen")
-leads, trows = true_leads("it_v2", "selfgen")
-S5 = {}
-fig = make_subplots(rows=1, cols=2, subplot_titles=[
-    "R1 lead by transition position", "gate median rank by has_nonaffect",
-])
-for li, layer in enumerate(LAYERS):
-    pos = {}
-    for k in [1, 2]:
-        idx = [i for i, r in enumerate(trows) if r["transition_index"] == k]
-        ci = cluster_boot_ci(leads[idx, li], [trows[i]["triple_id"] for i in idx])
-        pos[f"transition {k}"] = (float(leads[idx, li].mean()), ci, len(idx))
-    na = {}
-    for flag in [False, True]:
-        idx = [i for i, r in enumerate(prows) if HAS_NONAFFECT[r["triple_id"]] == flag]
-        ci = cluster_boot_ci(ranks[idx, li], [prows[i]["triple_id"] for i in idx], np.median)
-        na[f"has_nonaffect={flag}"] = (float(np.median(ranks[idx, li])), ci, len(idx))
-    S5[layer] = {"position": pos, "nonaffect": na}
-    fig.add_trace(go.Bar(
-        x=list(pos), y=[pos[k][0] for k in pos], marker_color="#4c78a8",
-        error_y=dict(array=[pos[k][1][1] - pos[k][0] for k in pos],
-                     arrayminus=[pos[k][0] - pos[k][1][0] for k in pos]),
-        text=[f"n={pos[k][2]}" for k in pos], showlegend=False,
-    ), row=1, col=1)
-    fig.add_trace(go.Bar(
-        x=list(na), y=[na[k][0] for k in na], marker_color="#b279a2",
-        error_y=dict(array=[na[k][1][1] - na[k][0] for k in na],
-                     arrayminus=[na[k][0] - na[k][1][0] for k in na]),
-        text=[f"n={na[k][2]}" for k in na], showlegend=False,
-    ), row=1, col=2)
-fig.update_yaxes(title="mean R1 lead (centered-cosine units)", row=1, col=1)
-fig.update_yaxes(title="median rank of tagged probe (1 = best of 12)", row=1, col=2)
-fig.add_hline(y=0, line_color="#888", line_width=1, row=1, col=1)
-fig.update_layout(height=440,
-                  title="S5: does difficulty depend on which transition, or on a non-affect "
-                        "distractor phase? (selfgen bank, Gemma stories; error bars = 95% cluster CI)")
-layer_slider(fig, traces_per_layer=2)
+fig, S5 = tr.s5_position_nonaffect_figure(ARMS, HAS_NONAFFECT, RNG)
 fig.show()
 """)
 
@@ -717,25 +417,7 @@ place.
 code("""
 # this cell prints the compact cross-arm table at the primary layer and a
 # plain-language reading assembled from the S1-S5 numbers computed above
-li = LAYERS.index(PRIMARY_LAYER)
-print(f"=== primary layer {PRIMARY_LAYER}, selfgen bank ===")
-for arm in ["it_v2", "it", "deepseek", "deepseek_constant", "base"]:
-    if not bank_columns(arm, "selfgen")[0]:
-        print(f"{arm:22s} no selfgen bank in this arm (base lineage); its corpus-bank "
-              "read lives in S6 and in notebook 10's factorial")
-        continue
-    ranks, _, prows = gate_ranks(arm, "selfgen")
-    leads, trows = true_leads(arm, "selfgen")
-    print(f"{arm:22s} gate median rank {np.median(ranks[:, li]):4.1f} "
-          f"(n={len(prows)})   R1 mean lead {leads[:, li].mean():+.4f} (n={len(trows)})")
-
-best = S1["selfgen"][PRIMARY_LAYER]
-print("\\nS1 best-tracked emotions:", ", ".join(best["emotions"][:3]),
-      "| worst:", ", ".join(best["emotions"][-3:]))
-s3 = S3[PRIMARY_LAYER]["cuts"]
-print(f"S3 cross-valence lead {s3['cross-valence'][0]:+.4f} vs same-valence {s3['same-valence'][0]:+.4f}")
-s4 = S4[PRIMARY_LAYER]
-print(f"S4 wrong-winner VAD distance {s4['wrong_mean']:.2f} vs shuffle {s4['shuffle_mean']:.2f}")
+print("\\n".join(tr.cross_arm_lines(ARMS, S1, S3, S4)))
 """)
 
 md("""
@@ -810,69 +492,8 @@ structure.
 code("""
 # this cell prints the named confusion tables at the primary layer, plus the
 # base-reader confusion heatmap with a layer slider
-li = LAYERS.index(PRIMARY_LAYER)
-BATTERY = bank_columns("it_v2", "selfgen")[1]
-
-
-def confusion(arm, bank, layer_pos, restrict=None):
-    \"\"\"(winner index per kept phase, kept metadata rows, bank emotion names).\"\"\"
-    cols, names = bank_columns(arm, bank)
-    if restrict is not None:
-        cols = [c for c, n in zip(cols, names) if n in restrict]
-        names = [n for n in names if n in restrict]
-    keep = [i for i, r in enumerate(ARMS[arm]["phases"]) if r["emotion"] in names]
-    winners = ARMS[arm]["phase_scores"][keep][:, layer_pos, :][:, cols].argmax(axis=1)
-    return winners, [ARMS[arm]["phases"][i] for i in keep], names
-
-
-S6 = {}
-for label, (arm, bank, restrict) in [
-    ("it_v2 / selfgen bank", ("it_v2", "selfgen", None)),
-    ("it_v2 / deepseek bank", ("it_v2", "deepseek", None)),
-    ("base reader / corpus bank, battery-12 subset", ("base", "corpus", BATTERY)),
-]:
-    winners, rows, names = confusion(arm, bank, li, restrict)
-    table = {}
-    print(f"=== {label}, layer {PRIMARY_LAYER}: expected -> model reports (rate) ===")
-    for e_pos, emo in enumerate(names):
-        idx = [i for i, r in enumerate(rows) if r["emotion"] == emo]
-        counts = np.bincount(winners[idx], minlength=len(names))
-        order = np.argsort(-counts)
-        reported = [(names[j], counts[j] / len(idx)) for j in order[:3] if counts[j]]
-        table[emo] = {"n": len(idx), "top1": counts[e_pos] / len(idx), "reported": reported}
-        print(f"  {emo:10s} (n={len(idx):3d}) -> "
-              + ", ".join(f"{n} {r:.0%}" for n, r in reported))
-    S6[label] = table
-
-print("\\n=== wrong-answer profile per designed family (it_v2, selfgen bank) ===")
-winners, rows, names = confusion("it_v2", "selfgen", li)
-for fam in FAMILIES:
-    fam_idx = [i for i, r in enumerate(rows) if r["category"] == fam]
-    wrong = [i for i in fam_idx if names[winners[i]] != rows[i]["emotion"]]
-    counts = {}
-    for i in wrong:
-        counts[names[winners[i]]] = counts.get(names[winners[i]], 0) + 1
-    top = sorted(counts.items(), key=lambda kv: -kv[1])[:4]
-    print(f"  {fam:20s} wrong {len(wrong) / len(fam_idx):4.0%}; model says: "
-          + ", ".join(f"{n} x{c}" for n, c in top))
-
-# base-reader confusion heatmap, row-normalized, layer slider
-fig = go.Figure()
-for li_, layer in enumerate(LAYERS):
-    winners, rows, names = confusion("base", "corpus", li_, BATTERY)
-    mat = np.zeros((len(names), len(names)))
-    for i, r in enumerate(rows):
-        mat[names.index(r["emotion"]), winners[i]] += 1
-    mat = mat / np.clip(mat.sum(axis=1, keepdims=True), 1, None)
-    fig.add_trace(go.Heatmap(z=mat, x=names, y=names, colorscale="Blues", zmin=0, zmax=1,
-                             showscale=(li_ == 0),
-                             colorbar=dict(title="fraction of the<br>row's phases")))
-fig.update_layout(height=540, width=680, yaxis_autorange="reversed",
-                  xaxis_title="emotion the base reader reports (winning corpus probe)",
-                  yaxis_title="expected (tagged) emotion",
-                  title="S6: what the BASE reader says the emotion is "
-                        "(corpus bank, battery-12 subset; rows sum to 1)")
-layer_slider(fig, traces_per_layer=1)
+fig, S6 = tr.s6_named_confusions(ARMS)
+print("\\n".join(S6["lines"]))
 fig.show()
 """)
 
@@ -921,51 +542,9 @@ idiosyncratic-belief case) shows up as "never right".
 
 code("""
 # this cell classifies every phase by first-third vs last-third correctness
-def third_match(arm, bank):
-    cols, names = bank_columns(arm, bank)
-    keep = [i for i, r in enumerate(ARMS[arm]["phases"]) if r["emotion"] in names]
-    thirds = ARMS[arm]["phase_thirds"][keep][:, :, :, cols]  # [kept, 3, layers, bank]
-    target = np.array([names.index(ARMS[arm]["phases"][i]["emotion"]) for i in keep])
-    match = thirds.argmax(axis=3) == target[:, None, None]  # [kept, 3, layers]
-    return match, [ARMS[arm]["phases"][i] for i in keep]
-
-
-CATS = ["always right", "converges", "loses it", "never right"]
-S7 = {}
-fig = make_subplots(rows=1, cols=2,
-                    subplot_titles=["Gemma stories (it_v2)", "DeepSeek stories"])
-for li_, layer in enumerate(LAYERS):
-    for col, arm in enumerate(["it_v2", "deepseek"], start=1):
-        match, rows = third_match(arm, "selfgen")
-        first, last = match[:, 0, li_], match[:, 2, li_]
-        shares = [float((first & last).mean()), float((~first & last).mean()),
-                  float((first & ~last).mean()), float((~first & ~last).mean())]
-        if layer == PRIMARY_LAYER:
-            S7[arm] = dict(zip(CATS, shares))
-        fig.add_trace(go.Bar(x=CATS, y=shares, showlegend=False,
-                             marker_color="#4c78a8" if col == 1 else "#f58518",
-                             text=[f"{s:.0%}" for s in shares], textposition="outside"),
-                      row=1, col=col)
-for col_i in (1, 2):
-    fig.update_yaxes(title="share of phases", range=[0, 1], row=1, col=col_i)
-    fig.update_xaxes(title="phase class (first third vs last third correct)", row=1, col=col_i)
-fig.update_layout(height=450,
-                  title="S7: is the model wrong early then right late (boundary lag), or wrong "
-                        "throughout (stable relabeling)? (selfgen bank; shares sum to 1 per panel)")
-layer_slider(fig, traces_per_layer=2)
+fig, S7 = tr.s7_thirds_figure(ARMS)
 fig.show()
-
-li = LAYERS.index(PRIMARY_LAYER)
-match, rows = third_match("it_v2", "selfgen")
-print(f"layer {PRIMARY_LAYER} per family (it_v2, selfgen): converges vs never-right")
-for fam in FAMILIES:
-    idx = [i for i, r in enumerate(rows) if r["category"] == fam]
-    first, last = match[idx, 0, li], match[idx, 2, li]
-    conv, never = (~first & last).mean(), (~first & ~last).mean()
-    print(f"  {fam:20s} converges {conv:4.0%}   never right {never:4.0%}   (n={len(idx)})")
-verdict = "boundary lag" if S7["it_v2"]["converges"] > S7["it_v2"]["never right"] else \\
-    "stable relabeling"
-print(f"\\ndominant failure mode at layer {PRIMARY_LAYER} (it_v2): {verdict}")
+print("\\n".join(S7["lines"]))
 """)
 
 md("""
@@ -1015,123 +594,8 @@ contrast to detect.
 code("""
 # this cell reconstructs the exact probe geometry and tests it as a
 # difficulty predictor, with NRC VAD distance as the competing predictor
-from emotion_vectors.trajectories import unit_contrast_probes
-from scipy.stats import spearmanr
-
-corpus_bundle = np.load(ROOT / "results/emotion_vectors_it_postfix/emotion_means.npz",
-                        allow_pickle=True)
-BUNDLE_LAYER_POS = [list(corpus_bundle["layers"]).index(layer) for layer in LAYERS]
-selfgen_bundle = np.load(ROOT / "results/e6_scale_means.npz", allow_pickle=True)
-selfgen_names_bundle = list(map(str, selfgen_bundle["emotions"]))
-# bucket -1 = n=256, the bank the extraction used; layer grid shared with corpus
-selfgen_dirs = unit_contrast_probes(
-    selfgen_bundle["means"][-1].astype(np.float32))[:, BUNDLE_LAYER_POS]
-_, selfgen_names = bank_columns("it_v2", "selfgen")
-order = [selfgen_names_bundle.index(e) for e in selfgen_names]
-PROBE_COS = np.einsum("ald,bld->lab", selfgen_dirs[order], selfgen_dirs[order])
-
-li = LAYERS.index(PRIMARY_LAYER)
-vad_dist = np.array([[np.hypot(VAD[a][0] - VAD[b][0], VAD[a][1] - VAD[b][1])
-                      for b in selfgen_names] for a in selfgen_names])
-off = ~np.eye(len(selfgen_names), dtype=bool)
-print(f"probe cos vs VAD distance over the 132 ordered pairs, layer {PRIMARY_LAYER}: "
-      f"spearman {spearmanr(PROBE_COS[li][off], -vad_dist[off]).statistic:+.2f} "
-      "(correlated, hence the partials below)")
-
-# (a) crowding: mean cos to the other 11 probes vs per-emotion top-1 rate
-ranks, winner, prows = gate_ranks("it_v2", "selfgen")
-print("\\n(a) crowding vs tracking quality, per layer (spearman, n=12 emotions):")
-S8 = {}
-for li_, layer in enumerate(LAYERS):
-    crowd, top1 = [], []
-    for e_pos, emo in enumerate(selfgen_names):
-        idx = [i for i, r in enumerate(prows) if r["emotion"] == emo]
-        crowd.append(PROBE_COS[li_, e_pos, off[e_pos]].mean())
-        top1.append((winner[idx, li_] == e_pos).mean())
-    rho = spearmanr(crowd, top1)
-    S8[layer] = {"crowding_rho": float(rho.statistic), "crowding_p": float(rho.pvalue)}
-    print(f"  L{layer}: rho = {rho.statistic:+.2f} (p={rho.pvalue:.3f})"
-          + ("  <- crowded probes track worse" if rho.statistic < -0.3 else ""))
-
-# (b) which wrong answer wins: probe cos vs VAD, with rank partials
-def rank_partial(x, y, z):
-    \"\"\"Spearman partial corr r(x, y | z): correlate rank residuals.\"\"\"
-    rx, ry, rz = (np.argsort(np.argsort(v)).astype(float) for v in (x, y, z))
-    res_x = rx - np.polyval(np.polyfit(rz, rx, 1), rz)
-    res_y = ry - np.polyval(np.polyfit(rz, ry, 1), rz)
-    return float(np.corrcoef(res_x, res_y)[0, 1])
-
-
-conf_rate, cos_pair, vad_pair = [], [], []
-for e_pos, emo in enumerate(selfgen_names):
-    idx = [i for i, r in enumerate(prows) if r["emotion"] == emo]
-    counts = np.bincount(winner[idx, li], minlength=len(selfgen_names))
-    for o_pos, other in enumerate(selfgen_names):
-        if o_pos == e_pos:
-            continue
-        conf_rate.append(counts[o_pos] / len(idx))
-        cos_pair.append(PROBE_COS[li, e_pos, o_pos])
-        vad_pair.append(-vad_dist[e_pos, o_pos])
-conf_rate, cos_pair, vad_pair = map(np.array, (conf_rate, cos_pair, vad_pair))
-print(f"\\n(b) which wrong answer wins (132 pairs, layer {PRIMARY_LAYER}):")
-print(f"  confusion ~ probe cos          spearman {spearmanr(conf_rate, cos_pair).statistic:+.2f}")
-print(f"  confusion ~ VAD closeness      spearman {spearmanr(conf_rate, vad_pair).statistic:+.2f}")
-print(f"  confusion ~ probe cos | VAD    partial  {rank_partial(conf_rate, cos_pair, vad_pair):+.2f}"
-      "   <- the model-idiosyncratic read")
-print(f"  confusion ~ VAD | probe cos    partial  {rank_partial(conf_rate, vad_pair, cos_pair):+.2f}")
-
-# (c) transition difficulty: lead and post-boundary rank vs cos(from, to)
-leads, trows = true_leads("it_v2", "selfgen")
-rank_by_key = {(r["story_id"], r["phase_index"]): ranks[i] for i, r in enumerate(prows)}
-tr_cos, tr_lead, tr_rank = [], [], []
-for i, t in enumerate(trows):
-    if t["from_emotion"] not in selfgen_names:
-        continue
-    key = (t["story_id"], t["transition_index"])
-    if key not in rank_by_key:
-        continue
-    tr_cos.append(PROBE_COS[li, selfgen_names.index(t["from_emotion"]),
-                            selfgen_names.index(t["to_emotion"])])
-    tr_lead.append(leads[i, li])
-    tr_rank.append(rank_by_key[key][li])
-tr_cos, tr_lead, tr_rank = map(np.array, (tr_cos, tr_lead, tr_rank))
-print(f"\\n(c) transitions with both emotions in the bank (n={len(tr_cos)}, layer {PRIMARY_LAYER}):")
-print(f"  R1 lead ~ cos(from, to)             spearman {spearmanr(tr_lead, tr_cos).statistic:+.2f}")
-print(f"  post-boundary gate rank ~ cos       spearman {spearmanr(tr_rank, tr_cos).statistic:+.2f}"
-      "   (positive = similar probes -> worse rank)")
-
-# figure: the two pair-level relations, layer slider
-fig = make_subplots(rows=1, cols=2, subplot_titles=[
-    "confusion rate vs probe cosine (pairs)", "anticipation lead vs cos(from, to)"])
-for li_, layer in enumerate(LAYERS):
-    cr, cp = [], []
-    for e_pos, emo in enumerate(selfgen_names):
-        idx = [i for i, r in enumerate(prows) if r["emotion"] == emo]
-        counts = np.bincount(winner[idx, li_], minlength=len(selfgen_names))
-        for o_pos in range(len(selfgen_names)):
-            if o_pos != e_pos:
-                cr.append(counts[o_pos] / len(idx))
-                cp.append(PROBE_COS[li_, e_pos, o_pos])
-    fig.add_trace(go.Scatter(x=cp, y=cr, mode="markers", showlegend=False,
-                             marker=dict(size=6, color="#4c78a8", opacity=0.7)), row=1, col=1)
-    t_cos, t_lead = [], []
-    for i, t in enumerate(trows):
-        if t["from_emotion"] in selfgen_names:
-            t_cos.append(PROBE_COS[li_, selfgen_names.index(t["from_emotion"]),
-                                   selfgen_names.index(t["to_emotion"])])
-            t_lead.append(leads[i, li_])
-    fig.add_trace(go.Scatter(x=t_cos, y=t_lead, mode="markers", showlegend=False,
-                             marker=dict(size=5, color="#f58518", opacity=0.5)), row=1, col=2)
-fig.update_xaxes(title_text="cosine between the two probes (model-side similarity)", row=1, col=1)
-fig.update_yaxes(title_text="P(model reports this wrong emotion | target)", row=1, col=1)
-fig.update_xaxes(title_text="cos(from-probe, to-probe) of the transition", row=1, col=2)
-fig.update_yaxes(title_text="R1 lead of the incoming emotion (cosine units)", row=1, col=2)
-fig.add_hline(y=0, line_color="#888", line_width=1, row=1, col=2)
-fig.update_layout(height=450,
-                  title="S8: does the model's own probe geometry predict its difficulties? "
-                        "(it_v2, selfgen bank; each left point = one ordered emotion pair, "
-                        "each right point = one transition)")
-layer_slider(fig, traces_per_layer=2)
+fig, S8 = tr.s8_geometry_figure(ARMS, VAD)
+print("\\n".join(S8["lines"]))
 fig.show()
 """)
 

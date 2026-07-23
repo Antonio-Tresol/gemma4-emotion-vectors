@@ -118718,5 +118718,5 @@
  ],
  "n_stories": 2998,
  "n_orphaned_manifest_rows": 12,
- "conventions": "centered cosine (story-set mean, norms_centered); SEQUENTIAL only; phases < 4 tokens skipped; lead windows W=16 boundary-referenced, same as score_q3_gate_r1.py"
+ "conventions": "centered cosine (story-set mean, norms_centered); SEQUENTIAL only; phases < 4 tokens skipped; lead windows W=16 boundary-referenced, same as score_q3_gate_r1.py; phase_third_scores = the same phase mean over token-count thirds (floor split)"
 }
