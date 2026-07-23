@@ -3,8 +3,8 @@
 Projects each emotion's centered contrast vector through the unembedding
 matrix and records the top and bottom tokens. The paper reports emotion-word
 neighborhoods (sad -> grief, tears, lonely). Simplifications documented in the
-output: we apply the final norm's scale implicitly by using raw directions
-(cosine-style lens), and Gemma's logit softcapping is ignored; both affect
+output: we apply the final RMSNorm's learned scale explicitly (Gemma's 1+w
+convention, see NOTE below), and Gemma's logit softcapping is ignored; both affect
 magnitudes, not top-k ordering materially.
 
     # single layer, from per-emotion dirs:
