@@ -208,10 +208,13 @@ S4_MD = """\
 
 **How to read this:** x is stories per emotion (log scale), y is how many of
 the 20 layers pass the dual-battery bar. Markers are 5 seeded subsamples per
-n; the line tracks the seed mean; the star is the full corpus. **What this
-buys:** the answer to "would more stories help?". The fixed arm saturates
-near n=64; horizontal reference lines mark self-generated probes (5 passing
-layers at n=256) and the fixed-corpus ceiling (9). The right panel shows the
+n; the line tracks the seed mean. **What this buys:** the answer to "would
+more stories help?". The fixed arm saturates near n=64; horizontal reference
+lines mark self-generated probes (5 passing layers at n=256) and the
+fixed-corpus ceiling (9). The diverse arm sits BELOW the fixed arm at every
+matched n (at n=256: mean 6.2 vs 9.0) and never reaches the fixed ceiling
+even at n=1018: pinning personas and settings adds non-emotional variance,
+so each emotion mean is noisier per story. The right panel shows the
 contrast cosine of each subsample's probes to the self-generated probes at
 layer 33: probe FUNCTION saturates before probe GEOMETRY stops moving.
 """
@@ -287,8 +290,12 @@ S6_MD = """\
 probe's cosine and Elo, per lineage. **What this buys:** a finer-grained
 functional read than top-3 detection. Detection saturates (section 4), but
 this read keeps improving with corpus quality and diversity, self-generated
-0.62 to fixed DeepSeek 0.71 to diverse DeepSeek 0.77. Caveat: max over 12
-emotions x 4 layers per bar, so treat levels, not tiny gaps, as the signal.
+0.62 to fixed DeepSeek 0.71 to diverse DeepSeek 0.77. An exploratory
+matched-n check (`e12_pref_matched_n_exploratory.json`) shows the diverse
+arm subsampled to n=256 still scores 0.760 (5 seeds, 0.746 to 0.772), so
+the gain is the diversity itself, not the 4x corpus size. Caveat: max over
+12 emotions x 4 layers per bar, so treat levels, not tiny gaps, as the
+signal.
 """
 
 S6_CODE = """\
@@ -316,15 +323,18 @@ S7_MD = """\
 2. **Detection probes saturate early** (E12): the fixed arm reaches its
    ceiling near 64 stories per emotion; 64 strong-generator stories already
    beat 256 self-generated ones.
-3. **Diversity and scale do not raise the detection ceiling** (E12): 1024
-   diverse stories pass at 7 layers, below the fixed corpus's 9. The
-   registered growth branch did not fire.
-4. **The preference read still rewards better corpora**: 0.62 (self-gen) to
-   0.71 (fixed DeepSeek) to 0.77 (diverse DeepSeek). Coarse detection
-   saturates; the finer behavioral correlate does not.
-5. **Practical recipe**: any strong generator, roughly 64-256 fixed-prompt
-   stories per emotion, is enough for detection probes; invest in corpus
-   quality and diversity only when the downstream read is fine-grained.
+3. **Prompt diversity is a COST for detection at matched n** (E12): diverse
+   at n=256 passes at 6.2 layers (seed mean) versus fixed's 9.0, and even
+   n=1018 diverse (7 layers) never reaches the fixed ceiling. The registered
+   growth branch did not fire; the diversity read fired in reverse.
+4. **The same diversity HELPS the preference read, at matched n**: diverse
+   n=256 scores 0.760 versus fixed's 0.706 (exploratory matched-n check),
+   with the full ordering 0.62 (self-gen) to 0.71 (fixed) to 0.77 (diverse
+   full). Coarse detection wants a clean, low-variance corpus; the
+   fine-grained behavioral correlate wants coverage.
+5. **Practical recipe**: for detection probes, roughly 64-256 fixed-prompt
+   stories per emotion from any strong generator; add prompt diversity only
+   when the downstream read is fine-grained, and expect a detection tax.
 
 **Caveats.** One strong external generator tested (DeepSeek-v4-pro);
 "quality" is operationalized by that single point plus the weak 4B corpus.

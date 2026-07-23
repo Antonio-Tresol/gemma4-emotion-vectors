@@ -1,0 +1,1271 @@
+{
+  "experiment": "Q1.H2.E12",
+  "n_grid": [
+    8,
+    16,
+    32,
+    64,
+    128,
+    256,
+    512,
+    1024
+  ],
+  "n_seeds": 5,
+  "arms": {
+    "fixed": {
+      "n_available_min": 255,
+      "points": [
+        {
+          "n": 8,
+          "seed": 0,
+          "n_passing_layers": 2,
+          "passing_layers": [
+            6,
+            33
+          ],
+          "best": {
+            "layer": 6,
+            "counts": [
+              8,
+              9
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.3769312798976898
+        },
+        {
+          "n": 8,
+          "seed": 1,
+          "n_passing_layers": 6,
+          "passing_layers": [
+            9,
+            15,
+            18,
+            36,
+            39,
+            42
+          ],
+          "best": {
+            "layer": 6,
+            "counts": [
+              11,
+              7
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.26240798830986023
+        },
+        {
+          "n": 8,
+          "seed": 2,
+          "n_passing_layers": 3,
+          "passing_layers": [
+            6,
+            12,
+            39
+          ],
+          "best": {
+            "layer": 6,
+            "counts": [
+              9,
+              9
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.41049543023109436
+        },
+        {
+          "n": 8,
+          "seed": 3,
+          "n_passing_layers": 7,
+          "passing_layers": [
+            6,
+            12,
+            15,
+            36,
+            39,
+            42,
+            54
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              11,
+              9
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.3435083329677582
+        },
+        {
+          "n": 8,
+          "seed": 4,
+          "n_passing_layers": 1,
+          "passing_layers": [
+            6
+          ],
+          "best": {
+            "layer": 6,
+            "counts": [
+              12,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.37389421463012695
+        },
+        {
+          "n": 16,
+          "seed": 0,
+          "n_passing_layers": 5,
+          "passing_layers": [
+            39,
+            42,
+            45,
+            48,
+            51
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              9,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.4761584997177124
+        },
+        {
+          "n": 16,
+          "seed": 1,
+          "n_passing_layers": 5,
+          "passing_layers": [
+            12,
+            36,
+            39,
+            42,
+            45
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              10,
+              11
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.38974645733833313
+        },
+        {
+          "n": 16,
+          "seed": 2,
+          "n_passing_layers": 4,
+          "passing_layers": [
+            6,
+            12,
+            36,
+            39
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              12,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.38393545150756836
+        },
+        {
+          "n": 16,
+          "seed": 3,
+          "n_passing_layers": 7,
+          "passing_layers": [
+            9,
+            12,
+            15,
+            36,
+            39,
+            42,
+            54
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              11,
+              11
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.4667316973209381
+        },
+        {
+          "n": 16,
+          "seed": 4,
+          "n_passing_layers": 4,
+          "passing_layers": [
+            6,
+            33,
+            36,
+            45
+          ],
+          "best": {
+            "layer": 6,
+            "counts": [
+              11,
+              9
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.4352070987224579
+        },
+        {
+          "n": 32,
+          "seed": 0,
+          "n_passing_layers": 6,
+          "passing_layers": [
+            6,
+            12,
+            33,
+            36,
+            39,
+            54
+          ],
+          "best": {
+            "layer": 6,
+            "counts": [
+              11,
+              8
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.4750094413757324
+        },
+        {
+          "n": 32,
+          "seed": 1,
+          "n_passing_layers": 7,
+          "passing_layers": [
+            6,
+            12,
+            15,
+            36,
+            39,
+            42,
+            54
+          ],
+          "best": {
+            "layer": 12,
+            "counts": [
+              11,
+              9
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.5199134945869446
+        },
+        {
+          "n": 32,
+          "seed": 2,
+          "n_passing_layers": 8,
+          "passing_layers": [
+            6,
+            9,
+            12,
+            36,
+            39,
+            42,
+            45,
+            48
+          ],
+          "best": {
+            "layer": 12,
+            "counts": [
+              11,
+              9
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.5488043427467346
+        },
+        {
+          "n": 32,
+          "seed": 3,
+          "n_passing_layers": 2,
+          "passing_layers": [
+            36,
+            39
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              10,
+              9
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.42393550276756287
+        },
+        {
+          "n": 32,
+          "seed": 4,
+          "n_passing_layers": 8,
+          "passing_layers": [
+            6,
+            12,
+            15,
+            33,
+            39,
+            42,
+            45,
+            57
+          ],
+          "best": {
+            "layer": 6,
+            "counts": [
+              11,
+              8
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.4921605587005615
+        },
+        {
+          "n": 64,
+          "seed": 0,
+          "n_passing_layers": 8,
+          "passing_layers": [
+            6,
+            9,
+            12,
+            33,
+            36,
+            39,
+            42,
+            45
+          ],
+          "best": {
+            "layer": 33,
+            "counts": [
+              11,
+              8
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.5636312365531921
+        },
+        {
+          "n": 64,
+          "seed": 1,
+          "n_passing_layers": 9,
+          "passing_layers": [
+            6,
+            12,
+            33,
+            36,
+            39,
+            42,
+            45,
+            48,
+            54
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              10,
+              11
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.5145921111106873
+        },
+        {
+          "n": 64,
+          "seed": 2,
+          "n_passing_layers": 9,
+          "passing_layers": [
+            12,
+            33,
+            36,
+            39,
+            42,
+            45,
+            48,
+            51,
+            54
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              12,
+              11
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.5317054986953735
+        },
+        {
+          "n": 64,
+          "seed": 3,
+          "n_passing_layers": 9,
+          "passing_layers": [
+            6,
+            9,
+            12,
+            15,
+            33,
+            36,
+            39,
+            42,
+            54
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              10,
+              11
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.5354754328727722
+        },
+        {
+          "n": 64,
+          "seed": 4,
+          "n_passing_layers": 8,
+          "passing_layers": [
+            12,
+            15,
+            36,
+            39,
+            42,
+            45,
+            54,
+            57
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              10,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.5288828611373901
+        },
+        {
+          "n": 128,
+          "seed": 0,
+          "n_passing_layers": 7,
+          "passing_layers": [
+            6,
+            9,
+            12,
+            33,
+            36,
+            39,
+            42
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              11,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.5581158995628357
+        },
+        {
+          "n": 128,
+          "seed": 1,
+          "n_passing_layers": 8,
+          "passing_layers": [
+            6,
+            12,
+            36,
+            39,
+            42,
+            45,
+            54,
+            57
+          ],
+          "best": {
+            "layer": 6,
+            "counts": [
+              11,
+              9
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.5516000390052795
+        },
+        {
+          "n": 128,
+          "seed": 2,
+          "n_passing_layers": 5,
+          "passing_layers": [
+            6,
+            12,
+            36,
+            39,
+            42
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              10,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.5424842238426208
+        },
+        {
+          "n": 128,
+          "seed": 3,
+          "n_passing_layers": 10,
+          "passing_layers": [
+            6,
+            12,
+            36,
+            39,
+            42,
+            45,
+            48,
+            51,
+            54,
+            57
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              10,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.563235342502594
+        },
+        {
+          "n": 128,
+          "seed": 4,
+          "n_passing_layers": 9,
+          "passing_layers": [
+            6,
+            12,
+            36,
+            39,
+            42,
+            45,
+            51,
+            54,
+            57
+          ],
+          "best": {
+            "layer": 12,
+            "counts": [
+              11,
+              9
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.5636792778968811
+        },
+        {
+          "n": 255,
+          "seed": -1,
+          "n_passing_layers": 9,
+          "passing_layers": [
+            6,
+            12,
+            33,
+            36,
+            39,
+            42,
+            45,
+            54,
+            57
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              10,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.569442093372345
+        }
+      ]
+    },
+    "diverse": {
+      "n_available_min": 1018,
+      "points": [
+        {
+          "n": 8,
+          "seed": 0,
+          "n_passing_layers": 3,
+          "passing_layers": [
+            6,
+            36,
+            39
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              9,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.26359835267066956
+        },
+        {
+          "n": 8,
+          "seed": 1,
+          "n_passing_layers": 1,
+          "passing_layers": [
+            39
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              9,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.17090187966823578
+        },
+        {
+          "n": 8,
+          "seed": 2,
+          "n_passing_layers": 0,
+          "passing_layers": [],
+          "best": {
+            "layer": 42,
+            "counts": [
+              9,
+              7
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.2234051674604416
+        },
+        {
+          "n": 8,
+          "seed": 3,
+          "n_passing_layers": 0,
+          "passing_layers": [],
+          "best": {
+            "layer": 6,
+            "counts": [
+              9,
+              7
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.23266242444515228
+        },
+        {
+          "n": 8,
+          "seed": 4,
+          "n_passing_layers": 0,
+          "passing_layers": [],
+          "best": {
+            "layer": 12,
+            "counts": [
+              9,
+              6
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.2670747935771942
+        },
+        {
+          "n": 16,
+          "seed": 0,
+          "n_passing_layers": 4,
+          "passing_layers": [
+            9,
+            12,
+            39,
+            42
+          ],
+          "best": {
+            "layer": 12,
+            "counts": [
+              10,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.3197421729564667
+        },
+        {
+          "n": 16,
+          "seed": 1,
+          "n_passing_layers": 3,
+          "passing_layers": [
+            6,
+            9,
+            39
+          ],
+          "best": {
+            "layer": 6,
+            "counts": [
+              11,
+              9
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.30928412079811096
+        },
+        {
+          "n": 16,
+          "seed": 2,
+          "n_passing_layers": 2,
+          "passing_layers": [
+            9,
+            39
+          ],
+          "best": {
+            "layer": 9,
+            "counts": [
+              8,
+              9
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.3059678077697754
+        },
+        {
+          "n": 16,
+          "seed": 3,
+          "n_passing_layers": 2,
+          "passing_layers": [
+            15,
+            42
+          ],
+          "best": {
+            "layer": 15,
+            "counts": [
+              8,
+              8
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.31372904777526855
+        },
+        {
+          "n": 16,
+          "seed": 4,
+          "n_passing_layers": 1,
+          "passing_layers": [
+            39
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              8,
+              8
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.37442219257354736
+        },
+        {
+          "n": 32,
+          "seed": 0,
+          "n_passing_layers": 3,
+          "passing_layers": [
+            39,
+            42,
+            45
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              11,
+              11
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.3855198621749878
+        },
+        {
+          "n": 32,
+          "seed": 1,
+          "n_passing_layers": 3,
+          "passing_layers": [
+            9,
+            12,
+            39
+          ],
+          "best": {
+            "layer": 12,
+            "counts": [
+              9,
+              9
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.33352312445640564
+        },
+        {
+          "n": 32,
+          "seed": 2,
+          "n_passing_layers": 2,
+          "passing_layers": [
+            6,
+            39
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              9,
+              8
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.286578506231308
+        },
+        {
+          "n": 32,
+          "seed": 3,
+          "n_passing_layers": 1,
+          "passing_layers": [
+            33
+          ],
+          "best": {
+            "layer": 6,
+            "counts": [
+              7,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.3456938564777374
+        },
+        {
+          "n": 32,
+          "seed": 4,
+          "n_passing_layers": 3,
+          "passing_layers": [
+            39,
+            42,
+            54
+          ],
+          "best": {
+            "layer": 42,
+            "counts": [
+              10,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.3971033990383148
+        },
+        {
+          "n": 64,
+          "seed": 0,
+          "n_passing_layers": 4,
+          "passing_layers": [
+            6,
+            12,
+            36,
+            39
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              9,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.3718574345111847
+        },
+        {
+          "n": 64,
+          "seed": 1,
+          "n_passing_layers": 3,
+          "passing_layers": [
+            6,
+            12,
+            39
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              10,
+              8
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.42112740874290466
+        },
+        {
+          "n": 64,
+          "seed": 2,
+          "n_passing_layers": 4,
+          "passing_layers": [
+            9,
+            12,
+            33,
+            36
+          ],
+          "best": {
+            "layer": 9,
+            "counts": [
+              9,
+              9
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.44391289353370667
+        },
+        {
+          "n": 64,
+          "seed": 3,
+          "n_passing_layers": 4,
+          "passing_layers": [
+            6,
+            12,
+            39,
+            42
+          ],
+          "best": {
+            "layer": 12,
+            "counts": [
+              10,
+              8
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.42470309138298035
+        },
+        {
+          "n": 64,
+          "seed": 4,
+          "n_passing_layers": 5,
+          "passing_layers": [
+            6,
+            12,
+            21,
+            39,
+            42
+          ],
+          "best": {
+            "layer": 12,
+            "counts": [
+              10,
+              9
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.41992929577827454
+        },
+        {
+          "n": 128,
+          "seed": 0,
+          "n_passing_layers": 8,
+          "passing_layers": [
+            6,
+            9,
+            12,
+            36,
+            39,
+            42,
+            45,
+            48
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              9,
+              11
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.4203368127346039
+        },
+        {
+          "n": 128,
+          "seed": 1,
+          "n_passing_layers": 6,
+          "passing_layers": [
+            9,
+            12,
+            36,
+            39,
+            42,
+            45
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              10,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.43409955501556396
+        },
+        {
+          "n": 128,
+          "seed": 2,
+          "n_passing_layers": 9,
+          "passing_layers": [
+            6,
+            9,
+            12,
+            36,
+            39,
+            42,
+            45,
+            48,
+            54
+          ],
+          "best": {
+            "layer": 36,
+            "counts": [
+              11,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.4559941589832306
+        },
+        {
+          "n": 128,
+          "seed": 3,
+          "n_passing_layers": 6,
+          "passing_layers": [
+            6,
+            9,
+            12,
+            36,
+            39,
+            42
+          ],
+          "best": {
+            "layer": 6,
+            "counts": [
+              9,
+              8
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.46913206577301025
+        },
+        {
+          "n": 128,
+          "seed": 4,
+          "n_passing_layers": 3,
+          "passing_layers": [
+            6,
+            39,
+            42
+          ],
+          "best": {
+            "layer": 6,
+            "counts": [
+              10,
+              8
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.41637539863586426
+        },
+        {
+          "n": 256,
+          "seed": 0,
+          "n_passing_layers": 7,
+          "passing_layers": [
+            6,
+            9,
+            12,
+            36,
+            39,
+            42,
+            57
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              9,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.4578157961368561
+        },
+        {
+          "n": 256,
+          "seed": 1,
+          "n_passing_layers": 7,
+          "passing_layers": [
+            6,
+            9,
+            12,
+            36,
+            39,
+            42,
+            57
+          ],
+          "best": {
+            "layer": 6,
+            "counts": [
+              11,
+              9
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.4509413242340088
+        },
+        {
+          "n": 256,
+          "seed": 2,
+          "n_passing_layers": 6,
+          "passing_layers": [
+            6,
+            12,
+            36,
+            39,
+            42,
+            57
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              10,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.46509525179862976
+        },
+        {
+          "n": 256,
+          "seed": 3,
+          "n_passing_layers": 6,
+          "passing_layers": [
+            6,
+            9,
+            12,
+            36,
+            39,
+            42
+          ],
+          "best": {
+            "layer": 12,
+            "counts": [
+              10,
+              9
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.4523265063762665
+        },
+        {
+          "n": 256,
+          "seed": 4,
+          "n_passing_layers": 5,
+          "passing_layers": [
+            6,
+            36,
+            39,
+            42,
+            57
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              10,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.45072126388549805
+        },
+        {
+          "n": 512,
+          "seed": 0,
+          "n_passing_layers": 8,
+          "passing_layers": [
+            6,
+            9,
+            12,
+            36,
+            39,
+            42,
+            45,
+            54
+          ],
+          "best": {
+            "layer": 36,
+            "counts": [
+              11,
+              8
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.4484233856201172
+        },
+        {
+          "n": 512,
+          "seed": 1,
+          "n_passing_layers": 5,
+          "passing_layers": [
+            6,
+            12,
+            36,
+            39,
+            42
+          ],
+          "best": {
+            "layer": 6,
+            "counts": [
+              10,
+              9
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.46759292483329773
+        },
+        {
+          "n": 512,
+          "seed": 2,
+          "n_passing_layers": 8,
+          "passing_layers": [
+            6,
+            9,
+            12,
+            36,
+            39,
+            42,
+            45,
+            54
+          ],
+          "best": {
+            "layer": 36,
+            "counts": [
+              11,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.4472953975200653
+        },
+        {
+          "n": 512,
+          "seed": 3,
+          "n_passing_layers": 7,
+          "passing_layers": [
+            6,
+            9,
+            12,
+            36,
+            39,
+            42,
+            54
+          ],
+          "best": {
+            "layer": 6,
+            "counts": [
+              10,
+              9
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.46382197737693787
+        },
+        {
+          "n": 512,
+          "seed": 4,
+          "n_passing_layers": 6,
+          "passing_layers": [
+            6,
+            9,
+            36,
+            39,
+            42,
+            54
+          ],
+          "best": {
+            "layer": 39,
+            "counts": [
+              9,
+              10
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.48750171065330505
+        },
+        {
+          "n": 1018,
+          "seed": -1,
+          "n_passing_layers": 7,
+          "passing_layers": [
+            6,
+            9,
+            12,
+            36,
+            39,
+            42,
+            54
+          ],
+          "best": {
+            "layer": 36,
+            "counts": [
+              11,
+              9
+            ]
+          },
+          "mean_contrast_cos_to_selfgen_L33": 0.46232593059539795
+        }
+      ]
+    }
+  }
+}
