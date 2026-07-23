@@ -127,6 +127,30 @@ reviewers do:
   hypotheses) each paired with the experiment that would decide it, and the
   open questions. If an explanation was good enough to give a collaborator
   in conversation, it belongs in the notebook before they have to ask.
+- **Every figure carries its own grading scale.** A reader must be able to
+  judge the result from the figure alone: labeled anchors for what FAILURE
+  looks like (chance level, zero effect, the noise floor) and what a STRONG
+  result would look like (the registered bar where one exists; otherwise a
+  meaningful comparator such as the other arm or bank), drawn as reference
+  lines/bands in the plot where possible. The how-to-read block then says it
+  in words: "a good result here would be X, a bad one Y, and the observed
+  pattern sits at Z between them."
+- **HTML is welcome where it reads better.** Notebook markdown may use HTML
+  freely when it is clearer than plain markdown: collapsible
+  `<details>` blocks, styled tables, side-by-side layouts. Clarity decides,
+  not purity.
+- **Link everything that has a URL.** Every dataset, paper, model card,
+  external tool, or repo mentioned in a notebook is a hyperlink at first
+  mention: HF datasets link to their dataset page, papers to arXiv,
+  the lexicon to its source page. A reader reaches any referenced artifact
+  in one click, without hunting through DATA.md (DATA.md still holds the
+  full index).
+- **The acceptance test for every figure and section:** a teammate who did
+  NOT run the experiment can say, from the exhibit alone, (1) what was
+  measured and how, (2) what the figure claims, (3) which evidence file the
+  numbers come from, and (4) what would change their mind - without asking
+  the author anything. The point of the notebooks is that the team can
+  verify the analyses; a plot that needs its author present has failed.
 
 ## Non-negotiables
 

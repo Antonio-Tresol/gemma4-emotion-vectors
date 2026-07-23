@@ -20,6 +20,14 @@ from ._data import (
 )
 
 _S2_ARM_COLORS = {"it_v2": "#4c78a8", "deepseek": "#f58518"}
+# plain names for the designed story types; the registry code stays in parentheses
+FAMILY_DISPLAY = {
+    "A_superposition": "superposition (A)",
+    "B_conflict": "conflict (B)",
+    "D_timescale": "timescale (D)",
+    "E_arousal_mismatch": "arousal mismatch (E)",
+    "F_valence_spread": "valence spread (F)",
+}
 
 
 def _s1_stats(arms: Arms) -> dict[str, LayerStats]:
@@ -171,9 +179,11 @@ def _s2_add_arm_traces(fig: go.Figure, family_stats: dict[str, object], arm: str
     gate_cis = [family_stats[family]["gate_ci"] for family in FAMILIES]
     fig.add_trace(
         go.Bar(
-            x=FAMILIES,
+            x=[FAMILY_DISPLAY[family] for family in FAMILIES],
             y=gate_medians,
-            name="Gemma stories (v2 probes)" if arm == "it_v2" else "DeepSeek stories",
+            name="reading Gemma-written stories"
+            if arm == "it_v2"
+            else "reading DeepSeek-written stories",
             legendgroup=arm,
             marker_color=_S2_ARM_COLORS[arm],
             error_y=dict(
@@ -189,7 +199,7 @@ def _s2_add_arm_traces(fig: go.Figure, family_stats: dict[str, object], arm: str
     lead_cis = [family_stats[family]["lead_ci"] for family in FAMILIES]
     fig.add_trace(
         go.Bar(
-            x=FAMILIES,
+            x=[FAMILY_DISPLAY[family] for family in FAMILIES],
             y=lead_means,
             legendgroup=arm,
             marker_color=_S2_ARM_COLORS[arm],
@@ -217,26 +227,63 @@ def s2_family_figure(
     fig = make_subplots(
         rows=1,
         cols=2,
+        horizontal_spacing=0.09,
         subplot_titles=[
-            "gate: median rank of tagged emotion (lower = better)",
-            "R1: mean anticipation lead (cosine units)",
+            "identity: is the right emotion recognized?",
+            "anticipation: does it rise before the boundary?",
         ],
     )
     # traces added layer-major (both arms per layer) so the slider can toggle blocks
     for layer in LAYERS:
         for arm in ["it_v2", "deepseek"]:
             _s2_add_arm_traces(fig, stats[arm][layer], arm)
-    fig.update_yaxes(title="median rank of tagged probe (1 = best of 12)", row=1, col=1)
-    fig.update_yaxes(title="mean R1 lead (centered-cosine units)", row=1, col=2)
+    fig.update_yaxes(
+        title="median rank of tagged probe<br>(1 = best of 12)", row=1, col=1, range=[0, 8.5]
+    )
+    fig.update_yaxes(title="rise of the incoming emotion<br>(centered-cosine units)", row=1, col=2)
     for panel in (1, 2):
-        fig.update_xaxes(title="designed triple family", row=1, col=panel)
-    fig.add_hline(y=0, line_color="#888", line_width=1, row=1, col=2)
+        fig.update_xaxes(
+            title="designed story type", tickangle=18, title_standoff=28, row=1, col=panel
+        )
+    # grading anchors: what failure and success look like, named in the plot
+    fig.add_hline(
+        y=6.5,
+        line_dash="dot",
+        line_color="#888",
+        row=1,
+        col=1,
+        annotation_text="chance rank = 6.5",
+        annotation_position="top right",
+    )
+    fig.add_hline(
+        y=1,
+        line_dash="dash",
+        line_color="#54a24b",
+        row=1,
+        col=1,
+        annotation_text="perfect = 1",
+        annotation_position="bottom right",
+    )
+    fig.add_hline(
+        y=0,
+        line_color="#888",
+        line_width=1,
+        row=1,
+        col=2,
+        annotation_text="no anticipation",
+        annotation_position="bottom right",
+    )
     fig.update_layout(
-        height=470,
+        height=560,
         barmode="group",
-        legend=dict(orientation="h", y=1.12),
-        title=f"S2: gate rank and anticipation lead per designed family "
-        f"({bank} bank; error bars = cluster-bootstrap 95% CI over triples)",
+        margin=dict(t=150, b=120),
+        legend=dict(orientation="h", y=1.22, x=0.0),
+        title=dict(
+            text="Which designed story types does the tracker handle best?"
+            "<br><sup>self-generated probes read both story sets; bars pair the two story "
+            "authors per type; error bars = 95% cluster-bootstrap CI over triples</sup>",
+            y=0.97,
+        ),
     )
     layer_slider(fig, traces_per_layer=4)
     return fig, stats
