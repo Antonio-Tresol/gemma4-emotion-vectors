@@ -164,6 +164,13 @@ def main() -> int:
     parser.add_argument("--workers", type=int, default=32)
     parser.add_argument("--seed", type=int, default=20260721)
     parser.add_argument("--smoke", action="store_true", help="2 triples, 1 sample/combo")
+    parser.add_argument(
+        "--constant-battery",
+        action="store_true",
+        help="CONTROL arm: one (e, e, e) pseudo-triple per battery emotion — same "
+        "SEQUENTIAL scaffold, transition events, and tag structure with NO emotion "
+        "change; any transition-locked signal here is scene-change artifact",
+    )
     parser.add_argument("--out-dir", type=Path, default=Path("results/combined_stories_deepseek"))
     args = parser.parse_args()
     load_dotenv()
@@ -173,7 +180,16 @@ def main() -> int:
     if args.per_triple % N_COMBOS != 0:
         raise SystemExit(f"--per-triple must be a multiple of {N_COMBOS}, got {args.per_triple}")
     samples_per_combo = args.per_triple // N_COMBOS
-    triples = load_triples(args.triples_file)
+    if args.constant_battery:
+        battery = (
+            "happy inspired loving proud calm desperate angry guilty sad afraid nervous surprised"
+        )
+        triples = [
+            {"emotions": [e, e, e], "category": "CONTROL_CONSTANT", "has_nonaffect": False}
+            for e in battery.split()
+        ]
+    else:
+        triples = load_triples(args.triples_file)
     if args.smoke:
         triples = triples[:2]
     args.out_dir.mkdir(parents=True, exist_ok=True)
