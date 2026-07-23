@@ -1,10 +1,10 @@
-"""Emit notebooks/08_q3_gate_r1.ipynb: the Q3 first-tranche results exhibit.
+"""Emit notebooks/08_transition_tracking_first_reads.ipynb: the Q3 first-tranche results exhibit.
 
 Every number is computed inside the notebook from the committed evidence
 files (q3_gate_r1_it.json, q3_gate_r1_deepseek.json) — nothing hardcoded.
 
     .venv/bin/python scripts/build_q3_notebook.py
-    .venv/bin/python -m nbconvert --to notebook --execute --inplace notebooks/08_q3_gate_r1.ipynb
+    .venv/bin/python -m nbconvert --to notebook --execute --inplace notebooks/08_transition_tracking_first_reads.ipynb
 """
 
 from __future__ import annotations
@@ -354,7 +354,7 @@ def main() -> int:
         "nbformat": 4,
         "nbformat_minor": 5,
     }
-    out = Path("notebooks/08_q3_gate_r1.ipynb")
+    out = Path("notebooks/08_transition_tracking_first_reads.ipynb")
     out.write_text(json.dumps(notebook, indent=1))
     print(f"wrote {out} ({len(cells)} cells)")
     return 0
