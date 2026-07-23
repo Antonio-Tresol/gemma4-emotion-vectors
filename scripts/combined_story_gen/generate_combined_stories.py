@@ -210,10 +210,15 @@ emotion appears where. Begin with the first word of the story.
 """
 
 
-try:  # shared logger lives in the package (same pattern as generate_dialogue_stories)
-    from emotion_vectors.extraction import setup_logger
-except ModuleNotFoundError as exc:
-    raise SystemExit(f"missing {exc.name}: this entry point needs the project package") from exc
+def _setup_logger(log_path):
+    """Lazy: emotion_vectors.extraction imports torch, which the CPU-only
+    laptop venv lacks — the OpenRouter driver imports this module for the
+    prompt/QC helpers and must not pay the GPU-stack import."""
+    try:  # shared logger lives in the package (same pattern as generate_dialogue_stories)
+        from emotion_vectors.extraction import setup_logger  # noqa: PLC0415
+    except ModuleNotFoundError as exc:
+        raise SystemExit(f"missing {exc.name}: this entry point needs the project package") from exc
+    return setup_logger(log_path)
 
 
 def git_commit() -> str:
@@ -383,7 +388,7 @@ def prepare_run(args: argparse.Namespace) -> tuple[list[dict], int, "logging.Log
     if args.smoke:
         triples = triples[:2]
     args.out_dir.mkdir(parents=True, exist_ok=True)
-    logger = setup_logger(args.out_dir / "generate.log")
+    logger = _setup_logger(args.out_dir / "generate.log")
     config = {
         **{k: (str(v) if isinstance(v, Path) else v) for k, v in vars(args).items()},
         "n_combos": N_COMBOS,
