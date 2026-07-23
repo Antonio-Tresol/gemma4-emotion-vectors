@@ -1,0 +1,21 @@
+{
+  "model": "deepseek/deepseek-v4-pro",
+  "instruction": "Write a short third-person story, around 150 words, about a person experiencing {emotion}. Do not name the emotion anywhere in the text.",
+  "per_emotion": 256,
+  "temperature": 1.0,
+  "resumed_counts": {
+    "happy": 245,
+    "inspired": 40,
+    "loving": 0,
+    "proud": 0,
+    "calm": 0,
+    "desperate": 0,
+    "angry": 0,
+    "guilty": 0,
+    "sad": 0,
+    "afraid": 0,
+    "nervous": 0,
+    "surprised": 0
+  },
+  "n_requests": 2787
+}

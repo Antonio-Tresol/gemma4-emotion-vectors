@@ -12,8 +12,8 @@ committed while the pod run is still in its A/B pass):
       ones (misaligned, unsafe). Aversive and neutral are reported, not
       scored (the paper shows them mid-scale).
   P2 (probe-Elo, registered max |r| >= 0.5): per layer, Pearson r between
-      each of the 171 probe activations (cosine of the centered probe against
-      the activity-token features, sweep convention: center on all 171) and
+      each of the 164 NRC-matched probe activations (cosine of the centered
+      probe against the activity-token features, centered on the matched set) and
       the 64 Elo scores. Valence organization is read as Pearson correlation
       between the per-probe r values and NRC valence, with a 10,000-shuffle
       permutation p; "valence-organized" means p < 0.05 with positive sign.
