@@ -41,7 +41,8 @@ how it was measured, and the verdict.
 1. Does the model know which emotion the current phase is? (gate G)
 2. Stories or vectors: what does each result depend on?
 3. Above chance versus useful versus meaningless: the three-way diagnosis
-4. What is still open
+4. The full design grid and the combined reading
+5. What is still open
 
 **The instruments, briefly.** A "contrast probe" is an emotion direction:
 the emotion's mean story activation minus the pool mean, unit-normalized;
@@ -94,6 +95,10 @@ def load_json(name):
 
 gemma_stories = load_json("q3_gate_r1_it.json")       # Gemma-written substrate
 deepseek_stories = load_json("q3_gate_r1_deepseek.json")  # DeepSeek-written substrate
+try:  # v2: same Gemma stories re-extracted with post-fix corpus probes + DeepSeek bank
+    gemma_stories_v2 = load_json("q3_gate_r1_it_v2.json")
+except FileNotFoundError:
+    gemma_stories_v2 = None
 
 BANK_SIZE = {"corpus": 171, "selfgen": 12, "deepseek": 12}
 BANK_LABEL = {
@@ -106,6 +111,8 @@ SUBSTRATES = {
     "DeepSeek-written stories": deepseek_stories["true_arm"],
     "control (no emotion change)": gemma_stories["control_arm"],
 }
+if gemma_stories_v2 is not None:
+    SUBSTRATES["Gemma-written (v2: post-fix probes)"] = gemma_stories_v2["true_arm"]
 print({name: arm["n_stories"] for name, arm in SUBSTRATES.items()})
 """
 
@@ -345,8 +352,39 @@ fig.update_layout(
 fig.show()
 """
 
+SGRID_MD = """\
+## 4. The full design grid and the combined reading
+
+Everything scored so far as one factorial table. G is phase-identity
+tracking, R1 is pre-boundary anticipation; "pass" means the registered
+bar, "substance" means far above chance with the bar adjudication open.
+
+| probe bank vs stories | Gemma-written | Gemma-written, v2 post-fix probes | DeepSeek-written | constant control |
+|---|---|---|---|---|
+| corpus-171 | G fail, R1 weak pass | G fail (robust to post-fix), R1 fail | G fail, R1 zero | G fail, R1 zero |
+| self-gen (12) | G substance, R1 PASS (5.5x noise) | G substance, R1 PASS (0.0117 vs 0.0116: replicates) | G substance, R1 zero | G substance, R1 zero |
+| DeepSeek (12) | bank absent in v1 shards | G substance (rank 2/12), R1 PASS (4.3x noise) | G substance, R1 zero | G substance, R1 zero |
+| random (24) | null band | null band | null band | null band |
+
+The base-model arm is collected but unscored (registered falsify plan).
+
+**The combined reading.** (1) Whether the model's emotional state is
+readable at all is decided by the probe COLUMN: vector quality decides
+(E11's detection winners are the dynamics winners too), on every
+substrate, and the corpus-171 failure survives post-fix re-extraction.
+(2) Whether the state moves BEFORE a transition is decided by the story
+ROW: the same probes show anticipation exactly and only where Gemma
+authored the text; the control row rules out scene-change mechanics, and
+causal attention permits only foreshadowing already present in the words
+read so far. (3) Together: Gemma robustly tracks the emotional state of
+what it reads, and "seeing the transition coming" is the model detecting
+the foreshadowing habits of its own writing style, a property of the
+text and reader MATCH, not of the reader alone. No verdict-ladder tier
+is claimed until the ladder adjudication and the cue-referenced read.
+"""
+
 S4_MD = """\
-## 4. What is still open
+## 5. What is still open
 
 1. **Ladder adjudication.** The registered gate names the 171 corpus bank;
    it fails while the 12-banks pass in substance. The verdict-ladder tier
@@ -386,6 +424,7 @@ def main() -> int:
         code(S2_CODE),
         md(S3_MD),
         code(S3_CODE),
+        md(SGRID_MD),
         md(S4_MD),
     ]
     notebook = {
