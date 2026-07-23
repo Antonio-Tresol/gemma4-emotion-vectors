@@ -21,7 +21,9 @@ arms score from post-fix extractions — pass the bundles explicitly:
 from __future__ import annotations
 
 import argparse
+import itertools
 import json
+import random
 from pathlib import Path
 
 import numpy as np
@@ -29,8 +31,37 @@ import numpy as np
 from emotion_vectors.probe_prompts import HELDOUT_SCENARIOS, SCENARIOS
 
 BATTERY = "happy inspired loving proud calm desperate angry guilty sad afraid nervous surprised".split()
-SWEEP = Path("results/probe_sweep_it/activations.npz")
-PREF_DIR = Path("results/preferences_it_chat_fixed")
+
+
+def r4_diversity_exploratory(corpora: dict[str, Path | None], seed: int = 0) -> dict:
+    """EXPLORATORY (registered as such, fenced from R1-R3): within-corpus mean
+    pairwise lexical similarity — 5-gram Jaccard over a seeded sample of up to
+    30 stories per battery emotion. Separates 'distribution match' from
+    'scaffold degeneracy' as candidate mechanisms across the three lineages."""
+    out: dict[str, object] = {"read": "mean pairwise 5-gram Jaccard, <=30 stories/emotion sample"}
+    for name, path in corpora.items():
+        if path is None or not path.exists():
+            out[name] = None
+            continue
+        grouped: dict[str, list[str]] = {}
+        for line in path.read_text().splitlines():
+            row = json.loads(line)
+            if row.get("stories") and row["emotion"] in BATTERY:
+                grouped[row["emotion"]] = row["stories"]
+        rng = random.Random(seed)
+        sims: list[float] = []
+        for stories in grouped.values():
+            sample = rng.sample(stories, min(30, len(stories)))
+            grams = [
+                {" ".join(ws[i : i + 5]) for ws in [s.lower().split()] for i in range(len(ws) - 4)}
+                for s in sample
+            ]
+            for a, b in itertools.combinations(grams, 2):
+                union = len(a | b)
+                if union:
+                    sims.append(len(a & b) / union)
+        out[name] = {"mean_pairwise_jaccard": float(np.mean(sims)), "n_pairs": len(sims)}
+    return out
 
 
 def load_battery_means(path: Path) -> np.ndarray:
@@ -135,7 +166,15 @@ def main() -> int:
     parser.add_argument("--weak", type=Path, required=True)
     parser.add_argument("--strong", type=Path, required=True)
     parser.add_argument("--out", type=Path, default=Path("results/e11_lineage.json"))
+    parser.add_argument("--results-root", type=Path, default=Path("results"),
+                        help="where the sweep/preference inputs live (the main clone's results/)")
+    parser.add_argument("--selfgen-stories", type=Path, default=None)
+    parser.add_argument("--weak-stories", type=Path, default=None)
+    parser.add_argument("--strong-stories", type=Path, default=None)
     args = parser.parse_args()
+    global SWEEP, PREF_DIR
+    SWEEP = args.results_root / "probe_sweep_it/activations.npz"
+    PREF_DIR = args.results_root / "preferences_it_chat_fixed"
     bundles = {
         "selfgen": load_battery_means(args.selfgen),
         "weak_external": load_battery_means(args.weak),
@@ -152,6 +191,10 @@ def main() -> int:
         "r1_dual_battery": r1_grid(bundles, sweep),
         "r2_cross_lineage_layer33": r2_cross(bundles, layers.index(33)),
         "r3_preference_probe_elo": r3_preferences(bundles, layers),
+        "r4_diversity_EXPLORATORY": r4_diversity_exploratory(
+            {"selfgen": args.selfgen_stories, "weak_external": args.weak_stories,
+             "strong_external": args.strong_stories}
+        ),
     }
     args.out.write_text(json.dumps(result, indent=2))
     for name, r1 in result["r1_dual_battery"].items():
