@@ -1,0 +1,104 @@
+{
+  "results_dir": "results/self_story_vectors_it",
+  "model": "google/gemma-4-31b-it",
+  "dataset": "results/self_stories_it/dialogues_grouped.jsonl",
+  "extraction_git_commit": "8bf83d2",
+  "token_offset": 50,
+  "batch_size": 4,
+  "n_stories_scored": 192,
+  "n_predictions_coincide_ambiguous": 58,
+  "n_tokens_match_leftpad_buggy": 134,
+  "n_tokens_match_rightpad_intended": 0,
+  "n_tokens_match_neither": 0,
+  "mismatch_examples": [],
+  "leak_share_mean": 0.04,
+  "leak_share_min": 0.0184,
+  "leak_share_max": 0.0603,
+  "per_emotion": {
+    "happy": {
+      "n_stories": 256,
+      "tokens_pooled": 2040,
+      "tokens_intended": 1917,
+      "leaked_framing_tokens": 123,
+      "leak_share": 0.0603
+    },
+    "inspired": {
+      "n_stories": 256,
+      "tokens_pooled": 2144,
+      "tokens_intended": 2029,
+      "leaked_framing_tokens": 115,
+      "leak_share": 0.0536
+    },
+    "loving": {
+      "n_stories": 256,
+      "tokens_pooled": 2012,
+      "tokens_intended": 1946,
+      "leaked_framing_tokens": 66,
+      "leak_share": 0.0328
+    },
+    "proud": {
+      "n_stories": 256,
+      "tokens_pooled": 2064,
+      "tokens_intended": 1956,
+      "leaked_framing_tokens": 108,
+      "leak_share": 0.0523
+    },
+    "calm": {
+      "n_stories": 256,
+      "tokens_pooled": 2008,
+      "tokens_intended": 1917,
+      "leaked_framing_tokens": 91,
+      "leak_share": 0.0453
+    },
+    "desperate": {
+      "n_stories": 256,
+      "tokens_pooled": 2060,
+      "tokens_intended": 2022,
+      "leaked_framing_tokens": 38,
+      "leak_share": 0.0184
+    },
+    "angry": {
+      "n_stories": 256,
+      "tokens_pooled": 2096,
+      "tokens_intended": 2019,
+      "leaked_framing_tokens": 77,
+      "leak_share": 0.0367
+    },
+    "guilty": {
+      "n_stories": 256,
+      "tokens_pooled": 1984,
+      "tokens_intended": 1901,
+      "leaked_framing_tokens": 83,
+      "leak_share": 0.0418
+    },
+    "sad": {
+      "n_stories": 256,
+      "tokens_pooled": 1964,
+      "tokens_intended": 1904,
+      "leaked_framing_tokens": 60,
+      "leak_share": 0.0305
+    },
+    "afraid": {
+      "n_stories": 256,
+      "tokens_pooled": 2104,
+      "tokens_intended": 2026,
+      "leaked_framing_tokens": 78,
+      "leak_share": 0.0371
+    },
+    "nervous": {
+      "n_stories": 256,
+      "tokens_pooled": 2000,
+      "tokens_intended": 1919,
+      "leaked_framing_tokens": 81,
+      "leak_share": 0.0405
+    },
+    "surprised": {
+      "n_stories": 256,
+      "tokens_pooled": 2044,
+      "tokens_intended": 1981,
+      "leaked_framing_tokens": 63,
+      "leak_share": 0.0308
+    }
+  },
+  "note": "leak_share = fraction of each emotion's pooled token mass that the registered method (skip first TOKEN_OFFSET story tokens) says to exclude but the left-padding bug included. Activation-space impact needs the GPU re-extraction (E4b, pod)."
+}

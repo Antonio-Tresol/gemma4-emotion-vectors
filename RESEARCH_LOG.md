@@ -42,6 +42,45 @@ result) while corpus probes under matched conventions pass nowhere; preference c
 (~0.6 both). Generator = probed model, the reference's convention, is the better extraction recipe;
 C4's gate should run on the self-generated lineage.
 
+Extraction-audit addendum (user-prompted, same day: "how sure are we the emotion-vector computation
+is correct? p(?)"): assessed at p ~ 0.85, uncertainty concentrated in the queued E4b impact check —
+then closed most of it without a GPU. The realization: the TOKEN_OFFSET deviation is pure masking,
+so its token-level blast radius is computable from tokenization alone. Registered and ran the laptop
+half of E4b (scripts/audit_extraction_offset.py): the manifests' recorded n_tokens adjudicate the
+mechanics story-by-story — every discriminating story across four extraction sets matches the
+left-pad closed form exactly (1019+134+120+141 vs 0 intended, 0 unexplained), and the leaked-framing
+share of pooled token mass is 12.1% [2.1%, 20.8%] for the corpus-171 vectors, 13.2%/7.1% for the
+dialogue sets, and a predicted 4.1% [3.4%, 4.6%] for the self-gen n=256 lineage (uniform lengths =
+little padding = least affected — fortunate, since provenance checks proved e6_scale_means.npz is
+byte-identical to its pre-fix committed blob, so E10's winning probes and Q3's SELFGEN_PROBES all
+predate the fix; nothing shipped so far was extracted post-fix). Two queued audit leftovers closed
+analytically against the reference clone: recombination is token-weighted on both sides (identical
+algebra; locked in tests/test_extraction_math.py with the mask-semantics closed forms). Still open:
+the GPU cosine half (re-extract battery emotions post-fix, both lineages — needs the pod; no
+credentials in this session) and the raw-text-vs-chat-template extraction cosine. Lesson: when a bug
+is in the mask, not the model, its blast radius is a tokenizer-only computation — quantify before
+spending GPU time.
+
+E4b GPU-half addendum (session continuing past midnight into 07-23; user-directed: "go do that and
+check the before and after"): all four live lineages re-extracted post-fix on cambria-longfellow
+(6,278 stories, 0 errors; runner died once on a PATH-less tmux shell, relaunched), scored against
+bars registered in scripts/compare_extraction_postfix.py before any post-fix vector existed. Split
+verdict: raw means untouched (>=0.9975 everywhere); C1 geometry robust (peak |r| delta 0.0043 — the
+headline claim survives the instrument fix); neutral subspace unchanged (E7 unaffected); self-gen
+contrasts move least (min 0.994998, tier1 by 2e-6 — the scaffold-cancellation prediction from the
+e11 session's Elias finding held: least-diverse corpus, least rotation); corpus contrasts fire the
+tier2 bar in the low-n tail (worst 0.62 at -it L57; battery-12 subset 0.82-0.98), within C2's known
+bootstrap noise floor but recorded as follow-ups, not excused: H3 probe-Elo and E9/E10 corpus
+battery legs to be rescored on postfix bundles, Q3 corpus-lineage columns carry a probe-version
+caveat pending rescore-or-recollect. Lineage discipline shipped: -postfix HF repos with LINEAGE.md
+cards (publish launched detached on the pod), ROUTES updated, predecessors frozen. Cross-session
+coordination worked and bit once: the e11 session stood down a colliding GPU launch on the first
+heads-up, then swept my uncommitted artifacts.py edit into its commit from the shared clone —
+exactly the AGENTS.md worktree failure mode; it moved to a worktree (branch e11) and this session
+committed its work as the release. One instrument lesson for the harness: fp16 bundles overflow
+float16 norms in numpy — cast before cosine (caught because a 0.0 story-cosine contradicted a 0.99
+subspace agreement in the same read).
+
 Publication addendum (user decision, same day, superseding the entry below): all project
 datasets flipped PUBLIC today, ahead of the validate-claims gate — the published material is
 substrate (stories, activations, shards, configs) with lineage-documented cards, not claims;
