@@ -1,0 +1,20 @@
+{
+  "model": "google/gemma-4-31b",
+  "stories": "/root/cbai-cambria-project/results/combined_stories/stories_raw.jsonl",
+  "layers": [
+    6,
+    15,
+    24,
+    33,
+    42,
+    51
+  ],
+  "n_random": 24,
+  "random_seed": 20260722,
+  "probe_files": [
+    "results/emotion_vectors/emotion_means.npz"
+  ],
+  "max_length": 1024,
+  "smoke": false,
+  "git_commit": "eb4f29f"
+}
