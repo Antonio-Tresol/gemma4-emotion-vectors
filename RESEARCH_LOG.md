@@ -66,7 +66,14 @@ notebook 02 section 8, recomputed in-cell on the post-fix bundles (instrument-ro
 0.91 valence-bundle transfer, 86.1 vs 85.8 degree first principal angle). (10) Q1.H1.E4 (user
 question, from the section 6 RSA figure): why does instruct cross-layer RSA fragment while base
 stays coherent — registered three predicted reads before computing (ablation asymmetry, PC1
-continuity, cross-model RSA), ran laptop-side, exhibit added as notebook 02 section 9.
+continuity, cross-model RSA), ran laptop-side, exhibit added as notebook 02 section 9. (11)
+Q3.H1.E3 (user question): named confusions, within-phase timing, geometry-predicts-difficulty —
+registered with two failure modes and the geometry-vs-VAD partial design named in advance,
+extended the record dump with per-phase thirds (bit-identity of existing arrays verified), reran
+all five arms on the pod, and rebuilt notebook 11 to house style after the user flagged both the
+missing narrative scaffolding (a subagent added index, key concepts, and how-to-read blocks with
+code cells frozen) and the unlabeled figures (axis titles, legends, colorbar titles, chance and
+zero reference lines added to all eight figures).
 * What I expected vs what happened (addendum): The base-row expectation FIRED cleanly — corpus-171
 gate median rank 17/14/12 at layers 33/42/51 (bar <= 17) where the it reader sits at 38-83, and
 base R1 anticipation passes at all six layers (0.7-2.2x noise sd), so the corpus-bank failure is
@@ -85,7 +92,16 @@ failed informatively: unablated instruct-late matches base-late at only 0.29 —
 instruct top-2 lifts it to 0.69 (disclosed post-hoc), the third independent sighting of
 demotion-not-destruction. Base's own PC1-label swaps (valence/arousal trading rank at near-tied
 variance) do not fragment its RSA — component-label churn is not structure change, which guards
-the whole interpretation.
+the whole interpretation. On E3 the registered timing question resolved decisively AGAINST the
+lag story: when the tracker disagrees with the tag it disagrees from the phase's first third to
+its last (never-right 66%/79% vs converges 15%/9%) — the model holds its own consistent reading.
+The named tables then showed WHY the average looked graceful: the selfgen bank has two attractor
+probes (happy, guilty) that absorb wrong answers regardless of target, the deepseek bank has
+none, so attractor structure belongs to the probe bank, not the reader. And the geometry
+partial-correlation design paid off: which wrong emotion wins follows the model's own
+probe-space cosine (partial +0.20 controlling VAD) while human affective distance adds nothing
+once geometry is controlled (partial -0.09) — S4's "VAD-graceful" degradation was the model's
+geometry wearing a human mask.
 * What I expected vs what happened: Expected the diverse corpus to at least match the fixed one
 on detection; it lost at every matched n (6.2 vs 9.0 passing layers at n=256) while winning the
 preference read at matched n (0.760 vs 0.706) — a clean two-read dissociation. Expected Q3
