@@ -1,0 +1,21 @@
+{
+  "model": "google/gemma-4-31b-it",
+  "stories": "results/combined_stories_deepseek_constant_raw.jsonl",
+  "layers": [
+    6,
+    15,
+    24,
+    33,
+    42,
+    51
+  ],
+  "n_random": 24,
+  "random_seed": 20260722,
+  "probe_files": [
+    "results/emotion_vectors_it_means.npz",
+    "results/e6_scale_means.npz"
+  ],
+  "max_length": 1024,
+  "smoke": false,
+  "git_commit": "5684b62"
+}
