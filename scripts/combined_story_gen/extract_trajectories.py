@@ -26,6 +26,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 import torch
+from einops import einsum
 
 from emotion_vectors.extraction import (
     LoadedModel,
@@ -146,7 +147,15 @@ def process_batch(
         n_tokens = lengths[i]
         story_acts = acts[i, :n_tokens]  # [tokens, layers, d_model] on device
         with torch.inference_mode():
-            dots = torch.einsum("tld,pld->tlp", story_acts, probes).cpu().numpy()
+            dots = (
+                einsum(
+                    story_acts,
+                    probes,
+                    "tokens layers d_model, probes layers d_model -> tokens layers probes",
+                )
+                .cpu()
+                .numpy()
+            )
             norms = story_acts.norm(dim=-1).cpu().numpy()
             # centered-cosine substrate: centered dots are linear in the stored
             # dots, but the centered activation norm is not — store it explicitly
