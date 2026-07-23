@@ -56,6 +56,14 @@ ROUTES: dict[str, str] = {
     "openrouter_stories_diverse": f"{HF_USER}/emotion-stories-deepseek-v4-pro-diverse",
     "openrouter_vectors_it": f"{HF_USER}/emotion-deepseek-vectors-gemma-4-31b-it",
     "openrouter_vectors_diverse_it": f"{HF_USER}/emotion-deepseek-diverse-vectors-gemma-4-31b-it",
+    # Q3 substrate arms added 2026-07-23: DeepSeek-written stories, the
+    # constant-emotion control, and the v2 re-extraction of the primary
+    # corpus (post-fix corpus probes + the fixed-DeepSeek bank).
+    "combined_stories_deepseek": f"{HF_USER}/emotion-combined-stories-deepseek-v4-pro",
+    "combined_stories_deepseek_constant": f"{HF_USER}/emotion-combined-stories-deepseek-v4-pro-constant-control",
+    "combined_trajectories_deepseek": f"{HF_USER}/emotion-combined-trajectories-deepseek-stories-gemma-4-31b-it",
+    "combined_trajectories_deepseek_constant": f"{HF_USER}/emotion-combined-trajectories-constant-control-gemma-4-31b-it",
+    "combined_trajectories_it_v2": f"{HF_USER}/emotion-combined-trajectories-gemma-4-31b-it-v2",
 }
 
 
