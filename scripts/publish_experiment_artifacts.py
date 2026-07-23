@@ -140,6 +140,11 @@ ARTIFACTS: list[tuple[str, str]] = [
         "VAD correlations, extremes, cross-model alignment, story-length nuisance read",
     ),
     (
+        "rsa_fragmentation.json",
+        "Q1.H1.E4: why instruct cross-layer RSA fragments — top-component ablation, "
+        "PC1 continuity (two inserted-axis regimes, handoff ~L27), cross-model RSA",
+    ),
+    (
         "q3_records_it.npz",
         "Q3.H1.E2 per-record substrate, Gemma-stories v1: phase_scores + trans_lead "
         "[records, 6 layers, 207 probes] fp32 centered cosine; metadata in sibling _meta.json",
