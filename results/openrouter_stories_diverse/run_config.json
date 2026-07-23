@@ -1,0 +1,42 @@
+{
+  "model": "deepseek/deepseek-v4-pro",
+  "instruction": "Write a short third-person story, around 150 words, about {persona} {setting} experiencing {emotion}. Do not name the emotion anywhere in the text.",
+  "diverse": true,
+  "personas": [
+    "a teenage girl",
+    "an elderly fisherman",
+    "a young nurse",
+    "a middle-aged bus driver",
+    "a retired schoolteacher",
+    "a first-year college student",
+    "a single father",
+    "a street musician"
+  ],
+  "settings": [
+    "in a crowded city market",
+    "in a remote coastal village",
+    "during a long winter night",
+    "in a hospital waiting room",
+    "on a cross-country train",
+    "in a small mountain town",
+    "during a summer festival",
+    "in a quiet suburban kitchen"
+  ],
+  "per_emotion": 1024,
+  "temperature": 1.0,
+  "resumed_counts": {
+    "happy": 0,
+    "inspired": 0,
+    "loving": 0,
+    "proud": 0,
+    "calm": 0,
+    "desperate": 0,
+    "angry": 0,
+    "guilty": 0,
+    "sad": 0,
+    "afraid": 0,
+    "nervous": 0,
+    "surprised": 0
+  },
+  "n_requests": 12288
+}

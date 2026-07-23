@@ -1,0 +1,17 @@
+{
+  "experiment": "Q1.H2.E12",
+  "read": "EXPLORATORY (registered post-hoc, fenced from R1-R3): preference probe-Elo max |r| for the diverse arm subsampled to n=256 (5 seeds), isolating diversity from scale on the preference read; same instrument as R3 (preferences_it_chat_fixed)",
+  "diverse_n256_seeds": [
+    0.7646,
+    0.7529,
+    0.763,
+    0.7722,
+    0.7462
+  ],
+  "diverse_n256_mean": 0.7598,
+  "references": {
+    "diverse_full_n": 0.772,
+    "fixed_n256": 0.706,
+    "selfgen_n256_postfix": 0.616
+  }
+}
