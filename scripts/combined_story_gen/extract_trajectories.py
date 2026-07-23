@@ -26,6 +26,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 import torch
+from einops import einsum
 
 from emotion_vectors.extraction import (
     LoadedModel,
@@ -77,22 +78,24 @@ def load_probe_bank(
     "layers"/"emotions" keys) as a third bank, e.g. the fixed-DeepSeek
     contrasts (E11's best detection probes) for the DeepSeek-arm runs."""
     corpus = np.load(corpus_path, allow_pickle=True)
-    layer_idx = [list(corpus["layers"]).index(layer) for layer in layers]
-    corpus_dirs = unit_contrast_probes(corpus["means"].astype(np.float32))[:, layer_idx]
+    # position of each requested model layer within the bundle's stored layer list
+    corpus_layer_pos = [list(corpus["layers"]).index(layer) for layer in layers]
+    corpus_dirs = unit_contrast_probes(corpus["means"].astype(np.float32))[:, corpus_layer_pos]
     banks = [corpus_dirs]
-    labels = [f"corpus:{e}" for e in corpus["emotions"]]
+    labels = [f"corpus:{emotion}" for emotion in corpus["emotions"]]
     if selfgen_path is not None:
         selfgen = np.load(selfgen_path, allow_pickle=True)
-        banks.append(unit_contrast_probes(selfgen["means"][-1].astype(np.float32))[:, layer_idx])
-        labels += [f"selfgen:{e}" for e in selfgen["emotions"]]
+        selfgen_means = selfgen["means"][-1].astype(np.float32)  # bucket -1 = n=256
+        banks.append(unit_contrast_probes(selfgen_means)[:, corpus_layer_pos])
+        labels += [f"selfgen:{emotion}" for emotion in selfgen["emotions"]]
     if extra_path is not None:
         extra = np.load(extra_path, allow_pickle=True)
-        extra_idx = [list(extra["layers"]).index(layer) for layer in layers]
-        banks.append(unit_contrast_probes(extra["means"].astype(np.float32))[:, extra_idx])
-        labels += [f"{extra_prefix}:{e}" for e in extra["emotions"]]
+        extra_layer_pos = [list(extra["layers"]).index(layer) for layer in layers]
+        banks.append(unit_contrast_probes(extra["means"].astype(np.float32))[:, extra_layer_pos])
+        labels += [f"{extra_prefix}:{emotion}" for emotion in extra["emotions"]]
     d_model = corpus_dirs.shape[-1]
     banks.append(random_unit_directions(N_RANDOM, len(layers), d_model, RANDOM_SEED))
-    labels += [f"random:{i:02d}" for i in range(N_RANDOM)]
+    labels += [f"random:{dir_idx:02d}" for dir_idx in range(N_RANDOM)]
     return ProbeBank(np.concatenate(banks), labels)
 
 
@@ -113,10 +116,14 @@ def forward_tokens(
         max_length=max_length,
         return_offsets_mapping=True,
     )
+    # per-row (char_start, char_end) span of every token in the source text
     offsets = [[tuple(pair) for pair in row] for row in encoded.pop("offset_mapping").tolist()]
     inputs = encoded.to(lm.model.device)
     captured: dict[int, torch.Tensor] = {}
-    hooks = [get_layer(lm.model, i).register_forward_hook(make_hook(captured, i)) for i in layers]
+    hooks = [
+        get_layer(lm.model, layer).register_forward_hook(make_hook(captured, layer))
+        for layer in layers
+    ]
     try:
         with torch.inference_mode():
             lm.model(**inputs)
@@ -126,8 +133,9 @@ def forward_tokens(
     # stay on the GPU: the projections reduce ~200 MB of activations per batch
     # to ~2 MB of dots, so device-side math avoids the PCIe bottleneck that
     # left the GPU at 0% utilization (first-launch lesson, 2026-07-22)
-    acts = torch.stack([captured[i] for i in layers], dim=2)
-    lengths = [int(n) for n in inputs["attention_mask"].sum(dim=1).tolist()]
+    # stack per-layer [batch, seq, d_model] captures -> [batch, seq, layers, d_model]
+    acts = torch.stack([captured[layer] for layer in layers], dim=2)
+    lengths = [int(row_length) for row_length in inputs["attention_mask"].sum(dim=1).tolist()]
     return acts, offsets, lengths, inputs["input_ids"].cpu().numpy()
 
 
@@ -140,13 +148,21 @@ def process_batch(
     (token_probe_dots) — verified against the pre-fix smoke shards."""
     parsed = [parse_story(row["text"], row["mode"]) for row in batch]
     acts, offsets, lengths, ids = forward_tokens(
-        lm, [p.clean_text for p in parsed], args.layers, args.max_length
+        lm, [parsed_story.clean_text for parsed_story in parsed], args.layers, args.max_length
     )
-    for i, (row, story) in enumerate(zip(batch, parsed)):
-        n_tokens = lengths[i]
-        story_acts = acts[i, :n_tokens]  # [tokens, layers, d_model] on device
+    for batch_pos, (row, story) in enumerate(zip(batch, parsed)):
+        n_tokens = lengths[batch_pos]
+        story_acts = acts[batch_pos, :n_tokens]  # [tokens, layers, d_model] on device
         with torch.inference_mode():
-            dots = torch.einsum("tld,pld->tlp", story_acts, probes).cpu().numpy()
+            dots = (
+                einsum(
+                    story_acts,
+                    probes,
+                    "tokens layers d_model, probes layers d_model -> tokens layers probes",
+                )
+                .cpu()
+                .numpy()
+            )
             norms = story_acts.norm(dim=-1).cpu().numpy()
             # centered-cosine substrate: centered dots are linear in the stored
             # dots, but the centered activation norm is not — store it explicitly
@@ -154,7 +170,7 @@ def process_batch(
             norms_centered = centered.norm(dim=-1).cpu().numpy()
             # trajectory speed ||a_t - a_{t-1}|| per layer: same reason
             speed = (story_acts[1:] - story_acts[:-1]).norm(dim=-1).cpu().numpy()
-        starts = phase_token_starts(story.phase_char_starts, offsets[i][:n_tokens])
+        starts = phase_token_starts(story.phase_char_starts, offsets[batch_pos][:n_tokens])
         sid = story_id(row)
         np.savez_compressed(
             args.out_dir / "shards" / f"{sid}.npz",
@@ -162,7 +178,7 @@ def process_batch(
             norms=norms.astype(np.float16),
             norms_centered=norms_centered.astype(np.float16),
             speed=speed.astype(np.float16),
-            token_ids=ids[i, :n_tokens],
+            token_ids=ids[batch_pos, :n_tokens],
             phase_token_starts=np.array(starts),
         )
         append_jsonl(
@@ -217,12 +233,13 @@ def main() -> int:
     rows = kept_rows(args.stories)
     if args.smoke:
         rows = rows[:8]
+    # resume support: story ids already recorded in the manifest are skipped
     manifest = args.out_dir / "manifest.jsonl"
-    done = (
-        {json.loads(line)["story_id"] for line in manifest.read_text().splitlines() if line}
-        if manifest.exists()
-        else set()
-    )
+    done: set[str] = set()
+    if manifest.exists():
+        for line in manifest.read_text().splitlines():
+            if line:
+                done.add(json.loads(line)["story_id"])
     pending = [row for row in rows if story_id(row) not in done]
     config = {
         "model": args.model,
@@ -248,15 +265,15 @@ def main() -> int:
     (args.out_dir / "probe_labels.json").write_text(json.dumps(bank.labels))
     lm, _ = load_model_bf16(args.model, logger.info)
     probes = torch.as_tensor(bank.directions, device=lm.model.device, dtype=torch.float32)
-    t0 = time.monotonic()
-    tokens = 0
-    for start in range(0, len(pending), args.batch_size):
-        batch = pending[start : start + args.batch_size]
-        tokens += process_batch(batch, lm, probes, args)
-        done_n = start + len(batch)
-        rate = tokens / max(time.monotonic() - t0, 1e-6)
-        logger.info("%d/%d stories | %.0f tok/s", done_n, len(pending), rate)
-    logger.info("DONE: %d stories, %d tokens", len(pending), tokens)
+    run_start = time.monotonic()
+    tokens_processed = 0
+    for batch_start in range(0, len(pending), args.batch_size):
+        batch = pending[batch_start : batch_start + args.batch_size]
+        tokens_processed += process_batch(batch, lm, probes, args)
+        stories_done = batch_start + len(batch)
+        rate = tokens_processed / max(time.monotonic() - run_start, 1e-6)
+        logger.info("%d/%d stories | %.0f tok/s", stories_done, len(pending), rate)
+    logger.info("DONE: %d stories, %d tokens", len(pending), tokens_processed)
     return 0
 
 
