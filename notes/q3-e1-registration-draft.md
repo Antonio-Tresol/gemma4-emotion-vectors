@@ -1,4 +1,14 @@
-# DRAFT: Q3.H1.E1 scoring reads (not registered — discuss, then move into TREE.md)
+# SUPERSEDED: see TREE.md Q3.H1.E1 for the governing registration
+
+Correction (2026-07-23, before any scoring): this draft was written after a
+context compaction, without re-reading the tree. Q3.H1.E1 already carries a
+richer registered suite (gate read G, anticipation R1 with a cue-referenced
+twin, validated hierarchical ramp estimator R2, crossover location R3,
+nested nulls N1-N3, verdict ladder T0-T3, instrument calibration). That
+registration governs. What this draft genuinely added — the DeepSeek story
+arm, the constant-emotion control subtraction, and the fixed-DeepSeek probe
+bank — is now registered as a substrate amendment inside the E1 node
+(user-approved). Kept below for the discussion record.
 
 Status 2026-07-23, morning: the trajectory substrate exists, no read has been
 run, nothing here is locked. This page is the five-minute decision document:
