@@ -50,6 +50,12 @@ ROUTES: dict[str, str] = {
     "self_story_vectors_it_postfix": f"{HF_USER}/emotion-selfstory-vectors-gemma-4-31b-it-postfix",
     "neutral_vectors_it_postfix": f"{HF_USER}/neutral-vectors-gemma-4-31b-it-postfix",
     "openrouter_stories": f"{HF_USER}/emotion-stories-deepseek-v4-pro",
+    # E12 scale-and-diversity arms (registered Q1.H2.E12): the diverse-prompt
+    # corpus plus both DeepSeek vector sets, per-story shards included so the
+    # dose-response subsampling reproduces without any GPU inference.
+    "openrouter_stories_diverse": f"{HF_USER}/emotion-stories-deepseek-v4-pro-diverse",
+    "openrouter_vectors_it": f"{HF_USER}/emotion-deepseek-vectors-gemma-4-31b-it",
+    "openrouter_vectors_diverse_it": f"{HF_USER}/emotion-deepseek-diverse-vectors-gemma-4-31b-it",
 }
 
 

@@ -1,0 +1,367 @@
+{
+  "experiment": "Q1.H2.E11",
+  "probe_files": {
+    "selfgen_postfix": "results/self_story_vectors_it_postfix/emotion_means.npz",
+    "fixed_deepseek_n256": "results/openrouter_vectors_it_means.npz",
+    "diverse_deepseek_n1024": "results/openrouter_vectors_diverse_it_means.npz"
+  },
+  "convention": "post-fix bundles on all arms; 12-pool probe centering; scenario-set activation centering; chat_last readout",
+  "r1_dual_battery": {
+    "selfgen_postfix": {
+      "per_layer": {
+        "0": [
+          3,
+          4
+        ],
+        "3": [
+          4,
+          1
+        ],
+        "6": [
+          7,
+          6
+        ],
+        "9": [
+          7,
+          6
+        ],
+        "12": [
+          8,
+          7
+        ],
+        "15": [
+          7,
+          4
+        ],
+        "18": [
+          7,
+          4
+        ],
+        "21": [
+          5,
+          5
+        ],
+        "24": [
+          4,
+          5
+        ],
+        "27": [
+          3,
+          5
+        ],
+        "30": [
+          8,
+          7
+        ],
+        "33": [
+          11,
+          9
+        ],
+        "36": [
+          8,
+          7
+        ],
+        "39": [
+          10,
+          11
+        ],
+        "42": [
+          8,
+          8
+        ],
+        "45": [
+          7,
+          7
+        ],
+        "48": [
+          7,
+          10
+        ],
+        "51": [
+          9,
+          9
+        ],
+        "54": [
+          8,
+          10
+        ],
+        "57": [
+          8,
+          7
+        ]
+      },
+      "passing_layers": [
+        33,
+        39,
+        42,
+        51,
+        54
+      ],
+      "best": {
+        "layer": 39,
+        "counts": [
+          10,
+          11
+        ]
+      }
+    },
+    "fixed_deepseek_n256": {
+      "per_layer": {
+        "0": [
+          5,
+          4
+        ],
+        "3": [
+          4,
+          3
+        ],
+        "6": [
+          10,
+          8
+        ],
+        "9": [
+          10,
+          7
+        ],
+        "12": [
+          11,
+          8
+        ],
+        "15": [
+          10,
+          7
+        ],
+        "18": [
+          8,
+          6
+        ],
+        "21": [
+          5,
+          5
+        ],
+        "24": [
+          3,
+          4
+        ],
+        "27": [
+          3,
+          5
+        ],
+        "30": [
+          10,
+          7
+        ],
+        "33": [
+          10,
+          8
+        ],
+        "36": [
+          10,
+          9
+        ],
+        "39": [
+          10,
+          10
+        ],
+        "42": [
+          9,
+          9
+        ],
+        "45": [
+          8,
+          8
+        ],
+        "48": [
+          6,
+          8
+        ],
+        "51": [
+          6,
+          7
+        ],
+        "54": [
+          9,
+          8
+        ],
+        "57": [
+          8,
+          9
+        ]
+      },
+      "passing_layers": [
+        6,
+        12,
+        33,
+        36,
+        39,
+        42,
+        45,
+        54,
+        57
+      ],
+      "best": {
+        "layer": 39,
+        "counts": [
+          10,
+          10
+        ]
+      }
+    },
+    "diverse_deepseek_n1024": {
+      "per_layer": {
+        "0": [
+          5,
+          5
+        ],
+        "3": [
+          5,
+          3
+        ],
+        "6": [
+          10,
+          8
+        ],
+        "9": [
+          8,
+          9
+        ],
+        "12": [
+          10,
+          9
+        ],
+        "15": [
+          7,
+          7
+        ],
+        "18": [
+          8,
+          5
+        ],
+        "21": [
+          7,
+          6
+        ],
+        "24": [
+          3,
+          4
+        ],
+        "27": [
+          4,
+          4
+        ],
+        "30": [
+          7,
+          5
+        ],
+        "33": [
+          8,
+          5
+        ],
+        "36": [
+          11,
+          9
+        ],
+        "39": [
+          9,
+          10
+        ],
+        "42": [
+          9,
+          9
+        ],
+        "45": [
+          8,
+          6
+        ],
+        "48": [
+          7,
+          7
+        ],
+        "51": [
+          6,
+          8
+        ],
+        "54": [
+          8,
+          8
+        ],
+        "57": [
+          9,
+          7
+        ]
+      },
+      "passing_layers": [
+        6,
+        9,
+        12,
+        36,
+        39,
+        42,
+        54
+      ],
+      "best": {
+        "layer": 36,
+        "counts": [
+          11,
+          9
+        ]
+      }
+    }
+  },
+  "r2_cross_lineage_layer33": {
+    "selfgen_postfix_vs_fixed_deepseek_n256": {
+      "mean_contrast_cos": 0.5677869915962219,
+      "range": [
+        0.3295881450176239,
+        0.7084416747093201
+      ],
+      "rsa_12x12": 0.5999925810410114
+    },
+    "selfgen_postfix_vs_diverse_deepseek_n1024": {
+      "mean_contrast_cos": 0.45913827419281006,
+      "range": [
+        0.26680371165275574,
+        0.6220560073852539
+      ],
+      "rsa_12x12": 0.6997867244060323
+    },
+    "fixed_deepseek_n256_vs_diverse_deepseek_n1024": {
+      "mean_contrast_cos": 0.8074738383293152,
+      "range": [
+        0.6290655136108398,
+        0.8946480751037598
+      ],
+      "rsa_12x12": 0.8719076984349665
+    }
+  },
+  "r3_preference_probe_elo": {
+    "selfgen_postfix": {
+      "abs_r": 0.6155284293253848,
+      "r": 0.6155284293253848,
+      "layer": 33,
+      "emotion": "calm"
+    },
+    "fixed_deepseek_n256": {
+      "abs_r": 0.706457223962764,
+      "r": -0.706457223962764,
+      "layer": 24,
+      "emotion": "angry"
+    },
+    "diverse_deepseek_n1024": {
+      "abs_r": 0.7720082822241486,
+      "r": -0.7720082822241486,
+      "layer": 24,
+      "emotion": "angry"
+    }
+  },
+  "r4_diversity_EXPLORATORY": {
+    "read": "mean pairwise 5-gram Jaccard, <=30 stories/emotion sample",
+    "selfgen": {
+      "mean_pairwise_jaccard": NaN,
+      "n_pairs": 0
+    },
+    "weak_external": null,
+    "strong_external": null
+  },
+  "label_note": "run through score_e11_lineage.py CLI slots; arm names relabeled to actual contents"
+}
