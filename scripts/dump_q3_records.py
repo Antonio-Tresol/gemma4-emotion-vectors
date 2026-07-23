@@ -17,6 +17,9 @@ is computed in-cell from this substrate.
 Outputs <out-prefix>.npz and <out-prefix>_meta.json:
 
   phase_scores      [phases, layers, probes]  mean centered cosine per phase
+  phase_third_scores [phases, 3, layers, probes]  the same mean over each
+                    token-count third of the phase (E3's within-phase timing
+                    read: boundary lag vs stable relabeling)
   trans_lead        [transitions, layers, probes]  W-window lead at boundary
   (meta json)       per-phase: story_id, triple_id, category, mode,
                     phase_index, emotion, phase length in tokens;
@@ -50,9 +53,9 @@ def dump(
     traj_dir: Path,
     rows: list[dict[str, object]],
     mean_dots: Float[np.ndarray, "layers probes"],
-) -> tuple[dict[str, Float[np.ndarray, "records layers probes"]], dict[str, object]]:
+) -> tuple[dict[str, Float[np.ndarray, "records ..."]], dict[str, object]]:
     """One pass over the shards; returns (arrays, metadata lists)."""
-    phase_scores, phase_meta = [], []
+    phase_scores, phase_thirds, phase_meta = [], [], []
     trans_lead, trans_meta = [], []
 
     for row in rows:
@@ -72,6 +75,12 @@ def dump(
             if phase_end - phase_start < MIN_PHASE_TOKENS:
                 continue
             phase_scores.append(cos[phase_start:phase_end].mean(axis=0))
+            # token-count thirds (floor split; min phase length 4 keeps each
+            # third non-empty): the E3 timing read
+            cuts = [phase_start + ((phase_end - phase_start) * third) // 3 for third in range(4)]
+            phase_thirds.append(
+                np.stack([cos[cuts[t] : cuts[t + 1]].mean(axis=0) for t in range(3)])
+            )
             phase_meta.append(
                 {
                     **common,
@@ -100,6 +109,7 @@ def dump(
 
     arrays = {
         "phase_scores": np.stack(phase_scores).astype(np.float32),
+        "phase_third_scores": np.stack(phase_thirds).astype(np.float32),
         "trans_lead": np.stack(trans_lead).astype(np.float32),
     }
     meta = {"phase_records": phase_meta, "transition_records": trans_meta}
@@ -126,7 +136,8 @@ def main() -> int:
     meta["conventions"] = (
         "centered cosine (story-set mean, norms_centered); SEQUENTIAL only; "
         f"phases < {MIN_PHASE_TOKENS} tokens skipped; lead windows W={W} "
-        "boundary-referenced, same as score_q3_gate_r1.py"
+        "boundary-referenced, same as score_q3_gate_r1.py; phase_third_scores = "
+        "the same phase mean over token-count thirds (floor split)"
     )
 
     args.out_prefix.parent.mkdir(parents=True, exist_ok=True)
