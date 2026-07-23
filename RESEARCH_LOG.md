@@ -88,6 +88,23 @@ claim documents still wait for their gates. Also published today: the Q3 combine
 (5,888 stories) and the per-token trajectory substrate (5,888 shards, 6 layers x 207 probes),
 with the fetch() resolver routing both.
 
+E11 addendum (user-proposed, same day, scored just past local midnight): the third-lineage test
+answered its question in one evening. A DeepSeek-v4-pro corpus (3,072 stories, identical
+instruction, $0.60, leakage 0.2%) was generated, QC'd, extracted post-fix, and scored against
+the E4b session's post-fix self-gen and corpus bundles with a scorer pre-validated to reproduce
+E10's grid digit-for-digit. The QUALITY branch fired: strong-external probes pass the
+dual-battery bar at nine layers vs self-gen's five and weak-external's one, win the preference
+correlation (0.706), and sit at contrast cos 0.57 to self-gen's directions (weak: 0.22) — a
+stronger generator converges toward the probed model's own directions. The exploratory diversity
+covariate (E4b's suggestion) killed scaffold-degeneracy as a necessary condition: the winning
+DeepSeek corpus is 53x LESS self-similar (and the Gemma self-gen corpus turns out to be almost
+degenerate — 98.2% of its stories star one character). E10's recipe softens from a lineage rule
+to an economy rule; E6's corpus-dependence narrows to weak generators. Full grids in
+results/e11_lineage.json; corpus at abotresol/emotion-stories-deepseek-v4-pro. Coordination with
+the E4b session throughout: shared GPU serialized, post-fix convention agreed pre-scoring, their
+two battery-leg rescores covered by this run, one working-tree collision disclosed and repaired
+(1e08190/7bc6518), this session moved to a worktree after.
+
 Parked question addendum (user-prompted, same day): recorded Q4 in the tree — do emotion-concept
 vectors causally modulate assistant behaviors, sycophancy first? Sparked by the paper's Figure 10
 observation that "loving" activation rises at the Assistant colon regardless of user emotion (quote

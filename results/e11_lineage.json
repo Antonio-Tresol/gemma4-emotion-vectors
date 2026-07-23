@@ -1,0 +1,363 @@
+{
+  "experiment": "Q1.H2.E11",
+  "probe_files": {
+    "selfgen": "/Users/abo-tresol/Documents/ai-safety/cbai_project/results/self_story_vectors_it_postfix/emotion_means.npz",
+    "weak": "/Users/abo-tresol/Documents/ai-safety/cbai_project/results/emotion_vectors_it_postfix/emotion_means.npz",
+    "strong": "/Users/abo-tresol/Documents/ai-safety/cbai_project/results/openrouter_vectors_it_means.npz"
+  },
+  "convention": "post-fix bundles on all arms; 12-pool probe centering; scenario-set activation centering; chat_last readout",
+  "r1_dual_battery": {
+    "selfgen": {
+      "per_layer": {
+        "0": [
+          3,
+          4
+        ],
+        "3": [
+          4,
+          1
+        ],
+        "6": [
+          7,
+          6
+        ],
+        "9": [
+          7,
+          6
+        ],
+        "12": [
+          8,
+          7
+        ],
+        "15": [
+          7,
+          4
+        ],
+        "18": [
+          7,
+          4
+        ],
+        "21": [
+          5,
+          5
+        ],
+        "24": [
+          4,
+          5
+        ],
+        "27": [
+          3,
+          5
+        ],
+        "30": [
+          8,
+          7
+        ],
+        "33": [
+          11,
+          9
+        ],
+        "36": [
+          8,
+          7
+        ],
+        "39": [
+          10,
+          11
+        ],
+        "42": [
+          8,
+          8
+        ],
+        "45": [
+          7,
+          7
+        ],
+        "48": [
+          7,
+          10
+        ],
+        "51": [
+          9,
+          9
+        ],
+        "54": [
+          8,
+          10
+        ],
+        "57": [
+          8,
+          7
+        ]
+      },
+      "passing_layers": [
+        33,
+        39,
+        42,
+        51,
+        54
+      ],
+      "best": {
+        "layer": 39,
+        "counts": [
+          10,
+          11
+        ]
+      }
+    },
+    "weak_external": {
+      "per_layer": {
+        "0": [
+          2,
+          4
+        ],
+        "3": [
+          4,
+          2
+        ],
+        "6": [
+          8,
+          5
+        ],
+        "9": [
+          6,
+          5
+        ],
+        "12": [
+          6,
+          7
+        ],
+        "15": [
+          6,
+          5
+        ],
+        "18": [
+          5,
+          5
+        ],
+        "21": [
+          7,
+          6
+        ],
+        "24": [
+          5,
+          5
+        ],
+        "27": [
+          4,
+          3
+        ],
+        "30": [
+          4,
+          2
+        ],
+        "33": [
+          4,
+          2
+        ],
+        "36": [
+          4,
+          7
+        ],
+        "39": [
+          7,
+          7
+        ],
+        "42": [
+          8,
+          8
+        ],
+        "45": [
+          5,
+          6
+        ],
+        "48": [
+          6,
+          6
+        ],
+        "51": [
+          5,
+          5
+        ],
+        "54": [
+          6,
+          4
+        ],
+        "57": [
+          5,
+          2
+        ]
+      },
+      "passing_layers": [
+        42
+      ],
+      "best": {
+        "layer": 42,
+        "counts": [
+          8,
+          8
+        ]
+      }
+    },
+    "strong_external": {
+      "per_layer": {
+        "0": [
+          5,
+          4
+        ],
+        "3": [
+          4,
+          3
+        ],
+        "6": [
+          10,
+          8
+        ],
+        "9": [
+          10,
+          7
+        ],
+        "12": [
+          11,
+          8
+        ],
+        "15": [
+          10,
+          7
+        ],
+        "18": [
+          8,
+          6
+        ],
+        "21": [
+          5,
+          5
+        ],
+        "24": [
+          3,
+          4
+        ],
+        "27": [
+          3,
+          5
+        ],
+        "30": [
+          10,
+          7
+        ],
+        "33": [
+          10,
+          8
+        ],
+        "36": [
+          10,
+          9
+        ],
+        "39": [
+          10,
+          10
+        ],
+        "42": [
+          9,
+          9
+        ],
+        "45": [
+          8,
+          8
+        ],
+        "48": [
+          6,
+          8
+        ],
+        "51": [
+          6,
+          7
+        ],
+        "54": [
+          9,
+          8
+        ],
+        "57": [
+          8,
+          9
+        ]
+      },
+      "passing_layers": [
+        6,
+        12,
+        33,
+        36,
+        39,
+        42,
+        45,
+        54,
+        57
+      ],
+      "best": {
+        "layer": 39,
+        "counts": [
+          10,
+          10
+        ]
+      }
+    }
+  },
+  "r2_cross_lineage_layer33": {
+    "selfgen_vs_weak_external": {
+      "mean_contrast_cos": 0.22549359500408173,
+      "range": [
+        -0.04597475379705429,
+        0.527206301689148
+      ],
+      "rsa_12x12": 0.2749450713913759
+    },
+    "selfgen_vs_strong_external": {
+      "mean_contrast_cos": 0.5677869915962219,
+      "range": [
+        0.3295881450176239,
+        0.7084416747093201
+      ],
+      "rsa_12x12": 0.5999925810410114
+    },
+    "weak_external_vs_strong_external": {
+      "mean_contrast_cos": 0.2841663360595703,
+      "range": [
+        0.038892678916454315,
+        0.5697749853134155
+      ],
+      "rsa_12x12": 0.4409544768415225
+    }
+  },
+  "r3_preference_probe_elo": {
+    "selfgen": {
+      "abs_r": 0.6155284293253848,
+      "r": 0.6155284293253848,
+      "layer": 33,
+      "emotion": "calm"
+    },
+    "weak_external": {
+      "abs_r": 0.593480944401351,
+      "r": 0.593480944401351,
+      "layer": 30,
+      "emotion": "calm"
+    },
+    "strong_external": {
+      "abs_r": 0.706457223962764,
+      "r": -0.706457223962764,
+      "layer": 24,
+      "emotion": "angry"
+    }
+  },
+  "r4_diversity_EXPLORATORY": {
+    "read": "mean pairwise 5-gram Jaccard, <=30 stories/emotion sample",
+    "selfgen": {
+      "mean_pairwise_jaccard": 0.0385739990550218,
+      "n_pairs": 5220
+    },
+    "weak_external": null,
+    "strong_external": {
+      "mean_pairwise_jaccard": 0.0007287383496924493,
+      "n_pairs": 5220
+    }
+  }
+}
