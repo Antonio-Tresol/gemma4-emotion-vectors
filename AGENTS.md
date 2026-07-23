@@ -127,6 +127,16 @@ reviewers do:
   hypotheses) each paired with the experiment that would decide it, and the
   open questions. If an explanation was good enough to give a collaborator
   in conversation, it belongs in the notebook before they have to ask.
+- **HTML is welcome where it reads better.** Notebook markdown may use HTML
+  freely when it is clearer than plain markdown: collapsible
+  `<details>` blocks, styled tables, side-by-side layouts. Clarity decides,
+  not purity.
+- **Link everything that has a URL.** Every dataset, paper, model card,
+  external tool, or repo mentioned in a notebook is a hyperlink at first
+  mention: HF datasets link to their dataset page, papers to arXiv,
+  the lexicon to its source page. A reader reaches any referenced artifact
+  in one click, without hunting through DATA.md (DATA.md still holds the
+  full index).
 - **The acceptance test for every figure and section:** a teammate who did
   NOT run the experiment can say, from the exhibit alone, (1) what was
   measured and how, (2) what the figure claims, (3) which evidence file the
