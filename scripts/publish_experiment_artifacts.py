@@ -113,6 +113,61 @@ ARTIFACTS: list[tuple[str, str]] = [
     ("logit_lens_base_L57.json", "logit lens, base layer 57"),
     ("logit_lens_it_L33_normed.json", "logit lens, instruct layer 33 (negative)"),
     ("logit_lens_it_L57.json", "logit lens, instruct layer 57 (negative)"),
+    (
+        "q3_gate_r1_it.json",
+        "Q3.H1.E1 registered gate G + boundary-referenced R1 read, Gemma-stories v1 substrate",
+    ),
+    ("q3_gate_r1_it_v2.json", "Q3.H1.E1 gate+R1, Gemma-stories v2 (primary) substrate"),
+    ("q3_gate_r1_deepseek.json", "Q3.H1.E1 gate+R1, DeepSeek-stories substrate"),
+    (
+        "q3_gate_r1_base.json",
+        "Q3.H1.E1 gate+R1, BASE-reader arm (base model reading the Gemma-written v1 stories; "
+        "corpus-171 base-lineage + random banks only)",
+    ),
+    (
+        "trajectory_instrument_calibration_base.json",
+        "Q3 instrument calibration, base arm (no-outcome-reads: norms + random probes only)",
+    ),
+    (
+        "q3_records_base.npz",
+        "Q3.H1.E2 per-record substrate, base-reader arm: same schema, 195 probes "
+        "(corpus-171 base-lineage + random-24)",
+    ),
+    ("q3_records_base_meta.json", "record-aligned metadata for q3_records_base.npz"),
+    (
+        "it_pc_structure.json",
+        "Q1.H1.E3: what occupies instruct PC1/PC2 after the valence demotion — per-PC "
+        "VAD correlations, extremes, cross-model alignment, story-length nuisance read",
+    ),
+    (
+        "rsa_fragmentation.json",
+        "Q1.H1.E4: why instruct cross-layer RSA fragments — top-component ablation, "
+        "PC1 continuity (two inserted-axis regimes, handoff ~L27), cross-model RSA",
+    ),
+    (
+        "q3_records_it.npz",
+        "Q3.H1.E2 per-record substrate, Gemma-stories v1: phase_scores + trans_lead "
+        "[records, 6 layers, 207 probes] fp32 centered cosine; metadata in sibling _meta.json",
+    ),
+    ("q3_records_it_meta.json", "record-aligned metadata for q3_records_it.npz"),
+    (
+        "q3_records_it_v2.npz",
+        "Q3.H1.E2 per-record substrate, Gemma-stories v2 (primary): same schema, 219 probes",
+    ),
+    ("q3_records_it_v2_meta.json", "record-aligned metadata for q3_records_it_v2.npz"),
+    (
+        "q3_records_deepseek.npz",
+        "Q3.H1.E2 per-record substrate, DeepSeek-stories arm: same schema, 219 probes",
+    ),
+    ("q3_records_deepseek_meta.json", "record-aligned metadata for q3_records_deepseek.npz"),
+    (
+        "q3_records_deepseek_constant.npz",
+        "Q3.H1.E2 per-record substrate, constant-emotion control arm: same schema, 219 probes",
+    ),
+    (
+        "q3_records_deepseek_constant_meta.json",
+        "record-aligned metadata for q3_records_deepseek_constant.npz",
+    ),
     ("falsify_c1_scorecard.json", "falsify gate scorecard, C1 geometry (survived)"),
     ("falsify_c2_scorecard.json", "falsify gate scorecard, C2 noise ceiling (failed)"),
     ("falsify_c3_scorecard.json", "falsify gate scorecard, C3 probe null (weakened)"),

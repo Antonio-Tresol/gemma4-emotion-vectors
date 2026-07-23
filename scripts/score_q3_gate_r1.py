@@ -33,22 +33,14 @@ import json
 from pathlib import Path
 
 import numpy as np
+from jaxtyping import Float
+
+from emotion_vectors.q3_conventions import centered_cos, manifest_rows, story_set_mean
 
 LAYERS = [6, 15, 24, 33, 42, 51]
 W = 16
 N_SHUFFLES = 10_000
 PRIMARY_LAYER = 33
-
-
-def manifest_rows(traj_dir: Path) -> tuple[list[dict], int]:
-    """SEQUENTIAL rows whose shard file exists; count of orphaned rows.
-    (23/5888 shards were lost to a mid-run restart on the primary substrate —
-    recorded, skipped, and reported rather than crashed on.)"""
-    rows = [json.loads(line) for line in (traj_dir / "manifest.jsonl").read_text().splitlines()]
-    sequential = [row for row in rows if row.get("error") is None and row["mode"] == "SEQUENTIAL"]
-    shard_ids_on_disk = {path.stem for path in (traj_dir / "shards").glob("*.npz")}
-    kept = [row for row in sequential if row["story_id"] in shard_ids_on_disk]
-    return kept, len(sequential) - len(kept)
 
 
 def probe_groups(traj_dir: Path) -> dict[str, list[int]]:
@@ -62,19 +54,11 @@ def probe_groups(traj_dir: Path) -> dict[str, list[int]]:
     return groups
 
 
-def story_set_mean(traj_dir: Path, rows: list[dict]) -> np.ndarray:
-    """Token-weighted mean of raw dots over the story set: [layers, probes]."""
-    total = None
-    n_tokens = 0
-    for row in rows:
-        shard = np.load(traj_dir / "shards" / f"{row['story_id']}.npz")
-        dots = shard["dots"].astype(np.float64)
-        total = dots.sum(axis=0) if total is None else total + dots.sum(axis=0)
-        n_tokens += dots.shape[0]
-    return (total / n_tokens).astype(np.float32)
-
-
-def collect(traj_dir: Path, rows: list[dict], mean_dots: np.ndarray) -> dict:
+def collect(
+    traj_dir: Path,
+    rows: list[dict[str, object]],
+    mean_dots: Float[np.ndarray, "layers probes"],
+) -> dict[str, object]:
     """Per-phase mean centered cosines and per-transition leads, all probes.
 
     phase_stats: [phases, layers, probes]; phase_target: probe-label index
@@ -83,12 +67,7 @@ def collect(traj_dir: Path, rows: list[dict], mean_dots: np.ndarray) -> dict:
     phase_stats, phase_emotion, trans_lead, trans_incoming = [], [], [], []
     for row in rows:
         shard = np.load(traj_dir / "shards" / f"{row['story_id']}.npz")
-
-        # centered cosine per (token, layer, probe): story-set mean subtracted
-        # from the stored dots, norms_centered denominator
-        cos = (shard["dots"].astype(np.float32) - mean_dots) / np.clip(
-            shard["norms_centered"].astype(np.float32)[:, :, None], 1e-6, None
-        )
+        cos = centered_cos(shard, mean_dots)
         n_tokens = cos.shape[0]
         starts = list(row["phase_token_starts"]) + [n_tokens]
 
@@ -125,7 +104,12 @@ def emotion_index(labels: list[str], bank: str, emotion: str) -> int | None:
         return None
 
 
-def gate_read(collected: dict, groups: dict, bank: str, rng: np.random.Generator) -> dict:
+def gate_read(
+    collected: dict[str, object],
+    groups: dict[str, list[int]],
+    bank: str,
+    rng: np.random.Generator,
+) -> dict[str, object]:
     """Per-layer median rank of the tagged emotion within the bank + N2."""
     labels, bank_cols = groups["_labels"], groups[bank]
 
@@ -174,8 +158,12 @@ def gate_read(collected: dict, groups: dict, bank: str, rng: np.random.Generator
 
 
 def r1_read(
-    collected: dict, groups: dict, bank: str, noise_sd: dict, rng: np.random.Generator
-) -> dict:
+    collected: dict[str, object],
+    groups: dict[str, list[int]],
+    bank: str,
+    noise_sd: dict[str, float],
+    rng: np.random.Generator,
+) -> dict[str, object]:
     labels, bank_cols = groups["_labels"], groups[bank]
 
     # transitions whose incoming emotion has a probe in this bank
@@ -231,7 +219,7 @@ def main() -> int:
     noise_sd = {layer: v["cos_sd"] for layer, v in calib["random_probe"].items()}
     rng = np.random.default_rng(20260723)
 
-    def run(traj_dir: Path) -> dict:
+    def run(traj_dir: Path) -> dict[str, object]:
         rows, n_orphaned = manifest_rows(traj_dir)
         if args.limit:
             rows = rows[: args.limit]

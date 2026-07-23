@@ -1,0 +1,4414 @@
+{
+ "phase_records": [
+  {
+   "story_id": "t000_seq_p0_0546e77e",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "happy",
+   "n_tokens": 57
+  },
+  {
+   "story_id": "t000_seq_p0_0546e77e",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "happy",
+   "n_tokens": 95
+  },
+  {
+   "story_id": "t000_seq_p0_0546e77e",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "happy",
+   "n_tokens": 104
+  },
+  {
+   "story_id": "t000_seq_p1_27c4eaf5",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "happy",
+   "n_tokens": 76
+  },
+  {
+   "story_id": "t000_seq_p1_27c4eaf5",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "happy",
+   "n_tokens": 122
+  },
+  {
+   "story_id": "t000_seq_p1_27c4eaf5",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "happy",
+   "n_tokens": 129
+  },
+  {
+   "story_id": "t000_seq_p3_c4637e2a",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "happy",
+   "n_tokens": 170
+  },
+  {
+   "story_id": "t000_seq_p3_c4637e2a",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "happy",
+   "n_tokens": 123
+  },
+  {
+   "story_id": "t000_seq_p3_c4637e2a",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "happy",
+   "n_tokens": 136
+  },
+  {
+   "story_id": "t000_seq_p0_0adac8a8",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "happy",
+   "n_tokens": 123
+  },
+  {
+   "story_id": "t000_seq_p0_0adac8a8",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "happy",
+   "n_tokens": 132
+  },
+  {
+   "story_id": "t000_seq_p0_0adac8a8",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "happy",
+   "n_tokens": 135
+  },
+  {
+   "story_id": "t000_seq_p2_df738084",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "happy",
+   "n_tokens": 112
+  },
+  {
+   "story_id": "t000_seq_p2_df738084",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "happy",
+   "n_tokens": 109
+  },
+  {
+   "story_id": "t000_seq_p2_df738084",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "happy",
+   "n_tokens": 113
+  },
+  {
+   "story_id": "t000_seq_p5_69e3679e",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "happy",
+   "n_tokens": 89
+  },
+  {
+   "story_id": "t000_seq_p5_69e3679e",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "happy",
+   "n_tokens": 124
+  },
+  {
+   "story_id": "t000_seq_p5_69e3679e",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "happy",
+   "n_tokens": 106
+  },
+  {
+   "story_id": "t000_seq_p5_fdb64a3e",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "happy",
+   "n_tokens": 119
+  },
+  {
+   "story_id": "t000_seq_p5_fdb64a3e",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "happy",
+   "n_tokens": 126
+  },
+  {
+   "story_id": "t000_seq_p5_fdb64a3e",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "happy",
+   "n_tokens": 132
+  },
+  {
+   "story_id": "t001_seq_p1_19c3643d",
+   "triple_id": 1,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "inspired",
+   "n_tokens": 108
+  },
+  {
+   "story_id": "t001_seq_p1_19c3643d",
+   "triple_id": 1,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "inspired",
+   "n_tokens": 122
+  },
+  {
+   "story_id": "t001_seq_p1_19c3643d",
+   "triple_id": 1,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "inspired",
+   "n_tokens": 122
+  },
+  {
+   "story_id": "t001_seq_p5_c8ba13c0",
+   "triple_id": 1,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "inspired",
+   "n_tokens": 138
+  },
+  {
+   "story_id": "t001_seq_p5_c8ba13c0",
+   "triple_id": 1,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "inspired",
+   "n_tokens": 80
+  },
+  {
+   "story_id": "t001_seq_p5_c8ba13c0",
+   "triple_id": 1,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "inspired",
+   "n_tokens": 93
+  },
+  {
+   "story_id": "t002_seq_p5_e37ea766",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "loving",
+   "n_tokens": 113
+  },
+  {
+   "story_id": "t002_seq_p5_e37ea766",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "loving",
+   "n_tokens": 110
+  },
+  {
+   "story_id": "t002_seq_p5_e37ea766",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "loving",
+   "n_tokens": 100
+  },
+  {
+   "story_id": "t001_seq_p5_36cccc77",
+   "triple_id": 1,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "inspired",
+   "n_tokens": 146
+  },
+  {
+   "story_id": "t001_seq_p5_36cccc77",
+   "triple_id": 1,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "inspired",
+   "n_tokens": 156
+  },
+  {
+   "story_id": "t001_seq_p5_36cccc77",
+   "triple_id": 1,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "inspired",
+   "n_tokens": 168
+  },
+  {
+   "story_id": "t002_seq_p1_5f0d3c45",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "loving",
+   "n_tokens": 118
+  },
+  {
+   "story_id": "t002_seq_p1_5f0d3c45",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "loving",
+   "n_tokens": 128
+  },
+  {
+   "story_id": "t002_seq_p1_5f0d3c45",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "loving",
+   "n_tokens": 117
+  },
+  {
+   "story_id": "t002_seq_p4_49b92f96",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "loving",
+   "n_tokens": 104
+  },
+  {
+   "story_id": "t002_seq_p4_49b92f96",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "loving",
+   "n_tokens": 106
+  },
+  {
+   "story_id": "t002_seq_p4_49b92f96",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "loving",
+   "n_tokens": 140
+  },
+  {
+   "story_id": "t002_seq_p5_3c878b2f",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "loving",
+   "n_tokens": 130
+  },
+  {
+   "story_id": "t002_seq_p5_3c878b2f",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "loving",
+   "n_tokens": 124
+  },
+  {
+   "story_id": "t002_seq_p5_3c878b2f",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "loving",
+   "n_tokens": 160
+  },
+  {
+   "story_id": "t002_seq_p1_51453266",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "loving",
+   "n_tokens": 116
+  },
+  {
+   "story_id": "t002_seq_p1_51453266",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "loving",
+   "n_tokens": 114
+  },
+  {
+   "story_id": "t002_seq_p1_51453266",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "loving",
+   "n_tokens": 128
+  },
+  {
+   "story_id": "t002_seq_p3_a26193fd",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "loving",
+   "n_tokens": 184
+  },
+  {
+   "story_id": "t002_seq_p3_a26193fd",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "loving",
+   "n_tokens": 129
+  },
+  {
+   "story_id": "t002_seq_p3_a26193fd",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "loving",
+   "n_tokens": 153
+  },
+  {
+   "story_id": "t002_seq_p3_2f1ee0ef",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "loving",
+   "n_tokens": 240
+  },
+  {
+   "story_id": "t002_seq_p3_2f1ee0ef",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "loving",
+   "n_tokens": 155
+  },
+  {
+   "story_id": "t002_seq_p3_2f1ee0ef",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "loving",
+   "n_tokens": 152
+  },
+  {
+   "story_id": "t003_seq_p3_8378eff9",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "proud",
+   "n_tokens": 159
+  },
+  {
+   "story_id": "t003_seq_p3_8378eff9",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "proud",
+   "n_tokens": 169
+  },
+  {
+   "story_id": "t003_seq_p3_8378eff9",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "proud",
+   "n_tokens": 169
+  },
+  {
+   "story_id": "t002_seq_p2_74d6f48f",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "loving",
+   "n_tokens": 203
+  },
+  {
+   "story_id": "t002_seq_p2_74d6f48f",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "loving",
+   "n_tokens": 184
+  },
+  {
+   "story_id": "t002_seq_p2_74d6f48f",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "loving",
+   "n_tokens": 157
+  },
+  {
+   "story_id": "t003_seq_p5_c69a2f37",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "proud",
+   "n_tokens": 119
+  },
+  {
+   "story_id": "t003_seq_p5_c69a2f37",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "proud",
+   "n_tokens": 130
+  },
+  {
+   "story_id": "t003_seq_p5_c69a2f37",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "proud",
+   "n_tokens": 114
+  },
+  {
+   "story_id": "t001_seq_p2_268a4bd8",
+   "triple_id": 1,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "inspired",
+   "n_tokens": 126
+  },
+  {
+   "story_id": "t001_seq_p2_268a4bd8",
+   "triple_id": 1,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "inspired",
+   "n_tokens": 130
+  },
+  {
+   "story_id": "t001_seq_p2_268a4bd8",
+   "triple_id": 1,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "inspired",
+   "n_tokens": 94
+  },
+  {
+   "story_id": "t003_seq_p2_9de39ed3",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "proud",
+   "n_tokens": 100
+  },
+  {
+   "story_id": "t003_seq_p2_9de39ed3",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "proud",
+   "n_tokens": 119
+  },
+  {
+   "story_id": "t003_seq_p2_9de39ed3",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "proud",
+   "n_tokens": 121
+  },
+  {
+   "story_id": "t003_seq_p2_095a5eb9",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "proud",
+   "n_tokens": 161
+  },
+  {
+   "story_id": "t003_seq_p2_095a5eb9",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "proud",
+   "n_tokens": 144
+  },
+  {
+   "story_id": "t003_seq_p2_095a5eb9",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "proud",
+   "n_tokens": 149
+  },
+  {
+   "story_id": "t003_seq_p5_71e785e0",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "proud",
+   "n_tokens": 80
+  },
+  {
+   "story_id": "t003_seq_p5_71e785e0",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "proud",
+   "n_tokens": 116
+  },
+  {
+   "story_id": "t003_seq_p5_71e785e0",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "proud",
+   "n_tokens": 114
+  },
+  {
+   "story_id": "t003_seq_p1_bdcbb8af",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "proud",
+   "n_tokens": 152
+  },
+  {
+   "story_id": "t003_seq_p1_bdcbb8af",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "proud",
+   "n_tokens": 208
+  },
+  {
+   "story_id": "t003_seq_p1_bdcbb8af",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "proud",
+   "n_tokens": 140
+  },
+  {
+   "story_id": "t003_seq_p1_982c35b1",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "proud",
+   "n_tokens": 198
+  },
+  {
+   "story_id": "t003_seq_p1_982c35b1",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "proud",
+   "n_tokens": 194
+  },
+  {
+   "story_id": "t003_seq_p1_982c35b1",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "proud",
+   "n_tokens": 171
+  },
+  {
+   "story_id": "t003_seq_p0_7ed8a636",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "proud",
+   "n_tokens": 113
+  },
+  {
+   "story_id": "t003_seq_p0_7ed8a636",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "proud",
+   "n_tokens": 162
+  },
+  {
+   "story_id": "t003_seq_p0_7ed8a636",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "proud",
+   "n_tokens": 152
+  },
+  {
+   "story_id": "t004_seq_p0_731eb10f",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "calm",
+   "n_tokens": 95
+  },
+  {
+   "story_id": "t004_seq_p0_731eb10f",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "calm",
+   "n_tokens": 104
+  },
+  {
+   "story_id": "t004_seq_p0_731eb10f",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "calm",
+   "n_tokens": 118
+  },
+  {
+   "story_id": "t002_seq_p2_ed0db5f2",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "loving",
+   "n_tokens": 201
+  },
+  {
+   "story_id": "t002_seq_p2_ed0db5f2",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "loving",
+   "n_tokens": 165
+  },
+  {
+   "story_id": "t002_seq_p2_ed0db5f2",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "loving",
+   "n_tokens": 215
+  },
+  {
+   "story_id": "t003_seq_p4_6a7e4448",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "proud",
+   "n_tokens": 161
+  },
+  {
+   "story_id": "t003_seq_p4_6a7e4448",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "proud",
+   "n_tokens": 183
+  },
+  {
+   "story_id": "t003_seq_p4_6a7e4448",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "proud",
+   "n_tokens": 165
+  },
+  {
+   "story_id": "t004_seq_p5_3a971dbe",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "calm",
+   "n_tokens": 91
+  },
+  {
+   "story_id": "t004_seq_p5_3a971dbe",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "calm",
+   "n_tokens": 100
+  },
+  {
+   "story_id": "t004_seq_p5_3a971dbe",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "calm",
+   "n_tokens": 116
+  },
+  {
+   "story_id": "t002_seq_p4_40c25d32",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "loving",
+   "n_tokens": 76
+  },
+  {
+   "story_id": "t002_seq_p4_40c25d32",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "loving",
+   "n_tokens": 128
+  },
+  {
+   "story_id": "t002_seq_p4_40c25d32",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "loving",
+   "n_tokens": 117
+  },
+  {
+   "story_id": "t004_seq_p1_3dc99f98",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "calm",
+   "n_tokens": 138
+  },
+  {
+   "story_id": "t004_seq_p1_3dc99f98",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "calm",
+   "n_tokens": 98
+  },
+  {
+   "story_id": "t004_seq_p1_3dc99f98",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "calm",
+   "n_tokens": 117
+  },
+  {
+   "story_id": "t004_seq_p2_ae8678a1",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "calm",
+   "n_tokens": 188
+  },
+  {
+   "story_id": "t004_seq_p2_ae8678a1",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "calm",
+   "n_tokens": 100
+  },
+  {
+   "story_id": "t004_seq_p2_ae8678a1",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "calm",
+   "n_tokens": 81
+  },
+  {
+   "story_id": "t004_seq_p3_a6123bf8",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "calm",
+   "n_tokens": 178
+  },
+  {
+   "story_id": "t004_seq_p3_a6123bf8",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "calm",
+   "n_tokens": 148
+  },
+  {
+   "story_id": "t004_seq_p3_a6123bf8",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "calm",
+   "n_tokens": 149
+  },
+  {
+   "story_id": "t004_seq_p4_65e0160a",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "calm",
+   "n_tokens": 190
+  },
+  {
+   "story_id": "t004_seq_p4_65e0160a",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "calm",
+   "n_tokens": 135
+  },
+  {
+   "story_id": "t004_seq_p4_65e0160a",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "calm",
+   "n_tokens": 128
+  },
+  {
+   "story_id": "t004_seq_p1_df9bebbd",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "calm",
+   "n_tokens": 148
+  },
+  {
+   "story_id": "t004_seq_p1_df9bebbd",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "calm",
+   "n_tokens": 140
+  },
+  {
+   "story_id": "t004_seq_p1_df9bebbd",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "calm",
+   "n_tokens": 151
+  },
+  {
+   "story_id": "t004_seq_p5_c35c7f4a",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "calm",
+   "n_tokens": 134
+  },
+  {
+   "story_id": "t004_seq_p5_c35c7f4a",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "calm",
+   "n_tokens": 152
+  },
+  {
+   "story_id": "t004_seq_p5_c35c7f4a",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "calm",
+   "n_tokens": 161
+  },
+  {
+   "story_id": "t003_seq_p3_b1181f42",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "proud",
+   "n_tokens": 117
+  },
+  {
+   "story_id": "t003_seq_p3_b1181f42",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "proud",
+   "n_tokens": 118
+  },
+  {
+   "story_id": "t003_seq_p3_b1181f42",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "proud",
+   "n_tokens": 138
+  },
+  {
+   "story_id": "t005_seq_p1_57a683ec",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "desperate",
+   "n_tokens": 113
+  },
+  {
+   "story_id": "t005_seq_p1_57a683ec",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "desperate",
+   "n_tokens": 124
+  },
+  {
+   "story_id": "t005_seq_p1_57a683ec",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "desperate",
+   "n_tokens": 120
+  },
+  {
+   "story_id": "t005_seq_p4_27e17df6",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "desperate",
+   "n_tokens": 166
+  },
+  {
+   "story_id": "t005_seq_p4_27e17df6",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "desperate",
+   "n_tokens": 120
+  },
+  {
+   "story_id": "t005_seq_p4_27e17df6",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "desperate",
+   "n_tokens": 133
+  },
+  {
+   "story_id": "t005_seq_p3_19122482",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "desperate",
+   "n_tokens": 119
+  },
+  {
+   "story_id": "t005_seq_p3_19122482",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "desperate",
+   "n_tokens": 241
+  },
+  {
+   "story_id": "t005_seq_p4_c5e090c1",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "desperate",
+   "n_tokens": 154
+  },
+  {
+   "story_id": "t005_seq_p4_c5e090c1",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "desperate",
+   "n_tokens": 95
+  },
+  {
+   "story_id": "t005_seq_p4_c5e090c1",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "desperate",
+   "n_tokens": 126
+  },
+  {
+   "story_id": "t005_seq_p3_f6c7cc1e",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "desperate",
+   "n_tokens": 127
+  },
+  {
+   "story_id": "t005_seq_p3_f6c7cc1e",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "desperate",
+   "n_tokens": 120
+  },
+  {
+   "story_id": "t005_seq_p3_f6c7cc1e",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "desperate",
+   "n_tokens": 135
+  },
+  {
+   "story_id": "t004_seq_p4_94c63d8c",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "calm",
+   "n_tokens": 141
+  },
+  {
+   "story_id": "t004_seq_p4_94c63d8c",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "calm",
+   "n_tokens": 112
+  },
+  {
+   "story_id": "t004_seq_p4_94c63d8c",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "calm",
+   "n_tokens": 120
+  },
+  {
+   "story_id": "t005_seq_p2_9809869d",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "desperate",
+   "n_tokens": 144
+  },
+  {
+   "story_id": "t005_seq_p2_9809869d",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "desperate",
+   "n_tokens": 145
+  },
+  {
+   "story_id": "t005_seq_p2_9809869d",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "desperate",
+   "n_tokens": 157
+  },
+  {
+   "story_id": "t005_seq_p0_ac8c6c3b",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "desperate",
+   "n_tokens": 408
+  },
+  {
+   "story_id": "t006_seq_p0_7dea75a3",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "angry",
+   "n_tokens": 132
+  },
+  {
+   "story_id": "t006_seq_p0_7dea75a3",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "angry",
+   "n_tokens": 159
+  },
+  {
+   "story_id": "t006_seq_p0_7dea75a3",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "angry",
+   "n_tokens": 96
+  },
+  {
+   "story_id": "t006_seq_p3_a944c8e0",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "angry",
+   "n_tokens": 128
+  },
+  {
+   "story_id": "t006_seq_p3_a944c8e0",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "angry",
+   "n_tokens": 132
+  },
+  {
+   "story_id": "t006_seq_p3_a944c8e0",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "angry",
+   "n_tokens": 151
+  },
+  {
+   "story_id": "t003_seq_p0_9bb4216f",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "proud",
+   "n_tokens": 200
+  },
+  {
+   "story_id": "t003_seq_p0_9bb4216f",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "proud",
+   "n_tokens": 206
+  },
+  {
+   "story_id": "t003_seq_p0_9bb4216f",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "proud",
+   "n_tokens": 210
+  },
+  {
+   "story_id": "t006_seq_p1_6d217595",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "angry",
+   "n_tokens": 107
+  },
+  {
+   "story_id": "t006_seq_p1_6d217595",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "angry",
+   "n_tokens": 136
+  },
+  {
+   "story_id": "t006_seq_p1_6d217595",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "angry",
+   "n_tokens": 130
+  },
+  {
+   "story_id": "t006_seq_p0_1699f7b3",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "angry",
+   "n_tokens": 153
+  },
+  {
+   "story_id": "t006_seq_p0_1699f7b3",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "angry",
+   "n_tokens": 141
+  },
+  {
+   "story_id": "t006_seq_p0_1699f7b3",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "angry",
+   "n_tokens": 110
+  },
+  {
+   "story_id": "t006_seq_p2_15a6b8e1",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "angry",
+   "n_tokens": 168
+  },
+  {
+   "story_id": "t006_seq_p2_15a6b8e1",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "angry",
+   "n_tokens": 116
+  },
+  {
+   "story_id": "t006_seq_p2_15a6b8e1",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "angry",
+   "n_tokens": 121
+  },
+  {
+   "story_id": "t006_seq_p5_901e575d",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "angry",
+   "n_tokens": 159
+  },
+  {
+   "story_id": "t006_seq_p5_901e575d",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "angry",
+   "n_tokens": 97
+  },
+  {
+   "story_id": "t006_seq_p5_901e575d",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "angry",
+   "n_tokens": 97
+  },
+  {
+   "story_id": "t005_seq_p0_0e452d9e",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "desperate",
+   "n_tokens": 198
+  },
+  {
+   "story_id": "t005_seq_p0_0e452d9e",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "desperate",
+   "n_tokens": 178
+  },
+  {
+   "story_id": "t005_seq_p0_0e452d9e",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "desperate",
+   "n_tokens": 158
+  },
+  {
+   "story_id": "t007_seq_p5_f1fcb3cd",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "guilty",
+   "n_tokens": 84
+  },
+  {
+   "story_id": "t007_seq_p5_f1fcb3cd",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "guilty",
+   "n_tokens": 118
+  },
+  {
+   "story_id": "t007_seq_p5_f1fcb3cd",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "guilty",
+   "n_tokens": 185
+  },
+  {
+   "story_id": "t006_seq_p4_b6dd197b",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "angry",
+   "n_tokens": 164
+  },
+  {
+   "story_id": "t006_seq_p4_b6dd197b",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "angry",
+   "n_tokens": 154
+  },
+  {
+   "story_id": "t006_seq_p4_b6dd197b",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "angry",
+   "n_tokens": 109
+  },
+  {
+   "story_id": "t005_seq_p2_2c9ed3d0",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "desperate",
+   "n_tokens": 213
+  },
+  {
+   "story_id": "t005_seq_p2_2c9ed3d0",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "desperate",
+   "n_tokens": 160
+  },
+  {
+   "story_id": "t005_seq_p2_2c9ed3d0",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "desperate",
+   "n_tokens": 152
+  },
+  {
+   "story_id": "t007_seq_p0_790d35ad",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "guilty",
+   "n_tokens": 78
+  },
+  {
+   "story_id": "t007_seq_p0_790d35ad",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "guilty",
+   "n_tokens": 88
+  },
+  {
+   "story_id": "t007_seq_p0_790d35ad",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "guilty",
+   "n_tokens": 127
+  },
+  {
+   "story_id": "t007_seq_p1_cc39c572",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "guilty",
+   "n_tokens": 122
+  },
+  {
+   "story_id": "t007_seq_p1_cc39c572",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "guilty",
+   "n_tokens": 116
+  },
+  {
+   "story_id": "t007_seq_p1_cc39c572",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "guilty",
+   "n_tokens": 138
+  },
+  {
+   "story_id": "t006_seq_p1_bfab1d5d",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "angry",
+   "n_tokens": 338
+  },
+  {
+   "story_id": "t006_seq_p1_bfab1d5d",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "angry",
+   "n_tokens": 166
+  },
+  {
+   "story_id": "t006_seq_p1_bfab1d5d",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "angry",
+   "n_tokens": 148
+  },
+  {
+   "story_id": "t007_seq_p3_e2077f4b",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "guilty",
+   "n_tokens": 155
+  },
+  {
+   "story_id": "t007_seq_p3_e2077f4b",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "guilty",
+   "n_tokens": 188
+  },
+  {
+   "story_id": "t007_seq_p3_e2077f4b",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "guilty",
+   "n_tokens": 107
+  },
+  {
+   "story_id": "t008_seq_p2_328eb59e",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "sad",
+   "n_tokens": 109
+  },
+  {
+   "story_id": "t008_seq_p2_328eb59e",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "sad",
+   "n_tokens": 103
+  },
+  {
+   "story_id": "t008_seq_p2_328eb59e",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "sad",
+   "n_tokens": 93
+  },
+  {
+   "story_id": "t007_seq_p4_2817bb4d",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "guilty",
+   "n_tokens": 105
+  },
+  {
+   "story_id": "t007_seq_p4_2817bb4d",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "guilty",
+   "n_tokens": 120
+  },
+  {
+   "story_id": "t007_seq_p4_2817bb4d",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "guilty",
+   "n_tokens": 113
+  },
+  {
+   "story_id": "t007_seq_p2_3d86170f",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "guilty",
+   "n_tokens": 214
+  },
+  {
+   "story_id": "t007_seq_p2_3d86170f",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "guilty",
+   "n_tokens": 192
+  },
+  {
+   "story_id": "t007_seq_p2_3d86170f",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "guilty",
+   "n_tokens": 189
+  },
+  {
+   "story_id": "t006_seq_p5_487cd4e0",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "angry",
+   "n_tokens": 214
+  },
+  {
+   "story_id": "t006_seq_p5_487cd4e0",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "angry",
+   "n_tokens": 228
+  },
+  {
+   "story_id": "t006_seq_p5_487cd4e0",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "angry",
+   "n_tokens": 183
+  },
+  {
+   "story_id": "t007_seq_p4_e3ce03f7",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "guilty",
+   "n_tokens": 150
+  },
+  {
+   "story_id": "t007_seq_p4_e3ce03f7",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "guilty",
+   "n_tokens": 119
+  },
+  {
+   "story_id": "t007_seq_p4_e3ce03f7",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "guilty",
+   "n_tokens": 126
+  },
+  {
+   "story_id": "t008_seq_p4_e2015cfc",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "sad",
+   "n_tokens": 112
+  },
+  {
+   "story_id": "t008_seq_p4_e2015cfc",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "sad",
+   "n_tokens": 113
+  },
+  {
+   "story_id": "t008_seq_p4_e2015cfc",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "sad",
+   "n_tokens": 92
+  },
+  {
+   "story_id": "t008_seq_p1_6f91f7c3",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "sad",
+   "n_tokens": 87
+  },
+  {
+   "story_id": "t008_seq_p1_6f91f7c3",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "sad",
+   "n_tokens": 102
+  },
+  {
+   "story_id": "t008_seq_p1_6f91f7c3",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "sad",
+   "n_tokens": 115
+  },
+  {
+   "story_id": "t007_seq_p5_f50b90ad",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "guilty",
+   "n_tokens": 209
+  },
+  {
+   "story_id": "t007_seq_p5_f50b90ad",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "guilty",
+   "n_tokens": 212
+  },
+  {
+   "story_id": "t007_seq_p5_f50b90ad",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "guilty",
+   "n_tokens": 185
+  },
+  {
+   "story_id": "t008_seq_p5_00b54dea",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "sad",
+   "n_tokens": 92
+  },
+  {
+   "story_id": "t008_seq_p5_00b54dea",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "sad",
+   "n_tokens": 104
+  },
+  {
+   "story_id": "t008_seq_p5_00b54dea",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "sad",
+   "n_tokens": 107
+  },
+  {
+   "story_id": "t006_seq_p2_13aceb29",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "angry",
+   "n_tokens": 187
+  },
+  {
+   "story_id": "t006_seq_p2_13aceb29",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "angry",
+   "n_tokens": 139
+  },
+  {
+   "story_id": "t006_seq_p2_13aceb29",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "angry",
+   "n_tokens": 125
+  },
+  {
+   "story_id": "t008_seq_p2_40d67729",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "sad",
+   "n_tokens": 109
+  },
+  {
+   "story_id": "t008_seq_p2_40d67729",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "sad",
+   "n_tokens": 117
+  },
+  {
+   "story_id": "t008_seq_p2_40d67729",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "sad",
+   "n_tokens": 124
+  },
+  {
+   "story_id": "t008_seq_p0_50e23f44",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "sad",
+   "n_tokens": 208
+  },
+  {
+   "story_id": "t008_seq_p0_50e23f44",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "sad",
+   "n_tokens": 93
+  },
+  {
+   "story_id": "t008_seq_p0_50e23f44",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "sad",
+   "n_tokens": 115
+  },
+  {
+   "story_id": "t007_seq_p2_e7315d4b",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "guilty",
+   "n_tokens": 181
+  },
+  {
+   "story_id": "t007_seq_p2_e7315d4b",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "guilty",
+   "n_tokens": 182
+  },
+  {
+   "story_id": "t007_seq_p2_e7315d4b",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "guilty",
+   "n_tokens": 246
+  },
+  {
+   "story_id": "t008_seq_p4_ee99620d",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "sad",
+   "n_tokens": 126
+  },
+  {
+   "story_id": "t008_seq_p4_ee99620d",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "sad",
+   "n_tokens": 131
+  },
+  {
+   "story_id": "t008_seq_p4_ee99620d",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "sad",
+   "n_tokens": 153
+  },
+  {
+   "story_id": "t009_seq_p3_1af1f448",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "afraid",
+   "n_tokens": 78
+  },
+  {
+   "story_id": "t009_seq_p3_1af1f448",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "afraid",
+   "n_tokens": 94
+  },
+  {
+   "story_id": "t009_seq_p3_1af1f448",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "afraid",
+   "n_tokens": 101
+  },
+  {
+   "story_id": "t009_seq_p5_676c9351",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "afraid",
+   "n_tokens": 166
+  },
+  {
+   "story_id": "t009_seq_p5_676c9351",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "afraid",
+   "n_tokens": 124
+  },
+  {
+   "story_id": "t009_seq_p5_676c9351",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "afraid",
+   "n_tokens": 75
+  },
+  {
+   "story_id": "t009_seq_p3_69d39de2",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "afraid",
+   "n_tokens": 136
+  },
+  {
+   "story_id": "t009_seq_p3_69d39de2",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "afraid",
+   "n_tokens": 100
+  },
+  {
+   "story_id": "t009_seq_p3_69d39de2",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "afraid",
+   "n_tokens": 117
+  },
+  {
+   "story_id": "t008_seq_p5_352077d2",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "sad",
+   "n_tokens": 147
+  },
+  {
+   "story_id": "t008_seq_p5_352077d2",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "sad",
+   "n_tokens": 172
+  },
+  {
+   "story_id": "t008_seq_p5_352077d2",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "sad",
+   "n_tokens": 147
+  },
+  {
+   "story_id": "t009_seq_p5_648ded24",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "afraid",
+   "n_tokens": 234
+  },
+  {
+   "story_id": "t009_seq_p5_648ded24",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "afraid",
+   "n_tokens": 198
+  },
+  {
+   "story_id": "t009_seq_p5_648ded24",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "afraid",
+   "n_tokens": 220
+  },
+  {
+   "story_id": "t008_seq_p3_425b7251",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "sad",
+   "n_tokens": 75
+  },
+  {
+   "story_id": "t008_seq_p3_425b7251",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "sad",
+   "n_tokens": 95
+  },
+  {
+   "story_id": "t008_seq_p3_425b7251",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "sad",
+   "n_tokens": 122
+  },
+  {
+   "story_id": "t008_seq_p0_c1fba1e2",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "sad",
+   "n_tokens": 125
+  },
+  {
+   "story_id": "t008_seq_p0_c1fba1e2",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "sad",
+   "n_tokens": 133
+  },
+  {
+   "story_id": "t008_seq_p0_c1fba1e2",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "sad",
+   "n_tokens": 151
+  },
+  {
+   "story_id": "t010_seq_p2_26653b3c",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "nervous",
+   "n_tokens": 96
+  },
+  {
+   "story_id": "t010_seq_p2_26653b3c",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "nervous",
+   "n_tokens": 115
+  },
+  {
+   "story_id": "t010_seq_p2_26653b3c",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "nervous",
+   "n_tokens": 101
+  },
+  {
+   "story_id": "t010_seq_p2_8c00feed",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "nervous",
+   "n_tokens": 50
+  },
+  {
+   "story_id": "t010_seq_p2_8c00feed",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "nervous",
+   "n_tokens": 85
+  },
+  {
+   "story_id": "t008_seq_p3_4bbf51b4",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "sad",
+   "n_tokens": 153
+  },
+  {
+   "story_id": "t008_seq_p3_4bbf51b4",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "sad",
+   "n_tokens": 152
+  },
+  {
+   "story_id": "t008_seq_p3_4bbf51b4",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "sad",
+   "n_tokens": 151
+  },
+  {
+   "story_id": "t010_seq_p4_b4dfd1cd",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "nervous",
+   "n_tokens": 135
+  },
+  {
+   "story_id": "t010_seq_p4_b4dfd1cd",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "nervous",
+   "n_tokens": 121
+  },
+  {
+   "story_id": "t010_seq_p4_b4dfd1cd",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "nervous",
+   "n_tokens": 106
+  },
+  {
+   "story_id": "t009_seq_p4_7d84e790",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "afraid",
+   "n_tokens": 108
+  },
+  {
+   "story_id": "t009_seq_p4_7d84e790",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "afraid",
+   "n_tokens": 113
+  },
+  {
+   "story_id": "t009_seq_p4_7d84e790",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "afraid",
+   "n_tokens": 125
+  },
+  {
+   "story_id": "t009_seq_p4_be37ff80",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "afraid",
+   "n_tokens": 104
+  },
+  {
+   "story_id": "t009_seq_p4_be37ff80",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "afraid",
+   "n_tokens": 107
+  },
+  {
+   "story_id": "t009_seq_p4_be37ff80",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "afraid",
+   "n_tokens": 87
+  },
+  {
+   "story_id": "t009_seq_p0_570d1713",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "afraid",
+   "n_tokens": 147
+  },
+  {
+   "story_id": "t009_seq_p0_570d1713",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "afraid",
+   "n_tokens": 174
+  },
+  {
+   "story_id": "t009_seq_p0_570d1713",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "afraid",
+   "n_tokens": 122
+  },
+  {
+   "story_id": "t009_seq_p2_4cf3ccd4",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "afraid",
+   "n_tokens": 121
+  },
+  {
+   "story_id": "t009_seq_p2_4cf3ccd4",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "afraid",
+   "n_tokens": 104
+  },
+  {
+   "story_id": "t009_seq_p2_4cf3ccd4",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "afraid",
+   "n_tokens": 82
+  },
+  {
+   "story_id": "t010_seq_p3_88464568",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "nervous",
+   "n_tokens": 194
+  },
+  {
+   "story_id": "t010_seq_p3_88464568",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "nervous",
+   "n_tokens": 152
+  },
+  {
+   "story_id": "t010_seq_p3_88464568",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "nervous",
+   "n_tokens": 192
+  },
+  {
+   "story_id": "t011_seq_p5_95dafe92",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "surprised",
+   "n_tokens": 149
+  },
+  {
+   "story_id": "t011_seq_p5_95dafe92",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "surprised",
+   "n_tokens": 146
+  },
+  {
+   "story_id": "t011_seq_p5_95dafe92",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "surprised",
+   "n_tokens": 143
+  },
+  {
+   "story_id": "t011_seq_p4_83c1c13a",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "surprised",
+   "n_tokens": 96
+  },
+  {
+   "story_id": "t011_seq_p4_83c1c13a",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "surprised",
+   "n_tokens": 84
+  },
+  {
+   "story_id": "t011_seq_p4_83c1c13a",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "surprised",
+   "n_tokens": 100
+  },
+  {
+   "story_id": "t011_seq_p3_86d3f67b",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "surprised",
+   "n_tokens": 119
+  },
+  {
+   "story_id": "t011_seq_p3_86d3f67b",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "surprised",
+   "n_tokens": 137
+  },
+  {
+   "story_id": "t011_seq_p3_86d3f67b",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "surprised",
+   "n_tokens": 137
+  },
+  {
+   "story_id": "t011_seq_p2_166efffe",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "surprised",
+   "n_tokens": 67
+  },
+  {
+   "story_id": "t011_seq_p2_166efffe",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "surprised",
+   "n_tokens": 100
+  },
+  {
+   "story_id": "t011_seq_p2_166efffe",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "surprised",
+   "n_tokens": 135
+  },
+  {
+   "story_id": "t011_seq_p0_29044fdf",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "surprised",
+   "n_tokens": 109
+  },
+  {
+   "story_id": "t011_seq_p0_29044fdf",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "surprised",
+   "n_tokens": 126
+  },
+  {
+   "story_id": "t011_seq_p0_29044fdf",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "surprised",
+   "n_tokens": 78
+  },
+  {
+   "story_id": "t011_seq_p5_1d37844f",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "surprised",
+   "n_tokens": 115
+  },
+  {
+   "story_id": "t011_seq_p5_1d37844f",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "surprised",
+   "n_tokens": 132
+  },
+  {
+   "story_id": "t011_seq_p5_1d37844f",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "surprised",
+   "n_tokens": 123
+  },
+  {
+   "story_id": "t009_seq_p2_7b8f527a",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "afraid",
+   "n_tokens": 108
+  },
+  {
+   "story_id": "t009_seq_p2_7b8f527a",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "afraid",
+   "n_tokens": 115
+  },
+  {
+   "story_id": "t009_seq_p2_7b8f527a",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "afraid",
+   "n_tokens": 670
+  },
+  {
+   "story_id": "t011_seq_p4_cffd6e5c",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "surprised",
+   "n_tokens": 77
+  },
+  {
+   "story_id": "t011_seq_p4_cffd6e5c",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "surprised",
+   "n_tokens": 98
+  },
+  {
+   "story_id": "t011_seq_p4_cffd6e5c",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "surprised",
+   "n_tokens": 121
+  },
+  {
+   "story_id": "t011_seq_p0_1b2df110",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "surprised",
+   "n_tokens": 119
+  },
+  {
+   "story_id": "t011_seq_p0_1b2df110",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "surprised",
+   "n_tokens": 126
+  },
+  {
+   "story_id": "t011_seq_p0_1b2df110",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "surprised",
+   "n_tokens": 136
+  },
+  {
+   "story_id": "t010_seq_p5_df4ac0e8",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "nervous",
+   "n_tokens": 174
+  },
+  {
+   "story_id": "t010_seq_p5_df4ac0e8",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "nervous",
+   "n_tokens": 131
+  },
+  {
+   "story_id": "t010_seq_p5_df4ac0e8",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "nervous",
+   "n_tokens": 253
+  },
+  {
+   "story_id": "t011_seq_p2_b34866de",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "surprised",
+   "n_tokens": 148
+  },
+  {
+   "story_id": "t011_seq_p2_b34866de",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "surprised",
+   "n_tokens": 148
+  },
+  {
+   "story_id": "t011_seq_p2_b34866de",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "surprised",
+   "n_tokens": 154
+  },
+  {
+   "story_id": "t010_seq_p0_be1c1e06",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "nervous",
+   "n_tokens": 151
+  },
+  {
+   "story_id": "t010_seq_p0_be1c1e06",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "nervous",
+   "n_tokens": 142
+  },
+  {
+   "story_id": "t010_seq_p0_be1c1e06",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "nervous",
+   "n_tokens": 157
+  },
+  {
+   "story_id": "t010_seq_p0_e685f0d3",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "nervous",
+   "n_tokens": 145
+  },
+  {
+   "story_id": "t010_seq_p0_e685f0d3",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "nervous",
+   "n_tokens": 125
+  },
+  {
+   "story_id": "t010_seq_p0_e685f0d3",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "nervous",
+   "n_tokens": 144
+  },
+  {
+   "story_id": "t011_seq_p1_7deec7a7",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 0,
+   "emotion": "surprised",
+   "n_tokens": 108
+  },
+  {
+   "story_id": "t011_seq_p1_7deec7a7",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 1,
+   "emotion": "surprised",
+   "n_tokens": 123
+  },
+  {
+   "story_id": "t011_seq_p1_7deec7a7",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "phase_index": 2,
+   "emotion": "surprised",
+   "n_tokens": 121
+  }
+ ],
+ "transition_records": [
+  {
+   "story_id": "t000_seq_p0_0546e77e",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "happy",
+   "to_emotion": "happy"
+  },
+  {
+   "story_id": "t000_seq_p0_0546e77e",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "happy",
+   "to_emotion": "happy"
+  },
+  {
+   "story_id": "t000_seq_p1_27c4eaf5",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "happy",
+   "to_emotion": "happy"
+  },
+  {
+   "story_id": "t000_seq_p1_27c4eaf5",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "happy",
+   "to_emotion": "happy"
+  },
+  {
+   "story_id": "t000_seq_p3_c4637e2a",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "happy",
+   "to_emotion": "happy"
+  },
+  {
+   "story_id": "t000_seq_p3_c4637e2a",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "happy",
+   "to_emotion": "happy"
+  },
+  {
+   "story_id": "t000_seq_p0_0adac8a8",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "happy",
+   "to_emotion": "happy"
+  },
+  {
+   "story_id": "t000_seq_p0_0adac8a8",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "happy",
+   "to_emotion": "happy"
+  },
+  {
+   "story_id": "t000_seq_p2_df738084",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "happy",
+   "to_emotion": "happy"
+  },
+  {
+   "story_id": "t000_seq_p2_df738084",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "happy",
+   "to_emotion": "happy"
+  },
+  {
+   "story_id": "t000_seq_p5_69e3679e",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "happy",
+   "to_emotion": "happy"
+  },
+  {
+   "story_id": "t000_seq_p5_69e3679e",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "happy",
+   "to_emotion": "happy"
+  },
+  {
+   "story_id": "t000_seq_p5_fdb64a3e",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "happy",
+   "to_emotion": "happy"
+  },
+  {
+   "story_id": "t000_seq_p5_fdb64a3e",
+   "triple_id": 0,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "happy",
+   "to_emotion": "happy"
+  },
+  {
+   "story_id": "t001_seq_p1_19c3643d",
+   "triple_id": 1,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "inspired",
+   "to_emotion": "inspired"
+  },
+  {
+   "story_id": "t001_seq_p1_19c3643d",
+   "triple_id": 1,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "inspired",
+   "to_emotion": "inspired"
+  },
+  {
+   "story_id": "t001_seq_p5_c8ba13c0",
+   "triple_id": 1,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "inspired",
+   "to_emotion": "inspired"
+  },
+  {
+   "story_id": "t001_seq_p5_c8ba13c0",
+   "triple_id": 1,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "inspired",
+   "to_emotion": "inspired"
+  },
+  {
+   "story_id": "t002_seq_p5_e37ea766",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "loving",
+   "to_emotion": "loving"
+  },
+  {
+   "story_id": "t002_seq_p5_e37ea766",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "loving",
+   "to_emotion": "loving"
+  },
+  {
+   "story_id": "t001_seq_p5_36cccc77",
+   "triple_id": 1,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "inspired",
+   "to_emotion": "inspired"
+  },
+  {
+   "story_id": "t001_seq_p5_36cccc77",
+   "triple_id": 1,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "inspired",
+   "to_emotion": "inspired"
+  },
+  {
+   "story_id": "t002_seq_p1_5f0d3c45",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "loving",
+   "to_emotion": "loving"
+  },
+  {
+   "story_id": "t002_seq_p1_5f0d3c45",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "loving",
+   "to_emotion": "loving"
+  },
+  {
+   "story_id": "t002_seq_p4_49b92f96",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "loving",
+   "to_emotion": "loving"
+  },
+  {
+   "story_id": "t002_seq_p4_49b92f96",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "loving",
+   "to_emotion": "loving"
+  },
+  {
+   "story_id": "t002_seq_p5_3c878b2f",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "loving",
+   "to_emotion": "loving"
+  },
+  {
+   "story_id": "t002_seq_p5_3c878b2f",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "loving",
+   "to_emotion": "loving"
+  },
+  {
+   "story_id": "t002_seq_p1_51453266",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "loving",
+   "to_emotion": "loving"
+  },
+  {
+   "story_id": "t002_seq_p1_51453266",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "loving",
+   "to_emotion": "loving"
+  },
+  {
+   "story_id": "t002_seq_p3_a26193fd",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "loving",
+   "to_emotion": "loving"
+  },
+  {
+   "story_id": "t002_seq_p3_a26193fd",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "loving",
+   "to_emotion": "loving"
+  },
+  {
+   "story_id": "t002_seq_p3_2f1ee0ef",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "loving",
+   "to_emotion": "loving"
+  },
+  {
+   "story_id": "t002_seq_p3_2f1ee0ef",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "loving",
+   "to_emotion": "loving"
+  },
+  {
+   "story_id": "t003_seq_p3_8378eff9",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t003_seq_p3_8378eff9",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t002_seq_p2_74d6f48f",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "loving",
+   "to_emotion": "loving"
+  },
+  {
+   "story_id": "t002_seq_p2_74d6f48f",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "loving",
+   "to_emotion": "loving"
+  },
+  {
+   "story_id": "t003_seq_p5_c69a2f37",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t003_seq_p5_c69a2f37",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t001_seq_p2_268a4bd8",
+   "triple_id": 1,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "inspired",
+   "to_emotion": "inspired"
+  },
+  {
+   "story_id": "t001_seq_p2_268a4bd8",
+   "triple_id": 1,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "inspired",
+   "to_emotion": "inspired"
+  },
+  {
+   "story_id": "t003_seq_p2_9de39ed3",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t003_seq_p2_9de39ed3",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t003_seq_p2_095a5eb9",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t003_seq_p2_095a5eb9",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t003_seq_p5_71e785e0",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t003_seq_p5_71e785e0",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t003_seq_p1_bdcbb8af",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t003_seq_p1_bdcbb8af",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t003_seq_p1_982c35b1",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t003_seq_p1_982c35b1",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t003_seq_p0_7ed8a636",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t003_seq_p0_7ed8a636",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t004_seq_p0_731eb10f",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "calm",
+   "to_emotion": "calm"
+  },
+  {
+   "story_id": "t004_seq_p0_731eb10f",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "calm",
+   "to_emotion": "calm"
+  },
+  {
+   "story_id": "t002_seq_p2_ed0db5f2",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "loving",
+   "to_emotion": "loving"
+  },
+  {
+   "story_id": "t002_seq_p2_ed0db5f2",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "loving",
+   "to_emotion": "loving"
+  },
+  {
+   "story_id": "t003_seq_p4_6a7e4448",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t003_seq_p4_6a7e4448",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t004_seq_p5_3a971dbe",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "calm",
+   "to_emotion": "calm"
+  },
+  {
+   "story_id": "t004_seq_p5_3a971dbe",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "calm",
+   "to_emotion": "calm"
+  },
+  {
+   "story_id": "t002_seq_p4_40c25d32",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "loving",
+   "to_emotion": "loving"
+  },
+  {
+   "story_id": "t002_seq_p4_40c25d32",
+   "triple_id": 2,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "loving",
+   "to_emotion": "loving"
+  },
+  {
+   "story_id": "t004_seq_p1_3dc99f98",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "calm",
+   "to_emotion": "calm"
+  },
+  {
+   "story_id": "t004_seq_p1_3dc99f98",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "calm",
+   "to_emotion": "calm"
+  },
+  {
+   "story_id": "t004_seq_p2_ae8678a1",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "calm",
+   "to_emotion": "calm"
+  },
+  {
+   "story_id": "t004_seq_p2_ae8678a1",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "calm",
+   "to_emotion": "calm"
+  },
+  {
+   "story_id": "t004_seq_p3_a6123bf8",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "calm",
+   "to_emotion": "calm"
+  },
+  {
+   "story_id": "t004_seq_p3_a6123bf8",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "calm",
+   "to_emotion": "calm"
+  },
+  {
+   "story_id": "t004_seq_p4_65e0160a",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "calm",
+   "to_emotion": "calm"
+  },
+  {
+   "story_id": "t004_seq_p4_65e0160a",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "calm",
+   "to_emotion": "calm"
+  },
+  {
+   "story_id": "t004_seq_p1_df9bebbd",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "calm",
+   "to_emotion": "calm"
+  },
+  {
+   "story_id": "t004_seq_p1_df9bebbd",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "calm",
+   "to_emotion": "calm"
+  },
+  {
+   "story_id": "t004_seq_p5_c35c7f4a",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "calm",
+   "to_emotion": "calm"
+  },
+  {
+   "story_id": "t004_seq_p5_c35c7f4a",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "calm",
+   "to_emotion": "calm"
+  },
+  {
+   "story_id": "t003_seq_p3_b1181f42",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t003_seq_p3_b1181f42",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t005_seq_p1_57a683ec",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "desperate",
+   "to_emotion": "desperate"
+  },
+  {
+   "story_id": "t005_seq_p1_57a683ec",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "desperate",
+   "to_emotion": "desperate"
+  },
+  {
+   "story_id": "t005_seq_p4_27e17df6",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "desperate",
+   "to_emotion": "desperate"
+  },
+  {
+   "story_id": "t005_seq_p4_27e17df6",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "desperate",
+   "to_emotion": "desperate"
+  },
+  {
+   "story_id": "t005_seq_p3_19122482",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "desperate",
+   "to_emotion": "desperate"
+  },
+  {
+   "story_id": "t005_seq_p4_c5e090c1",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "desperate",
+   "to_emotion": "desperate"
+  },
+  {
+   "story_id": "t005_seq_p4_c5e090c1",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "desperate",
+   "to_emotion": "desperate"
+  },
+  {
+   "story_id": "t005_seq_p3_f6c7cc1e",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "desperate",
+   "to_emotion": "desperate"
+  },
+  {
+   "story_id": "t005_seq_p3_f6c7cc1e",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "desperate",
+   "to_emotion": "desperate"
+  },
+  {
+   "story_id": "t004_seq_p4_94c63d8c",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "calm",
+   "to_emotion": "calm"
+  },
+  {
+   "story_id": "t004_seq_p4_94c63d8c",
+   "triple_id": 4,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "calm",
+   "to_emotion": "calm"
+  },
+  {
+   "story_id": "t005_seq_p2_9809869d",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "desperate",
+   "to_emotion": "desperate"
+  },
+  {
+   "story_id": "t005_seq_p2_9809869d",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "desperate",
+   "to_emotion": "desperate"
+  },
+  {
+   "story_id": "t006_seq_p0_7dea75a3",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "angry",
+   "to_emotion": "angry"
+  },
+  {
+   "story_id": "t006_seq_p0_7dea75a3",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "angry",
+   "to_emotion": "angry"
+  },
+  {
+   "story_id": "t006_seq_p3_a944c8e0",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "angry",
+   "to_emotion": "angry"
+  },
+  {
+   "story_id": "t006_seq_p3_a944c8e0",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "angry",
+   "to_emotion": "angry"
+  },
+  {
+   "story_id": "t003_seq_p0_9bb4216f",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t003_seq_p0_9bb4216f",
+   "triple_id": 3,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "proud",
+   "to_emotion": "proud"
+  },
+  {
+   "story_id": "t006_seq_p1_6d217595",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "angry",
+   "to_emotion": "angry"
+  },
+  {
+   "story_id": "t006_seq_p1_6d217595",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "angry",
+   "to_emotion": "angry"
+  },
+  {
+   "story_id": "t006_seq_p0_1699f7b3",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "angry",
+   "to_emotion": "angry"
+  },
+  {
+   "story_id": "t006_seq_p0_1699f7b3",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "angry",
+   "to_emotion": "angry"
+  },
+  {
+   "story_id": "t006_seq_p2_15a6b8e1",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "angry",
+   "to_emotion": "angry"
+  },
+  {
+   "story_id": "t006_seq_p2_15a6b8e1",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "angry",
+   "to_emotion": "angry"
+  },
+  {
+   "story_id": "t006_seq_p5_901e575d",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "angry",
+   "to_emotion": "angry"
+  },
+  {
+   "story_id": "t006_seq_p5_901e575d",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "angry",
+   "to_emotion": "angry"
+  },
+  {
+   "story_id": "t005_seq_p0_0e452d9e",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "desperate",
+   "to_emotion": "desperate"
+  },
+  {
+   "story_id": "t005_seq_p0_0e452d9e",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "desperate",
+   "to_emotion": "desperate"
+  },
+  {
+   "story_id": "t007_seq_p5_f1fcb3cd",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "guilty",
+   "to_emotion": "guilty"
+  },
+  {
+   "story_id": "t007_seq_p5_f1fcb3cd",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "guilty",
+   "to_emotion": "guilty"
+  },
+  {
+   "story_id": "t006_seq_p4_b6dd197b",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "angry",
+   "to_emotion": "angry"
+  },
+  {
+   "story_id": "t006_seq_p4_b6dd197b",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "angry",
+   "to_emotion": "angry"
+  },
+  {
+   "story_id": "t005_seq_p2_2c9ed3d0",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "desperate",
+   "to_emotion": "desperate"
+  },
+  {
+   "story_id": "t005_seq_p2_2c9ed3d0",
+   "triple_id": 5,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "desperate",
+   "to_emotion": "desperate"
+  },
+  {
+   "story_id": "t007_seq_p0_790d35ad",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "guilty",
+   "to_emotion": "guilty"
+  },
+  {
+   "story_id": "t007_seq_p0_790d35ad",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "guilty",
+   "to_emotion": "guilty"
+  },
+  {
+   "story_id": "t007_seq_p1_cc39c572",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "guilty",
+   "to_emotion": "guilty"
+  },
+  {
+   "story_id": "t007_seq_p1_cc39c572",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "guilty",
+   "to_emotion": "guilty"
+  },
+  {
+   "story_id": "t006_seq_p1_bfab1d5d",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "angry",
+   "to_emotion": "angry"
+  },
+  {
+   "story_id": "t006_seq_p1_bfab1d5d",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "angry",
+   "to_emotion": "angry"
+  },
+  {
+   "story_id": "t007_seq_p3_e2077f4b",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "guilty",
+   "to_emotion": "guilty"
+  },
+  {
+   "story_id": "t007_seq_p3_e2077f4b",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "guilty",
+   "to_emotion": "guilty"
+  },
+  {
+   "story_id": "t008_seq_p2_328eb59e",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t008_seq_p2_328eb59e",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t007_seq_p4_2817bb4d",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "guilty",
+   "to_emotion": "guilty"
+  },
+  {
+   "story_id": "t007_seq_p4_2817bb4d",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "guilty",
+   "to_emotion": "guilty"
+  },
+  {
+   "story_id": "t007_seq_p2_3d86170f",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "guilty",
+   "to_emotion": "guilty"
+  },
+  {
+   "story_id": "t007_seq_p2_3d86170f",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "guilty",
+   "to_emotion": "guilty"
+  },
+  {
+   "story_id": "t006_seq_p5_487cd4e0",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "angry",
+   "to_emotion": "angry"
+  },
+  {
+   "story_id": "t006_seq_p5_487cd4e0",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "angry",
+   "to_emotion": "angry"
+  },
+  {
+   "story_id": "t007_seq_p4_e3ce03f7",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "guilty",
+   "to_emotion": "guilty"
+  },
+  {
+   "story_id": "t007_seq_p4_e3ce03f7",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "guilty",
+   "to_emotion": "guilty"
+  },
+  {
+   "story_id": "t008_seq_p4_e2015cfc",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t008_seq_p4_e2015cfc",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t008_seq_p1_6f91f7c3",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t008_seq_p1_6f91f7c3",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t007_seq_p5_f50b90ad",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "guilty",
+   "to_emotion": "guilty"
+  },
+  {
+   "story_id": "t007_seq_p5_f50b90ad",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "guilty",
+   "to_emotion": "guilty"
+  },
+  {
+   "story_id": "t008_seq_p5_00b54dea",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t008_seq_p5_00b54dea",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t006_seq_p2_13aceb29",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "angry",
+   "to_emotion": "angry"
+  },
+  {
+   "story_id": "t006_seq_p2_13aceb29",
+   "triple_id": 6,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "angry",
+   "to_emotion": "angry"
+  },
+  {
+   "story_id": "t008_seq_p2_40d67729",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t008_seq_p2_40d67729",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t008_seq_p0_50e23f44",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t008_seq_p0_50e23f44",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t007_seq_p2_e7315d4b",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "guilty",
+   "to_emotion": "guilty"
+  },
+  {
+   "story_id": "t007_seq_p2_e7315d4b",
+   "triple_id": 7,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "guilty",
+   "to_emotion": "guilty"
+  },
+  {
+   "story_id": "t008_seq_p4_ee99620d",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t008_seq_p4_ee99620d",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t009_seq_p3_1af1f448",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "afraid",
+   "to_emotion": "afraid"
+  },
+  {
+   "story_id": "t009_seq_p3_1af1f448",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "afraid",
+   "to_emotion": "afraid"
+  },
+  {
+   "story_id": "t009_seq_p5_676c9351",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "afraid",
+   "to_emotion": "afraid"
+  },
+  {
+   "story_id": "t009_seq_p5_676c9351",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "afraid",
+   "to_emotion": "afraid"
+  },
+  {
+   "story_id": "t009_seq_p3_69d39de2",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "afraid",
+   "to_emotion": "afraid"
+  },
+  {
+   "story_id": "t009_seq_p3_69d39de2",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "afraid",
+   "to_emotion": "afraid"
+  },
+  {
+   "story_id": "t008_seq_p5_352077d2",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t008_seq_p5_352077d2",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t009_seq_p5_648ded24",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "afraid",
+   "to_emotion": "afraid"
+  },
+  {
+   "story_id": "t009_seq_p5_648ded24",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "afraid",
+   "to_emotion": "afraid"
+  },
+  {
+   "story_id": "t008_seq_p3_425b7251",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t008_seq_p3_425b7251",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t008_seq_p0_c1fba1e2",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t008_seq_p0_c1fba1e2",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t010_seq_p2_26653b3c",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "nervous",
+   "to_emotion": "nervous"
+  },
+  {
+   "story_id": "t010_seq_p2_26653b3c",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "nervous",
+   "to_emotion": "nervous"
+  },
+  {
+   "story_id": "t010_seq_p2_8c00feed",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "nervous",
+   "to_emotion": "nervous"
+  },
+  {
+   "story_id": "t008_seq_p3_4bbf51b4",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t008_seq_p3_4bbf51b4",
+   "triple_id": 8,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "sad",
+   "to_emotion": "sad"
+  },
+  {
+   "story_id": "t010_seq_p4_b4dfd1cd",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "nervous",
+   "to_emotion": "nervous"
+  },
+  {
+   "story_id": "t010_seq_p4_b4dfd1cd",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "nervous",
+   "to_emotion": "nervous"
+  },
+  {
+   "story_id": "t009_seq_p4_7d84e790",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "afraid",
+   "to_emotion": "afraid"
+  },
+  {
+   "story_id": "t009_seq_p4_7d84e790",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "afraid",
+   "to_emotion": "afraid"
+  },
+  {
+   "story_id": "t009_seq_p4_be37ff80",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "afraid",
+   "to_emotion": "afraid"
+  },
+  {
+   "story_id": "t009_seq_p4_be37ff80",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "afraid",
+   "to_emotion": "afraid"
+  },
+  {
+   "story_id": "t009_seq_p0_570d1713",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "afraid",
+   "to_emotion": "afraid"
+  },
+  {
+   "story_id": "t009_seq_p0_570d1713",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "afraid",
+   "to_emotion": "afraid"
+  },
+  {
+   "story_id": "t009_seq_p2_4cf3ccd4",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "afraid",
+   "to_emotion": "afraid"
+  },
+  {
+   "story_id": "t009_seq_p2_4cf3ccd4",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "afraid",
+   "to_emotion": "afraid"
+  },
+  {
+   "story_id": "t010_seq_p3_88464568",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "nervous",
+   "to_emotion": "nervous"
+  },
+  {
+   "story_id": "t010_seq_p3_88464568",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "nervous",
+   "to_emotion": "nervous"
+  },
+  {
+   "story_id": "t011_seq_p5_95dafe92",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "surprised",
+   "to_emotion": "surprised"
+  },
+  {
+   "story_id": "t011_seq_p5_95dafe92",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "surprised",
+   "to_emotion": "surprised"
+  },
+  {
+   "story_id": "t011_seq_p4_83c1c13a",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "surprised",
+   "to_emotion": "surprised"
+  },
+  {
+   "story_id": "t011_seq_p4_83c1c13a",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "surprised",
+   "to_emotion": "surprised"
+  },
+  {
+   "story_id": "t011_seq_p3_86d3f67b",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "surprised",
+   "to_emotion": "surprised"
+  },
+  {
+   "story_id": "t011_seq_p3_86d3f67b",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "surprised",
+   "to_emotion": "surprised"
+  },
+  {
+   "story_id": "t011_seq_p2_166efffe",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "surprised",
+   "to_emotion": "surprised"
+  },
+  {
+   "story_id": "t011_seq_p2_166efffe",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "surprised",
+   "to_emotion": "surprised"
+  },
+  {
+   "story_id": "t011_seq_p0_29044fdf",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "surprised",
+   "to_emotion": "surprised"
+  },
+  {
+   "story_id": "t011_seq_p0_29044fdf",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "surprised",
+   "to_emotion": "surprised"
+  },
+  {
+   "story_id": "t011_seq_p5_1d37844f",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "surprised",
+   "to_emotion": "surprised"
+  },
+  {
+   "story_id": "t011_seq_p5_1d37844f",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "surprised",
+   "to_emotion": "surprised"
+  },
+  {
+   "story_id": "t009_seq_p2_7b8f527a",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "afraid",
+   "to_emotion": "afraid"
+  },
+  {
+   "story_id": "t009_seq_p2_7b8f527a",
+   "triple_id": 9,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "afraid",
+   "to_emotion": "afraid"
+  },
+  {
+   "story_id": "t011_seq_p4_cffd6e5c",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "surprised",
+   "to_emotion": "surprised"
+  },
+  {
+   "story_id": "t011_seq_p4_cffd6e5c",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "surprised",
+   "to_emotion": "surprised"
+  },
+  {
+   "story_id": "t011_seq_p0_1b2df110",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "surprised",
+   "to_emotion": "surprised"
+  },
+  {
+   "story_id": "t011_seq_p0_1b2df110",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "surprised",
+   "to_emotion": "surprised"
+  },
+  {
+   "story_id": "t010_seq_p5_df4ac0e8",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "nervous",
+   "to_emotion": "nervous"
+  },
+  {
+   "story_id": "t010_seq_p5_df4ac0e8",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "nervous",
+   "to_emotion": "nervous"
+  },
+  {
+   "story_id": "t011_seq_p2_b34866de",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "surprised",
+   "to_emotion": "surprised"
+  },
+  {
+   "story_id": "t011_seq_p2_b34866de",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "surprised",
+   "to_emotion": "surprised"
+  },
+  {
+   "story_id": "t010_seq_p0_be1c1e06",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "nervous",
+   "to_emotion": "nervous"
+  },
+  {
+   "story_id": "t010_seq_p0_be1c1e06",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "nervous",
+   "to_emotion": "nervous"
+  },
+  {
+   "story_id": "t010_seq_p0_e685f0d3",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "nervous",
+   "to_emotion": "nervous"
+  },
+  {
+   "story_id": "t010_seq_p0_e685f0d3",
+   "triple_id": 10,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "nervous",
+   "to_emotion": "nervous"
+  },
+  {
+   "story_id": "t011_seq_p1_7deec7a7",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 1,
+   "from_emotion": "surprised",
+   "to_emotion": "surprised"
+  },
+  {
+   "story_id": "t011_seq_p1_7deec7a7",
+   "triple_id": 11,
+   "category": "CONTROL_CONSTANT",
+   "transition_index": 2,
+   "from_emotion": "surprised",
+   "to_emotion": "surprised"
+  }
+ ],
+ "probe_labels": [
+  "corpus:afraid",
+  "corpus:alarmed",
+  "corpus:alert",
+  "corpus:amazed",
+  "corpus:amused",
+  "corpus:angry",
+  "corpus:annoyed",
+  "corpus:anxious",
+  "corpus:aroused",
+  "corpus:ashamed",
+  "corpus:astonished",
+  "corpus:at ease",
+  "corpus:awestruck",
+  "corpus:bewildered",
+  "corpus:bitter",
+  "corpus:blissful",
+  "corpus:bored",
+  "corpus:brooding",
+  "corpus:calm",
+  "corpus:cheerful",
+  "corpus:compassionate",
+  "corpus:contemptuous",
+  "corpus:content",
+  "corpus:defiant",
+  "corpus:delighted",
+  "corpus:dependent",
+  "corpus:depressed",
+  "corpus:desperate",
+  "corpus:disdainful",
+  "corpus:disgusted",
+  "corpus:disoriented",
+  "corpus:dispirited",
+  "corpus:distressed",
+  "corpus:disturbed",
+  "corpus:docile",
+  "corpus:droopy",
+  "corpus:dumbstruck",
+  "corpus:eager",
+  "corpus:ecstatic",
+  "corpus:elated",
+  "corpus:embarrassed",
+  "corpus:empathetic",
+  "corpus:energized",
+  "corpus:enraged",
+  "corpus:enthusiastic",
+  "corpus:envious",
+  "corpus:euphoric",
+  "corpus:exasperated",
+  "corpus:excited",
+  "corpus:exuberant",
+  "corpus:frightened",
+  "corpus:frustrated",
+  "corpus:fulfilled",
+  "corpus:furious",
+  "corpus:gloomy",
+  "corpus:grateful",
+  "corpus:greedy",
+  "corpus:grief-stricken",
+  "corpus:grumpy",
+  "corpus:guilty",
+  "corpus:happy",
+  "corpus:hateful",
+  "corpus:heartbroken",
+  "corpus:hope",
+  "corpus:hopeful",
+  "corpus:horrified",
+  "corpus:hostile",
+  "corpus:humiliated",
+  "corpus:hurt",
+  "corpus:hysterical",
+  "corpus:impatient",
+  "corpus:indifferent",
+  "corpus:indignant",
+  "corpus:infatuated",
+  "corpus:inspired",
+  "corpus:insulted",
+  "corpus:invigorated",
+  "corpus:irate",
+  "corpus:irritated",
+  "corpus:jealous",
+  "corpus:joyful",
+  "corpus:jubilant",
+  "corpus:kind",
+  "corpus:lazy",
+  "corpus:listless",
+  "corpus:lonely",
+  "corpus:loving",
+  "corpus:mad",
+  "corpus:melancholy",
+  "corpus:miserable",
+  "corpus:mortified",
+  "corpus:mystified",
+  "corpus:nervous",
+  "corpus:nostalgic",
+  "corpus:obstinate",
+  "corpus:offended",
+  "corpus:on edge",
+  "corpus:optimistic",
+  "corpus:outraged",
+  "corpus:overwhelmed",
+  "corpus:panicked",
+  "corpus:paranoid",
+  "corpus:patient",
+  "corpus:peaceful",
+  "corpus:perplexed",
+  "corpus:playful",
+  "corpus:pleased",
+  "corpus:proud",
+  "corpus:puzzled",
+  "corpus:rattled",
+  "corpus:reflective",
+  "corpus:refreshed",
+  "corpus:regretful",
+  "corpus:rejuvenated",
+  "corpus:relaxed",
+  "corpus:relieved",
+  "corpus:remorseful",
+  "corpus:resentful",
+  "corpus:resigned",
+  "corpus:restless",
+  "corpus:sad",
+  "corpus:safe",
+  "corpus:satisfied",
+  "corpus:scared",
+  "corpus:scornful",
+  "corpus:self-confident",
+  "corpus:self-conscious",
+  "corpus:self-critical",
+  "corpus:sensitive",
+  "corpus:sentimental",
+  "corpus:serene",
+  "corpus:shaken",
+  "corpus:shocked",
+  "corpus:skeptical",
+  "corpus:sleepy",
+  "corpus:sluggish",
+  "corpus:smug",
+  "corpus:sorry",
+  "corpus:spiteful",
+  "corpus:stimulated",
+  "corpus:stressed",
+  "corpus:stubborn",
+  "corpus:stuck",
+  "corpus:sullen",
+  "corpus:surprised",
+  "corpus:suspicious",
+  "corpus:sympathetic",
+  "corpus:tense",
+  "corpus:terrified",
+  "corpus:thankful",
+  "corpus:thrilled",
+  "corpus:tired",
+  "corpus:tormented",
+  "corpus:trapped",
+  "corpus:triumphant",
+  "corpus:troubled",
+  "corpus:uneasy",
+  "corpus:unhappy",
+  "corpus:unnerved",
+  "corpus:unsettled",
+  "corpus:upset",
+  "corpus:valiant",
+  "corpus:vengeful",
+  "corpus:vibrant",
+  "corpus:vigilant",
+  "corpus:vindictive",
+  "corpus:vulnerable",
+  "corpus:weary",
+  "corpus:worn out",
+  "corpus:worried",
+  "corpus:worthless",
+  "selfgen:happy",
+  "selfgen:inspired",
+  "selfgen:loving",
+  "selfgen:proud",
+  "selfgen:calm",
+  "selfgen:desperate",
+  "selfgen:angry",
+  "selfgen:guilty",
+  "selfgen:sad",
+  "selfgen:afraid",
+  "selfgen:nervous",
+  "selfgen:surprised",
+  "deepseek:afraid",
+  "deepseek:angry",
+  "deepseek:calm",
+  "deepseek:desperate",
+  "deepseek:guilty",
+  "deepseek:happy",
+  "deepseek:inspired",
+  "deepseek:loving",
+  "deepseek:nervous",
+  "deepseek:proud",
+  "deepseek:sad",
+  "deepseek:surprised",
+  "random:00",
+  "random:01",
+  "random:02",
+  "random:03",
+  "random:04",
+  "random:05",
+  "random:06",
+  "random:07",
+  "random:08",
+  "random:09",
+  "random:10",
+  "random:11",
+  "random:12",
+  "random:13",
+  "random:14",
+  "random:15",
+  "random:16",
+  "random:17",
+  "random:18",
+  "random:19",
+  "random:20",
+  "random:21",
+  "random:22",
+  "random:23"
+ ],
+ "layers": [
+  6,
+  15,
+  24,
+  33,
+  42,
+  51
+ ],
+ "n_stories": 106,
+ "n_orphaned_manifest_rows": 0,
+ "conventions": "centered cosine (story-set mean, norms_centered); SEQUENTIAL only; phases < 4 tokens skipped; lead windows W=16 boundary-referenced, same as score_q3_gate_r1.py; phase_third_scores = the same phase mean over token-count thirds (floor split)"
+}

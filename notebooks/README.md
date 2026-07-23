@@ -15,6 +15,8 @@ verdict and has a collapsible "How to read" underneath.
 | 07 | `07_generator_lineages.ipynb` | Whose stories make the best emotion probes? E11 (quality vs identity) and E12 (scale and diversity dose-response), every number computed in-cell |
 | 08 | `08_transition_tracking_first_reads.ipynb` | Q3 first tranche: does the model track emotion transitions while reading? Full probe-bank x story-substrate grid, nulls, control arm, combined reading |
 | 09 | `09_trajectory_explorer_deepseek_arm.ipynb` | The DeepSeek-written-stories arm of 05: same figures and levers, three probe banks including E11's DeepSeek contrasts |
+| 10 | `10_the_sprint_story.ipynb` | The review synthesis: every claim with its method in plain language, its numbers computed in-cell, and its tree status, in seven acts |
+| 11 | `11_tracking_taxonomy.ipynb` | Q3.H1.E2 + E3 (exploratory): what the model tracks well vs poorly (emotion, family, VAD distance, confusions, position), then the named confusion tables, boundary-lag vs stable-relabeling timing, and probe-geometry-predicts-difficulty reads |
 
 ## Running them (laptop or the shared pod)
 

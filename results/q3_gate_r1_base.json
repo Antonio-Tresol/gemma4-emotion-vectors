@@ -1,0 +1,110 @@
+{
+  "experiment": "Q3.H1.E1 gate G + R1 (boundary-referenced tranche)",
+  "conventions": "centered cosine (story-set mean, norms_centered); W=16; N2 10k label shuffles; N1 = random bank scored identically; cue-referenced R1 twin PENDING the judge bulk pass",
+  "primary_cell": {
+    "layer": 33,
+    "bank": "corpus"
+  },
+  "true_arm": {
+    "n_stories": 3010,
+    "n_orphaned_manifest_rows": 0,
+    "gate_G": {
+      "corpus": {
+        "n_phases": 8938,
+        "per_layer": {
+          "6": {
+            "median_rank": 41.0,
+            "n2_p": 0.0,
+            "bar_rank": 17,
+            "passes": false
+          },
+          "15": {
+            "median_rank": 46.0,
+            "n2_p": 0.0,
+            "bar_rank": 17,
+            "passes": false
+          },
+          "24": {
+            "median_rank": 22.0,
+            "n2_p": 0.0,
+            "bar_rank": 17,
+            "passes": false
+          },
+          "33": {
+            "median_rank": 17.0,
+            "n2_p": 0.0,
+            "bar_rank": 17,
+            "passes": true
+          },
+          "42": {
+            "median_rank": 14.0,
+            "n2_p": 0.0,
+            "bar_rank": 17,
+            "passes": true
+          },
+          "51": {
+            "median_rank": 12.0,
+            "n2_p": 0.0,
+            "bar_rank": 17,
+            "passes": true
+          }
+        }
+      },
+      "random": {
+        "n_phases": 0
+      }
+    },
+    "r1_anticipation": {
+      "corpus": {
+        "n_transitions": 5934,
+        "per_layer": {
+          "6": {
+            "mean_lead": 0.003207720350474119,
+            "n2_p": 0.0,
+            "noise_sd": 0.004555691499263048,
+            "bar_lead": 0.002277845749631524,
+            "passes": true
+          },
+          "15": {
+            "mean_lead": 0.004212105646729469,
+            "n2_p": 0.0,
+            "noise_sd": 0.0027334154583513737,
+            "bar_lead": 0.0013667077291756868,
+            "passes": true
+          },
+          "24": {
+            "mean_lead": 0.003620769130066037,
+            "n2_p": 0.0,
+            "noise_sd": 0.0030805091373622417,
+            "bar_lead": 0.0015402545686811209,
+            "passes": true
+          },
+          "33": {
+            "mean_lead": 0.006291564553976059,
+            "n2_p": 0.0,
+            "noise_sd": 0.002888800809159875,
+            "bar_lead": 0.0014444004045799375,
+            "passes": true
+          },
+          "42": {
+            "mean_lead": 0.006179108750075102,
+            "n2_p": 0.0,
+            "noise_sd": 0.0053967866115272045,
+            "bar_lead": 0.0026983933057636023,
+            "passes": true
+          },
+          "51": {
+            "mean_lead": 0.006273208651691675,
+            "n2_p": 0.0,
+            "noise_sd": 0.007353051565587521,
+            "bar_lead": 0.0036765257827937603,
+            "passes": true
+          }
+        }
+      },
+      "random": {
+        "n_transitions": 0
+      }
+    }
+  }
+}

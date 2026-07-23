@@ -21,6 +21,34 @@ is true.
 - `python scripts/validate_research.py` — mechanical validator for both. Must exit
   0 before ending any session and before any deliverable.
 
+## Repo map (where things live, where new things go)
+
+- `TREE.md` / `RESEARCH_LOG.md` — state and history (see above). Single
+  writer per session; register experiments here BEFORE data exists.
+- `DATA.md` — the data index: every HF dataset, what it holds, and how
+  `fetch()` routes to it. Machine-readable twin: `ROUTES` in
+  `src/emotion_vectors/artifacts.py`.
+- `src/emotion_vectors/` — the installed package. Shared conventions live
+  here so they cannot drift: `q3_conventions.py` (scoring), `artifacts.py`
+  (data resolution), `taxonomy_report/` (notebook-11 exhibit library),
+  `analysis.py`, `trajectories.py`. New notebook figure code goes in a
+  module here, not inline in cells.
+- `scripts/` — runnable pipelines and scorers, one file per job; generation
+  recipes under `scripts/combined_story_gen/`. A NEW EXPERIMENT is: a TREE
+  registration, a script here, outputs under `results/`, and an entry in
+  `scripts/publish_experiment_artifacts.py` so the evidence reaches HF.
+- `results/` — the evidence tree. Small JSON evidence is git-tracked; bulky
+  npz/shards are gitignored and live on HF (fetch() bridges both). Never
+  hand-edit anything here.
+- `notebooks/` — the report, numbered in reading order with a row in
+  `notebooks/README.md`; `notebooks/archive/` is the immutable bench layer.
+  A new report notebook gets the next number, an index cell, key concepts,
+  and a how-to-read block per figure.
+- `data/papers/` (literature PDFs), `data/lexicons/` (third-party, manual
+  download), `notes/` (drafts and registration drafts).
+- `check.sh` — the repo gate (format, lint, tests, validator); the shared
+  pre-commit hook runs it.
+
 ## The workflow
 
 Phases iterate; the gates do not.
@@ -70,6 +98,35 @@ Phases iterate; the gates do not.
   that executes untrusted or generated work a workspace *outside* the
   repository; and keep a **single writer** for TREE.md and RESEARCH_LOG.md —
   subagents report findings back, the orchestrator records them.
+
+## Code and notebook conventions
+
+Distilled from working practice (and the working-agreements style of
+codeberg.org/haplesshero13/rosetta-stone); the validator does not check these,
+reviewers do:
+
+- **No machine-local absolute paths in committed code.** Path resolution lives
+  in the package (`emotion_vectors.artifacts.fetch` resolves local `results/`
+  then HF); a notebook must run unchanged on any clone.
+- **Notebook cells are load-call-show.** Analysis and figure code is written
+  as importable functions under `src/`, so it can be tested by importing and
+  calling with parameters; notebooks import, call, and narrate.
+- **Every figure is self-explanatory**: axis titles with units, legends for
+  every color encoding, titled colorbars, chance/zero reference lines, a layer
+  slider on per-layer measures, and a collapsible "How to read" block after it.
+- **Start with common words**; define each technical term before first use,
+  and never state a number in prose that is not computed in the cell beside it.
+- **Fail loudly.** No silent fallbacks or defaults; a missing input is an
+  explicit error or an explicit printed degradation, never a quiet skip.
+- **Readable code.** Descriptive names (no one-letter or cryptic
+  abbreviations), a short intention comment above every non-obvious block,
+  docstrings naming inputs/outputs, and named tensor axes (einops/jaxtyping)
+  everywhere an array changes shape.
+- **Interpretation lives in the exhibit, not in chat.** Every report section
+  ends with what the result means, the live hypotheses (labeled as
+  hypotheses) each paired with the experiment that would decide it, and the
+  open questions. If an explanation was good enough to give a collaborator
+  in conversation, it belongs in the notebook before they have to ask.
 
 ## Non-negotiables
 
