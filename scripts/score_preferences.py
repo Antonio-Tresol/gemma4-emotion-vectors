@@ -81,6 +81,17 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pref-dir", type=Path, default=PREF_DIR)
     parser.add_argument("--experiment", default="Q1.H3.E1")
+    parser.add_argument(
+        "--probe-bundle",
+        type=Path,
+        default=PROBE_BUNDLE,
+        help="emotion_means.npz to score with (E4b rescore: the -postfix bundle)",
+    )
+    parser.add_argument(
+        "--out-name",
+        default="scores.json",
+        help="output filename inside --pref-dir (rescores must not overwrite evidence)",
+    )
     args = parser.parse_args()
     pref_dir = args.pref_dir
     bundle = np.load(pref_dir / "preferences.npz")
@@ -98,7 +109,7 @@ def main() -> int:
     pos_mean = float(np.mean([by_category[c] for c in POSITIVE]))
     neg_mean = float(np.mean([by_category[c] for c in NEGATIVE]))
 
-    probe_bundle = np.load(PROBE_BUNDLE, allow_pickle=True)
+    probe_bundle = np.load(args.probe_bundle, allow_pickle=True)
     emotions = list(map(str, probe_bundle["emotions"]))
     probe_layers = list(map(int, probe_bundle["layers"]))
     means = probe_bundle["means"].astype(np.float64)
@@ -122,6 +133,7 @@ def main() -> int:
 
     out = {
         "experiment": args.experiment,
+        "probe_bundle": str(args.probe_bundle),
         "n_activities": len(meta),
         "n_ordered_pairs": int(bundle["ab_logits"].shape[0]),
         "elo_by_category": by_category,
@@ -146,7 +158,7 @@ def main() -> int:
         "p2_best_probe_emotion": emotions[matched[best["argmax_probe_index"]]],
         "probe_emotions_matched": [emotions[i] for i in matched],
     }
-    out_file = pref_dir / "scores.json"
+    out_file = pref_dir / args.out_name
     out_file.write_text(json.dumps(out, indent=2) + "\n")
     print(
         f"P1 {'PASS' if out['p1_pass'] else 'FAIL'}: positive {pos_mean:.0f} vs negative {neg_mean:.0f}"
