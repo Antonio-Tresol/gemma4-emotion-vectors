@@ -21,6 +21,34 @@ is true.
 - `python scripts/validate_research.py` — mechanical validator for both. Must exit
   0 before ending any session and before any deliverable.
 
+## Repo map (where things live, where new things go)
+
+- `TREE.md` / `RESEARCH_LOG.md` — state and history (see above). Single
+  writer per session; register experiments here BEFORE data exists.
+- `DATA.md` — the data index: every HF dataset, what it holds, and how
+  `fetch()` routes to it. Machine-readable twin: `ROUTES` in
+  `src/emotion_vectors/artifacts.py`.
+- `src/emotion_vectors/` — the installed package. Shared conventions live
+  here so they cannot drift: `q3_conventions.py` (scoring), `artifacts.py`
+  (data resolution), `taxonomy_report/` (notebook-11 exhibit library),
+  `analysis.py`, `trajectories.py`. New notebook figure code goes in a
+  module here, not inline in cells.
+- `scripts/` — runnable pipelines and scorers, one file per job; generation
+  recipes under `scripts/combined_story_gen/`. A NEW EXPERIMENT is: a TREE
+  registration, a script here, outputs under `results/`, and an entry in
+  `scripts/publish_experiment_artifacts.py` so the evidence reaches HF.
+- `results/` — the evidence tree. Small JSON evidence is git-tracked; bulky
+  npz/shards are gitignored and live on HF (fetch() bridges both). Never
+  hand-edit anything here.
+- `notebooks/` — the report, numbered in reading order with a row in
+  `notebooks/README.md`; `notebooks/archive/` is the immutable bench layer.
+  A new report notebook gets the next number, an index cell, key concepts,
+  and a how-to-read block per figure.
+- `data/papers/` (literature PDFs), `data/lexicons/` (third-party, manual
+  download), `notes/` (drafts and registration drafts).
+- `check.sh` — the repo gate (format, lint, tests, validator); the shared
+  pre-commit hook runs it.
+
 ## The workflow
 
 Phases iterate; the gates do not.
