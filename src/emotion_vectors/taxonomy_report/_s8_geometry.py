@@ -116,43 +116,57 @@ def _s8_pair_confusion(
     probe_cos: Float[np.ndarray, "layers bank_probes bank_probes"],
     vad_dist: Float[np.ndarray, "bank_probes bank_probes"],
     names: list[str],
-) -> tuple[dict[str, float], list[str]]:
-    """Sub-read (b): over the 132 ordered pairs at the primary layer, does
-    probe cosine predict WHICH wrong answer wins, beyond VAD closeness?
+) -> tuple[LayerStats, list[str]]:
+    """Sub-read (b), per layer: does probe cosine predict WHICH wrong answer
+    wins, beyond human VAD closeness - and by how much, concretely?
 
-    Returns (stats with the raw Spearmans and both rank partials, printed
-    lines). The probe-cos partial controlling VAD is the model-idiosyncratic
-    read.
-    """
+    For every layer: the raw Spearmans, both rank partials, and a concrete
+    contrast (mean confusion rate among the most-similar quartile of pairs
+    vs the least-similar quartile). Returns (stats_by_layer, printed lines
+    for the primary layer)."""
     _, winner, phase_rows = gate
-    primary_pos = LAYERS.index(PRIMARY_LAYER)
-    confusion_rate, pair_cos, vad_closeness = [], [], []
-    for emotion_pos, emotion in enumerate(names):
-        phase_idx = [pos for pos, row in enumerate(phase_rows) if row["emotion"] == emotion]
-        report_counts = np.bincount(winner[phase_idx, primary_pos], minlength=len(names))
-        for other_pos in range(len(names)):
-            if other_pos == emotion_pos:
-                continue
-            confusion_rate.append(report_counts[other_pos] / len(phase_idx))
-            pair_cos.append(probe_cos[primary_pos, emotion_pos, other_pos])
-            vad_closeness.append(-vad_dist[emotion_pos, other_pos])
-    confusion_rate, pair_cos, vad_closeness = map(
-        np.array, (confusion_rate, pair_cos, vad_closeness)
-    )
-    stats = {
-        "spearman_cos": float(spearmanr(confusion_rate, pair_cos).statistic),
-        "spearman_vad": float(spearmanr(confusion_rate, vad_closeness).statistic),
-        "partial_cos_given_vad": rank_partial(confusion_rate, pair_cos, vad_closeness),
-        "partial_vad_given_cos": rank_partial(confusion_rate, vad_closeness, pair_cos),
-    }
+    stats: LayerStats = {}
+    for layer_pos, layer in enumerate(LAYERS):
+        confusion_rate, pair_cos, vad_closeness = [], [], []
+        for emotion_pos, emotion in enumerate(names):
+            phase_idx = [pos for pos, row in enumerate(phase_rows) if row["emotion"] == emotion]
+            report_counts = np.bincount(winner[phase_idx, layer_pos], minlength=len(names))
+            for other_pos in range(len(names)):
+                if other_pos == emotion_pos:
+                    continue
+                confusion_rate.append(report_counts[other_pos] / len(phase_idx))
+                pair_cos.append(probe_cos[layer_pos, emotion_pos, other_pos])
+                vad_closeness.append(-vad_dist[emotion_pos, other_pos])
+        confusion_rate, pair_cos, vad_closeness = map(
+            np.array, (confusion_rate, pair_cos, vad_closeness)
+        )
+        # concrete contrast: are the model's "similar" pairs confused more?
+        quartile = len(pair_cos) // 4
+        by_similarity = np.argsort(pair_cos)
+        stats[layer] = {
+            "spearman_cos": float(spearmanr(confusion_rate, pair_cos).statistic),
+            "spearman_vad": float(spearmanr(confusion_rate, vad_closeness).statistic),
+            "partial_cos_given_vad": rank_partial(confusion_rate, pair_cos, vad_closeness),
+            "partial_vad_given_cos": rank_partial(confusion_rate, vad_closeness, pair_cos),
+            "similar_quartile_rate": float(confusion_rate[by_similarity[-quartile:]].mean()),
+            "dissimilar_quartile_rate": float(confusion_rate[by_similarity[:quartile]].mean()),
+            "overall_rate": float(confusion_rate.mean()),
+            "n_quartile": int(quartile),
+        }
+    primary = stats[PRIMARY_LAYER]
+    ratio = primary["similar_quartile_rate"] / max(primary["dissimilar_quartile_rate"], 1e-9)
     lines = [
         "",
         f"(b) which wrong answer wins (132 pairs, layer {PRIMARY_LAYER}):",
-        f"  confusion ~ probe cos          spearman {stats['spearman_cos']:+.2f}",
-        f"  confusion ~ VAD closeness      spearman {stats['spearman_vad']:+.2f}",
-        f"  confusion ~ probe cos | VAD    partial  {stats['partial_cos_given_vad']:+.2f}"
+        f"  confusion ~ probe cos          spearman {primary['spearman_cos']:+.2f}",
+        f"  confusion ~ VAD closeness      spearman {primary['spearman_vad']:+.2f}",
+        f"  confusion ~ probe cos | VAD    partial  {primary['partial_cos_given_vad']:+.2f}"
         "   <- the model-idiosyncratic read",
-        f"  confusion ~ VAD | probe cos    partial  {stats['partial_vad_given_cos']:+.2f}",
+        f"  confusion ~ VAD | probe cos    partial  {primary['partial_vad_given_cos']:+.2f}",
+        f"  concrete contrast: the model's most-similar pair quartile is confused "
+        f"{primary['similar_quartile_rate']:.1%} of the time vs "
+        f"{primary['dissimilar_quartile_rate']:.1%} for the least-similar quartile "
+        f"({ratio:.1f}x)",
     ]
     return stats, lines
 
@@ -211,103 +225,100 @@ def _s8_transitions(
     return stats, lines
 
 
-def _s8_pair_points(
-    gate: GateRead,
-    probe_cos: Float[np.ndarray, "layers bank_probes bank_probes"],
-    names: list[str],
-    layer_pos: int,
-) -> tuple[list[float], list[float]]:
-    """(probe cosine, confusion rate) per ordered emotion pair at one layer,
-    the left S8 panel's point cloud."""
-    _, winner, phase_rows = gate
-    cosines, rates = [], []
-    for emotion_pos, emotion in enumerate(names):
-        phase_idx = [pos for pos, row in enumerate(phase_rows) if row["emotion"] == emotion]
-        report_counts = np.bincount(winner[phase_idx, layer_pos], minlength=len(names))
-        for other_pos in range(len(names)):
-            if other_pos != emotion_pos:
-                rates.append(report_counts[other_pos] / len(phase_idx))
-                cosines.append(probe_cos[layer_pos, emotion_pos, other_pos])
-    return cosines, rates
+def _s8_add_verdict_traces(fig: go.Figure, layer_stats: dict[str, float]) -> None:
+    """One layer's two verdict bars: the predictor face-off (left panel) and
+    the similar-vs-dissimilar quartile contrast (right panel)."""
+    predictor_labels = [
+        "model similarity<br>(raw)",
+        "human similarity<br>(raw)",
+        "model, beyond<br>human (partial)",
+        "human, beyond<br>model (partial)",
+    ]
+    # blue = the model's ruler, green = the human ruler, in both raw and partial form
+    predictor_colors = ["#4c78a8", "#54a24b", "#4c78a8", "#54a24b"]
+    fig.add_trace(
+        go.Bar(
+            x=predictor_labels,
+            y=[
+                layer_stats["spearman_cos"],
+                layer_stats["spearman_vad"],
+                layer_stats["partial_cos_given_vad"],
+                layer_stats["partial_vad_given_cos"],
+            ],
+            marker_color=predictor_colors,
+            showlegend=False,
+        ),
+        row=1,
+        col=1,
+    )
+    fig.add_trace(
+        go.Bar(
+            x=["most-similar quartile<br>(by probe cosine)", "least-similar quartile"],
+            y=[layer_stats["similar_quartile_rate"], layer_stats["dissimilar_quartile_rate"]],
+            marker_color=["#4c78a8", "#9d9d9d"],
+            text=[
+                f"{layer_stats['similar_quartile_rate']:.1%}",
+                f"{layer_stats['dissimilar_quartile_rate']:.1%}",
+            ],
+            textposition="outside",
+            showlegend=False,
+        ),
+        row=1,
+        col=2,
+    )
 
 
-def _s8_lead_points(
-    lead_read: LeadRead,
-    probe_cos: Float[np.ndarray, "layers bank_probes bank_probes"],
-    names: list[str],
-    layer_pos: int,
-) -> tuple[list[float], list[float]]:
-    """(cos(from, to), R1 lead) per transition whose outgoing emotion is in
-    the bank at one layer, the right S8 panel's point cloud."""
-    leads, transition_rows = lead_read
-    lead_cosines, lead_values = [], []
-    for trans_pos, transition in enumerate(transition_rows):
-        if transition["from_emotion"] in names:
-            lead_cosines.append(
-                probe_cos[
-                    layer_pos,
-                    names.index(transition["from_emotion"]),
-                    names.index(transition["to_emotion"]),
-                ]
-            )
-            lead_values.append(leads[trans_pos, layer_pos])
-    return lead_cosines, lead_values
+def _s8_verdict_figure(pair_stats: LayerStats) -> go.Figure:
+    """The two S8 verdict panels with a layer slider.
 
-
-def _s8_scatter_figure(
-    arms: Arms,
-    gate: GateRead,
-    probe_cos: Float[np.ndarray, "layers bank_probes bank_probes"],
-    names: list[str],
-) -> go.Figure:
-    """The two S8 pair-level scatter panels with a layer slider: confusion
-    rate vs probe cosine (ordered pairs), and R1 lead vs cos(from, to)."""
-    lead_read = true_leads(arms, "it_v2", "selfgen")
+    Left: how well each candidate ruler predicts which wrong emotion wins
+    (raw and unique-contribution rank correlations, zero = no power).
+    Right: the concrete contrast - mean confusion rate among the model's
+    most-similar pair quartile vs the least-similar quartile, against the
+    all-pairs average."""
     fig = make_subplots(
         rows=1,
         cols=2,
+        horizontal_spacing=0.11,
         subplot_titles=[
-            "confusion rate vs probe cosine (pairs)",
-            "anticipation lead vs cos(from, to)",
+            "which ruler predicts the confusions?",
+            "how much more are 'similar' pairs confused?",
         ],
     )
-    for layer_pos in range(len(LAYERS)):
-        cosines, rates = _s8_pair_points(gate, probe_cos, names, layer_pos)
-        fig.add_trace(
-            go.Scatter(
-                x=cosines,
-                y=rates,
-                mode="markers",
-                showlegend=False,
-                marker=dict(size=6, color="#4c78a8", opacity=0.7),
-            ),
-            row=1,
-            col=1,
-        )
-        lead_cosines, lead_values = _s8_lead_points(lead_read, probe_cos, names, layer_pos)
-        fig.add_trace(
-            go.Scatter(
-                x=lead_cosines,
-                y=lead_values,
-                mode="markers",
-                showlegend=False,
-                marker=dict(size=5, color="#f58518", opacity=0.5),
-            ),
-            row=1,
-            col=2,
-        )
-    fig.update_xaxes(
-        title_text="cosine between the two probes (model-side similarity)", row=1, col=1
+    for layer in LAYERS:
+        _s8_add_verdict_traces(fig, pair_stats[layer])
+    fig.update_yaxes(title="rank correlation with confusion rate", range=[-0.3, 0.5], row=1, col=1)
+    fig.update_yaxes(title="mean P(model reports that wrong emotion)", row=1, col=2)
+    fig.add_hline(
+        y=0,
+        line_color="#888",
+        line_width=1,
+        row=1,
+        col=1,
+        annotation_text="0 = no predictive power",
+        annotation_position="bottom right",
     )
-    fig.update_yaxes(title_text="P(model reports this wrong emotion | target)", row=1, col=1)
-    fig.update_xaxes(title_text="cos(from-probe, to-probe) of the transition", row=1, col=2)
-    fig.update_yaxes(title_text="R1 lead of the incoming emotion (cosine units)", row=1, col=2)
-    fig.add_hline(y=0, line_color="#888", line_width=1, row=1, col=2)
+    overall = pair_stats[PRIMARY_LAYER]["overall_rate"]
+    fig.add_hline(
+        y=overall,
+        line_dash="dot",
+        line_color="#888",
+        row=1,
+        col=2,
+        annotation_text=f"all-pairs average {overall:.1%}",
+        annotation_position="top right",
+    )
     fig.update_layout(
-        height=450,
-        title="S8: does the model's own probe geometry predict its difficulties? "
-        "(it_v2, selfgen bank; each left point = one ordered emotion pair, "
-        "each right point = one transition)",
+        height=520,
+        margin=dict(t=130, b=90),
+        title=dict(
+            text="Whose notion of 'similar emotions' predicts the tracker's mistakes?"
+            "<br><sup>blue = the model's ruler (probe cosine), green = the human ruler "
+            "(NRC valence-arousal closeness); 'partial' = what each predicts after "
+            "removing the other | 132 ordered emotion pairs, selfgen probes, "
+            "Gemma-written stories</sup>",
+            y=0.97,
+        ),
     )
     layer_slider(fig, traces_per_layer=2)
     return fig
@@ -319,7 +330,7 @@ def s8_geometry_figure(arms: Arms, vad: Vad) -> tuple[go.Figure, dict[str, objec
     Reconstructs the exact selfgen probe bank, then runs the three registered
     sub-reads: (a) crowding vs top-1 rate per layer, (b) pairwise probe
     cosine vs confusion rate with VAD rank partials, (c) transition
-    difficulty vs cos(from, to). Returns the two-panel scatter figure (layer
+    difficulty vs cos(from, to). Returns the two-panel verdict figure (layer
     slider) and ``stats = {"crowding", "pairs", "transitions", "lines"}``
     where ``lines`` is the exact printed block.
     """
@@ -342,7 +353,7 @@ def s8_geometry_figure(arms: Arms, vad: Vad) -> tuple[go.Figure, dict[str, objec
     lines += pair_lines
     transition_stats, transition_lines = _s8_transitions(arms, gate, probe_cos, names)
     lines += transition_lines
-    fig = _s8_scatter_figure(arms, gate, probe_cos, names)
+    fig = _s8_verdict_figure(pair_stats)
     stats = {
         "crowding": crowding_stats,
         "pairs": pair_stats,

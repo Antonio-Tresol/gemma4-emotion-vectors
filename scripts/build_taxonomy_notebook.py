@@ -573,21 +573,28 @@ split inherits the family x emotion-pool confound.
 """)
 
 md("""
-## S8. Does probe geometry predict difficulty?
+## S8. When the tracker is wrong, whose "similar" predicts the mistake?
 
-**Question: does the model's own similarity structure between emotion probes
-predict where tracking fails, beyond what human affective distance already
-predicts?**
+**Question: which ruler predicts WHICH wrong emotion wins - the model's own
+geometry (how close two probe directions are, by cosine) or human affect
+ratings (how close two emotions sit in NRC valence-arousal space)?**
+
+The two rulers agree with each other substantially (the first printed line
+quantifies it), so raw correlations cannot separate them. Partial
+correlations can: each ruler's predictive power AFTER removing what it
+shares with the other. Whatever survives only on the model's side is, by
+construction, idiosyncratic to the model.
 
 **Method, plainly.** The exact probe bank is reconstructed (unit contrast
-probes, per-bank centering pool, verified against the recorded label order),
-and the within-bank probe-probe cosines are the model-side notion of "these
-emotions are similar". Three sub-reads, each with NRC VAD distance as the
-human-side competing predictor: (a) crowding, does a probe with a high mean
-cosine to the other 11 track worse; (b) named confusions, does pairwise probe
-cosine predict WHICH wrong answer wins, with the VAD partial removed (the
-model-idiosyncratic read); (c) transitions, are transitions between similar
-probes harder to anticipate and recover from, since similar probes leave less
+probes, per-bank centering pool, verified against the recorded label order).
+For each of the 132 ordered emotion pairs (target, wrong answer), count how
+often that wrong answer wins phases tagged with the target; correlate those
+rates with each ruler, then take the two partials. The right panel makes
+the size concrete: mean confusion rate among the quartile of pairs the
+model's probes rate most similar vs the least-similar quartile. Two smaller
+sub-reads print above the figure: (a) crowding, does a probe with a high
+mean cosine to the other 11 track worse; (c) transitions, are switches
+between similar probes harder to anticipate, since they leave less
 contrast to detect.
 """)
 
@@ -600,33 +607,35 @@ fig.show()
 """)
 
 md("""
-<details><summary><b>How to read this output</b></summary>
+<details><summary><b>How to read this figure</b></summary>
 
-The first printed line establishes that the two candidate predictors are
-themselves correlated (probe cosine vs VAD closeness over the 132 ordered
-emotion pairs of the battery 12), which is why partial correlations, not raw
-ones, carry the conclusion. Sub-read (a) prints one Spearman rho per layer
-over the 12 emotions: mean cosine to the other 11 probes (crowding) against
-top-1 rate; a clearly negative rho supports "crowded probes track worse".
-Sub-read (b), at the primary layer 33, correlates the 132 pair-level
-confusion rates with probe cosine and with VAD closeness, then gives each
-partial controlling the other: the probe-cosine partial beyond VAD is the
-model-idiosyncratic read, geometry predicting confusions that human affective
-similarity does not explain. Sub-read (c) correlates each transition's R1
-lead and its post-boundary gate rank with cos(from-probe, to-probe); a
-positive rank correlation means similar probes leave less contrast and make
-the switch harder to see. In the figure, left panel: one dot is one ordered
-emotion pair, x its probe cosine at the slider's layer, y the rate at which
-that wrong emotion wins the pair's tagged phases; a rising cloud says similar
-probes are confused more. Right panel: one dot is one transition, x the
-cosine between its from and to probes, y its R1 lead. The slider scrubs the
-six extracted layers (6, 15, 24, 33, 42, 51), default 33; the dots carry no
-error bars, the printed correlations summarize them. Registered caveats: the
-selfgen and deepseek banks are centered on their own 12-emotion pool, so
-within-bank cosines are mechanically shifted negative and only their relative
-ordering is meaningful, never the absolute values; probe cosine and VAD
-distance are correlated (hence the partials); and per-emotion n is modest, so
-pair-level confusion rates are noisy.
+Left panel: four bars, one per way of predicting the confusions. Blue bars
+use the model's ruler (probe cosine), green bars the human ruler (NRC
+valence-arousal closeness). The first two are raw rank correlations; the
+last two are partials, each ruler's power after removing the other. The
+marked zero line means no predictive power; a good ruler stands clearly
+above it, a bar near zero fails. The observed pattern at the primary layer:
+the model's ruler keeps most of its height in partial form while the human
+ruler drops to about zero, so the model confuses what IT represents as
+similar, and human similarity only appeared to matter because the two
+rulers overlap.
+
+Right panel: the same fact in concrete units. Bars are the average
+probability that a wrong emotion wins a phase, for the quartile of pairs
+the model's probes rate most similar vs the least-similar quartile; the
+dotted line is the all-pairs average. A large gap says geometry matters in
+practice, not just in rank order.
+
+The printed block above the figure carries the two smaller sub-reads:
+(a) crowding, one Spearman rho per layer over only 12 emotions, so read it
+as directional; (c) transitions, correlations of each transition's
+anticipation lead and post-boundary rank with cos(from-probe, to-probe),
+n=70. The slider recomputes both panels at each of the six extracted layers
+(default 33, the registered primary). Registered caveats: the selfgen and
+deepseek banks are centered on their own 12-emotion pool, so within-bank
+cosines are shifted negative and only their ordering is meaningful; and
+pair-level confusion rates ride on modest per-emotion n, so treat small
+bar differences as noise.
 
 </details>
 """)
