@@ -12,6 +12,9 @@ verdict and has a collapsible "How to read" underneath.
 | 04 | `04_paper_plot_parity.ipynb` | Where does every figure from the two source papers stand? |
 | 05 | `05_trajectory_explorer_instruct.ipynb` | Q3 substrate: per-token emotion trajectories over three-emotion stories (exhibits only; reads pending registration) |
 | 06 | `06_trajectory_explorer_base.ipynb` | The base-model arm of 05: same corpus, same figures, same controls, base-lineage probes |
+| 07 | `07_generator_lineages.ipynb` | Whose stories make the best emotion probes? E11 (quality vs identity) and E12 (scale and diversity dose-response), every number computed in-cell |
+| 08 | `08_transition_tracking_first_reads.ipynb` | Q3 first tranche: does the model track emotion transitions while reading? Full probe-bank x story-substrate grid, nulls, control arm, combined reading |
+| 09 | `09_trajectory_explorer_deepseek_arm.ipynb` | The DeepSeek-written-stories arm of 05: same figures and levers, three probe banks including E11's DeepSeek contrasts |
 
 ## Running them (laptop or the shared pod)
 
