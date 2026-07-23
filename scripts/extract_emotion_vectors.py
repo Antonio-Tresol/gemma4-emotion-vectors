@@ -65,6 +65,12 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help=f"{SMOKE_EMOTIONS} emotions x {SMOKE_STORIES_PER_EMOTION} stories",
     )
+    parser.add_argument(
+        "--chat-template",
+        action="store_true",
+        help="wrap each story as a user turn via the model's chat template before "
+        "extraction (raw-vs-chat audit arm; raw text is the reference's convention)",
+    )
     parser.add_argument("--publish", action="store_true", help="upload to HF after extraction")
     parser.add_argument("--publish-only", action="store_true")
     parser.add_argument("--hf-repo", default=None, help="dataset repo id; default <you>/emotion-…")
@@ -84,7 +90,28 @@ def load_corpus(args: argparse.Namespace) -> dict[str, list[str]]:
             emotion: emotions_data[emotion][:SMOKE_STORIES_PER_EMOTION]
             for emotion in list(emotions_data)[:SMOKE_EMOTIONS]
         }
+    if args.chat_template:
+        emotions_data = {
+            emotion: wrap_chat(args.model, stories) for emotion, stories in emotions_data.items()
+        }
     return emotions_data
+
+
+def wrap_chat(model_name: str, stories: list[str]) -> list[str]:
+    """Each story as a user turn under the model's chat template. The rendered
+    string starts with the BOS text, which the pipeline's tokenizer call would
+    add again (add_special_tokens default) — strip it to avoid a double BOS."""
+    from transformers import AutoTokenizer  # noqa: PLC0415  (only needed for this audit arm)
+
+    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+    wrapped = [
+        tokenizer.apply_chat_template(
+            [{"role": "user", "content": story}], tokenize=False, add_generation_prompt=False
+        )
+        for story in stories
+    ]
+    bos = tokenizer.bos_token or ""
+    return [w.removeprefix(bos) for w in wrapped]
 
 
 def build_settings(args: argparse.Namespace, out_dir: Path) -> RunSettings:
@@ -105,6 +132,7 @@ def build_settings(args: argparse.Namespace, out_dir: Path) -> RunSettings:
         seed=args.seed,
         smoke=args.smoke,
         git_commit=git_commit(),
+        chat_template=args.chat_template,
     )
 
 
