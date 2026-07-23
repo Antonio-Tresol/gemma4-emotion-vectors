@@ -1,0 +1,28 @@
+{
+  "results_dir": "results/neutral_vectors_it_postfix",
+  "model": "google/gemma-4-31b-it",
+  "dataset": "results/neutral_transcripts_it/dialogues_grouped.jsonl",
+  "extraction_git_commit": "c6bd8ea",
+  "token_offset": 50,
+  "batch_size": 4,
+  "predict_only": false,
+  "n_stories_scored": 128,
+  "n_predictions_coincide_ambiguous": 34,
+  "n_tokens_match_leftpad_buggy": 0,
+  "n_tokens_match_rightpad_intended": 94,
+  "n_tokens_match_neither": 0,
+  "mismatch_examples": [],
+  "leak_share_mean": 0.0,
+  "leak_share_min": 0.0,
+  "leak_share_max": 0.0,
+  "per_emotion": {
+    "neutral": {
+      "n_stories": 128,
+      "tokens_pooled": 15658,
+      "tokens_intended": 15658,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    }
+  },
+  "note": "leak_share = fraction of each emotion's pooled token mass that the registered method (skip first TOKEN_OFFSET story tokens) says to exclude but the left-padding bug included. Activation-space impact needs the GPU re-extraction (E4b, pod)."
+}

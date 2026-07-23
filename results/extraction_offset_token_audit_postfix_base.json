@@ -1,0 +1,1218 @@
+{
+  "results_dir": "results/emotion_vectors_postfix",
+  "model": "google/gemma-4-31b",
+  "dataset": "snae/emotion_stories_gemma_4_4B",
+  "extraction_git_commit": "c6bd8ea",
+  "token_offset": 50,
+  "batch_size": 4,
+  "predict_only": false,
+  "n_stories_scored": 1539,
+  "n_predictions_coincide_ambiguous": 520,
+  "n_tokens_match_leftpad_buggy": 0,
+  "n_tokens_match_rightpad_intended": 1019,
+  "n_tokens_match_neither": 0,
+  "mismatch_examples": [],
+  "leak_share_mean": 0.0,
+  "leak_share_min": 0.0,
+  "leak_share_max": 0.0,
+  "per_emotion": {
+    "brooding": {
+      "n_stories": 9,
+      "tokens_pooled": 1317,
+      "tokens_intended": 1317,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "gloomy": {
+      "n_stories": 9,
+      "tokens_pooled": 1122,
+      "tokens_intended": 1122,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "reflective": {
+      "n_stories": 9,
+      "tokens_pooled": 1092,
+      "tokens_intended": 1092,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "vulnerable": {
+      "n_stories": 9,
+      "tokens_pooled": 1484,
+      "tokens_intended": 1484,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "sullen": {
+      "n_stories": 9,
+      "tokens_pooled": 1018,
+      "tokens_intended": 1018,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "sad": {
+      "n_stories": 9,
+      "tokens_pooled": 815,
+      "tokens_intended": 815,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "dispirited": {
+      "n_stories": 9,
+      "tokens_pooled": 1366,
+      "tokens_intended": 1366,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "melancholy": {
+      "n_stories": 9,
+      "tokens_pooled": 1471,
+      "tokens_intended": 1471,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "troubled": {
+      "n_stories": 9,
+      "tokens_pooled": 921,
+      "tokens_intended": 921,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "unhappy": {
+      "n_stories": 9,
+      "tokens_pooled": 1260,
+      "tokens_intended": 1260,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "hurt": {
+      "n_stories": 9,
+      "tokens_pooled": 1031,
+      "tokens_intended": 1031,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "depressed": {
+      "n_stories": 9,
+      "tokens_pooled": 1321,
+      "tokens_intended": 1321,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "sensitive": {
+      "n_stories": 9,
+      "tokens_pooled": 1337,
+      "tokens_intended": 1337,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "weary": {
+      "n_stories": 9,
+      "tokens_pooled": 974,
+      "tokens_intended": 974,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "serene": {
+      "n_stories": 9,
+      "tokens_pooled": 1333,
+      "tokens_intended": 1333,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "unsettled": {
+      "n_stories": 9,
+      "tokens_pooled": 1376,
+      "tokens_intended": 1376,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "miserable": {
+      "n_stories": 9,
+      "tokens_pooled": 1665,
+      "tokens_intended": 1665,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "heartbroken": {
+      "n_stories": 9,
+      "tokens_pooled": 1165,
+      "tokens_intended": 1165,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "upset": {
+      "n_stories": 9,
+      "tokens_pooled": 1158,
+      "tokens_intended": 1158,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "uneasy": {
+      "n_stories": 9,
+      "tokens_pooled": 791,
+      "tokens_intended": 791,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "rejuvenated": {
+      "n_stories": 9,
+      "tokens_pooled": 1449,
+      "tokens_intended": 1449,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "droopy": {
+      "n_stories": 9,
+      "tokens_pooled": 832,
+      "tokens_intended": 832,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "thankful": {
+      "n_stories": 9,
+      "tokens_pooled": 1013,
+      "tokens_intended": 1013,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "fulfilled": {
+      "n_stories": 9,
+      "tokens_pooled": 1483,
+      "tokens_intended": 1483,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "peaceful": {
+      "n_stories": 9,
+      "tokens_pooled": 1479,
+      "tokens_intended": 1479,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "shaken": {
+      "n_stories": 9,
+      "tokens_pooled": 991,
+      "tokens_intended": 991,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "distressed": {
+      "n_stories": 9,
+      "tokens_pooled": 1168,
+      "tokens_intended": 1168,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "listless": {
+      "n_stories": 9,
+      "tokens_pooled": 1013,
+      "tokens_intended": 1013,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "awestruck": {
+      "n_stories": 9,
+      "tokens_pooled": 1619,
+      "tokens_intended": 1619,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "worthless": {
+      "n_stories": 9,
+      "tokens_pooled": 983,
+      "tokens_intended": 983,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "stuck": {
+      "n_stories": 9,
+      "tokens_pooled": 1444,
+      "tokens_intended": 1444,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "lonely": {
+      "n_stories": 9,
+      "tokens_pooled": 1594,
+      "tokens_intended": 1594,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "rattled": {
+      "n_stories": 9,
+      "tokens_pooled": 832,
+      "tokens_intended": 832,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "grateful": {
+      "n_stories": 9,
+      "tokens_pooled": 1217,
+      "tokens_intended": 1217,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "worn out": {
+      "n_stories": 9,
+      "tokens_pooled": 1144,
+      "tokens_intended": 1144,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "disturbed": {
+      "n_stories": 9,
+      "tokens_pooled": 879,
+      "tokens_intended": 879,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "inspired": {
+      "n_stories": 9,
+      "tokens_pooled": 1140,
+      "tokens_intended": 1140,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "hope": {
+      "n_stories": 9,
+      "tokens_pooled": 963,
+      "tokens_intended": 963,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "tormented": {
+      "n_stories": 9,
+      "tokens_pooled": 957,
+      "tokens_intended": 957,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "empathetic": {
+      "n_stories": 9,
+      "tokens_pooled": 1552,
+      "tokens_intended": 1552,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "sentimental": {
+      "n_stories": 9,
+      "tokens_pooled": 1281,
+      "tokens_intended": 1281,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "aroused": {
+      "n_stories": 9,
+      "tokens_pooled": 1002,
+      "tokens_intended": 1002,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "anxious": {
+      "n_stories": 9,
+      "tokens_pooled": 1372,
+      "tokens_intended": 1372,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "worried": {
+      "n_stories": 9,
+      "tokens_pooled": 1345,
+      "tokens_intended": 1345,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "grief-stricken": {
+      "n_stories": 9,
+      "tokens_pooled": 1128,
+      "tokens_intended": 1128,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "stressed": {
+      "n_stories": 9,
+      "tokens_pooled": 1454,
+      "tokens_intended": 1454,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "unnerved": {
+      "n_stories": 9,
+      "tokens_pooled": 1022,
+      "tokens_intended": 1022,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "overwhelmed": {
+      "n_stories": 9,
+      "tokens_pooled": 1202,
+      "tokens_intended": 1202,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "trapped": {
+      "n_stories": 9,
+      "tokens_pooled": 1109,
+      "tokens_intended": 1109,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "on edge": {
+      "n_stories": 9,
+      "tokens_pooled": 934,
+      "tokens_intended": 934,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "resigned": {
+      "n_stories": 9,
+      "tokens_pooled": 851,
+      "tokens_intended": 851,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "tense": {
+      "n_stories": 9,
+      "tokens_pooled": 1210,
+      "tokens_intended": 1210,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "scared": {
+      "n_stories": 9,
+      "tokens_pooled": 1037,
+      "tokens_intended": 1037,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "nervous": {
+      "n_stories": 9,
+      "tokens_pooled": 1631,
+      "tokens_intended": 1631,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "safe": {
+      "n_stories": 9,
+      "tokens_pooled": 1242,
+      "tokens_intended": 1242,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "sorry": {
+      "n_stories": 9,
+      "tokens_pooled": 1167,
+      "tokens_intended": 1167,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "afraid": {
+      "n_stories": 9,
+      "tokens_pooled": 949,
+      "tokens_intended": 949,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "sympathetic": {
+      "n_stories": 9,
+      "tokens_pooled": 1340,
+      "tokens_intended": 1340,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "relieved": {
+      "n_stories": 9,
+      "tokens_pooled": 1059,
+      "tokens_intended": 1059,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "compassionate": {
+      "n_stories": 9,
+      "tokens_pooled": 1271,
+      "tokens_intended": 1271,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "nostalgic": {
+      "n_stories": 9,
+      "tokens_pooled": 1475,
+      "tokens_intended": 1475,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "frightened": {
+      "n_stories": 9,
+      "tokens_pooled": 987,
+      "tokens_intended": 987,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "satisfied": {
+      "n_stories": 9,
+      "tokens_pooled": 970,
+      "tokens_intended": 970,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "restless": {
+      "n_stories": 9,
+      "tokens_pooled": 2128,
+      "tokens_intended": 2128,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "hopeful": {
+      "n_stories": 9,
+      "tokens_pooled": 1059,
+      "tokens_intended": 1059,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "loving": {
+      "n_stories": 9,
+      "tokens_pooled": 997,
+      "tokens_intended": 997,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "alert": {
+      "n_stories": 9,
+      "tokens_pooled": 1342,
+      "tokens_intended": 1342,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "docile": {
+      "n_stories": 9,
+      "tokens_pooled": 1053,
+      "tokens_intended": 1053,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "refreshed": {
+      "n_stories": 9,
+      "tokens_pooled": 1075,
+      "tokens_intended": 1075,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "amazed": {
+      "n_stories": 9,
+      "tokens_pooled": 1028,
+      "tokens_intended": 1028,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "content": {
+      "n_stories": 9,
+      "tokens_pooled": 907,
+      "tokens_intended": 907,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "infatuated": {
+      "n_stories": 9,
+      "tokens_pooled": 1093,
+      "tokens_intended": 1093,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "calm": {
+      "n_stories": 9,
+      "tokens_pooled": 1603,
+      "tokens_intended": 1603,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "grumpy": {
+      "n_stories": 9,
+      "tokens_pooled": 1228,
+      "tokens_intended": 1228,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "sluggish": {
+      "n_stories": 9,
+      "tokens_pooled": 1705,
+      "tokens_intended": 1705,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "panicked": {
+      "n_stories": 9,
+      "tokens_pooled": 1173,
+      "tokens_intended": 1173,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "invigorated": {
+      "n_stories": 9,
+      "tokens_pooled": 1085,
+      "tokens_intended": 1085,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "frustrated": {
+      "n_stories": 9,
+      "tokens_pooled": 900,
+      "tokens_intended": 900,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "tired": {
+      "n_stories": 9,
+      "tokens_pooled": 1011,
+      "tokens_intended": 1011,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "kind": {
+      "n_stories": 9,
+      "tokens_pooled": 1220,
+      "tokens_intended": 1220,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "valiant": {
+      "n_stories": 9,
+      "tokens_pooled": 1420,
+      "tokens_intended": 1420,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "terrified": {
+      "n_stories": 9,
+      "tokens_pooled": 1311,
+      "tokens_intended": 1311,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "shocked": {
+      "n_stories": 9,
+      "tokens_pooled": 1128,
+      "tokens_intended": 1128,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "at ease": {
+      "n_stories": 9,
+      "tokens_pooled": 1166,
+      "tokens_intended": 1166,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "disoriented": {
+      "n_stories": 9,
+      "tokens_pooled": 1044,
+      "tokens_intended": 1044,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "angry": {
+      "n_stories": 9,
+      "tokens_pooled": 1155,
+      "tokens_intended": 1155,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "self-conscious": {
+      "n_stories": 9,
+      "tokens_pooled": 936,
+      "tokens_intended": 936,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "regretful": {
+      "n_stories": 9,
+      "tokens_pooled": 1021,
+      "tokens_intended": 1021,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "dumbstruck": {
+      "n_stories": 9,
+      "tokens_pooled": 1026,
+      "tokens_intended": 1026,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "alarmed": {
+      "n_stories": 9,
+      "tokens_pooled": 1495,
+      "tokens_intended": 1495,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "patient": {
+      "n_stories": 9,
+      "tokens_pooled": 1047,
+      "tokens_intended": 1047,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "relaxed": {
+      "n_stories": 9,
+      "tokens_pooled": 1095,
+      "tokens_intended": 1095,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "remorseful": {
+      "n_stories": 9,
+      "tokens_pooled": 1152,
+      "tokens_intended": 1152,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "mystified": {
+      "n_stories": 9,
+      "tokens_pooled": 1088,
+      "tokens_intended": 1088,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "bitter": {
+      "n_stories": 9,
+      "tokens_pooled": 1239,
+      "tokens_intended": 1239,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "ashamed": {
+      "n_stories": 9,
+      "tokens_pooled": 909,
+      "tokens_intended": 909,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "guilty": {
+      "n_stories": 9,
+      "tokens_pooled": 1144,
+      "tokens_intended": 1144,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "disgusted": {
+      "n_stories": 9,
+      "tokens_pooled": 1108,
+      "tokens_intended": 1108,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "astonished": {
+      "n_stories": 9,
+      "tokens_pooled": 812,
+      "tokens_intended": 812,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "mad": {
+      "n_stories": 9,
+      "tokens_pooled": 1111,
+      "tokens_intended": 1111,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "self-critical": {
+      "n_stories": 9,
+      "tokens_pooled": 1127,
+      "tokens_intended": 1127,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "lazy": {
+      "n_stories": 9,
+      "tokens_pooled": 1923,
+      "tokens_intended": 1923,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "bored": {
+      "n_stories": 9,
+      "tokens_pooled": 1163,
+      "tokens_intended": 1163,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "irate": {
+      "n_stories": 9,
+      "tokens_pooled": 1193,
+      "tokens_intended": 1193,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "bewildered": {
+      "n_stories": 9,
+      "tokens_pooled": 1434,
+      "tokens_intended": 1434,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "furious": {
+      "n_stories": 9,
+      "tokens_pooled": 1042,
+      "tokens_intended": 1042,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "offended": {
+      "n_stories": 9,
+      "tokens_pooled": 1201,
+      "tokens_intended": 1201,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "horrified": {
+      "n_stories": 9,
+      "tokens_pooled": 978,
+      "tokens_intended": 978,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "enraged": {
+      "n_stories": 9,
+      "tokens_pooled": 895,
+      "tokens_intended": 895,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "irritated": {
+      "n_stories": 9,
+      "tokens_pooled": 1008,
+      "tokens_intended": 1008,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "surprised": {
+      "n_stories": 9,
+      "tokens_pooled": 1096,
+      "tokens_intended": 1096,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "stimulated": {
+      "n_stories": 9,
+      "tokens_pooled": 1088,
+      "tokens_intended": 1088,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "desperate": {
+      "n_stories": 9,
+      "tokens_pooled": 1217,
+      "tokens_intended": 1217,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "perplexed": {
+      "n_stories": 9,
+      "tokens_pooled": 885,
+      "tokens_intended": 885,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "annoyed": {
+      "n_stories": 9,
+      "tokens_pooled": 1243,
+      "tokens_intended": 1243,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "insulted": {
+      "n_stories": 9,
+      "tokens_pooled": 1007,
+      "tokens_intended": 1007,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "paranoid": {
+      "n_stories": 9,
+      "tokens_pooled": 1632,
+      "tokens_intended": 1632,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "envious": {
+      "n_stories": 9,
+      "tokens_pooled": 1188,
+      "tokens_intended": 1188,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "hateful": {
+      "n_stories": 9,
+      "tokens_pooled": 1061,
+      "tokens_intended": 1061,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "outraged": {
+      "n_stories": 9,
+      "tokens_pooled": 1105,
+      "tokens_intended": 1105,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "vigilant": {
+      "n_stories": 9,
+      "tokens_pooled": 1446,
+      "tokens_intended": 1446,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "hostile": {
+      "n_stories": 9,
+      "tokens_pooled": 1590,
+      "tokens_intended": 1590,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "resentful": {
+      "n_stories": 9,
+      "tokens_pooled": 1481,
+      "tokens_intended": 1481,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "optimistic": {
+      "n_stories": 9,
+      "tokens_pooled": 1173,
+      "tokens_intended": 1173,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "pleased": {
+      "n_stories": 9,
+      "tokens_pooled": 928,
+      "tokens_intended": 928,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "jealous": {
+      "n_stories": 9,
+      "tokens_pooled": 1019,
+      "tokens_intended": 1019,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "blissful": {
+      "n_stories": 9,
+      "tokens_pooled": 1010,
+      "tokens_intended": 1010,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "suspicious": {
+      "n_stories": 9,
+      "tokens_pooled": 1051,
+      "tokens_intended": 1051,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "proud": {
+      "n_stories": 9,
+      "tokens_pooled": 922,
+      "tokens_intended": 922,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "indignant": {
+      "n_stories": 9,
+      "tokens_pooled": 864,
+      "tokens_intended": 864,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "sleepy": {
+      "n_stories": 9,
+      "tokens_pooled": 1205,
+      "tokens_intended": 1205,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "hysterical": {
+      "n_stories": 9,
+      "tokens_pooled": 1151,
+      "tokens_intended": 1151,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "dependent": {
+      "n_stories": 9,
+      "tokens_pooled": 1062,
+      "tokens_intended": 1062,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "humiliated": {
+      "n_stories": 9,
+      "tokens_pooled": 1049,
+      "tokens_intended": 1049,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "disdainful": {
+      "n_stories": 9,
+      "tokens_pooled": 1221,
+      "tokens_intended": 1221,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "scornful": {
+      "n_stories": 9,
+      "tokens_pooled": 1068,
+      "tokens_intended": 1068,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "puzzled": {
+      "n_stories": 9,
+      "tokens_pooled": 1016,
+      "tokens_intended": 1016,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "euphoric": {
+      "n_stories": 9,
+      "tokens_pooled": 1082,
+      "tokens_intended": 1082,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "delighted": {
+      "n_stories": 9,
+      "tokens_pooled": 768,
+      "tokens_intended": 768,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "contemptuous": {
+      "n_stories": 9,
+      "tokens_pooled": 1002,
+      "tokens_intended": 1002,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "triumphant": {
+      "n_stories": 9,
+      "tokens_pooled": 984,
+      "tokens_intended": 984,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "indifferent": {
+      "n_stories": 9,
+      "tokens_pooled": 1408,
+      "tokens_intended": 1408,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "skeptical": {
+      "n_stories": 9,
+      "tokens_pooled": 1480,
+      "tokens_intended": 1480,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "embarrassed": {
+      "n_stories": 9,
+      "tokens_pooled": 1082,
+      "tokens_intended": 1082,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "elated": {
+      "n_stories": 9,
+      "tokens_pooled": 1016,
+      "tokens_intended": 1016,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "self-confident": {
+      "n_stories": 9,
+      "tokens_pooled": 1125,
+      "tokens_intended": 1125,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "defiant": {
+      "n_stories": 9,
+      "tokens_pooled": 1132,
+      "tokens_intended": 1132,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "energized": {
+      "n_stories": 9,
+      "tokens_pooled": 1038,
+      "tokens_intended": 1038,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "thrilled": {
+      "n_stories": 9,
+      "tokens_pooled": 1082,
+      "tokens_intended": 1082,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "mortified": {
+      "n_stories": 9,
+      "tokens_pooled": 1391,
+      "tokens_intended": 1391,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "happy": {
+      "n_stories": 9,
+      "tokens_pooled": 936,
+      "tokens_intended": 936,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "ecstatic": {
+      "n_stories": 9,
+      "tokens_pooled": 1162,
+      "tokens_intended": 1162,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "vengeful": {
+      "n_stories": 9,
+      "tokens_pooled": 1612,
+      "tokens_intended": 1612,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "vibrant": {
+      "n_stories": 9,
+      "tokens_pooled": 1272,
+      "tokens_intended": 1272,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "exasperated": {
+      "n_stories": 9,
+      "tokens_pooled": 1188,
+      "tokens_intended": 1188,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "joyful": {
+      "n_stories": 9,
+      "tokens_pooled": 1097,
+      "tokens_intended": 1097,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "stubborn": {
+      "n_stories": 9,
+      "tokens_pooled": 1237,
+      "tokens_intended": 1237,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "excited": {
+      "n_stories": 9,
+      "tokens_pooled": 1125,
+      "tokens_intended": 1125,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "greedy": {
+      "n_stories": 9,
+      "tokens_pooled": 1185,
+      "tokens_intended": 1185,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "jubilant": {
+      "n_stories": 9,
+      "tokens_pooled": 1271,
+      "tokens_intended": 1271,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "vindictive": {
+      "n_stories": 9,
+      "tokens_pooled": 1463,
+      "tokens_intended": 1463,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "eager": {
+      "n_stories": 9,
+      "tokens_pooled": 1011,
+      "tokens_intended": 1011,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "amused": {
+      "n_stories": 9,
+      "tokens_pooled": 951,
+      "tokens_intended": 951,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "cheerful": {
+      "n_stories": 9,
+      "tokens_pooled": 899,
+      "tokens_intended": 899,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "obstinate": {
+      "n_stories": 9,
+      "tokens_pooled": 1356,
+      "tokens_intended": 1356,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "impatient": {
+      "n_stories": 9,
+      "tokens_pooled": 862,
+      "tokens_intended": 862,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "smug": {
+      "n_stories": 9,
+      "tokens_pooled": 1064,
+      "tokens_intended": 1064,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "enthusiastic": {
+      "n_stories": 9,
+      "tokens_pooled": 1007,
+      "tokens_intended": 1007,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "exuberant": {
+      "n_stories": 9,
+      "tokens_pooled": 1320,
+      "tokens_intended": 1320,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "playful": {
+      "n_stories": 9,
+      "tokens_pooled": 1050,
+      "tokens_intended": 1050,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    },
+    "spiteful": {
+      "n_stories": 9,
+      "tokens_pooled": 1302,
+      "tokens_intended": 1302,
+      "leaked_framing_tokens": 0,
+      "leak_share": 0.0
+    }
+  },
+  "note": "leak_share = fraction of each emotion's pooled token mass that the registered method (skip first TOKEN_OFFSET story tokens) says to exclude but the left-padding bug included. Activation-space impact needs the GPU re-extraction (E4b, pod)."
+}
