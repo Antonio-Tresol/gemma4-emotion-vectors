@@ -64,9 +64,18 @@ class ProbeBank:
     labels: list[str]  # "corpus:afraid", "selfgen:happy", "random:07", ...
 
 
-def load_probe_bank(layers: list[int], corpus_path: Path, selfgen_path: Path | None) -> ProbeBank:
+def load_probe_bank(
+    layers: list[int],
+    corpus_path: Path,
+    selfgen_path: Path | None,
+    extra_path: Path | None = None,
+    extra_prefix: str = "deepseek",
+) -> ProbeBank:
     """Probes must come from the probed model: pass the matching lineage
-    bundles (the base arm has no self-generated lineage — pass None)."""
+    bundles (the base arm has no self-generated lineage — pass None).
+    extra_path adds a flat means bundle ([emotions, layers, d_model] with
+    "layers"/"emotions" keys) as a third bank, e.g. the fixed-DeepSeek
+    contrasts (E11's best detection probes) for the DeepSeek-arm runs."""
     corpus = np.load(corpus_path, allow_pickle=True)
     layer_idx = [list(corpus["layers"]).index(layer) for layer in layers]
     corpus_dirs = unit_contrast_probes(corpus["means"].astype(np.float32))[:, layer_idx]
@@ -76,6 +85,11 @@ def load_probe_bank(layers: list[int], corpus_path: Path, selfgen_path: Path | N
         selfgen = np.load(selfgen_path, allow_pickle=True)
         banks.append(unit_contrast_probes(selfgen["means"][-1].astype(np.float32))[:, layer_idx])
         labels += [f"selfgen:{e}" for e in selfgen["emotions"]]
+    if extra_path is not None:
+        extra = np.load(extra_path, allow_pickle=True)
+        extra_idx = [list(extra["layers"]).index(layer) for layer in layers]
+        banks.append(unit_contrast_probes(extra["means"].astype(np.float32))[:, extra_idx])
+        labels += [f"{extra_prefix}:{e}" for e in extra["emotions"]]
     d_model = corpus_dirs.shape[-1]
     banks.append(random_unit_directions(N_RANDOM, len(layers), d_model, RANDOM_SEED))
     labels += [f"random:{i:02d}" for i in range(N_RANDOM)]
@@ -185,6 +199,13 @@ def build_parser() -> argparse.ArgumentParser:
         help="self-generated-lineage bundle; pass --no-selfgen for the base arm",
     )
     parser.add_argument("--no-selfgen", action="store_true")
+    parser.add_argument(
+        "--extra-probes",
+        type=Path,
+        default=None,
+        help="optional third bank: flat means bundle (emotion_means.npz style), "
+        "labeled deepseek:<emotion> — used for the DeepSeek-arm runs",
+    )
     parser.add_argument("--smoke", action="store_true", help="first 8 stories only")
     return parser
 
@@ -219,7 +240,10 @@ def main() -> int:
     logger.info("config: %s", json.dumps(config))
     logger.info("%d kept stories, %d pending (%d resumed)", len(rows), len(pending), len(done))
     bank = load_probe_bank(
-        args.layers, args.corpus_probes, None if args.no_selfgen else args.selfgen_probes
+        args.layers,
+        args.corpus_probes,
+        None if args.no_selfgen else args.selfgen_probes,
+        args.extra_probes,
     )
     (args.out_dir / "probe_labels.json").write_text(json.dumps(bank.labels))
     lm, _ = load_model_bf16(args.model, logger.info)
