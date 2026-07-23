@@ -127,6 +127,12 @@ reviewers do:
   hypotheses) each paired with the experiment that would decide it, and the
   open questions. If an explanation was good enough to give a collaborator
   in conversation, it belongs in the notebook before they have to ask.
+- **The acceptance test for every figure and section:** a teammate who did
+  NOT run the experiment can say, from the exhibit alone, (1) what was
+  measured and how, (2) what the figure claims, (3) which evidence file the
+  numbers come from, and (4) what would change their mind - without asking
+  the author anything. The point of the notebooks is that the team can
+  verify the analyses; a plot that needs its author present has failed.
 
 ## Non-negotiables
 
