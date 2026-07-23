@@ -31,9 +31,11 @@ HEADER = """\
 # 08 - Q3 first tranche: does Gemma track emotion transitions while reading?
 
 **Model probed throughout: google/gemma-4-31b-it**, reading multi-phase
-stories token by token. This notebook answers three questions with the first
-registered Q3 reads (gate G and anticipation R1), each section giving the
-answer, how it was measured, and the verdict.
+stories token by token. This notebook answers three questions with the
+first registered Q3 reads: gate G, the identity gate (can the tagged
+emotion be read out at all?) that the dynamics reads are conditional on,
+and R1, the pre-boundary anticipation read. Each section gives the answer,
+how it was measured, and the verdict.
 
 **Index**
 1. Does the model know which emotion the current phase is? (gate G)
@@ -41,16 +43,30 @@ answer, how it was measured, and the verdict.
 3. Above chance versus useful versus meaningless: the three-way diagnosis
 4. What is still open
 
-**The instruments, briefly.** A "probe bank" is a set of emotion directions:
-the 171 corpus-lineage contrasts, the 12 self-generated contrasts (E10's
-winner), the 12 fixed-DeepSeek contrasts (E11's winner), and 24 random
-directions (the meaninglessness baseline, N1). Two story substrates: the
-Gemma-written combined stories (2,998 SEQUENTIAL) and the DeepSeek-written
-twin (2,835), plus a constant-emotion CONTROL arm (209 stories, same
-scaffold and marked scene changes, no emotion change). "Rank" = where the
-tagged emotion's mean centered cosine falls among its bank's probes for a
-phase (1 = best). N2 = 10,000 wrong-emotion shuffles; chance median rank is
-about half the bank size. Evidence: `results/q3_gate_r1_it.json`,
+**The instruments, briefly.** A "contrast probe" is an emotion direction:
+the emotion's mean story activation minus the pool mean, unit-normalized;
+a "centered cosine" subtracts the story-set mean per (layer, probe) before
+the cosine (the registered convention). A "probe bank" is a set of such
+directions: the 171 corpus-lineage contrasts, the 12 self-generated
+contrasts (E10's winner), the 12 fixed-DeepSeek contrasts (E11's winner,
+added by the registered substrate amendment and therefore present only on
+the newer arms), and 24 random directions (the meaninglessness baseline,
+N1). Story substrates, all SEQUENTIAL (each story moves through its tagged
+emotions one after another): the Gemma-written combined stories and their
+DeepSeek-written twin, plus a constant-emotion CONTROL arm (same scaffold
+and marked scene changes, no emotion change); the setup cell prints the
+scored story count for each. "Rank" = where the tagged emotion's mean
+centered cosine falls among its bank's probes for a phase (1 = best). N2 =
+10,000 wrong-emotion shuffles; chance median rank is about half the bank
+size. The "verdict ladder" (tiers T0 to T3) is the registered mapping from
+outcomes to allowed conclusions, written down before scoring.
+
+**Data lineage.** Per-token probe dots are stored in the trajectory
+substrate itself (probe identity in each arm's `probe_labels.json`). The
+Gemma-written arm is public on HF (Hugging Face) as
+`abotresol/emotion-combined-trajectories-gemma-4-31b-it`; the
+DeepSeek-written and control arms live under `results/` pending publish.
+Evidence files scored from them: `results/q3_gate_r1_it.json`,
 `results/q3_gate_r1_deepseek.json`; conventions registered in TREE Q3.H1.E1
 before scoring.
 """
@@ -96,10 +112,12 @@ print({name: arm["n_stories"] for name, arm in SUBSTRATES.items()})
 S1_MD = """\
 ## 1. Does the model know which emotion the current phase is? (gate G)
 
-**Answer: yes, clearly, when read with good probes.** The self-generated
-and DeepSeek probe banks place the tagged emotion at median rank 1 to 5 in
-their 12-probe banks, at every layer, on both story substrates. The
-corpus-171 bank does not (median rank 38 to 83 of 171).
+**Answer: yes, clearly, when read with good probes.** The 12-probe banks
+place the tagged emotion at median rank 1 to 6 at every layer and
+substrate (self-generated everywhere; fixed-DeepSeek on the arms that
+carry it, since the Gemma-written substrate was extracted before that
+third bank existed). The corpus-171 bank does not (median rank 38 to 83 of
+171). The cell prints the exact per-bank rank ranges behind these numbers.
 
 **How it was measured:** for every story phase, average the centered cosine
 of each probe over the phase's tokens, then rank the tagged emotion among
@@ -109,14 +127,15 @@ usefulness bar is the top decile, 0.1 (dashed line). Lower is better. One
 panel per substrate; bars grouped by layer.
 
 **Verdict:** gate passes in substance for the self-gen and DeepSeek banks
-(N2 p < 0.001 nearly everywhere); the corpus-171 bank fails the registered
+(N2 p < 0.001 everywhere except the self-gen bank at layer 51 on the
+DeepSeek-written substrate); the corpus-171 bank fails the registered
 bar on every layer. Formal ladder adjudication is pending because the
 registered gate text named the 171 bank specifically.
 """
 
 S1_CODE = """\
 # this cell plots the tagged emotion's median rank (as a fraction of bank
-# size) per layer, bank, and substrate
+# size) per layer, bank, and substrate, then prints each bank's rank range
 fig = make_subplots(rows=1, cols=3, subplot_titles=list(SUBSTRATES), shared_yaxes=True)
 colors = {"corpus": "#7f7f7f", "selfgen": "#1f77b4", "deepseek": "#d62728"}
 banks_in_legend = set()  # each bank gets exactly one legend entry, whichever panel shows it first
@@ -143,6 +162,15 @@ fig.update_layout(
 )
 fig.update_xaxes(title="layer")
 fig.show()
+for substrate, arm in SUBSTRATES.items():
+    for bank, per_layer_stats in arm["gate_G"].items():
+        if bank == "random" or not per_layer_stats.get("per_layer"):
+            continue
+        cells = per_layer_stats["per_layer"]
+        ranks = [cells[str(layer)]["median_rank"] for layer in LAYERS]
+        worst_p = max(cells[str(layer)]["n2_p"] for layer in LAYERS)
+        print(f"{substrate:30s} {BANK_LABEL[bank]:22s} median rank {min(ranks):.0f} to "
+          f"{max(ranks):.0f} of {BANK_SIZE[bank]}, worst N2 p = {worst_p:.4f}")
 """
 
 S2_MD = """\
@@ -158,10 +186,11 @@ Gemma-written stories and nothing on DeepSeek-written ones.
 Right panel, anticipation (R1): mean rise of the incoming emotion's
 cosine in the 16 tokens before the phase boundary versus the 16 tokens
 before that, expressed in units of the calibrated per-token noise. Stars
-mark cells passing their registered bar (N2 p < 0.001 plus the magnitude
-bar). The layer slider below the figure scrubs all six layers (default
-33, the registered primary cell); the dissociation pattern holds across
-the mid-to-late band.
+mark cells passing their registered bar (for identity, the gate bar; for
+anticipation, N2 p < 0.001 plus the magnitude bar). The layer slider
+below the figure scrubs all six layers (default 33, the registered
+primary cell); the dissociation pattern holds across the mid-to-late
+band.
 
 **Verdict:** vector quality decides whether the state is readable at all
 (matching E10/E11's detection results); the anticipation effect is a
@@ -249,14 +278,16 @@ bar = doing good work. Position shows USEFULNESS; the printed p shows
 DISTINGUISHABILITY from chance: with thousands of phases, a median close
 to the chance line can still be significantly better than chance, which
 is exactly the "bad but not meaningless" case. The corpus-171 bank lands
-squarely in the middle
-zone: real signal (N2 p < 0.001), not useful by the registered standard.
+squarely in the middle zone: real signal (N2 p < 0.001 at the default
+layer 33), not useful by the registered standard.
 
 **Verdict:** nothing we measured behaves like meaningless vectors; the
 corpus bank is "bad but not meaningless"; the self-gen and DeepSeek banks
-do good work on identity. For anticipation, only Gemma-written stories
-with self-gen probes clear the bar, and the constant-emotion control sits
-at zero, so that one surviving effect is not a scene-change artifact.
+do good work on identity. For anticipation, bars are cleared only on
+Gemma-written stories (the self-gen bank most strongly, the corpus bank
+more weakly at three layers; see the section 2 heatmap), and the
+constant-emotion control sits at zero, so the surviving effect is not a
+scene-change artifact.
 """
 
 S3_CODE = """\
@@ -327,9 +358,17 @@ S4_MD = """\
 3. **Ramp width (R2) and crossover location (R3)** are registered and
    validated but not yet run.
 4. The 12-bank top-decile bar (rank <= 1) is the scorer's generalization
-   of a bar registered for the 171 bank; ranks of 2 to 3 of 12 fail it
-   mechanically while beating chance at p < 0.0001. Adjudicate alongside
+   of a bar registered for the 171 bank; ranks of 2 to 6 of 12 fail it
+   mechanically while beating the N2 chance floor at nearly every layer
+   (section 1 prints the ranks and worst p values). Adjudicate alongside
    the ladder.
+5. **Probe-version caveat (E4b).** The corpus-171 and self-gen dots in
+   the substrate were computed against pre-padding-fix probe vectors.
+   E4b rated the self-gen contrasts tier 1 (post-fix twins agree at
+   about cos 0.995; numbers reproduce to roughly 3 decimals) but the
+   corpus-lineage contrasts tier 2, so the corpus-171 columns here carry
+   a rescore-or-recollect caveat. The fixed-DeepSeek bank is post-fix by
+   construction.
 
 Nothing in this notebook is a graduated claim; the falsify gate
 (shuffled-sentence control, category splits, base-arm replication) comes
@@ -339,10 +378,14 @@ before any of it enters a deliverable.
 
 def main() -> int:
     cells = [
-        md(HEADER), code(SETUP),
-        md(S1_MD), code(S1_CODE),
-        md(S2_MD), code(S2_CODE),
-        md(S3_MD), code(S3_CODE),
+        md(HEADER),
+        code(SETUP),
+        md(S1_MD),
+        code(S1_CODE),
+        md(S2_MD),
+        code(S2_CODE),
+        md(S3_MD),
+        code(S3_CODE),
         md(S4_MD),
     ]
     notebook = {
