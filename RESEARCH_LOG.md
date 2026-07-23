@@ -81,6 +81,25 @@ committed its work as the release. One instrument lesson for the harness: fp16 b
 float16 norms in numpy — cast before cosine (caught because a 0.0 story-cosine contradicted a 0.99
 subspace agreement in the same read).
 
+Closure addendum (late evening, user-directed "rerun everything"): the three registered E4b
+follow-ups on this session's slate are done and every touched claim kept its status with amended
+numbers. (1) H3 probe-Elo rescored on post-fix corpus-it probes: max |r| 0.7013 -> 0.6448 at layer
+33, organization perm p<1e-4 — bar (0.5) still cleared, C3 amended from "paper strength" to "below
+paper strength"; the pre-fix rotation inflated the fine-grained read. (2) C4's falsify gate ran on
+the two E11 winners (self-gen postfix + DeepSeek fixed-prompt), bars and seeds registered in the
+script header before running, observed grids asserted identical to E11's: SURVIVED everything —
+sweep-wide selection-adjusted null never passes (p<=0.0002), 1,000 random probe sets cap at 6 vs
+observed 10, band cores bootstrap-stable (0.79-0.82 at L33/39, edges fragile and scoped out),
+dialogue probes converge independently (p~0). C4 graduated survived; the sprint headline is now a
+gated claim. (3) Steering re-run with post-fix directions at both doses: P3 valence-sign 10/12 at
+alpha-2 AND alpha-8 (bar 9), coherence intact, P2 coupling below bar (0.399/0.299, improved from
+0.32/0.15) — C3's causal leg confirmed on the corrected instrument. Cross-session division held all
+day: the e11 session ran E11 (quality branch fired: DeepSeek probes best, convergence-with-strength
+mechanism), registered E12, and covered the E9/E10 battery rescores inside its scoring; this session
+kept H3/E7/C4 and the GPU sequencing. Remaining on the board: notebook 01-04 rebuild on postfix
+bundles, the Q3 corpus-probe-version decision (caveat vs re-collect), the raw-vs-chat extraction
+cosine, and the origin push.
+
 Publication addendum (user decision, same day, superseding the entry below): all project
 datasets flipped PUBLIC today, ahead of the validate-claims gate — the published material is
 substrate (stories, activations, shards, configs) with lineage-documented cards, not claims;
