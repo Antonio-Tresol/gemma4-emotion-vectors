@@ -79,19 +79,19 @@ def one_request(job: dict, args: argparse.Namespace, key: str) -> dict:
     for attempt in range(4):
         try:
             with urlopen(req, timeout=120) as resp:
-                out = json.loads(resp.read())
-            raw = out["choices"][0]["message"]["content"].strip()
+                response = json.loads(resp.read())
+            raw_text = response["choices"][0]["message"]["content"].strip()
             return {
                 **job,
-                "raw_text": raw,
-                "model": out.get("model", args.model),
-                "tokens_out": out.get("usage", {}).get("completion_tokens"),
+                "raw_text": raw_text,
+                "model": response.get("model", args.model),
+                "tokens_out": response.get("usage", {}).get("completion_tokens"),
                 "error": None,
             }
         except Exception as exc:  # noqa: BLE001 — API flakiness: retry, then record
-            last = f"{type(exc).__name__}: {exc}"
+            last_error = f"{type(exc).__name__}: {exc}"
             time.sleep(2**attempt)
-    return {**job, "raw_text": None, "model": args.model, "error": last}
+    return {**job, "raw_text": None, "model": args.model, "error": last_error}
 
 
 def qc_row(res: dict) -> tuple[dict | None, str]:
@@ -135,8 +135,8 @@ def pending_jobs(
     jobs = []
     for triple_id, triple in enumerate(triples):
         combos = combos_for(triple["emotions"])
-        for i, (mode, perm, perm_idx) in enumerate(combos):
-            seed = base_seed + triple_id * 100 + i  # parent script's seed scheme
+        for combo_idx, (mode, perm, perm_idx) in enumerate(combos):
+            seed = base_seed + triple_id * 100 + combo_idx  # parent script's seed scheme
             need = samples_per_combo - counts.get(row_key(triple_id, mode, perm_idx), 0)
             for _ in range(max(0, need)):
                 jobs.append(
@@ -185,8 +185,12 @@ def main() -> int:
             "happy inspired loving proud calm desperate angry guilty sad afraid nervous surprised"
         )
         triples = [
-            {"emotions": [e, e, e], "category": "CONTROL_CONSTANT", "has_nonaffect": False}
-            for e in battery.split()
+            {
+                "emotions": [emotion, emotion, emotion],
+                "category": "CONTROL_CONSTANT",
+                "has_nonaffect": False,
+            }
+            for emotion in battery.split()
         ]
     else:
         triples = load_triples(args.triples_file)
@@ -196,8 +200,13 @@ def main() -> int:
     raw_path = args.out_dir / "stories_raw.jsonl"
     counts = existing_counts(raw_path)
     jobs = pending_jobs(triples, counts, samples_per_combo, args.seed)
+    # CLI args verbatim, with Path values stringified for JSON
+    args_jsonable = {
+        name: (str(value) if isinstance(value, Path) else value)
+        for name, value in vars(args).items()
+    }
     config = {
-        **{k: (str(v) if isinstance(v, Path) else v) for k, v in vars(args).items()},
+        **args_jsonable,
         "n_combos": N_COMBOS,
         "samples_per_combo": samples_per_combo,
         "n_requests": len(jobs),
@@ -209,14 +218,14 @@ def main() -> int:
         f"{len(jobs)} requests pending (resuming from {sum(counts.values())} kept) "
         f"with {args.model} ({args.workers} workers)"
     )
-    t0 = time.monotonic()
+    start_time = time.monotonic()
     stats = {"kept": 0, "short": 0, "leak": 0, "tag_mismatch": 0, "api_error": 0}
-    tok = 0
+    total_tokens_out = 0
     with ThreadPoolExecutor(max_workers=args.workers) as pool, raw_path.open("a") as sink:
-        futures = [pool.submit(one_request, j, args, key) for j in jobs]
-        for i, fut in enumerate(as_completed(futures), 1):
-            res = fut.result()
-            tok += res.get("tokens_out") or 0
+        futures = [pool.submit(one_request, job, args, key) for job in jobs]
+        for n_done, future in enumerate(as_completed(futures), 1):
+            res = future.result()
+            total_tokens_out += res.get("tokens_out") or 0
             if res["error"] is not None:
                 stats["api_error"] += 1
             else:
@@ -225,11 +234,12 @@ def main() -> int:
                 if row is not None:
                     sink.write(json.dumps(row) + "\n")
                     sink.flush()
-            if i % 100 == 0 or i == len(jobs):
-                rate = i / max(time.monotonic() - t0, 1)
+            if n_done % 100 == 0 or n_done == len(jobs):
+                rate = n_done / max(time.monotonic() - start_time, 1)
+                eta_minutes = (len(jobs) - n_done) / max(rate, 0.01) / 60
                 print(
-                    f"{i}/{len(jobs)} | {stats} | {tok} tokens out | {rate:.1f} req/s | "
-                    f"ETA {(len(jobs) - i) / max(rate, 0.01) / 60:.1f} min",
+                    f"{n_done}/{len(jobs)} | {stats} | {total_tokens_out} tokens out | "
+                    f"{rate:.1f} req/s | ETA {eta_minutes:.1f} min",
                     flush=True,
                 )
     n_grouped = assemble_grouped(raw_path, args.out_dir / "stories_grouped.jsonl")

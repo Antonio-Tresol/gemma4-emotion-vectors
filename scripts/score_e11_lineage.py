@@ -30,7 +30,9 @@ import numpy as np
 
 from emotion_vectors.probe_prompts import HELDOUT_SCENARIOS, SCENARIOS
 
-BATTERY = "happy inspired loving proud calm desperate angry guilty sad afraid nervous surprised".split()
+BATTERY = (
+    "happy inspired loving proud calm desperate angry guilty sad afraid nervous surprised".split()
+)
 
 
 def r4_diversity_exploratory(corpora: dict[str, Path | None], seed: int = 0) -> dict:
@@ -43,36 +45,48 @@ def r4_diversity_exploratory(corpora: dict[str, Path | None], seed: int = 0) -> 
         if path is None or not path.exists():
             out[name] = None
             continue
-        grouped: dict[str, list[str]] = {}
+
+        # stories per battery emotion, in the corpus file's own line order
+        stories_by_emotion: dict[str, list[str]] = {}
         for line in path.read_text().splitlines():
             row = json.loads(line)
             if row.get("stories") and row["emotion"] in BATTERY:
-                grouped[row["emotion"]] = row["stories"]
+                stories_by_emotion[row["emotion"]] = row["stories"]
+
         rng = random.Random(seed)
-        sims: list[float] = []
-        for stories in grouped.values():
+        similarities: list[float] = []
+        for stories in stories_by_emotion.values():
             sample = rng.sample(stories, min(30, len(stories)))
-            grams = [
-                {" ".join(ws[i : i + 5]) for ws in [s.lower().split()] for i in range(len(ws) - 4)}
-                for s in sample
-            ]
-            for a, b in itertools.combinations(grams, 2):
-                union = len(a | b)
+
+            # each story becomes its set of word 5-grams
+            gram_sets: list[set[str]] = []
+            for story in sample:
+                words = story.lower().split()
+                grams = {" ".join(words[i : i + 5]) for i in range(len(words) - 4)}
+                gram_sets.append(grams)
+
+            # Jaccard similarity for every within-emotion story pair
+            for grams_a, grams_b in itertools.combinations(gram_sets, 2):
+                union = len(grams_a | grams_b)
                 if union:
-                    sims.append(len(a & b) / union)
-        out[name] = {"mean_pairwise_jaccard": float(np.mean(sims)), "n_pairs": len(sims)}
+                    similarities.append(len(grams_a & grams_b) / union)
+
+        out[name] = {
+            "mean_pairwise_jaccard": float(np.mean(similarities)),
+            "n_pairs": len(similarities),
+        }
     return out
 
 
 def load_battery_means(path: Path) -> np.ndarray:
     """[12, 20, 5376] float32 means for the battery emotions, any bundle shape."""
-    z = np.load(path, allow_pickle=True)
-    means = z["means"].astype(np.float32)
+    bundle = np.load(path, allow_pickle=True)
+    means = bundle["means"].astype(np.float32)
     if means.ndim == 4:  # e6-style n-buckets: take the largest
         means = means[-1]
-    emotions = [str(e) for e in z["emotions"]]
-    idx = [emotions.index(e) for e in BATTERY]
-    return means[idx]
+    emotions = [str(e) for e in bundle["emotions"]]
+    battery_rows = [emotions.index(e) for e in BATTERY]
+    return means[battery_rows]
 
 
 def contrast_probes_12pool(means: np.ndarray) -> np.ndarray:
@@ -88,50 +102,68 @@ def battery_counts(acts: np.ndarray, probes: np.ndarray, targets: list[str]) -> 
     cos = centered @ probes.T
     cos /= np.clip(np.linalg.norm(centered, axis=1, keepdims=True), 1e-8, None)
     count = 0
-    for row, target in zip(cos, targets):
-        top3 = [BATTERY[j] for j in np.argsort(row)[::-1][:3]]
+    for cos_row, target in zip(cos, targets):
+        descending = np.argsort(cos_row)[::-1]
+        top3 = [BATTERY[j] for j in descending[:3]]
         count += target in top3
     return count
 
 
 def r1_grid(bundles: dict[str, np.ndarray], sweep: dict) -> dict:
-    order = [(kind, name, target) for kind, battery in (("scenario", SCENARIOS), ("heldout", HELDOUT_SCENARIOS)) for name, target, _ in battery]
-    paper_rows = [i for i, (k, _, _) in enumerate(order) if k == "scenario"]
-    held_rows = [i for i, (k, _, _) in enumerate(order) if k == "heldout"]
+    # The sweep's activation rows are ordered: all paper-battery scenarios,
+    # then all held-out scenarios. Rebuild that order with each row's target.
+    order: list[tuple[str, str, str]] = []
+    for kind, battery in (("scenario", SCENARIOS), ("heldout", HELDOUT_SCENARIOS)):
+        for name, target, _prompt in battery:
+            order.append((kind, name, target))
+    paper_rows = [i for i, (kind, _, _) in enumerate(order) if kind == "scenario"]
+    held_rows = [i for i, (kind, _, _) in enumerate(order) if kind == "heldout"]
     paper_targets = [order[i][2] for i in paper_rows]
     held_targets = [order[i][2] for i in held_rows]
+
     acts_all = sweep["chat_last"].astype(np.float32)  # [prompts, 20, 5376]
     layers = [int(x) for x in sweep["layers"]]
+
     out: dict[str, dict] = {}
     for name, means in bundles.items():
         per_layer = {}
-        passes = []
-        for lp, layer in enumerate(layers):
-            probes = contrast_probes_12pool(means[:, lp])
-            paper = battery_counts(acts_all[paper_rows, lp], probes, paper_targets)
-            held = battery_counts(acts_all[held_rows, lp], probes, held_targets)
-            per_layer[layer] = [paper, held]
-            if paper >= 8 and held >= 8:
-                passes.append(layer)
-        best = max(per_layer.items(), key=lambda kv: sum(kv[1]))
-        out[name] = {"per_layer": per_layer, "passing_layers": passes, "best": {"layer": best[0], "counts": best[1]}}
+        passing_layers = []
+        for layer_pos, layer in enumerate(layers):
+            probes = contrast_probes_12pool(means[:, layer_pos])
+            paper_count = battery_counts(acts_all[paper_rows, layer_pos], probes, paper_targets)
+            held_count = battery_counts(acts_all[held_rows, layer_pos], probes, held_targets)
+            per_layer[layer] = [paper_count, held_count]
+            if paper_count >= 8 and held_count >= 8:
+                passing_layers.append(layer)
+        best_layer, best_counts = max(per_layer.items(), key=lambda kv: sum(kv[1]))
+        out[name] = {
+            "per_layer": per_layer,
+            "passing_layers": passing_layers,
+            "best": {"layer": best_layer, "counts": best_counts},
+        }
     return out
 
 
 def r2_cross(bundles: dict[str, np.ndarray], layer_pos: int) -> dict:
     names = list(bundles)
-    probes = {n: contrast_probes_12pool(bundles[n][:, layer_pos]) for n in names}
+    probes = {name: contrast_probes_12pool(bundles[name][:, layer_pos]) for name in names}
     out = {}
-    for i, a in enumerate(names):
-        for b in names[i + 1 :]:
-            per_emotion = np.sum(probes[a] * probes[b], axis=1)
-            sim_a = probes[a] @ probes[a].T
-            sim_b = probes[b] @ probes[b].T
-            tri = np.triu_indices(len(BATTERY), k=1)
-            rsa = float(np.corrcoef(sim_a[tri], sim_b[tri])[0, 1])
-            out[f"{a}_vs_{b}"] = {
-                "mean_contrast_cos": float(per_emotion.mean()),
-                "range": [float(per_emotion.min()), float(per_emotion.max())],
+    for i, name_a in enumerate(names):
+        for name_b in names[i + 1 :]:
+            # per-emotion cosine between the two lineages' matching probes
+            # (probes are unit-norm, so the row-wise dot IS the cosine)
+            per_emotion_cos = np.sum(probes[name_a] * probes[name_b], axis=1)
+
+            # RSA: correlate the two lineages' 12x12 within-battery similarity
+            # structures over the off-diagonal upper triangle
+            sim_a = probes[name_a] @ probes[name_a].T
+            sim_b = probes[name_b] @ probes[name_b].T
+            upper_tri = np.triu_indices(len(BATTERY), k=1)
+            rsa = float(np.corrcoef(sim_a[upper_tri], sim_b[upper_tri])[0, 1])
+
+            out[f"{name_a}_vs_{name_b}"] = {
+                "mean_contrast_cos": float(per_emotion_cos.mean()),
+                "range": [float(per_emotion_cos.min()), float(per_emotion_cos.max())],
                 "rsa_12x12": rsa,
             }
     return out
@@ -147,13 +179,18 @@ def r3_preferences(bundles: dict[str, np.ndarray], sweep_layers: list[int]) -> d
     out = {}
     for name, means in bundles.items():
         best = {"abs_r": 0.0, "layer": None, "emotion": None}
-        for pl, layer in enumerate(pref_layers):
-            lp = sweep_layers.index(layer)
-            probes = contrast_probes_12pool(means[:, lp])
-            acts = feel[:, pl]
-            cos = (acts / np.clip(np.linalg.norm(acts, axis=1, keepdims=True), 1e-8, None)) @ probes.T
-            for e_i, emotion in enumerate(BATTERY):
-                r = float(np.corrcoef(cos[:, e_i], elo)[0, 1])
+        for pref_layer_pos, layer in enumerate(pref_layers):
+            sweep_layer_pos = sweep_layers.index(layer)
+            probes = contrast_probes_12pool(means[:, sweep_layer_pos])
+
+            # cosine of each activity's feel-activation with each emotion probe
+            acts = feel[:, pref_layer_pos]
+            acts_unit = acts / np.clip(np.linalg.norm(acts, axis=1, keepdims=True), 1e-8, None)
+            cos = acts_unit @ probes.T  # [activities, emotions]
+
+            # track the (layer, emotion) cell with the largest |r| against Elo
+            for emotion_pos, emotion in enumerate(BATTERY):
+                r = float(np.corrcoef(cos[:, emotion_pos], elo)[0, 1])
                 if abs(r) > best["abs_r"]:
                     best = {"abs_r": abs(r), "r": r, "layer": layer, "emotion": emotion}
         out[name] = best
@@ -166,8 +203,12 @@ def main() -> int:
     parser.add_argument("--weak", type=Path, required=True)
     parser.add_argument("--strong", type=Path, required=True)
     parser.add_argument("--out", type=Path, default=Path("results/e11_lineage.json"))
-    parser.add_argument("--results-root", type=Path, default=Path("results"),
-                        help="where the sweep/preference inputs live (the main clone's results/)")
+    parser.add_argument(
+        "--results-root",
+        type=Path,
+        default=Path("results"),
+        help="where the sweep/preference inputs live (the main clone's results/)",
+    )
     parser.add_argument("--selfgen-stories", type=Path, default=None)
     parser.add_argument("--weak-stories", type=Path, default=None)
     parser.add_argument("--strong-stories", type=Path, default=None)
@@ -182,23 +223,28 @@ def main() -> int:
     }
     sweep = np.load(SWEEP, allow_pickle=True)
     layers = [int(x) for x in sweep["layers"]]
+    probe_files = {"selfgen": args.selfgen, "weak": args.weak, "strong": args.strong}
     result = {
         "experiment": "Q1.H2.E11",
-        "probe_files": {k: str(v) for k, v in
-                        {"selfgen": args.selfgen, "weak": args.weak, "strong": args.strong}.items()},
+        "probe_files": {name: str(path) for name, path in probe_files.items()},
         "convention": "post-fix bundles on all arms; 12-pool probe centering; "
         "scenario-set activation centering; chat_last readout",
         "r1_dual_battery": r1_grid(bundles, sweep),
         "r2_cross_lineage_layer33": r2_cross(bundles, layers.index(33)),
         "r3_preference_probe_elo": r3_preferences(bundles, layers),
         "r4_diversity_EXPLORATORY": r4_diversity_exploratory(
-            {"selfgen": args.selfgen_stories, "weak_external": args.weak_stories,
-             "strong_external": args.strong_stories}
+            {
+                "selfgen": args.selfgen_stories,
+                "weak_external": args.weak_stories,
+                "strong_external": args.strong_stories,
+            }
         ),
     }
     args.out.write_text(json.dumps(result, indent=2))
     for name, r1 in result["r1_dual_battery"].items():
-        print(f"{name:16s} best layer {r1['best']['layer']}: {r1['best']['counts']} | passing: {r1['passing_layers']}")
+        print(
+            f"{name:16s} best layer {r1['best']['layer']}: {r1['best']['counts']} | passing: {r1['passing_layers']}"
+        )
     print(json.dumps(result["r2_cross_lineage_layer33"], indent=2))
     print("R3:", {k: round(v["abs_r"], 3) for k, v in result["r3_preference_probe_elo"].items()})
     return 0

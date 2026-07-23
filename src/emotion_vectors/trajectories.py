@@ -84,7 +84,7 @@ def parse_story(text: str, mode: str) -> ParsedStory:
     if not labels:
         raise ValueError("story has no <emotion> tags")
     if mode == "SIMULTANEOUS":
-        emotions = [e.strip() for e in labels[0].split(",") if e.strip()]
+        emotions = [label.strip() for label in labels[0].split(",") if label.strip()]
         return ParsedStory(clean_text, emotions, [0], mode)
     return ParsedStory(clean_text, labels, starts, mode)
 
@@ -97,11 +97,15 @@ def phase_token_starts(char_starts: list[int], offsets: list[tuple[int, int]]) -
     """
     token_starts: list[int] = []
     for char_start in char_starts:
-        idx = next(
-            (i for i, (s, e) in enumerate(offsets) if e > char_start and e > s),
-            len(offsets) - 1,
-        )
-        token_starts.append(idx)
+        # first non-special token whose char span reaches past the phase start;
+        # fall back to the last token if the phase starts at/after the story end
+        phase_first_token = len(offsets) - 1
+        for token_idx, (span_start, span_end) in enumerate(offsets):
+            is_real_token = span_end > span_start  # special tokens map to (0, 0)
+            if is_real_token and span_end > char_start:
+                phase_first_token = token_idx
+                break
+        token_starts.append(phase_first_token)
     return token_starts
 
 
@@ -157,12 +161,17 @@ def transition_windows(
     """
     width = 2 * window + 1
     incoming, outgoing = [], []
-    for k, start in enumerate(phase_starts[1:], start=1):
-        for column, bucket in ((k, incoming), (k - 1, outgoing)):
+    for entered_phase, start in enumerate(phase_starts[1:], start=1):
+        left_phase = entered_phase - 1
+        for column, bucket in ((entered_phase, incoming), (left_phase, outgoing)):
+            # copy cosines[start - window : start + window + 1] into a NaN-padded
+            # row, clipping the slice where it runs off either end of the story
             row = np.full(width, np.nan, dtype=np.float32)
-            lo, hi = start - window, start + window + 1
-            src_lo, src_hi = max(lo, 0), min(hi, len(cosines))
-            row[src_lo - lo : src_hi - lo] = cosines[src_lo:src_hi, column]
+            window_lo, window_hi = start - window, start + window + 1
+            clipped_lo, clipped_hi = max(window_lo, 0), min(window_hi, len(cosines))
+            row[clipped_lo - window_lo : clipped_hi - window_lo] = cosines[
+                clipped_lo:clipped_hi, column
+            ]
             bucket.append(row)
     empty = np.empty((0, width), dtype=np.float32)
     return (
@@ -182,8 +191,12 @@ def circumplex_weights(
     circumplex view be computed from published shards alone.
     """
     contrast = means - means.mean(axis=0, keepdims=True)
-    _, _, vt = np.linalg.svd(contrast, full_matrices=False)
-    axes = vt[:2]  # [2, d_model]
-    units = contrast / np.clip(np.linalg.norm(contrast, axis=-1, keepdims=True), 1e-8, None)
-    weights, *_ = np.linalg.lstsq(units.T, axes.T, rcond=None)
+    # PC1/PC2 = top-2 right singular vectors of the centered means
+    _, _, right_singular = np.linalg.svd(contrast, full_matrices=False)
+    pca_axes = right_singular[:2]  # [two, d_model]
+    contrast_norms = np.linalg.norm(contrast, axis=-1, keepdims=True)
+    unit_contrasts = contrast / np.clip(contrast_norms, 1e-8, None)
+    # least-squares solve for weights with unit_contrasts.T @ weights.T ~= pca_axes.T,
+    # i.e. express each PCA axis as a combination of the unit probe directions
+    weights, *_ = np.linalg.lstsq(unit_contrasts.T, pca_axes.T, rcond=None)
     return weights.T
