@@ -670,7 +670,7 @@ above):
   registered against probe geometry, not against a human lexicon. Deciding
   test before graduation: replicate the partial-correlation ordering on the
   deepseek bank and the base arm, where the probe geometry differs.
-"""
+""")
 
 
 def main() -> int:
