@@ -1,0 +1,263 @@
+{
+  "claim": "Q1.H2.C4",
+  "doc": "C4 falsify gate \u2014 can the centered-cosine detection claim be destroyed?\n\nCLAIM UNDER TEST (Q1.H2.C4, restated on the post-fix instruments): under the\ncentered-cosine readout (scenario-set mean removed from activations, probes\n12-pool-centered and unit-normalized, chat_last), story-derived emotion\nprobes detect implicit scenario emotion on gemma-4-31b-it, passing the\ndual-battery bar (target-in-top-3 >= 8/12 on BOTH batteries) across a band\nof layers. Gated lineages (user-directed 2026-07-23): self-gen n=256\npost-fix and strong-external DeepSeek fixed-prompt (E11's two winners).\nScoring is byte-compatible with scripts/score_e11_lineage.py (the three\nshared helpers are reproduced verbatim; the observed grid is asserted equal\nto results/e11_lineage.json before any test runs).",
+  "selfgen_postfix": {
+    "per_layer_counts": {
+      "0": [
+        3,
+        4
+      ],
+      "3": [
+        4,
+        1
+      ],
+      "6": [
+        7,
+        6
+      ],
+      "9": [
+        7,
+        6
+      ],
+      "12": [
+        8,
+        7
+      ],
+      "15": [
+        7,
+        4
+      ],
+      "18": [
+        7,
+        4
+      ],
+      "21": [
+        5,
+        5
+      ],
+      "24": [
+        4,
+        5
+      ],
+      "27": [
+        3,
+        5
+      ],
+      "30": [
+        8,
+        7
+      ],
+      "33": [
+        11,
+        9
+      ],
+      "36": [
+        8,
+        7
+      ],
+      "39": [
+        10,
+        11
+      ],
+      "42": [
+        8,
+        8
+      ],
+      "45": [
+        7,
+        7
+      ],
+      "48": [
+        7,
+        10
+      ],
+      "51": [
+        9,
+        9
+      ],
+      "54": [
+        8,
+        10
+      ],
+      "57": [
+        8,
+        7
+      ]
+    },
+    "passing_layers": [
+      33,
+      39,
+      42,
+      51,
+      54
+    ],
+    "observed_max_min_count": 10,
+    "t1_selection_adjusted_perm": {
+      "n_perm": 10000,
+      "p_max_geq_observed": 0.0,
+      "p_null_any_passing_layer": 0.0,
+      "null_max_p95": 5.0,
+      "bar": "p < 0.01",
+      "pass": true
+    },
+    "t2_scenario_bootstrap": {
+      "n_boot": 10000,
+      "pass_stability_per_layer": {
+        "33": 0.789,
+        "39": 0.8168,
+        "42": 0.2473,
+        "51": 0.5942,
+        "54": 0.2876
+      },
+      "bar": ">= 1 layer with stability >= 0.5",
+      "pass": true
+    },
+    "t3_random_probe_sets": {
+      "n_sets": 1000,
+      "random_max_p95": 6.0,
+      "random_max_max": 8.0,
+      "bar": "observed max > random p95",
+      "pass": true
+    },
+    "verdict": "survives"
+  },
+  "strong_deepseek": {
+    "per_layer_counts": {
+      "0": [
+        5,
+        4
+      ],
+      "3": [
+        4,
+        3
+      ],
+      "6": [
+        10,
+        8
+      ],
+      "9": [
+        10,
+        7
+      ],
+      "12": [
+        11,
+        8
+      ],
+      "15": [
+        10,
+        7
+      ],
+      "18": [
+        8,
+        6
+      ],
+      "21": [
+        5,
+        5
+      ],
+      "24": [
+        3,
+        4
+      ],
+      "27": [
+        3,
+        5
+      ],
+      "30": [
+        10,
+        7
+      ],
+      "33": [
+        10,
+        8
+      ],
+      "36": [
+        10,
+        9
+      ],
+      "39": [
+        10,
+        10
+      ],
+      "42": [
+        9,
+        9
+      ],
+      "45": [
+        8,
+        8
+      ],
+      "48": [
+        6,
+        8
+      ],
+      "51": [
+        6,
+        7
+      ],
+      "54": [
+        9,
+        8
+      ],
+      "57": [
+        8,
+        9
+      ]
+    },
+    "passing_layers": [
+      6,
+      12,
+      33,
+      36,
+      39,
+      42,
+      45,
+      54,
+      57
+    ],
+    "observed_max_min_count": 10,
+    "t1_selection_adjusted_perm": {
+      "n_perm": 10000,
+      "p_max_geq_observed": 0.0,
+      "p_null_any_passing_layer": 0.0002,
+      "null_max_p95": 5.0,
+      "bar": "p < 0.01",
+      "pass": true
+    },
+    "t2_scenario_bootstrap": {
+      "n_boot": 10000,
+      "pass_stability_per_layer": {
+        "6": 0.5635,
+        "12": 0.6539,
+        "33": 0.5023,
+        "36": 0.7061,
+        "39": 0.8055,
+        "42": 0.4853,
+        "45": 0.1758,
+        "54": 0.3434,
+        "57": 0.418
+      },
+      "bar": ">= 1 layer with stability >= 0.5",
+      "pass": true
+    },
+    "t3_random_probe_sets": {
+      "n_sets": 1000,
+      "random_max_p95": 6.0,
+      "random_max_max": 8.0,
+      "bar": "observed max > random p95",
+      "pass": true
+    },
+    "verdict": "survives"
+  },
+  "t4_dialogue_crosscheck": {
+    "bundle": "results/dialogue_vectors_it_means.npz",
+    "caveat": "pre-fix extraction (7.1% leak share); only dialogue set in existence",
+    "observed_max_min_count": 10,
+    "p_vs_own_null": 0.0,
+    "bar": "p < 0.05 (informative only: weakens, never fails)",
+    "pass": true
+  },
+  "t5_base_rate_reference": {
+    "binomial_p_single_battery_geq_8_of_12_at_chance_3_of_12": 0.002781510353088379
+  }
+}
