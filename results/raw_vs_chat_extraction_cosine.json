@@ -1,0 +1,48 @@
+{
+  "read": "raw-text vs chat-template extraction, self-gen n=256 corpus, gemma-4-31b-it, post-fix pipeline both arms",
+  "chatfmt_dir": "results/self_story_vectors_it_postfix_chatfmt",
+  "per_layer": {
+    "24": {
+      "contrast_cos_mean": 0.7494,
+      "contrast_cos_min": 0.557,
+      "contrast_cos_argmin": "nervous",
+      "raw_cos_mean": 0.9954
+    },
+    "30": {
+      "contrast_cos_mean": 0.5692,
+      "contrast_cos_min": 0.2454,
+      "contrast_cos_argmin": "angry",
+      "raw_cos_mean": 0.9836
+    },
+    "33": {
+      "contrast_cos_mean": 0.5801,
+      "contrast_cos_min": 0.1751,
+      "contrast_cos_argmin": "angry",
+      "raw_cos_mean": 0.9927
+    },
+    "36": {
+      "contrast_cos_mean": 0.519,
+      "contrast_cos_min": 0.1352,
+      "contrast_cos_argmin": "angry",
+      "raw_cos_mean": 0.9908
+    },
+    "39": {
+      "contrast_cos_mean": 0.5965,
+      "contrast_cos_min": 0.3034,
+      "contrast_cos_argmin": "angry",
+      "raw_cos_mean": 0.9782
+    },
+    "42": {
+      "contrast_cos_mean": 0.6935,
+      "contrast_cos_min": 0.3428,
+      "contrast_cos_argmin": "angry",
+      "raw_cos_mean": 0.9873
+    },
+    "57": {
+      "contrast_cos_mean": 0.7089,
+      "contrast_cos_min": 0.5305,
+      "contrast_cos_argmin": "angry",
+      "raw_cos_mean": 0.9179
+    }
+  }
+}

@@ -71,6 +71,7 @@ class RunSettings:
     seed: int
     smoke: bool
     git_commit: str
+    chat_template: bool = False  # stories wrapped as a user turn (audit arm)
 
     @property
     def shards_dir(self) -> Path:
