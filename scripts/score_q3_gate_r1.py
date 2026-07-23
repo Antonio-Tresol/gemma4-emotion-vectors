@@ -122,28 +122,38 @@ def gate_read(c: dict, groups: dict, bank: str, rng: np.random.Generator) -> dic
     ]
     if not keep:
         return {"n_phases": 0}
-    stats = c["phase_stats"][keep][:, :, idx]  # [phases, layers, bank]
-    targets = np.array(
+    n_phases = len(keep)
+    scores = c["phase_stats"][keep][:, :, idx]  # [phases, layers, bank_probes]
+    target_probe = np.array(
         [idx.index(emotion_index(labels, bank, c["phase_emotion"][i])) for i in keep]
     )
-    ranks = (stats > stats[np.arange(len(keep)), :, targets][:, :, None]).sum(axis=2) + 1
-    out = {"n_phases": len(keep), "per_layer": {}}
+
+    # rank of the tagged emotion within the bank, per (phase, layer):
+    # 1 + how many other probes scored above it
+    target_score = scores[np.arange(n_phases), :, target_probe]  # [phases, layers]
+    n_probes_above_target = (scores > target_score[:, :, None]).sum(axis=2)
+    ranks = n_probes_above_target + 1
+
+    bar_rank = max(len(idx) // 10, 1)  # top decile of the bank
+    out = {"n_phases": n_phases, "per_layer": {}}
     for li, layer in enumerate(LAYERS):
-        observed = float(np.median(ranks[:, li]))
-        null = np.median(
-            np.take_along_axis(
-                np.argsort(np.argsort(-stats[:, li], axis=1), axis=1) + 1,
-                rng.integers(0, len(idx), size=(len(keep), N_SHUFFLES)),
-                axis=1,
-            ),
-            axis=0,
-        )
-        p = float((null <= observed).mean())
+        observed_median_rank = float(np.median(ranks[:, li]))
+
+        # N2 null: what median rank does a randomly assigned WRONG emotion
+        # get? Precompute every probe's within-phase rank once, so each of
+        # the 10,000 shuffles is just an integer lookup.
+        descending_order = np.argsort(-scores[:, li], axis=1)
+        rank_of_each_probe = np.argsort(descending_order, axis=1) + 1  # [phases, bank_probes]
+        wrong_emotion_picks = rng.integers(0, len(idx), size=(n_phases, N_SHUFFLES))
+        wrong_emotion_ranks = np.take_along_axis(rank_of_each_probe, wrong_emotion_picks, axis=1)
+        null_median_ranks = np.median(wrong_emotion_ranks, axis=0)  # [shuffles]
+
+        p = float((null_median_ranks <= observed_median_rank).mean())
         out["per_layer"][layer] = {
-            "median_rank": observed,
+            "median_rank": observed_median_rank,
             "n2_p": p,
-            "bar_rank": len(idx) // 10 or 1,
-            "passes": observed <= max(len(idx) // 10, 1) and p < 0.001,
+            "bar_rank": bar_rank,
+            "passes": observed_median_rank <= bar_rank and p < 0.001,
         }
     return out
 
@@ -155,24 +165,35 @@ def r1_read(c: dict, groups: dict, bank: str, noise_sd: dict, rng: np.random.Gen
     ]
     if not keep:
         return {"n_transitions": 0}
-    leads = c["trans_lead"][keep][:, :, idx]  # [trans, layers, bank]
-    targets = np.array(
+    n_transitions = len(keep)
+    leads = c["trans_lead"][keep][:, :, idx]  # [transitions, layers, bank_probes]
+    incoming_probe = np.array(
         [idx.index(emotion_index(labels, bank, c["trans_incoming"][i])) for i in keep]
     )
-    true_leads = leads[np.arange(len(keep)), :, targets]  # [trans, layers]
-    out = {"n_transitions": len(keep), "per_layer": {}}
-    shuffle_targets = rng.integers(0, len(idx), size=(N_SHUFFLES, len(keep)))
+
+    # each transition's lead for its actual incoming emotion
+    true_leads = leads[np.arange(n_transitions), :, incoming_probe]  # [transitions, layers]
+
+    # N2 null: mean lead when every transition is assigned a random wrong
+    # emotion instead; one row of picks per shuffle
+    wrong_emotion_picks = rng.integers(0, len(idx), size=(N_SHUFFLES, n_transitions))
+
+    out = {"n_transitions": n_transitions, "per_layer": {}}
     for li, layer in enumerate(LAYERS):
-        observed = float(true_leads[:, li].mean())
-        null_means = leads[np.arange(len(keep))[None, :], li, shuffle_targets].mean(axis=1)
-        p = float((null_means >= observed).mean())
+        observed_mean_lead = float(true_leads[:, li].mean())
+        leads_at_layer = leads[:, li]  # [transitions, bank_probes]
+        wrong_leads = leads_at_layer[np.arange(n_transitions)[None, :], wrong_emotion_picks]
+        null_mean_leads = wrong_leads.mean(axis=1)  # [shuffles]
+        p = float((null_mean_leads >= observed_mean_lead).mean())
+
         sd = noise_sd.get(str(layer))
+        bar_lead = None if sd is None else 0.5 * sd
         out["per_layer"][layer] = {
-            "mean_lead": observed,
+            "mean_lead": observed_mean_lead,
             "n2_p": p,
             "noise_sd": sd,
-            "bar_lead": None if sd is None else 0.5 * sd,
-            "passes": p < 0.001 and (sd is not None and observed >= 0.5 * sd),
+            "bar_lead": bar_lead,
+            "passes": p < 0.001 and bar_lead is not None and observed_mean_lead >= bar_lead,
         }
     return out
 
