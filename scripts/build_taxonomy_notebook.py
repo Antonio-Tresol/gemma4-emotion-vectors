@@ -644,7 +644,33 @@ md("""
   similar probes are harder.
 - Same standing as Part 1: exploratory, nothing graduates without the falsify
   gate.
-""")
+
+**What the Part 2 results mean, the live hypotheses, and what would decide
+them** (interpretation, not claims; the numbers live in the cell outputs
+above):
+
+- *The attractor probes.* If a couple of probes win most wrong phases
+  regardless of the target (see S6), the natural reading is a probe-bank
+  defect, not a model belief: those directions may sit closer to generic
+  story activity, so everything leans toward them. Deciding test: audit the
+  attractor probes' construction (per-story variance, norm before
+  unit-normalization, cosine to the bank mean) and re-run S6 with the
+  attractors removed; a bank artifact disappears, a genuine basin in the
+  model's reading does not.
+- *Stable relabeling.* If disagreement holds from a phase's first third to
+  its last (S7), the tracker is not lagging the boundary, it holds its own
+  consistent reading of the phase. That makes the disagreements themselves
+  data: they are either the model's genuine opinion about the text (test:
+  human-rate a sample of never-right phases; if raters side with the model,
+  our tags are wrong, not the tracker) or the attractor artifact above.
+- *Geometry over human distance.* If which wrong answer wins follows the
+  model's own probe cosines even after removing the human valence-arousal
+  ruler (S8), then confusion structure is model-idiosyncratic, and any
+  future "the model confuses affectively similar emotions" claim must be
+  registered against probe geometry, not against a human lexicon. Deciding
+  test before graduation: replicate the partial-correlation ordering on the
+  deepseek bank and the base arm, where the probe geometry differs.
+"""
 
 
 def main() -> int:

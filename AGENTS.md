@@ -122,6 +122,11 @@ reviewers do:
   abbreviations), a short intention comment above every non-obvious block,
   docstrings naming inputs/outputs, and named tensor axes (einops/jaxtyping)
   everywhere an array changes shape.
+- **Interpretation lives in the exhibit, not in chat.** Every report section
+  ends with what the result means, the live hypotheses (labeled as
+  hypotheses) each paired with the experiment that would decide it, and the
+  open questions. If an explanation was good enough to give a collaborator
+  in conversation, it belongs in the notebook before they have to ask.
 
 ## Non-negotiables
 
