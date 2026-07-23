@@ -98,6 +98,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--steer-dir", type=Path, default=STEER_DIR)
     parser.add_argument("--baseline-dir", type=Path, default=BASELINE_DIR)
+    parser.add_argument(
+        "--e3-scores-name",
+        default="scores.json",
+        help="E3 scores file inside --baseline-dir supplying the probe-r profile "
+        "(E4b rescore: scores_postfix_probes.json, matching the steering bundle)",
+    )
     args = parser.parse_args()
     steer_dir = args.steer_dir
     baseline_dir = args.baseline_dir
@@ -118,7 +124,7 @@ def main() -> int:
         np.abs(baseline_bundle["ab_logits"][:, 0] - baseline_bundle["ab_logits"][:, 1]).mean()
     )
 
-    e3 = json.loads((baseline_dir / "scores.json").read_text())
+    e3 = json.loads((baseline_dir / args.e3_scores_name).read_text())
     best_block = next(b for b in e3["probe_elo_by_layer"] if b["layer"] == e3["p2_best_layer"])
     probe_r = dict(zip(e3["probe_emotions_matched"], best_block["per_probe_r"]))
     rows = collect_rows(
