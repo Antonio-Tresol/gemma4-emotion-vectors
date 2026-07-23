@@ -127,6 +127,14 @@ reviewers do:
   hypotheses) each paired with the experiment that would decide it, and the
   open questions. If an explanation was good enough to give a collaborator
   in conversation, it belongs in the notebook before they have to ask.
+- **Every figure carries its own grading scale.** A reader must be able to
+  judge the result from the figure alone: labeled anchors for what FAILURE
+  looks like (chance level, zero effect, the noise floor) and what a STRONG
+  result would look like (the registered bar where one exists; otherwise a
+  meaningful comparator such as the other arm or bank), drawn as reference
+  lines/bands in the plot where possible. The how-to-read block then says it
+  in words: "a good result here would be X, a bad one Y, and the observed
+  pattern sits at Z between them."
 - **HTML is welcome where it reads better.** Notebook markdown may use HTML
   freely when it is clearer than plain markdown: collapsible
   `<details>` blocks, styled tables, side-by-side layouts. Clarity decides,
