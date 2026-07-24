@@ -52,6 +52,11 @@ is true.
   builder was silently stale, and re-running one would have overwritten a
   finished notebook with its pre-extraction ancestor (`git log -- scripts/`
   has them if you ever need to look).
+- `docs/` — the talk: `index.html` (interactive, self-contained), `slides/`
+  (PDF and PPTX), and the builders that generate them. Numbers are transcribed
+  from notebook printed records, one block per figure naming its source, so a
+  number changes in the notebook first and here second. The slide charts are
+  screenshots of `index.html`'s own code, so the two cannot disagree.
 - `data/papers/` (literature PDFs), `data/lexicons/` (third-party, manual
   download), `notes/` (drafts and registration drafts).
 - `check.sh` — the repo gate (format, lint, tests, validator); the shared
