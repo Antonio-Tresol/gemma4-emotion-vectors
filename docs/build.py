@@ -595,7 +595,7 @@ TEMPLATE = r"""<!DOCTYPE html>
         the story the model is reading (the phase you are scrubbing is highlighted)</div>
       <div class="storybox" id="storyBox"></div>
     </div>
-    <details class="howto" open><summary>How to read this</summary>
+    <details class="howto"><summary>How to read this</summary>
       <p><b>Left:</b> one line per emotion probe. Higher means the model's state is closer to that
       emotion. The two vertical marks are where the story is written to turn. A perfect tracker would
       hand the lead from the red line to the blue to the green, right at those marks.</p>
