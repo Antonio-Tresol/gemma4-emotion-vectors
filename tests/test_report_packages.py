@@ -109,6 +109,7 @@ BUILDERS_WITHOUT_A_PRINTED_RECORD = {
     "taxonomy_report.s2_family_figure",
     "taxonomy_report.s3_affective_distance_figure",
     "taxonomy_report.s4_confusion_figure",
+    "taxonomy_report.s5_position_nonaffect_figure",
 }
 
 
@@ -158,21 +159,17 @@ def assert_figure_contract(result: FigureResult, name: str) -> None:
         )
 
 
-# KNOWN DEFECT, recorded rather than hidden. Every taxonomy_report exhibit
-# drives its slider through the shared `layer_slider`, which toggles trace
-# visibility without restating the title: the title keeps the primary layer's
-# verdict while the slider moves the data under it.
+# FIXED, and the empty set is kept so a regression has a name. The defect was:
+# every taxonomy_report exhibit drove its slider through the shared
+# `layer_slider`, which toggled trace visibility without restating the title,
+# so the title kept the primary layer's verdict while the slider moved the data
+# under it. `layer_slider` now takes a per-layer title callback and all six
+# notebook-11 exhibits pass one, so no figure is exempt.
 
-# The assertion is inverted for these, so the exemption cannot outlive the
-# defect: fixing a figure makes this test fail until it leaves the list.
-FIGURES_WITH_FROZEN_SLIDER_TITLES = {
-    "taxonomy_report.s1_top1_figure",
-    "taxonomy_report.s2_family_figure",
-    "taxonomy_report.s3_affective_distance_figure",
-    "taxonomy_report.s4_confusion_figure",
-    "taxonomy_report.s7_thirds_figure",
-    "taxonomy_report.s8_geometry_figure",
-}
+# The assertion is inverted for anything listed here, so an exemption cannot
+# outlive its defect: fixing a figure makes this test fail until it leaves the
+# list.
+FIGURES_WITH_FROZEN_SLIDER_TITLES: set[str] = set()
 
 
 def assert_slider_contract(figure: go.Figure, name: str) -> None:
@@ -368,7 +365,8 @@ def geometry_report_centered(layer_means):
 @pytest.fixture(scope="module")
 def taxonomy_arms():
     return _load_or_skip(
-        lambda: taxonomy_report.load_arms(["it_v2", "deepseek"]),
+        # "base" is needed by s6_named_confusions, which reads the base arm
+        lambda: taxonomy_report.load_arms(["it_v2", "deepseek", "base"]),
         "the Q3 tracking arms",
     )
 
@@ -382,8 +380,39 @@ def test_taxonomy_figures_meet_the_contract(taxonomy_arms) -> None:
         "s3_affective_distance_figure": taxonomy_report.s3_affective_distance_figure(
             taxonomy_arms, vad, rng
         ),
+        "s4_confusion_figure": taxonomy_report.s4_confusion_figure(taxonomy_arms, vad, rng),
+        "s5_position_nonaffect_figure": taxonomy_report.s5_position_nonaffect_figure(
+            taxonomy_arms, taxonomy_report.load_has_nonaffect(), rng
+        ),
+        "s6_named_confusions": taxonomy_report.s6_named_confusions(taxonomy_arms),
+        "s7_thirds_figure": taxonomy_report.s7_thirds_figure(taxonomy_arms),
         "s8_geometry_figure": taxonomy_report.s8_geometry_figure(taxonomy_arms, vad),
     }
     for name, result in results.items():
         assert_figure_contract(result, f"taxonomy_report.{name}")
         assert_slider_contract(result[0], f"taxonomy_report.{name}")
+
+
+def test_every_taxonomy_section_builder_is_covered() -> None:
+    """The contract tests enumerate builders by name, so a builder that is
+    never listed is never enforced. This pins the enumeration: if a new
+    sNN_ figure builder appears in the package, it must be added above."""
+    covered = {
+        "s1_top1_figure",
+        "s2_family_figure",
+        "s3_affective_distance_figure",
+        "s4_confusion_figure",
+        "s5_position_nonaffect_figure",
+        "s6_named_confusions",
+        "s7_thirds_figure",
+        "s8_geometry_figure",
+    }
+    exported = {
+        name
+        for name in dir(taxonomy_report)
+        if re.fullmatch(r"s\d+_\w+", name) and callable(getattr(taxonomy_report, name))
+    }
+    assert exported == covered, (
+        "taxonomy_report's section builders and the tested set have diverged;"
+        f" untested: {sorted(exported - covered)}, stale entries: {sorted(covered - exported)}"
+    )

@@ -3,6 +3,8 @@ with NRC VAD affective distance as the competing (partialled-out) predictor."""
 
 from __future__ import annotations
 
+from functools import partial
+
 import numpy as np
 import plotly.graph_objects as go
 from einops import einsum
@@ -226,8 +228,13 @@ def _s8_transitions(
 
 
 def _s8_add_verdict_traces(fig: go.Figure, layer_stats: dict[str, float]) -> None:
-    """One layer's two verdict bars: the predictor face-off (left panel) and
-    the similar-vs-dissimilar quartile contrast (right panel)."""
+    """One layer's three verdict traces: the predictor face-off (left panel),
+    the similar-vs-dissimilar quartile contrast and that layer's own all-pairs
+    average comparator (right panel).
+
+    The comparator is a trace rather than a layout line so it moves with the
+    slider: the all-pairs confusion rate differs by layer, and a frozen line
+    would grade one layer's bars against another layer's average."""
     predictor_labels = [
         "model similarity<br>(raw)",
         "human similarity<br>(raw)",
@@ -251,9 +258,10 @@ def _s8_add_verdict_traces(fig: go.Figure, layer_stats: dict[str, float]) -> Non
         row=1,
         col=1,
     )
+    quartile_labels = ["most-similar quartile<br>(by probe cosine)", "least-similar quartile"]
     fig.add_trace(
         go.Bar(
-            x=["most-similar quartile<br>(by probe cosine)", "least-similar quartile"],
+            x=quartile_labels,
             y=[layer_stats["similar_quartile_rate"], layer_stats["dissimilar_quartile_rate"]],
             marker_color=["#4c78a8", "#9d9d9d"],
             text=[
@@ -265,6 +273,52 @@ def _s8_add_verdict_traces(fig: go.Figure, layer_stats: dict[str, float]) -> Non
         ),
         row=1,
         col=2,
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=quartile_labels,
+            y=[layer_stats["overall_rate"]] * 2,
+            mode="lines",
+            line=dict(color="#888", dash="dot"),
+            name=f"all-pairs average at this layer ({layer_stats['overall_rate']:.1%})",
+            showlegend=True,
+        ),
+        row=1,
+        col=2,
+    )
+
+
+def _s8_title(pair_stats: LayerStats, layer: int) -> str:
+    """S8's title for ONE layer: the question, then that layer's own answer.
+
+    Names whichever ruler keeps more predictive power at ``layer`` once the
+    other is partialled out (the two swap places across depth, so this cannot
+    be typed), and quotes that layer's quartile contrast. Same six-line
+    shape at every layer.
+    """
+    layer_stats = pair_stats[layer]
+    model_partial = layer_stats["partial_cos_given_vad"]
+    human_partial = layer_stats["partial_vad_given_cos"]
+    model_wins = model_partial > human_partial
+    winner = "the model's own probe geometry" if model_wins else "human valence-arousal closeness"
+    winning_partial = model_partial if model_wins else human_partial
+    losing_partial = human_partial if model_wins else model_partial
+    return (
+        "Whose notion of 'similar emotions' predicts the tracker's mistakes? At layer"
+        f" {layer} it is {winner},"
+        f"<br>which keeps rank correlation {winning_partial:+.2f} once the other ruler is"
+        f" removed against {losing_partial:+.2f} the other way round"
+        "<br><sup>left: one bar = one candidate ruler (blue = the model's probe cosine,"
+        " green = human NRC valence-arousal closeness); height = its rank correlation"
+        " with</sup>"
+        "<br><sup>how often a wrong emotion wins, raw and then after removing the other."
+        " Failure anchor: the marked line at 0 = no predictive power;</sup>"
+        "<br><sup>right: mean confusion rate of the model's most-similar pair quartile"
+        f" ({layer_stats['similar_quartile_rate']:.1%}) against the least-similar"
+        f" ({layer_stats['dissimilar_quartile_rate']:.1%}),</sup>"
+        f"<br><sup>with that layer's all-pairs average {layer_stats['overall_rate']:.1%}"
+        " drawn as the dotted comparator. 132 ordered emotion pairs, self-generated"
+        " probes, Gemma-written stories</sup>"
     )
 
 
@@ -296,31 +350,21 @@ def _s8_verdict_figure(pair_stats: LayerStats) -> go.Figure:
         row=1,
         col=1,
         annotation_text="0 = no predictive power",
-        annotation_position="bottom right",
-    )
-    overall = pair_stats[PRIMARY_LAYER]["overall_rate"]
-    fig.add_hline(
-        y=overall,
-        line_dash="dot",
-        line_color="#888",
-        row=1,
-        col=2,
-        annotation_text=f"all-pairs average {overall:.1%}",
-        annotation_position="top right",
+        # anchored bottom left: both raw bars are positive at every layer, so
+        # the space under the line on the left is free at every slider step
+        annotation_position="bottom left",
+        annotation_font_size=11,
+        annotation_bgcolor="rgba(255,255,255,0.8)",
     )
     fig.update_layout(
-        height=520,
-        margin=dict(t=130, b=90),
-        title=dict(
-            text="Whose notion of 'similar emotions' predicts the tracker's mistakes?"
-            "<br><sup>blue = the model's ruler (probe cosine), green = the human ruler "
-            "(NRC valence-arousal closeness); 'partial' = what each predicts after "
-            "removing the other | 132 ordered emotion pairs, selfgen probes, "
-            "Gemma-written stories</sup>",
-            y=0.97,
-        ),
+        width=1150,
+        height=640,
+        # top margin clears the six wrapped title lines plus the legend row
+        margin=dict(t=215, b=95),
+        legend=dict(orientation="h", y=1.22, x=0.0),
+        title=dict(y=0.98, yanchor="top", font_size=15),
     )
-    layer_slider(fig, traces_per_layer=2)
+    layer_slider(fig, traces_per_layer=3, title_for_layer=partial(_s8_title, pair_stats))
     return fig
 
 

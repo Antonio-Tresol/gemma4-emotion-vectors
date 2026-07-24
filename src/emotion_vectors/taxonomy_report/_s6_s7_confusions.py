@@ -3,6 +3,8 @@ disagrees with the tag) and the boundary-lag vs stable-relabeling timing read.""
 
 from __future__ import annotations
 
+from functools import partial
+
 import numpy as np
 import plotly.graph_objects as go
 from jaxtyping import Bool, Int
@@ -105,10 +107,37 @@ def _s6_family_lines(arms: Arms) -> list[str]:
     return lines
 
 
+def _s6_title(diagonal_by_layer: dict[int, float], n_emotions: int, layer: int) -> str:
+    """S6's title for ONE layer: the question, then that layer's own answer.
+
+    ``diagonal_by_layer`` maps layer -> the mean diagonal of that layer's
+    row-normalized confusion matrix, which is how often the base reader names
+    the tagged emotion. Hand-wrapped, since plotly never wraps a title.
+    """
+    hit_rate = diagonal_by_layer[layer]
+    chance = 1 / n_emotions
+    verdict = "well above" if hit_rate > 2 * chance else "close to"
+    return (
+        "When the base reader names an emotion, does it name"
+        "<br>the right one? At layer"
+        f" {layer} it lands on the tagged emotion {hit_rate:.0%} of"
+        f"<br>the time, {verdict} the {chance:.0%} a guess would give (S6)"
+        "<br><sup>one cell = the fraction of one expected emotion's phases (a row)</sup>"
+        "<br><sup>that the base reader assigned to a given emotion (a column);</sup>"
+        "<br><sup>rows sum to 1, so the diagonal is correct naming and everything</sup>"
+        "<br><sup>off it is a confusion. Corpus-bank probes cut to the battery 12,</sup>"
+        "<br><sup>base-model reader. Anchors: a perfect reader is a solid diagonal</sup>"
+        f"<br><sup>at 1.0, a guessing reader is a flat map at {chance:.0%}; the slider picks</sup>"
+        "<br><sup>the layer and this headline follows it</sup>"
+    )
+
+
 def _s6_base_heatmap(arms: Arms, battery: list[str]) -> go.Figure:
     """Row-normalized confusion heatmap for the BASE reader on the corpus
     bank cut to the battery 12, one trace per layer with a slider."""
     fig = go.Figure()
+    diagonal_by_layer: dict[int, float] = {}
+    names: list[str] = []
     for layer_pos, layer in enumerate(LAYERS):
         winners, phase_rows, names = confusion(arms, "base", "corpus", layer_pos, battery)
         confusion_counts = np.zeros((len(names), len(names)))
@@ -117,6 +146,8 @@ def _s6_base_heatmap(arms: Arms, battery: list[str]) -> go.Figure:
         row_normalized = confusion_counts / np.clip(
             confusion_counts.sum(axis=1, keepdims=True), 1, None
         )
+        # the diagonal is correct naming: its mean is this layer's hit rate
+        diagonal_by_layer[layer] = float(np.diag(row_normalized).mean())
         fig.add_trace(
             go.Heatmap(
                 z=row_normalized,
@@ -125,20 +156,26 @@ def _s6_base_heatmap(arms: Arms, battery: list[str]) -> go.Figure:
                 colorscale="Blues",
                 zmin=0,
                 zmax=1,
-                showscale=(layer_pos == 0),
+                # every layer carries the scale: only one trace is visible at a
+                # time, so attaching it to one layer leaves the others unlabelled
+                showscale=True,
                 colorbar=dict(title="fraction of the<br>row's phases"),
             )
         )
     fig.update_layout(
-        height=540,
-        width=680,
+        height=880,
+        width=820,
         yaxis_autorange="reversed",
         xaxis_title="emotion the base reader reports (winning corpus probe)",
         yaxis_title="expected (tagged) emotion",
-        title="S6: what the BASE reader says the emotion is "
-        "(corpus bank, battery-12 subset; rows sum to 1)",
+        title_font_size=15,
+        # top margin clears the ten wrapped title lines at every layer
+        margin=dict(t=400),
     )
-    layer_slider(fig, traces_per_layer=1)
+    # the headline verdict is computed per layer and written by the slider
+    layer_slider(
+        fig, traces_per_layer=1, title_for_layer=partial(_s6_title, diagonal_by_layer, len(names))
+    )
     return fig
 
 
@@ -211,6 +248,33 @@ def _s7_verdict_lines(
     return verdict, lines
 
 
+def _s7_title(shares_by_layer: dict[int, dict[str, dict[str, float]]], layer: int) -> str:
+    """S7's title for ONE layer: the plain question, then that layer's answer.
+
+    ``shares_by_layer[layer][arm][category]`` holds the same shares the bars
+    draw, so the headline names the dominant failure mode of the layer the
+    slider is on. Same six-line shape at every layer.
+    """
+    shares = shares_by_layer[layer]["it_v2"]
+    converges, never_right = shares["converges"], shares["never right"]
+    mode = "boundary lag" if converges > never_right else "stable relabeling"
+    return (
+        "Is the tracker just late, or does it tell a different story? On Gemma stories at"
+        f" layer {layer},"
+        f"<br>{converges:.0%} converge (wrong early, right late) against"
+        f" {never_right:.0%} never right: the mode is {mode} (registry code S7)"
+        "<br><sup>one bar = the share of that arm's story phases in one class, from whether"
+        " the tagged probe wins the phase's first and last token-count third;</sup>"
+        "<br><sup>the four bars sum to 1 per panel. 'converges' is the boundary-lag"
+        " signature (the model catches up after the boundary), 'never right' the"
+        " stable-relabeling one;</sup>"
+        "<br><sup>failure anchor: a bank that never found the tagged emotion would put"
+        " everything in 'never right'; a perfect tracker everything in 'always"
+        " right'.</sup>"
+        "<br><sup>Self-generated probes, both story authors</sup>"
+    )
+
+
 def s7_thirds_figure(arms: Arms) -> tuple[go.Figure, dict[str, object]]:
     """S7: boundary lag vs stable relabeling, from phase-third correctness.
 
@@ -221,6 +285,9 @@ def s7_thirds_figure(arms: Arms) -> tuple[go.Figure, dict[str, object]]:
     failure mode, "lines": the printed per-family block}``.
     """
     shares_primary: dict[str, dict[str, float]] = {}
+    # the same shares the bars draw, kept per layer so the title can restate
+    # the layer's own verdict; the returned record stays primary-layer only
+    shares_by_layer: dict[int, dict[str, dict[str, float]]] = {layer: {} for layer in LAYERS}
     fig = make_subplots(
         rows=1, cols=2, subplot_titles=["Gemma stories (it_v2)", "DeepSeek stories"]
     )
@@ -236,6 +303,7 @@ def s7_thirds_figure(arms: Arms) -> tuple[go.Figure, dict[str, object]]:
                 float((first_third & ~last_third).mean()),
                 float((~first_third & ~last_third).mean()),
             ]
+            shares_by_layer[layer][arm] = dict(zip(S7_CATEGORIES, shares))
             if layer == PRIMARY_LAYER:
                 shares_primary[arm] = dict(zip(S7_CATEGORIES, shares))
             fig.add_trace(
@@ -254,10 +322,12 @@ def s7_thirds_figure(arms: Arms) -> tuple[go.Figure, dict[str, object]]:
         fig.update_yaxes(title="share of phases", range=[0, 1], row=1, col=panel)
         fig.update_xaxes(title="phase class (first third vs last third correct)", row=1, col=panel)
     fig.update_layout(
-        height=450,
-        title="S7: is the model wrong early then right late (boundary lag), or wrong "
-        "throughout (stable relabeling)? (selfgen bank; shares sum to 1 per panel)",
+        width=1150,
+        height=560,
+        # top margin clears the six wrapped title lines at every slider step
+        margin=dict(t=185, b=95),
+        title=dict(y=0.98, yanchor="top", font_size=15),
     )
-    layer_slider(fig, traces_per_layer=2)
+    layer_slider(fig, traces_per_layer=2, title_for_layer=partial(_s7_title, shares_by_layer))
     verdict, lines = _s7_verdict_lines(arms, shares_primary)
     return fig, {"shares": shares_primary, "verdict": verdict, "lines": lines}

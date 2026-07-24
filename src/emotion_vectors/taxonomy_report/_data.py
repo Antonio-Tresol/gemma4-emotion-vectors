@@ -184,11 +184,25 @@ def cluster_boot_ci(
     return float(np.percentile(resample_stats, 2.5)), float(np.percentile(resample_stats, 97.5))
 
 
-def layer_slider(fig: go.Figure, traces_per_layer: int, prefix: str = "layer ") -> go.Figure:
+def layer_slider(
+    fig: go.Figure,
+    traces_per_layer: int,
+    prefix: str = "layer ",
+    title_for_layer: Callable[[int], str] | None = None,
+) -> go.Figure:
     """Show one layer's trace block at a time via a slider (house pattern).
 
     Assumes traces were added layer-major: ``traces_per_layer`` consecutive
     traces per layer, in LAYERS order. Defaults the slider to PRIMARY_LAYER.
+
+    ``title_for_layer`` maps a layer number to that layer's own title text
+    (headline verdict plus the hand-wrapped subtitle lines). When it is given,
+    every slider step relayouts the title alongside the visibility toggle and
+    the figure opens on ``title_for_layer(PRIMARY_LAYER)``, so the same
+    function writes the opening title and every step: a slider move can never
+    leave the primary layer's verdict standing over another layer's data.
+    When it is omitted the figure keeps whatever title it already carries and
+    the steps toggle visibility only.
     """
     n_traces = len(fig.data)
     assert n_traces == traces_per_layer * len(LAYERS), (n_traces, traces_per_layer)
@@ -197,7 +211,13 @@ def layer_slider(fig: go.Figure, traces_per_layer: int, prefix: str = "layer ") 
     steps = []
     for layer_pos, layer in enumerate(LAYERS):
         visible = [pos // traces_per_layer == layer_pos for pos in range(n_traces)]
-        steps.append(dict(method="update", args=[{"visible": visible}], label=str(layer)))
+        step_args: list[dict[str, object]] = [{"visible": visible}]
+        if title_for_layer is not None:
+            step_args.append({"title.text": title_for_layer(layer)})
+        steps.append(dict(method="update", args=step_args, label=str(layer)))
+    if title_for_layer is not None:
+        # title_text keeps the layout's other title properties (font, y anchor)
+        fig.update_layout(title_text=title_for_layer(PRIMARY_LAYER))
     fig.update_layout(
         sliders=[
             dict(

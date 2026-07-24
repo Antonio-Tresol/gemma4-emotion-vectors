@@ -3,6 +3,8 @@ difficulty (gate rank and R1 lead per family, with cluster-bootstrap CIs)."""
 
 from __future__ import annotations
 
+from functools import partial
+
 import numpy as np
 import plotly.graph_objects as go
 from jaxtyping import Float, Num
@@ -11,7 +13,6 @@ from plotly.subplots import make_subplots
 from ._data import (
     FAMILIES,
     LAYERS,
-    PRIMARY_LAYER,
     Arms,
     LayerStats,
     cluster_boot_ci,
@@ -23,11 +24,11 @@ from ._data import (
 _S2_ARM_COLORS = {"it_v2": "#4c78a8", "deepseek": "#f58518"}
 # plain names for the designed story types; the registry code stays in parentheses
 FAMILY_DISPLAY = {
-    "A_superposition": "superposition (A)",
-    "B_conflict": "conflict (B)",
-    "D_timescale": "timescale (D)",
-    "E_arousal_mismatch": "arousal mismatch (E)",
-    "F_valence_spread": "valence spread (F)",
+    "A_superposition": "superposition<br>(A)",
+    "B_conflict": "conflict<br>(B)",
+    "D_timescale": "timescale<br>(D)",
+    "E_arousal_mismatch": "arousal<br>mismatch (E)",
+    "F_valence_spread": "valence<br>spread (F)",
 }
 
 
@@ -59,6 +60,33 @@ def _s1_stats(arms: Arms) -> dict[str, LayerStats]:
                 "n": [n_phases[pos] for pos in best_first],
             }
     return stats
+
+
+def _s1_title(stats: dict[str, LayerStats], layer: int) -> str:
+    """S1's title for ONE layer: the question, then that layer's own answer.
+
+    Every number is read from ``stats[bank][layer]``, so the slider cannot
+    leave another layer's verdict on screen. Plotly never wraps a title, so
+    the text is hand-wrapped with a fixed six-line shape at every layer.
+    """
+    layer_summary = stats["selfgen"][layer]
+    above_half = sum(1 for rate in layer_summary["top1"] if rate >= 0.5)
+    best_emotion = layer_summary["emotions"][0]
+    best_rate = layer_summary["top1"][0]
+    return (
+        "Which emotions does the tracker actually recognise?"
+        f" At layer {layer}, {above_half} of {len(layer_summary['emotions'])} tagged"
+        "<br>emotions win their bank outright more than half the time,"
+        f" best is {best_emotion} at {best_rate:.0%}"
+        "<br><sup>one bar = one tagged emotion; height = the fraction of that emotion's story"
+        " phases where its own probe ranks first in the bank;</sup>"
+        "<br><sup>bar label = median rank and number of phases."
+        " Failure anchor: the dotted line at 1/12 is where guessing lands;</sup>"
+        "<br><sup>strength anchor: 1.0 would mean the right probe always wins. Stories"
+        " written by Gemma, read with v2 probes;</sup>"
+        "<br><sup>the slider picks the layer, and the bars, the sort order and this"
+        " headline all follow it</sup>"
+    )
 
 
 def s1_top1_figure(arms: Arms) -> tuple[go.Figure, dict[str, LayerStats]]:
@@ -103,37 +131,21 @@ def s1_top1_figure(arms: Arms) -> tuple[go.Figure, dict[str, LayerStats]]:
             annotation_text="chance 1/12",
             annotation_position="bottom left",
             annotation_font_size=11,
+            # the label lands on top of the tall left-hand bars, so it carries
+            # its own background rather than sitting dark-on-dark
+            annotation_bgcolor="rgba(255,255,255,0.8)",
         )
-    # headline verdict at the primary layer, computed here rather than typed:
-    # how many of the 12 tagged emotions clear a coin-flip top-1 rate
-    primary = stats["selfgen"][PRIMARY_LAYER]
-    above_half = sum(1 for rate in primary["top1"] if rate >= 0.5)
-    best_emotion = primary["emotions"][0]
-    best_rate = primary["top1"][0]
-    # plotly never wraps a title, so the headline is hand-wrapped to the figure width
     fig.update_layout(
         width=1150,
         height=680,
-        title=(
-            "Which emotions does the tracker actually recognise?"
-            f" At layer {PRIMARY_LAYER}, {above_half} of {len(primary['emotions'])} tagged"
-            "<br>emotions win their bank outright more than half the time,"
-            f" best is {best_emotion} at {best_rate:.0%}"
-            "<br><sup>one bar = one tagged emotion; height = the fraction of that emotion's story"
-            " phases where its own probe ranks first in the bank;</sup>"
-            "<br><sup>bar label = median rank and number of phases."
-            " Failure anchor: the dotted line at 1/12 is where guessing lands;</sup>"
-            "<br><sup>strength anchor: 1.0 would mean the right probe always wins. Stories"
-            " written by Gemma, read with v2 probes;</sup>"
-            f"<br><sup>the slider picks the layer, and the title reports layer"
-            f" {PRIMARY_LAYER}</sup>"
-        ),
         title_font_size=15,
-        # top margin clears the wrapped title, bottom margin holds the rotated
-        # emotion labels, the axis titles and the layer slider
+        # top margin clears the six wrapped title lines (the shape is the same
+        # at every layer), bottom margin holds the rotated emotion labels, the
+        # axis titles and the layer slider
         margin=dict(t=250, b=190),
     )
-    layer_slider(fig, traces_per_layer=2)
+    # the headline verdict is computed per layer and written by the slider
+    layer_slider(fig, traces_per_layer=2, title_for_layer=partial(_s1_title, stats))
     return fig, stats
 
 
@@ -242,6 +254,43 @@ def _s2_add_arm_traces(fig: go.Figure, family_stats: dict[str, object], arm: str
     )
 
 
+def _s2_rank_span(medians: list[float]) -> str:
+    """How far apart the five story types sit on the identity read, in words.
+
+    Ties are common (several types share a median rank), so an all-equal
+    layer says so rather than pretending a best and a worst type exist.
+    """
+    if min(medians) == max(medians):
+        return f"all five sit at median rank {min(medians):.0f} of 12"
+    return f"the five span median rank {min(medians):.0f} to {max(medians):.0f} of 12"
+
+
+def _s2_title(stats: dict[str, LayerStats], layer: int) -> str:
+    """S2's title for ONE layer: the question, then that layer's own answer.
+
+    Reads the primary arm's per-family cells at ``layer``: the identity read
+    is summarised by the median-rank span, the anticipation read by how many
+    of the five types have a bootstrap CI entirely above zero. Hand-wrapped
+    to the same five-line shape at every layer.
+    """
+    family_stats = stats["it_v2"][layer]
+    medians = [family_stats[family]["gate_median"] for family in FAMILIES]
+    rises = sum(1 for family in FAMILIES if family_stats[family]["lead_ci"][0] > 0)
+    return (
+        f"Which designed story types does the tracker handle best? At layer {layer},"
+        f"<br>on Gemma stories {_s2_rank_span(medians)}, and {rises} of {len(FAMILIES)}"
+        " anticipate the next emotion with a CI clear of zero"
+        "<br><sup>one bar = one designed story type read on one story set; left height ="
+        " median rank of the tagged probe among 12;</sup>"
+        "<br><sup>right height = mean rise of the incoming emotion before the boundary."
+        " Failure anchors: the dotted line at rank 6.5 is where guessing lands, and"
+        " 0 rise = no anticipation;</sup>"
+        "<br><sup>strength anchor: the dashed line at rank 1 would mean the right probe"
+        " always wins. Error bars = 95% cluster-bootstrap CI over triples;"
+        " self-generated probes</sup>"
+    )
+
+
 def s2_family_figure(
     arms: Arms, rng: np.random.Generator
 ) -> tuple[go.Figure, dict[str, LayerStats]]:
@@ -270,9 +319,9 @@ def s2_family_figure(
     )
     fig.update_yaxes(title="rise of the incoming emotion<br>(centered-cosine units)", row=1, col=2)
     for panel in (1, 2):
-        fig.update_xaxes(
-            title="designed story type", tickangle=18, title_standoff=28, row=1, col=panel
-        )
+        # labels wrap to two lines instead of tilting, so the axis title stays
+        # clear of the layer slider underneath it
+        fig.update_xaxes(title="designed story type", tickangle=0, row=1, col=panel)
     # grading anchors: what failure and success look like, named in the plot
     fig.add_hline(
         y=6.5,
@@ -298,20 +347,22 @@ def s2_family_figure(
         line_width=1,
         row=1,
         col=2,
-        annotation_text="no anticipation",
-        annotation_position="bottom right",
+        annotation_text="0 = no anticipation",
+        annotation_position="top left",
+        annotation_font_size=11,
+        # bars sit on both sides of the line at some layers, so the label
+        # carries its own background and stays readable at every slider step
+        annotation_bgcolor="rgba(255,255,255,0.8)",
     )
     fig.update_layout(
-        height=560,
+        width=1150,
+        height=680,
         barmode="group",
-        margin=dict(t=150, b=120),
-        legend=dict(orientation="h", y=1.22, x=0.0),
-        title=dict(
-            text="Which designed story types does the tracker handle best?"
-            "<br><sup>self-generated probes read both story sets; bars pair the two story "
-            "authors per type; error bars = 95% cluster-bootstrap CI over triples</sup>",
-            y=0.97,
-        ),
+        # top margin clears the five wrapped title lines plus the legend row;
+        # the bottom one holds the tilted type labels, axis titles and slider
+        margin=dict(t=210, b=150),
+        legend=dict(orientation="h", y=1.19, x=0.0),
+        title=dict(y=0.98, yanchor="top", font_size=15),
     )
-    layer_slider(fig, traces_per_layer=4)
+    layer_slider(fig, traces_per_layer=4, title_for_layer=partial(_s2_title, stats))
     return fig, stats

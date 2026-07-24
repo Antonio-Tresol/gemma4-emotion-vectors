@@ -3,6 +3,8 @@ distance, and does the confusion structure land on affective neighbors?"""
 
 from __future__ import annotations
 
+from functools import partial
+
 import numpy as np
 import plotly.graph_objects as go
 from jaxtyping import Bool, Float
@@ -156,6 +158,32 @@ def _s3_add_layer_traces(
     )
 
 
+def _s3_title(stats: LayerStats, layer: int) -> str:
+    """S3's title for ONE layer: the plain question, then that layer's answer.
+
+    Reads that layer's own Pearson correlation of lead with the valence gap
+    and its two valence-cut means, so the headline moves with the slider.
+    Hand-wrapped to the same five-line shape at every layer.
+    """
+    layer_stats = stats[layer]
+    cross_mean = layer_stats["cuts"]["cross-valence"][0]
+    same_mean = layer_stats["cuts"]["same-valence"][0]
+    return (
+        "Does the tracker see a bigger emotional jump coming? At layer"
+        f" {layer} the rise tracks the valence gap at r = {layer_stats['r_dval']:+.2f},"
+        f"<br>and cross-valence jumps rise {cross_mean:+.3f} against {same_mean:+.3f}"
+        " for same-valence ones (registry code S3)"
+        "<br><sup>one left bar = every transition whose two emotions differ by that much"
+        " NRC valence; one right bar = every transition of that type;</sup>"
+        "<br><sup>height = mean rise of the incoming emotion before the boundary, in"
+        " centered-cosine units; failure anchor: the marked line at 0 = no"
+        " anticipation;</sup>"
+        "<br><sup>a real distance effect would climb left to right. Error bars = 95%"
+        " cluster-bootstrap CI over triples; Gemma-written stories, self-generated"
+        " probes</sup>"
+    )
+
+
 def s3_affective_distance_figure(
     arms: Arms, vad: Vad, rng: np.random.Generator
 ) -> tuple[go.Figure, LayerStats]:
@@ -181,14 +209,29 @@ def s3_affective_distance_figure(
     fig.update_yaxes(title="mean R1 lead (centered-cosine units)", row=1, col=2)
     fig.update_xaxes(title="|NRC valence difference| of the from-to pair", row=1, col=1)
     fig.update_xaxes(title="transition type (bar label = n transitions)", row=1, col=2)
+    # the failure anchor, named in the plot: zero rise = no anticipation at all
     for panel in (1, 2):
-        fig.add_hline(y=0, line_color="#888", line_width=1, row=1, col=panel)
+        fig.add_hline(
+            y=0,
+            line_color="#888",
+            line_width=1,
+            row=1,
+            col=panel,
+            annotation_text="0 = no anticipation",
+            annotation_position="top left",
+            annotation_font_size=11,
+            # the bars cross the line at some layers, so the label carries its
+            # own background and stays readable at every slider step
+            annotation_bgcolor="rgba(255,255,255,0.8)",
+        )
     fig.update_layout(
-        height=450,
-        title="S3: is anticipation larger for affectively bigger jumps? "
-        "(selfgen bank, Gemma stories; error bars = cluster-bootstrap 95% CI)",
+        width=1150,
+        height=560,
+        # top margin clears the five wrapped title lines at every slider step
+        margin=dict(t=175, b=95),
+        title=dict(y=0.98, yanchor="top", font_size=15),
     )
-    layer_slider(fig, traces_per_layer=2)
+    layer_slider(fig, traces_per_layer=2, title_for_layer=partial(_s3_title, stats))
     return fig, stats
 
 
@@ -248,6 +291,37 @@ def _s4_stats(
     return names, heatmaps, stats
 
 
+def _s4_title(stats: LayerStats, layer: int) -> str:
+    """S4's title for ONE layer: the plain question, then that layer's answer.
+
+    Reads that layer's own top-1 rate and the two mean valence-arousal
+    distances (actual wrong winners vs the matched random draw), and names
+    which way the comparison went. Same seven-line shape at every layer.
+    """
+    layer_stats = stats[layer]
+    wrong_mean, shuffle_mean = layer_stats["wrong_mean"], layer_stats["shuffle_mean"]
+    verdict = (
+        "yes, wrong answers are affective neighbours"
+        if wrong_mean < shuffle_mean
+        else "no, wrong answers are no closer than chance"
+    )
+    return (
+        f"When the tracker names the wrong emotion, is it a near miss? At layer {layer}"
+        f" the tagged probe wins {layer_stats['top1_rate']:.0%} of phases,"
+        f"<br>and its wrong winners sit {wrong_mean:.2f} from the target in"
+        f" valence-arousal space against {shuffle_mean:.2f} for a random wrong probe:"
+        f"<br>{verdict} (registry code S4)"
+        "<br><sup>left: one cell = the fraction of that row emotion's phases where the"
+        " column emotion's probe won; rows sum to 1; the diagonal is the top-1 rate;</sup>"
+        "<br><sup>right: one bar = mean valence-arousal distance from a wrong winner to"
+        f" the tagged emotion, over that layer's {layer_stats['n_wrong']} wrong phases;</sup>"
+        "<br><sup>the grey bar is the failure anchor: the same distance when each wrong"
+        " winner is replaced by a uniformly random wrong probe, so equal bars would"
+        " mean unstructured confusions;</sup>"
+        "<br><sup>Gemma-written stories, self-generated probes</sup>"
+    )
+
+
 def s4_confusion_figure(
     arms: Arms, vad: Vad, rng: np.random.Generator
 ) -> tuple[go.Figure, LayerStats]:
@@ -263,9 +337,12 @@ def s4_confusion_figure(
         rows=1,
         cols=2,
         column_widths=[0.55, 0.45],
+        # wide gutter: the heatmap's colorbar and the right panel's axis title
+        # both live between the two panels
+        horizontal_spacing=0.19,
         subplot_titles=["confusion (row-normalized)", "winner->target VAD distance vs shuffle"],
     )
-    for layer_pos, layer in enumerate(LAYERS):
+    for layer in LAYERS:
         fig.add_trace(
             go.Heatmap(
                 z=heatmaps[layer],
@@ -274,7 +351,15 @@ def s4_confusion_figure(
                 colorscale="Blues",
                 zmin=0,
                 zmax=1,
-                showscale=(layer_pos == 0),
+                # every layer carries its own colorbar: only one layer's traces
+                # are visible at a time, so putting it on layer 6 alone would
+                # leave the default view (layer 33) with no scale at all
+                colorbar=dict(
+                    title="fraction of<br>the row's<br>phases",
+                    x=0.455,
+                    len=0.8,
+                    thickness=14,
+                ),
             ),
             row=1,
             col=1,
@@ -295,9 +380,11 @@ def s4_confusion_figure(
     fig.update_yaxes(title="mean valence-arousal distance to target", row=1, col=2)
     fig.update_xaxes(title="wrong winners vs matched random draw", row=1, col=2)
     fig.update_layout(
-        height=540,
-        title="S4: what gets confused with what, and are confusions affective neighbors? "
-        "(selfgen bank, Gemma stories; left colorbar = fraction of that row's phases)",
+        width=1150,
+        height=760,
+        # top margin clears the seven wrapped title lines at every slider step
+        margin=dict(t=225, b=130),
+        title=dict(y=0.98, yanchor="top", font_size=15),
     )
-    layer_slider(fig, traces_per_layer=2)
+    layer_slider(fig, traces_per_layer=2, title_for_layer=partial(_s4_title, stats))
     return fig, stats

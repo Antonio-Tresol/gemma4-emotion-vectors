@@ -3,6 +3,8 @@ that closes Part 1 of the notebook."""
 
 from __future__ import annotations
 
+from functools import partial
+
 import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -70,11 +72,20 @@ def _s5_stats(arms: Arms, has_nonaffect: dict[int, bool], rng: np.random.Generat
     return stats
 
 
+# plain reading of the cut keys, which are code-shaped in the stats dict
+CUT_DISPLAY = {
+    "has_nonaffect=False": "all three phases<br>emotional",
+    "has_nonaffect=True": "one phase is<br>non-emotional",
+    "transition 1": "transition 1<br>(phase 1 to 2)",
+    "transition 2": "transition 2<br>(phase 2 to 3)",
+}
+
+
 def _s5_add_cut_bars(fig: go.Figure, cut: dict[str, object], panel: int, color: str) -> None:
     """One bar per cut label with the cluster-CI error bar and n on the bar."""
     fig.add_trace(
         go.Bar(
-            x=list(cut),
+            x=[CUT_DISPLAY.get(label, label) for label in cut],
             y=[cut[label][0] for label in cut],
             marker_color=color,
             error_y=dict(
@@ -86,6 +97,38 @@ def _s5_add_cut_bars(fig: go.Figure, cut: dict[str, object], panel: int, color: 
         ),
         row=1,
         col=panel,
+    )
+
+
+def _s5_title(stats: LayerStats, layer: int) -> str:
+    """S5's title for ONE layer: the question, then that layer's own answer.
+
+    Both numbers come from ``stats[layer]``, so a slider move cannot leave
+    another layer's verdict standing. Plotly never wraps a title, so the text
+    is hand-wrapped to a fixed shape that holds at every layer.
+    """
+    position_cut = stats[layer]["position"]
+    nonaffect_cut = stats[layer]["nonaffect"]
+    leads = [position_cut[label][0] for label in position_cut]
+    with_distractor = nonaffect_cut["has_nonaffect=True"][0]
+    without_distractor = nonaffect_cut["has_nonaffect=False"][0]
+    # the right panel is a rank (lower is better), so "harder" means a larger rank
+    harder = "harder" if with_distractor > without_distractor else "no harder"
+    return (
+        "Is a transition harder because of where it falls, or because a"
+        " non-emotional phase sits next to it?"
+        f"<br>At layer {layer}, anticipation runs {min(leads):+.3f} to {max(leads):+.3f} across"
+        f" positions, and a distractor phase makes"
+        f"<br>the phase {harder}: median rank {with_distractor:.1f} with one against"
+        f" {without_distractor:.1f} without"
+        "<br><sup>left: one bar = one position in the three-phase story; height = mean"
+        " anticipation, how much the next emotion's probe leads before the boundary;</sup>"
+        "<br><sup>right: one bar = stories with or without a non-emotional phase; height ="
+        " median rank of the tagged probe among 12, where 1 is best;</sup>"
+        "<br><sup>anchors: 0 = no anticipation (left), rank 6.5 = guessing and rank 1 ="
+        " perfect (right); error bars are 95% cluster bootstrap CIs;</sup>"
+        "<br><sup>self-generated probes, Gemma-written stories; the slider picks the layer"
+        " and this headline follows it</sup>"
     )
 
 
@@ -101,20 +144,49 @@ def s5_position_nonaffect_figure(
     fig = make_subplots(
         rows=1,
         cols=2,
-        subplot_titles=["R1 lead by transition position", "gate median rank by has_nonaffect"],
+        subplot_titles=[
+            "does anticipation depend on which transition it is?",
+            "does a non-emotional phase make naming harder?",
+        ],
     )
     for layer in LAYERS:
         _s5_add_cut_bars(fig, stats[layer]["position"], panel=1, color="#4c78a8")
         _s5_add_cut_bars(fig, stats[layer]["nonaffect"], panel=2, color="#b279a2")
-    fig.update_yaxes(title="mean R1 lead (centered-cosine units)", row=1, col=1)
+    fig.update_yaxes(title="mean anticipation before the boundary", row=1, col=1)
     fig.update_yaxes(title="median rank of tagged probe (1 = best of 12)", row=1, col=2)
-    fig.add_hline(y=0, line_color="#888", line_width=1, row=1, col=1)
-    fig.update_layout(
-        height=440,
-        title="S5: does difficulty depend on which transition, or on a non-affect "
-        "distractor phase? (selfgen bank, Gemma stories; error bars = 95% cluster CI)",
+    # grading anchors: no anticipation on the left, guessing and perfect on the right
+    fig.add_hline(
+        y=0,
+        line_color="#888",
+        line_width=1,
+        row=1,
+        col=1,
+        annotation_text="0 = no anticipation",
+        annotation_position="bottom left",
+        annotation_font_size=11,
+        annotation_bgcolor="rgba(255,255,255,0.8)",
     )
-    layer_slider(fig, traces_per_layer=2)
+    fig.add_hline(
+        y=6.5,
+        line_dash="dot",
+        line_color="#888",
+        row=1,
+        col=2,
+        annotation_text="rank 6.5 = guessing",
+        annotation_position="top left",
+        annotation_font_size=11,
+        annotation_bgcolor="rgba(255,255,255,0.8)",
+    )
+    fig.update_layout(
+        width=1150,
+        height=740,
+        title_font_size=15,
+        # top margin clears the seven wrapped title lines at every layer,
+        # including the subplot titles that sit under them
+        margin=dict(t=320, b=110),
+    )
+    # the headline verdict is computed per layer and written by the slider
+    layer_slider(fig, traces_per_layer=2, title_for_layer=partial(_s5_title, stats))
     return fig, stats
 
 
