@@ -15,8 +15,10 @@ asserts (its verification contract); this package only feeds them:
 ``GeometryContext.plane`` record for the instruct valence-best anchor.
 
 Submodules: ``_context`` (shared state), ``_replication`` (sections 1, 2, 5),
-``_similarity`` (sections 3, 4, 6), ``_tuning`` (section 7), and
-``_displacement`` (sections 8-9, TREE Q1.H1.E3/E4).
+``_similarity`` (sections 3, 4, 6), ``_tuning`` (section 7),
+``_displacement`` (sections 8-9, TREE Q1.H1.E3/E4), and ``_parity``
+(section 10, the logit-lens read of the paper's Table 1, folded in from the
+paper-parity notebook).
 
 Number-identity contract: the computations are line-for-line ports of the
 formerly inline notebook cells, so re-running the notebook reproduces the
@@ -40,6 +42,12 @@ from ._displacement import (
     s8_displacement_figure,
     s9_fragmentation_figure,
 )
+from ._parity import (
+    JUDGED_AFFECTIVE,
+    LENS_DEFAULT_LAYER,
+    LENS_FILES,
+    s10_logit_lens_figure,
+)
 from ._replication import s1_replication_figure, s2_circumplex_figure, s5_loadings_figure
 from ._similarity import (
     centered_cosine,
@@ -50,7 +58,10 @@ from ._similarity import (
 from ._tuning import s7_tuning_stats
 
 __all__ = [
+    "JUDGED_AFFECTIVE",
     "LATE_BAND",
+    "LENS_DEFAULT_LAYER",
+    "LENS_FILES",
     "MID_BAND",
     "GeometryContext",
     "LayerPlane",
@@ -61,6 +72,7 @@ __all__ = [
     "load_geometry_context",
     "nrc_vad_lexicon_path",
     "repo_root",
+    "s10_logit_lens_figure",
     "s1_replication_figure",
     "s2_circumplex_figure",
     "s3_similarity_figure",

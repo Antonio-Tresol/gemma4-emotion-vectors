@@ -19,6 +19,12 @@ grades them.
 
 Two centering conventions coexist in this notebook and must not be unified;
 :mod:`._data` documents which sections use which and why.
+
+Sections 8 and 9 (:mod:`._preferences`) are a later addition and ask a
+different question from the detection campaign: they are the two halves of the
+source paper's Figure 4, preference prediction and causal steering, folded in
+from the paper-parity notebook. They read the scorer's registered verdicts
+from ``results/`` rather than recomputing them.
 """
 
 from ._data import (
@@ -48,6 +54,17 @@ from ._intensity import (
     intensity_curves,
     intensity_figure,
 )
+from ._preferences import (
+    PAPER_COUPLING_R,
+    PAPER_MEAN_SHIFTS,
+    PAPER_PROBE_ELO_RANGE,
+    ScoredArm,
+    instrument_sensitivity_stats,
+    load_preference_arms,
+    load_steering_arms,
+    preference_figure,
+    steering_figure,
+)
 from ._projection import projection_probes, projection_table
 from ._scale import (
     ScaleCorpus,
@@ -71,6 +88,9 @@ __all__ = [
     "IT_LABEL",
     "N_EMOTIONS",
     "N_SCENARIOS",
+    "PAPER_COUPLING_R",
+    "PAPER_MEAN_SHIFTS",
+    "PAPER_PROBE_ELO_RANGE",
     "PASS_BAR",
     "READOUTS",
     "READOUT_LABELS",
@@ -79,6 +99,7 @@ __all__ = [
     "TOP_K",
     "ModelSweep",
     "ScaleCorpus",
+    "ScoredArm",
     "SweepContext",
     "TemplateCurve",
     "battery_counts",
@@ -90,17 +111,22 @@ __all__ = [
     "direction_scores",
     "direction_similarity",
     "figure_title",
+    "instrument_sensitivity_stats",
     "intensity_curves",
     "intensity_figure",
     "leakage_report",
+    "load_preference_arms",
     "load_probe_sets",
     "load_scale_corpus",
+    "load_steering_arms",
     "load_sweep_context",
+    "preference_figure",
     "projection_probes",
     "projection_table",
     "rank_table_lines",
     "scale_figure",
     "scale_rows",
+    "steering_figure",
     "sweep_figure",
     "sweep_grids",
 ]
