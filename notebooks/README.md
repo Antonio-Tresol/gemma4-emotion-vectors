@@ -1,8 +1,9 @@
 # Notebooks
 
-Four report notebooks tell the whole story, in reading order. Each opens with
-its purpose, the key concepts you need, and an index; every figure carries its
-verdict and has a collapsible "How to read" underneath.
+These notebooks tell the whole story, in reading order. Each opens with its
+purpose, the key concepts you need, and an index; every figure carries its
+verdict and has a collapsible "How to read" underneath. Start at 01 if you want
+the data first, or at 10 if you want the argument first.
 
 | # | Notebook | The question it answers |
 |---|---|---|
@@ -32,6 +33,39 @@ datasets otherwise (they flip public at sprint end).
    conda `arena-env` kernel does not have this package.
 4. Headless check: `.venv/bin/python -m nbconvert --to notebook --execute
    notebooks/05_trajectory_explorer_instruct.ipynb --output /tmp/check.ipynb`.
+
+## Editing them
+
+These notebooks are **hand-maintained**. There is no generator: you edit the
+notebook and the exhibit package it imports, then re-execute in place so the
+stored outputs match the code that produced them:
+
+```
+.venv/bin/python -m nbconvert --to notebook --execute --inplace notebooks/<name>.ipynb
+```
+
+Analysis and figure code lives in an importable package under
+`src/emotion_vectors/`, one per notebook, so cells stay load-call-show and the
+figures can be tested without a kernel (`tests/test_report_packages.py` calls
+every builder and enforces the house contract):
+
+| Notebook | Exhibit package |
+|---|---|
+| 01 | `emotion_vectors.corpora_report` |
+| 02 | `emotion_vectors.geometry_report` |
+| 03 | `emotion_vectors.detection_report` |
+| 07 | `emotion_vectors.lineage_report` |
+| 10 | `emotion_vectors.sprint_report` |
+| 11 | `emotion_vectors.taxonomy_report` |
+
+Notebooks 04, 05, 06 and 09 still hold their analysis code inline; 08's
+extraction is in progress. They are edited and re-executed the same way.
+
+Four `scripts/build_*_notebook.py` generators used to emit notebooks 07, 08, 10
+and 11 from hardcoded cell sources. They were deleted on 2026-07-23: the
+notebooks now carry hand-written narrative and load-call-show cells that no
+generator round-trips, so every builder had gone silently stale and re-running
+one would have replaced a finished notebook with its pre-extraction ancestor.
 
 Known exception: notebook 02 needs the NRC VAD lexicon under
 `data/lexicons/`, which is deliberately NOT fetchable (third-party license) —

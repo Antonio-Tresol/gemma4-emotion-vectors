@@ -43,7 +43,15 @@ is true.
 - `notebooks/` — the report, numbered in reading order with a row in
   `notebooks/README.md`; `notebooks/archive/` is the immutable bench layer.
   A new report notebook gets the next number, an index cell, key concepts,
-  and a how-to-read block per figure.
+  and a how-to-read block per figure. Report notebooks are **hand-maintained**:
+  edit the notebook (and the exhibit package it imports), then re-execute with
+  `.venv/bin/python -m nbconvert --to notebook --execute --inplace <notebook>`.
+  Do NOT write a generator script that emits a notebook from hardcoded cell
+  sources. Four such builders existed and were deleted on 2026-07-23: once the
+  notebooks carried hand-written narrative and load-call-show cells, every
+  builder was silently stale, and re-running one would have overwritten a
+  finished notebook with its pre-extraction ancestor (`git log -- scripts/`
+  has them if you ever need to look).
 - `data/papers/` (literature PDFs), `data/lexicons/` (third-party, manual
   download), `notes/` (drafts and registration drafts).
 - `check.sh` — the repo gate (format, lint, tests, validator); the shared
