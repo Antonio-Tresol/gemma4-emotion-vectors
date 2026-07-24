@@ -472,12 +472,19 @@ TEMPLATE = r"""<!DOCTYPE html>
     <div id="rsaChart"></div>
     <details class="howto"><summary>How to read this</summary>
       <p>Each square compares the <em>shape of emotion space</em> at two layers: take the full
-      emotion-by-emotion similarity matrix at layer A and at layer B, and correlate them. Bright means
-      the two layers organise the emotions the same way; dark means they disagree.</p>
-      <p>A model with one stable emotion geometry is bright everywhere. The instruct model is not: it
-      splits into blocks, which is the fragmentation. Switch to <b>top component removed</b> and the
-      blocks largely merge, which is the evidence that one dominant axis was causing the split rather
-      than the emotion structure being absent. The third view compares the two models directly.</p>
+      emotion-by-emotion similarity matrix at layer A and at layer B, and correlate them. <b>Dark</b>
+      means the two layers organise the emotions the same way; <b>pale</b> means they disagree.</p>
+      <p>A model with one stable emotion geometry is dark everywhere. Start on <b>base, as measured</b>
+      to see what that looks like: its late layers agree with each other at <b>0.94</b>. Switch to
+      <b>instruct, as measured</b> and the same measure falls to <b>0.79</b>, and the grid splits into
+      blocks. That is the fragmentation, and the base view is the control that makes it visible &mdash;
+      without it you cannot tell a fragmented model from a measure that always looks like this.</p>
+      <p>Switch to <b>top component removed</b> and the blocks largely merge, which is the evidence that
+      one dominant axis was causing the split rather than the emotion structure being absent.</p>
+      <p><b>instruct vs base</b> is the only view with a different model on each axis, and the only one
+      that is not symmetric: rows are instruct layers, columns are base layers, so the diagonal is
+      &quot;how much did instruction tuning change this depth?&quot; and it is not 1. It reads 0.97 at
+      layer 3 and 0.21 at layer 57 &mdash; early layers survived, the late half was rebuilt.</p>
     </details>
     <div class="src">source: notebooks/02_circumplex_geometry.ipynb, section 9</div>
   </div>
@@ -1642,19 +1649,29 @@ addEventListener("keydown",e=>{
 
 /* ---------- cross-layer RSA matrices ---------- */
 const RSA_KEYS=Object.keys(D.rsa);
+const RSA_LABEL={"instruct RSA (unablated)":"instruct, as measured",
+  "base RSA (unablated)":"base, as measured",
+  "instruct RSA (top component removed)":"instruct, top component removed",
+  "cross-model RSA: instruct vs base":"instruct vs base"};
 let rsaKey=RSA_KEYS[0];
 function drawRsa(){
   const host=document.getElementById("rsaChart"); if(!host) return;
   host.innerHTML="";
   const m=D.rsa[rsaKey], z=m.z, layers=m.layers||z.map((_,i)=>i);
-  const n=z.length, W=760,H=430,L=52,T=14,B=52,Rr=150;
+  const n=z.length, W=760,H=452,L=62,T=36,B=52,Rr=150;
+  // Only the cross-model view has a different model on each axis, and it is the
+  // one view that is NOT symmetric — so orientation has to be on the figure.
+  const isCross=rsaKey.indexOf("cross-model")===0;
+  const rowName=isCross?"layer of the instruct model":"layer of the model";
+  const colName=isCross?"layer of the base model":"layer of the model";
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
   const size=Math.min((W-L-Rr)/n,(H-T-B)/n);
   for(let i=0;i<n;i++)for(let j=0;j<n;j++){
     const v=z[i][j];
     const cell=el("rect",{x:L+j*size,y:T+i*size,width:size+.5,height:size+.5,
       fill:`rgba(29,53,87,${Math.max(0,Math.min(1,v)).toFixed(3)})`});
-    tipOn(cell,`<b>layer ${layers[i]} vs layer ${layers[j]}</b>: agreement ${v.toFixed(2)}`+
+    tipOn(cell,`<b>${isCross?"instruct":""} layer ${layers[i]} vs ${isCross?"base":""} `+
+      `layer ${layers[j]}</b>: agreement ${v.toFixed(2)}`+
       `<span class="t-sub">1 means these two layers organise the 171 emotions the same way; `+
       `0 means they disagree completely.</span>`);
     svg.appendChild(cell);
@@ -1676,18 +1693,22 @@ function drawRsa(){
     const tx=el("text",{x:sx+18,y:y+4,"font-size":10,fill:P.muted}); tx.textContent=t; svg.appendChild(tx);
   });
   const xl=el("text",{x:L+(n*size)/2,y:H-8,"text-anchor":"middle","font-size":10.5,fill:P.muted});
-  xl.textContent="layer of the model"; svg.appendChild(xl);
+  xl.textContent=colName; svg.appendChild(xl);
+  const ylab=el("text",{x:14,y:T+(n*size)/2,"font-size":10.5,fill:P.muted,
+    transform:`rotate(-90 14 ${T+(n*size)/2})`,"text-anchor":"middle"});
+  ylab.textContent=rowName; svg.appendChild(ylab);
+  // the title lives INSIDE the svg: an exported png of this chart is otherwise
+  // three near-identical matrices with nothing saying which one you are seeing
+  const ttl=el("text",{x:L,y:20,"font-size":12.5,fill:P.text,"font-weight":600});
+  ttl.textContent=RSA_LABEL[rsaKey]||rsaKey; svg.appendChild(ttl);
   host.appendChild(svg);
   document.getElementById("rsaNote").textContent=rsaKey;
 }
 (function(){
   const host=document.getElementById("rsaBtns"); if(!host) return;
-  const short={"instruct RSA (unablated)":"instruct, as measured",
-    "instruct RSA (top component removed)":"instruct, top component removed",
-    "cross-model RSA: instruct vs base":"instruct vs base"};
   RSA_KEYS.forEach((k,i)=>{
     const b=document.createElement("button");
-    b.className="seg"+(i===0?" on":""); b.textContent=short[k]||k;
+    b.className="seg"+(i===0?" on":""); b.textContent=RSA_LABEL[k]||k;
     b.onclick=()=>{host.querySelectorAll("button").forEach(x=>x.classList.remove("on"));
       b.classList.add("on"); rsaKey=k; drawRsa();};
     host.appendChild(b);

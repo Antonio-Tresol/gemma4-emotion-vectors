@@ -10,7 +10,9 @@ generated from the notebooks and `results/`; nothing is typed by hand.
 | `slides/emotion-vectors-talk.pptx` | the same slides, editable |
 | `build.py` | rebuilds `index.html`; every figure names the notebook it came from |
 | `data/` | the extracted figure inputs, so the build runs on any clone |
+| `slides/story0-tracking.mp4` | 19.5s silent clip, 1080p: one story's trajectory, token by token |
 | `slides/render_charts.py` | screenshots each chart from `index.html`'s own code |
+| `slides/render_story_video.py` | steps the token cursor frame by frame and encodes the clip |
 | `slides/build_pptx.py`, `slides/build_pdf.py` | assemble the slides from those images |
 
 Also published (search-engine blocked, link-only):
@@ -39,7 +41,13 @@ cd slides
 python render_charts.py            # -> slides/png/*.png  (needs Chrome)
 python build_pptx.py               # -> emotion-vectors-talk.pptx
 python build_pdf.py                # -> emotion-vectors-talk.pdf
+python render_story_video.py       # -> slides/story0-tracking.mp4  (needs ffmpeg)
 ```
+
+`render_story_video.py --probe` renders five spanning frames instead of all 236,
+which is the cheap way to check composition before committing to a full run.
+`--story 1|2|3` animates the tracked-well / partly / badly stories instead of the
+walkthrough, and `--layer 6` (or 15, 24, 42, 51) animates a different layer.
 
 `render_charts.py` and `build_pdf.py` drive headless Chrome and expect it at the
 standard macOS path; change `CHROME` at the top of each if yours differs.

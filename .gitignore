@@ -30,3 +30,11 @@ results/combined_stories_prefix_backup_*/
 results/openrouter_stories/stories_*.jsonl
 results/openrouter_stories_diverse/stories_*.jsonl
 results/combined_stories_deepseek*/stories_*.jsonl
+
+# docs/ deck build scratch: frame pages, raw frames, cached webfonts.
+# The rendered .mp4 IS committed; the tens of MB of PNGs behind it are not.
+docs/slides/_video/
+docs/slides/_fontcache/
+docs/slides/_pages/
+docs/slides/png/
+docs/slides/_slides.html
