@@ -1598,6 +1598,15 @@ function closeModal(){MODAL.classList.remove("on");MODAL_BODY.innerHTML="";}
 document.getElementById("modalClose").onclick=closeModal;
 MODAL.onclick=e=>{if(e.target===MODAL) closeModal();};
 addEventListener("keydown",e=>{if(e.key==="Escape") closeModal();});
+// the element holding each chart's live state, to carry into the expanded view
+const FIG_NOTE={pcChart:"pcVerdict", gridChart:"gridNote", lineChart:"tokLabel",
+  ternChart:"tokLabel", emoChart:"emoNote", rsaChart:"rsaNote"};
+function addModalLine(text,marginBottom){
+  const d=document.createElement("div");
+  d.className="mono muted";
+  d.style.cssText=`font-size:13px;margin:${marginBottom==="0"?"12px 0 0":"0 0 "+marginBottom}`;
+  d.textContent=text; MODAL_BODY.appendChild(d);
+}
 // wrap every chart host so it gets an expand button; the modal shows a live clone
 ["pcChart","gridChart","lineChart","ternChart","emoChart","layerChart","lineageChart","doseChart",
  "rsaChart"].forEach(id=>{
@@ -1610,7 +1619,15 @@ addEventListener("keydown",e=>{if(e.key==="Escape") closeModal();});
   b.onclick=()=>{
     const svg=host.querySelector("svg"); if(!svg) return;
     MODAL_BODY.innerHTML="";
+    // A chart's caption sits in a sibling div and its live state (which token,
+    // which layer, which probe bank) in the controls row - both outside the svg.
+    // Cloning the svg alone dropped them, so an expanded figure arrived with no
+    // title and no way to tell which state you were looking at.
+    const cap=host.previousElementSibling;
+    if(cap && cap.classList && cap.classList.contains("mono")) addModalLine(cap.textContent,"12px");
     MODAL_BODY.appendChild(svg.cloneNode(true));
+    const note=FIG_NOTE[id] && document.getElementById(FIG_NOTE[id]);
+    if(note && note.textContent.trim()) addModalLine(note.textContent,"0");
     MODAL.classList.add("on");
   };
   parent.appendChild(b);
