@@ -11,6 +11,7 @@ from plotly.subplots import make_subplots
 from ._data import (
     FAMILIES,
     LAYERS,
+    PRIMARY_LAYER,
     Arms,
     LayerStats,
     cluster_boot_ci,
@@ -97,13 +98,40 @@ def s1_top1_figure(arms: Arms) -> tuple[go.Figure, dict[str, LayerStats]]:
             line_color="#888",
             row=1,
             col=panel,
+            # anchored bottom left: the bars are sorted descending, so the right
+            # side of the panel is where the low bars crowd the chance line
             annotation_text="chance 1/12",
-            annotation_position="top right",
+            annotation_position="bottom left",
+            annotation_font_size=11,
         )
+    # headline verdict at the primary layer, computed here rather than typed:
+    # how many of the 12 tagged emotions clear a coin-flip top-1 rate
+    primary = stats["selfgen"][PRIMARY_LAYER]
+    above_half = sum(1 for rate in primary["top1"] if rate >= 0.5)
+    best_emotion = primary["emotions"][0]
+    best_rate = primary["top1"][0]
+    # plotly never wraps a title, so the headline is hand-wrapped to the figure width
     fig.update_layout(
-        height=440,
-        title="S1: how often the tagged emotion's probe wins its bank outright "
-        "(Gemma stories, v2 probes; bar label = median rank and n)",
+        width=1150,
+        height=680,
+        title=(
+            "Which emotions does the tracker actually recognise?"
+            f" At layer {PRIMARY_LAYER}, {above_half} of {len(primary['emotions'])} tagged"
+            "<br>emotions win their bank outright more than half the time,"
+            f" best is {best_emotion} at {best_rate:.0%}"
+            "<br><sup>one bar = one tagged emotion; height = the fraction of that emotion's story"
+            " phases where its own probe ranks first in the bank;</sup>"
+            "<br><sup>bar label = median rank and number of phases."
+            " Failure anchor: the dotted line at 1/12 is where guessing lands;</sup>"
+            "<br><sup>strength anchor: 1.0 would mean the right probe always wins. Stories"
+            " written by Gemma, read with v2 probes;</sup>"
+            f"<br><sup>the slider picks the layer, and the title reports layer"
+            f" {PRIMARY_LAYER}</sup>"
+        ),
+        title_font_size=15,
+        # top margin clears the wrapped title, bottom margin holds the rotated
+        # emotion labels, the axis titles and the layer slider
+        margin=dict(t=250, b=190),
     )
     layer_slider(fig, traces_per_layer=2)
     return fig, stats
