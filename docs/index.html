@@ -79,12 +79,15 @@ margin-top:10px}
 .callout{border-left:3px solid var(--orange);padding:14px 0 14px 18px;background:transparent;margin:18px 0}
 /* the three parts of the talk, announced the way the slides announce them */
 .partbar{border-top:2px solid var(--navy);margin-top:64px;padding-top:20px}
-.partbar .pnum{font-family:var(--mono);font-size:34px;font-weight:600;color:var(--navy);
-  margin-right:16px;vertical-align:-2px}
-.partbar .ptitle{font-family:var(--display);font-size:27px;font-weight:700;color:var(--text);
-  letter-spacing:-.4px}
-.partbar .pblurb{max-width:62ch;margin-top:10px;color:var(--muted);font-size:16px}
-@media(max-width:700px){.partbar .pnum{font-size:26px}.partbar .ptitle{font-size:21px}}
+/* the deck sets a part off with a small letter-spaced caps label above the
+   slide title, so the part reads as a SUPERheading and the section h2 below it
+   stays the largest thing on screen. Same hierarchy here. */
+.partbar .pnum{font-family:var(--mono);font-size:30px;font-weight:600;color:var(--navy);
+  margin-right:14px;vertical-align:-3px}
+.partbar .ptitle{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--navy);
+  letter-spacing:.13em;text-transform:uppercase}
+.partbar .pblurb{max-width:62ch;margin-top:12px;color:var(--muted);font-size:16px}
+@media(max-width:700px){.partbar .pnum{font-size:24px}.partbar .ptitle{font-size:14px}}
 .callout .k{font-family:var(--display);font-weight:650;color:var(--text);display:block;margin-bottom:4px}
 svg text{font-family:var(--mono)}
 table{border-collapse:collapse;width:100%;font-size:14px}
@@ -207,7 +210,7 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
 
 <header><div class="wrap">
   <div class="kicker">CAMBRIA capstone &middot; Hannah Kim &middot; Peyton Li &middot; Antonio Badilla Olivas</div>
-  <h1>Does a language model keep track of<br>how a story <em>feels</em>?</h1>
+  <h1>How are emotions represented in<br>LLMs?</h1>
   <p class="lede narrow">We replicated Anthropic's emotion-vector work on Gemma&nbsp;4&nbsp;31B, then pushed it
   somewhere the paper did not go: stories where the emotion <em>changes</em>. The base model reproduces the
   emotion geometry almost exactly. The instruction-tuned model does not, and what replaced it is the most
@@ -284,8 +287,8 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
 
 <div class="partbar"><div class="wrap"><span class="pnum">1</span><span class="ptitle">Replicating emotion vectors</span><p class="pblurb">Can we rebuild Anthropic's emotion vectors on a different model? First: the vectors are only as good as the stories behind them.</p></div></div>
 <section id="probes"><div class="wrap">
-  <div class="kicker">Finding 1</div>
-  <h2><span class="secno">2</span>Where the vectors come from matters more than we expected</h2>
+  <div class="kicker">1 &middot; Replicating emotion vectors</div>
+  <h2><span class="secno">2</span>Where the vectors come from matters</h2>
   <p class="narrow">Every emotion vector is built by averaging the model's activations over stories that
   evoke that emotion. So who <em>writes</em> those stories is a free parameter, and nobody reports it.
   We built four probe sets from four different authors and scored them identically.</p>
@@ -320,8 +323,8 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
 </div></section>
 
 <section id="replication"><div class="wrap">
-  <div class="kicker">Finding 2</div>
-  <h2><span class="secno">3</span>The circumplex replicates on the base model, and collapses on the instruct model</h2>
+  <div class="kicker">1 &middot; Replicating emotion vectors</div>
+  <h2><span class="secno">3</span>The circumplex replicates, then collapses</h2>
   <p class="narrow">Each bar is one principal component of the 171 emotion vectors at layer 33. Height is
   how much of the spread it explains; the coloured bars are how strongly it correlates with human ratings
   of <b>valence</b> (pleasant/unpleasant), <b>arousal</b> (calm/excited), <b>dominance</b>, and with a
@@ -354,10 +357,10 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
   <div class="takeaway"><span class="lbl">the read</span><b>What we take from this plot:</b> on the base model the biggest axis <em>is</em> valence, so the circumplex is recovered without asking for it. On the instruct model the biggest axis is something else, and valence has been pushed down to third.</div>
 </div></section>
 
-<div class="partbar"><div class="wrap"><span class="pnum">2</span><span class="ptitle">Instruction tuning vs. the base model</span><p class="pblurb">The two checkpoints disagree, and what replaced valence in the instruction-tuned model is the most interesting thing we found.</p></div></div>
+<div class="partbar"><div class="wrap"><span class="pnum">2</span><span class="ptitle">Instruction vs. base model</span><p class="pblurb">The two checkpoints disagree, and what replaced valence in the instruction-tuned model is the most interesting thing we found.</p></div></div>
 <section id="displaced"><div class="wrap">
-  <div class="kicker">Finding 3</div>
-  <h2><span class="secno">4</span>So what took valence's place?</h2>
+  <div class="kicker">2 &middot; Instruction vs. base model</div>
+  <h2><span class="secno">4</span>So what took valence's place in the PCA?</h2>
   <p class="narrow">We compared every instruct component against every base component. If instruction
   tuning merely rotated the space, each instruct axis would find a partner. Hover any cell.</p>
   <div class="grid2" style="margin-top:22px">
@@ -384,7 +387,10 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
       </div>
     </div>
   </div>
-  <div class="card" style="margin-top:20px">
+  <h3 style="margin-top:38px">Similarity of representations by layer</h3>
+  <p class="narrow" style="margin-bottom:14px">The same question asked a second way, without
+  principal components: does each layer organise the 171 emotions the way its neighbours do?</p>
+  <div class="card">
     <div class="controls">
       <span class="mono muted">show</span><span id="rsaBtns"></span>
       <span class="mono muted" id="rsaNote" style="margin-left:auto"></span>
@@ -417,10 +423,10 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
   <div class="takeaway"><span class="lbl">the read</span><b>What we take from this grid:</b> the instruct model's top axis is not a rotation of anything the base model had. It is new structure, it is the largest thing in the space, and we cannot yet say what it encodes.</div>
 </div></section>
 
-<div class="partbar"><div class="wrap"><span class="pnum">3</span><span class="ptitle">Tracking emotion over time</span><p class="pblurb">The part the paper did not do: stories where the emotion changes, read token by token.</p></div></div>
+<div class="partbar"><div class="wrap"><span class="pnum">3</span><span class="ptitle">Tracking emotion vectors over time</span><p class="pblurb">The part the paper did not do: stories where the emotion changes, read token by token.</p></div></div>
 <section id="story"><div class="wrap">
-  <div class="kicker">Finding 4 &middot; the centrepiece</div>
-  <h2><span class="secno">5</span>Watch it track a story, token by token</h2>
+  <div class="kicker">3 &middot; Tracking emotion vectors over time</div>
+  <h2><span class="secno">5</span>Watch it track one story, token by token</h2>
   <p class="narrow">Four real stories from our corpus. At every token we measure how close the model's
   internal state sits to each of the three emotion probes; scrub the token slider and watch both panels
   move together. Three of the four use the <b>same three emotions</b> and differ only in how they are
@@ -477,8 +483,8 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
 </div></section>
 
 <section id="emotions"><div class="wrap">
-  <div class="kicker">Finding 5</div>
-  <h2><span class="secno">6</span>It tracks some emotions well and others not at all</h2>
+  <div class="kicker">3 &middot; Tracking emotion vectors over time</div>
+  <h2><span class="secno">6</span>Some emotions are tracked, others are not</h2>
   <p class="narrow">For each tagged emotion, how often does its own probe win outright? Chance is 1 in
   12. Hover any bar for the full picture, and switch layers: the ranking is not stable across depth.</p>
   <div class="card" style="margin-top:22px">
@@ -509,7 +515,7 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
 </div></section>
 
 <section id="layers"><div class="wrap">
-  <div class="kicker">Finding 6</div>
+  <div class="kicker">3 &middot; Tracking emotion vectors over time</div>
   <h2><span class="secno">7</span>Different layers are good at different things</h2>
   <p class="narrow">There is no single "emotion layer". Naming the current emotion is best early;
   anticipating the <em>next</em> one is best late. Those are different jobs, done in different places.</p>
@@ -542,7 +548,7 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
 
 <section id="next"><div class="wrap">
   <div class="kicker">Where this leaves us</div>
-  <h2><span class="secno">8</span>Future directions</h2>
+  <h2><span class="secno">8</span>Future Directions</h2>
   <div class="grid3" style="margin-top:24px">
     <div class="card"><h3>Investigating PC1 in the instruct model</h3><p style="font-size:15px">It is
     not yet clear what explains the variance in the instruction-tuned model's first component. It is
@@ -729,7 +735,7 @@ function tipOn(node, html){
 }
 const pct=v=>(v*100).toFixed(0)+"%";
 
-/* ---------- Finding 1: PC bars ---------- */
+/* ---------- circumplex: principal-component bars ---------- */
 function drawPCs(model){
   const host=document.getElementById("pcChart"); host.innerHTML="";
   const rows=D.pcs[model], W=640,H=290,L=52,R=14,T=16,B=44;
@@ -787,7 +793,7 @@ document.querySelectorAll("[data-model]").forEach(b=>b.onclick=()=>{
   b.classList.add("on"); drawPCs(b.dataset.model);
 });
 
-/* ---------- Finding 2: correlation grid ---------- */
+/* ---------- what moved in: correlation grid ---------- */
 function drawGrid(){
   const host=document.getElementById("gridChart"); host.innerHTML="";
   const W=420,H=420,L=64,T=42,cell=62;
@@ -828,7 +834,7 @@ function drawGrid(){
 document.getElementById("pc1low").textContent=D.itpc1.low.join(", ");
 document.getElementById("pc1high").textContent=D.itpc1.high.join(", ");
 
-/* ---------- Finding 3: the story ---------- */
+/* ---------- one story, token by token ---------- */
 const EC=[P.red,P.teal,P.green];
 /* Every story this section can show: the walkthrough, plus three stories that
    share the SAME three emotions and differ only in how they are written. Those
@@ -995,7 +1001,7 @@ function selectStory(i){
   sl.oninput=()=>{curTok=+sl.value; drawStory();};
 })();
 
-/* ---------- Finding 4: per emotion, every layer ---------- */
+/* ---------- per emotion, every layer ---------- */
 let emoBank="selfgen", emoLayer="33";
 function drawEmo(){
   const host=document.getElementById("emoChart"); host.innerHTML="";
@@ -1049,7 +1055,7 @@ document.querySelectorAll("[data-bank]").forEach(b=>b.onclick=()=>{
   b.classList.add("on"); emoBank=b.dataset.bank; drawEmo();
 });
 
-/* ---------- Finding 5: layers ---------- */
+/* ---------- naming vs anticipating, by layer ---------- */
 function drawLayers(){
   const host=document.getElementById("layerChart"); host.innerHTML="";
   const rows=D.byLayer, W=470,H=320,L=44,R=44,T=26,B=44;
@@ -1094,7 +1100,7 @@ function drawLayers(){
 }
 
 
-/* ---------- Finding 6: probe lineage ---------- */
+/* ---------- probe lineage: who wrote the stories ---------- */
 function drawLineage(){
   const host=document.getElementById("lineageChart"); host.innerHTML="";
   const rows=D.lineage, W=880,H=280,L=30,R=30,T=22,B=76;
