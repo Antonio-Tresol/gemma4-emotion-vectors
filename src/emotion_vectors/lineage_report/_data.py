@@ -1,0 +1,223 @@
+"""Data resolution and shared vocabulary for the notebook-07 exhibit library.
+
+Notebook 07 reports E11 (does probe quality come from generator identity or
+generator quality?) and E12 (scale and diversity dose-response), plus the
+E4b extraction-format caveat. This module resolves every input through
+``emotion_vectors.artifacts.fetch`` (local ``results/`` first, then the
+published Hugging Face datasets), so the notebook runs unchanged on any
+clone, and pins the shared vocabulary: lineage labels that name the ROLE of
+each probe set (whose stories the probes were built from), one fixed color
+per lineage, and the scoring constants of the registered detection read.
+
+Nothing in this package re-scores; every function slices the frozen
+evidence JSONs written by ``scripts/score_e11_lineage.py`` and
+``scripts/score_e12_scale.py``.
+"""
+
+from __future__ import annotations
+
+import json
+import math
+import textwrap
+from dataclasses import dataclass
+from typing import Any
+
+from emotion_vectors.artifacts import fetch
+
+# Plotly never wraps a title, it just runs off the canvas, so every title in
+# this package is wrapped by ``figure_title`` before it is set. These are
+# characters that fit per pixel of figure width, measured from rendered PNGs
+# at title_font_size 13: the headline renders at full size, the subtitle
+# lines inside <sup> render smaller and fit more.
+HEADLINE_CHARS_PER_PIXEL = 0.125
+SUBTITLE_CHARS_PER_PIXEL = 0.17
+
+PROBED_MODEL = "google/gemma-4-31b-it"
+
+# Constants of the registered detection read (R1, registered in TREE.md
+# under Q1.H2.E11 before scoring).
+N_EMOTIONS = 12  # battery size: candidate emotions ranked per scenario
+N_SCENARIOS = 12  # scenarios per battery
+TOP_K = 3  # a scenario is correct if the target emotion ranks in the top 3
+PASS_BAR = 8  # dual-battery bar: >= 8 of 12 correct on BOTH batteries
+# top-3 of 12 emotions by luck: 3/12 chance per scenario, so 3 of 12 expected
+CHANCE_CORRECT = N_SCENARIOS * TOP_K / N_EMOTIONS
+GEOMETRY_LAYER = 33  # the registered geometry read (R2) is defined here only
+
+# Canonical lineage order for every figure, and the ROLE each label names:
+# the generator that wrote the probe-building stories.
+LINEAGE_ORDER = ["selfgen", "weak_external", "fixed_deepseek", "diverse_deepseek"]
+LINEAGE_LABELS = {
+    "selfgen": "self-generated (stories by the probed model)",
+    "weak_external": "weak external (stories by gemma-4-4B)",
+    "fixed_deepseek": "fixed DeepSeek (stories by deepseek-v4-pro)",
+    "diverse_deepseek": "diverse DeepSeek (deepseek-v4-pro, persona x setting grid)",
+}
+LINEAGE_COLORS = {
+    "selfgen": "#2ca02c",
+    "weak_external": "#7f7f7f",
+    "fixed_deepseek": "#1f77b4",
+    "diverse_deepseek": "#d62728",
+}
+# Short two-line versions of the labels, for axis ticks where the full role
+# sentence would collide with its neighbours. The role still reads off the
+# tick ("who wrote the stories"); the full sentence stays in the printed
+# record and in the figure subtitles.
+LINEAGE_TICK_LABELS = {
+    "selfgen": "self-generated<br>(probed model)",
+    "weak_external": "weak external<br>(gemma-4-4B)",
+    "fixed_deepseek": "fixed DeepSeek<br>(deepseek-v4-pro)",
+    "diverse_deepseek": "diverse DeepSeek<br>(deepseek-v4-pro grid)",
+}
+
+# Corpus label -> (results/ subtree, grouped-stories file) for the three
+# story corpora shown in section 1. The self-generated corpus keeps its
+# historical "dialogues_grouped" filename.
+CORPUS_FILES = {
+    "self-generated (E10)": ("self_stories_it", "dialogues_grouped.jsonl"),
+    "fixed DeepSeek (E11)": ("openrouter_stories", "stories_grouped.jsonl"),
+    "diverse DeepSeek (E12)": ("openrouter_stories_diverse", "stories_grouped.jsonl"),
+}
+# Stories the registered generation recipe ASKED FOR per emotion, per corpus
+# (scripts/generate_self_stories.py and scripts/generate_openrouter_stories.py,
+# the second with --diverse for the grid arm). Kept counts fall below these
+# wherever the leakage and terminal-ending filters dropped a story, which is
+# why the dose-response curves stop at the kept minimum rather than at these
+# round numbers; corpus_overview prints requested against kept.
+REQUESTED_PER_EMOTION = {
+    "self-generated (E10)": 256,
+    "fixed DeepSeek (E11)": 256,
+    "diverse DeepSeek (E12)": 1024,
+}
+
+
+def figure_title(headline: str, subtitles: list[str], width_px: int) -> str:
+    """Wrap a question-form headline plus subtitle lines to the figure width.
+
+    Inputs: ``headline`` (the question and its answer, headline values already
+    formatted in), ``subtitles`` (each becomes one smaller line, in order:
+    what one mark is, then the anchors and the evidence file), and
+    ``width_px`` (the figure's ``width``, which decides how many characters
+    fit on a line). Returns the ``<br>``-joined title string.
+    """
+    if width_px <= 0:
+        raise ValueError(f"figure width must be positive, got {width_px}")
+    lines = textwrap.wrap(headline, width=int(width_px * HEADLINE_CHARS_PER_PIXEL))
+    for subtitle in subtitles:
+        wrapped = textwrap.wrap(subtitle, width=int(width_px * SUBTITLE_CHARS_PER_PIXEL))
+        lines += [f"<sup>{line}</sup>" for line in wrapped]
+    return "<br>".join(lines)
+
+
+@dataclass(frozen=True)
+class LineageEvidence:
+    """The five frozen evidence JSONs notebook 07 reads.
+
+    Fields (each the parsed dict of one committed results file):
+      e11          -- results/e11_lineage.json (R1-R4 for the three E11 arms)
+      full_grid    -- results/e12_diverse_fullcorpus_grid.json (diverse arm
+                      at full corpus, scored through the same R1-R3 slots)
+      scale_curves -- results/e12_scale_curve.json (dose-response points for
+                      the fixed and diverse arms, 5 seeds per corpus size)
+      matched_n    -- results/e12_pref_matched_n_exploratory.json
+      raw_vs_chat  -- results/raw_vs_chat_extraction_cosine.json (E4b audit)
+    """
+
+    e11: dict[str, Any]
+    full_grid: dict[str, Any]
+    scale_curves: dict[str, Any]
+    matched_n: dict[str, Any]
+    raw_vs_chat: dict[str, Any]
+
+
+def _read_json(relpath: str) -> dict[str, Any]:
+    """Parse one results-relative JSON, downloading from HF if absent."""
+    return json.loads(fetch(relpath).read_text())
+
+
+def load_evidence() -> LineageEvidence:
+    """Resolve and cross-check the five evidence files.
+
+    Two arms (self-generated and fixed DeepSeek) were scored into BOTH
+    e11_lineage.json and e12_diverse_fullcorpus_grid.json, so the notebook
+    can quote either file for them. Raises ``ValueError`` if the duplicated
+    rows are not bit-identical, on the detection read (R1 passing layers) or
+    on the geometry read (R2 cosine and RSA at layer 33): a silent
+    disagreement there would let one figure and another figure print
+    different values for the same measured quantity.
+    """
+    evidence = LineageEvidence(
+        e11=_read_json("e11_lineage.json"),
+        full_grid=_read_json("e12_diverse_fullcorpus_grid.json"),
+        scale_curves=_read_json("e12_scale_curve.json"),
+        matched_n=_read_json("e12_pref_matched_n_exploratory.json"),
+        raw_vs_chat=_read_json("raw_vs_chat_extraction_cosine.json"),
+    )
+    r1_overlap = [  # (row in e11, same row in the full-corpus grid)
+        ("selfgen", "selfgen_postfix"),
+        ("strong_external", "fixed_deepseek_n256"),
+    ]
+    for e11_name, grid_name in r1_overlap:
+        e11_row = evidence.e11["r1_dual_battery"][e11_name]["passing_layers"]
+        grid_row = evidence.full_grid["r1_dual_battery"][grid_name]["passing_layers"]
+        if e11_row != grid_row:
+            raise ValueError(
+                f"R1 grids disagree on shared arm {e11_name}/{grid_name}: {e11_row} != {grid_row}"
+            )
+    # the one probe-set pair measured in both files: self-generated vs fixed DeepSeek
+    e11_pair = evidence.e11["r2_cross_lineage_layer33"]["selfgen_vs_strong_external"]
+    grid_pair = evidence.full_grid["r2_cross_lineage_layer33"][
+        "selfgen_postfix_vs_fixed_deepseek_n256"
+    ]
+    for field in ("mean_contrast_cos", "rsa_12x12"):
+        if e11_pair[field] != grid_pair[field]:
+            raise ValueError(
+                f"R2 grids disagree on self-generated vs fixed DeepSeek {field}: "
+                f"{e11_pair[field]} != {grid_pair[field]}"
+            )
+    return evidence
+
+
+def load_corpora() -> dict[str, dict[str, list[str]]]:
+    """Load the three story corpora as {corpus label: {emotion: stories}}.
+
+    Every corpus resolves through ``fetch`` and a missing file raises
+    (no silent skip): the section-1 exhibit needs all three.
+    """
+    corpora: dict[str, dict[str, list[str]]] = {}
+    for label, (subtree, filename) in CORPUS_FILES.items():
+        path = fetch(f"{subtree}/{filename}")
+        rows = [json.loads(line) for line in path.read_text().splitlines()]
+        corpora[label] = {row["emotion"]: row["stories"] for row in rows}
+        if not corpora[label]:
+            raise ValueError(f"{label}: {path} parsed to an empty corpus")
+    return corpora
+
+
+def per_layer_counts(r1_arm: dict[str, Any]) -> dict[int, tuple[int, int]]:
+    """One R1 arm's per-layer grid as {layer: (paper, held-out) correct counts}.
+
+    Layer keys arrive as strings in the JSON; this is the single place that
+    normalizes them to ints.
+    """
+    counts = {
+        int(layer): (int(pair[0]), int(pair[1])) for layer, pair in r1_arm["per_layer"].items()
+    }
+    if not counts:
+        raise ValueError("R1 arm has an empty per_layer grid")
+    return counts
+
+
+def seed_mean_by_n(points: list[dict[str, Any]], metric: str) -> dict[int, float]:
+    """Seed-mean of ``metric`` at each corpus size in a dose-response arm.
+
+    ``points`` is the arm's list of per-(n, seed) records from
+    e12_scale_curve.json; the mean at each n averages its 5 seeds (fewer at
+    the full-corpus point, where subsampling is a no-op).
+    """
+    sizes = sorted({point["n"] for point in points})
+    means = {}
+    for size in sizes:
+        values = [point[metric] for point in points if point["n"] == size]
+        means[size] = math.fsum(values) / len(values)
+    return means
