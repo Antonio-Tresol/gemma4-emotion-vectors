@@ -464,15 +464,12 @@ TEMPLATE = r"""<!DOCTYPE html>
   </div>
 </div></section>
 
-<div class="partbar"><div class="wrap"><span class="ptitle">Part one &middot; Rebuilding the emotion vectors</span><p class="pblurb">Does the published result hold up on a different model? Before that question can be answered, a prior one: an emotion vector is only as good as the stories used to build it, and it turns out that matters a great deal.</p></div></div>
+<div class="partbar"><div class="wrap"><span class="ptitle">Part one &middot; Rebuilding the emotion vectors</span><p class="pblurb">Does the published result hold up on a different model? A prior question comes first. An emotion vector is only as good as the stories used to build it, and that turns out to matter a great deal.</p></div></div>
 <section id="probes"><div class="wrap">
   <h2><span class="secno">2</span>Who writes the stories changes the answer</h2>
   <p class="narrow">An emotion vector is only as good as the corpus behind it, and the corpus is a
   free parameter before anything is measured. We built four sets from four different corpora and put
   them through the same test.</p>
-  <p class="narrow"><b>They are not a clean one-variable sweep, and it matters.</b> Three sources, with
-  the strongest appearing twice under different prompting, and corpus sizes spanning 1,539 to 12,262
-  stories. So read the four together as a comparison of corpora, not as an ablation over authorship.</p>
   <p class="narrow"><b>The test.</b> Take a short message of the kind a person actually sends a
   chatbot, say <em>"My daughter just took her first steps today! What are some ways to capture more
   of these precious moments?"</em>. It implies an emotion without ever naming it. Run it as a
@@ -497,12 +494,16 @@ TEMPLATE = r"""<!DOCTYPE html>
       work at nine layers; the model's own writing gives five; a smaller model's writing gives one. So
       the intuitive guess, that a model reads its own emotional writing best, is wrong here. It is
       out-written.</p>
-      <p><b>Why two DeepSeek rows?</b> They share a writer and differ in the prompt recipe: one fixed
-      prompt against a persona-by-setting grid meant to force variety. The varied corpus is four times
-      the size and still scores lower, which is the opposite of what we expected. A separate run
-      controls for size properly (5 seeds per point, same scorer): matched on stories per emotion, the
-      fixed-prompt corpus reaches <b>8.6</b> passing layers at 64 stories each, while the varied one
-      needs <b>1,024</b> each to reach <b>6.8</b>. Forced diversity is a tax here, not a benefit.</p>
+      <p><b>The four corpora differ in more than their writer.</b> Two of them are DeepSeek's, written
+      under different prompts. Their sizes run from 1,539 stories to 12,262, as the row labels show. So
+      these rows compare whole corpora. They do not isolate the writer.</p>
+      <p><b>Why two DeepSeek rows?</b> One used a single fixed prompt. The other used a
+      persona-by-setting grid meant to force variety. The varied corpus is four times the size and
+      still scores lower, which is the opposite of what we expected. A separate run controls for size
+      properly, with 5 seeds per point and the same scorer. Matched on stories per emotion, the
+      fixed-prompt corpus reaches <b>8.6</b> passing layers at 64 stories each. The varied one needs
+      <b>1,024</b> each to reach <b>6.8</b>. Forcing variety costs accuracy here rather than buying
+      it.</p>
       <p><b>Where</b> matters as well as how many. No source works in the first third of the stack, and
       the passing layers cluster late, around 33 to 57. A single quoted layer would have hidden that.</p>
     </details>
@@ -525,7 +526,7 @@ TEMPLATE = r"""<!DOCTYPE html>
       stories buys almost nothing.</p>
       <div class="src">source: notebooks/07_generator_lineages.ipynb (experiment E12)</div></div>
   </div>
-  <div class="takeaway"><span class="lbl">Takeaway</span>An emotion vector is only as good as the corpus behind it: same model, same test, and a nine-fold spread in how many layers work. The model is out-written by a stronger outside author, and its own writing is too repetitive to build a broad vector from. The corpora differ in size as well as source, so treat the ordering as a comparison of corpora rather than a clean ablation over authorship.</div>
+  <div class="takeaway"><span class="lbl">Takeaway</span>An emotion vector is only as good as the corpus behind it. Same model, same test, and a nine-fold spread in how many layers work. A stronger outside writer beats the model's own stories, which are too repetitive to build a broad vector from.</div>
 </div></section>
 
 <section id="replication"><div class="wrap">
@@ -663,7 +664,7 @@ TEMPLATE = r"""<!DOCTYPE html>
   <div class="takeaway"><span class="lbl">Takeaway</span>The biggest thing separating emotions in the instruction-tuned model is not a rearrangement of anything the base model had. It is new, instruction tuning put it there, and it breaks the model's layers into disagreeing blocks. We can show all of that. We still cannot say what it encodes.</div>
 </div></section>
 
-<div class="partbar"><div class="wrap"><span class="ptitle">Part three &middot; Following an emotion as it changes</span><p class="pblurb">The step past the published work: stories written to move through three emotions, read one word at a time, to see whether the model changes its mind when the story does.</p></div></div>
+<div class="partbar"><div class="wrap"><span class="ptitle">Part three &middot; Following an emotion as it changes</span><p class="pblurb">The step past the published work. We wrote stories that move through three emotions, then read them one word at a time, to see whether the model changes its mind when the story does.</p></div></div>
 <section id="story"><div class="wrap">
   <h2><span class="secno">5</span>Watch it follow one story, word by word</h2>
   <p class="narrow">Everything so far has been about static text: one story, one emotion, one reading.
@@ -992,7 +993,7 @@ TEMPLATE = r"""<!DOCTYPE html>
     </details>
     <details class="howto" style="border-top:none">
       <summary style="font-size:15px">The correlations are small. Isn't this noise?</summary>
-      <p>Some of them are, and we say so where they are. The layout result is not small: 0.83 across 164 words is a strong effect. (The original paper's comparable figure was computed over 45 emotions against a different set of human ratings, so ours is directionally but not procedurally comparable to it.) The story-following results are modest, but they beat the shuffled-label version of themselves at p below 0.001: if the emotion labels carried no information at all, a gap this large would turn up in fewer than 1 shuffle in 1,000. One measurement not shown on this page shows how we handle a weak result. We also asked whether the vectors track how <em>strongly</em> an emotion is felt. For that one we report only which way the effect pointed, never how big it was, because a control found that randomly chosen directions scored just as high, so the size carries no information and only the sign does.</p>
+      <p>Some of them are, and we say so where they are. The layout result is not small: 0.83 across 164 words is a strong effect. The original paper's comparable figure came from 45 emotions and a different set of human ratings. Ours is therefore comparable in direction but not in procedure. The story-following results are modest, but they beat the shuffled-label version of themselves at p below 0.001. If the emotion labels carried no information at all, a gap this large would turn up in fewer than 1 shuffle in 1,000. One measurement not shown on this page shows how we handle a weak result. We also asked whether the vectors track how <em>strongly</em> an emotion is felt. For that one we report only which way the effect pointed, never how big it was. A control found that randomly chosen directions scored just as high, so the size carries no information. Only the sign does.</p>
     </details>
     <details class="howto" style="border-top:none">
       <summary style="font-size:15px">Why Gemma 4 and not the model in the paper?</summary>
@@ -2264,9 +2265,63 @@ def check_em_dashes(html: str) -> None:
     print(f"em dashes in prose: {used} (budget {EM_DASH_BUDGET})")
 
 
+# MPLS scientific-writing rules with a mechanical signature. The rest of that
+# guidance (topic sentences, information order, stress position) needs a reader.
+MAX_SENTENCE_WORDS = 30
+SMOTHERED_VERB = re.compile(
+    r"\b(make|makes|made|perform|performs|performed|provide|provides|provided|"
+    r"conduct|conducts|conducted|undertake|give|gives|gave|reach|reaches|"
+    r"reached)\s+(a|an|the)?\s*\w+(ion|ance|ence|ment)\b",
+    re.I,
+)
+
+
+def prose_sentences(html: str) -> list[str]:
+    """Reader-visible sentences, one per returned string."""
+    body = re.sub(r"<(script|style)\b.*?</\1>", " ", html, flags=re.S | re.I)
+    body = re.sub(r"<(p|h1|h2|h3|div|li|details|summary|section)\b[^>]*>", "\n", body, flags=re.I)
+    text = re.sub(r"<[^>]+>", " ", body)
+    for entity, plain in (("&mdash;", "-"), ("&times;", "x"), ("&amp;", "&"),
+                          ("&nbsp;", " "), ("&middot;", "-"), ("&quot;", '"')):
+        text = text.replace(entity, plain)
+    out = []
+    for block in text.split("\n"):
+        block = re.sub(r"\s+", " ", block).strip()
+        if len(block) < 30:
+            continue
+        for sentence in re.split(r"(?<=[.!?])\s+", block):
+            sentence = sentence.strip()
+            if sentence.endswith((".", "!", "?")) and len(sentence) > 20:
+                out.append(sentence)
+    return out
+
+
+def check_prose(html: str) -> None:
+    """Fail the build on the two rules a script can actually judge."""
+    sentences = prose_sentences(html)
+    counts = [len([w for w in s.split() if re.search(r"[A-Za-z0-9]", w)]) for s in sentences]
+    long_ones = [(n, s) for n, s in zip(counts, sentences) if n > MAX_SENTENCE_WORDS]
+    smothered = sorted({m.group(0) for s in sentences for m in SMOTHERED_VERB.finditer(s)})
+    problems = []
+    if long_ones:
+        problems.append(
+            f"{len(long_ones)} sentence(s) over {MAX_SENTENCE_WORDS} words:\n"
+            + "\n".join(f"  [{n}] {s[:120]}" for n, s in sorted(long_ones, reverse=True))
+        )
+    if smothered:
+        problems.append("smothered verbs (use the plain verb): " + ", ".join(smothered))
+    if problems:
+        raise SystemExit("prose check failed\n" + "\n".join(problems))
+    print(
+        f"prose: {len(sentences)} sentences, mean {sum(counts)/len(counts):.1f} words, "
+        f"longest {max(counts)} (limit {MAX_SENTENCE_WORDS})"
+    )
+
+
 if __name__ == "__main__":
     out = HERE / "index.html"
     html = build()
     check_em_dashes(html)
+    check_prose(html)
     out.write_text(html, encoding="utf-8")
     print(f"wrote {out} ({out.stat().st_size / 1024:.0f} KB)")
