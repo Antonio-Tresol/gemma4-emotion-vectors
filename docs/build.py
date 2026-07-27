@@ -420,12 +420,12 @@ TEMPLATE = r"""<!DOCTYPE html>
   page comes from prompting the model or reading its output.</p>
   <div class="card"><div id="methodDiagram"></div>
     <div class="legend">
-      <span>171 emotions in parts one and two, ~9 stories each; the 12-emotion banks used from part
+      <span>171 emotions in parts one and two, ~9 stories each; the 12-emotion sets used from part
       three average 256. Vector quality tracks that count, and section 2 is about how much.</span>
     </div>
   </div>
   <div class="grid2" style="margin-top:18px">
-    <div class="card"><h3>The two arms</h3><p style="font-size:15px">Gemma&nbsp;4&nbsp;31B <b>base</b>
+    <div class="card"><h3>The two models we compare</h3><p style="font-size:15px">Gemma&nbsp;4&nbsp;31B <b>base</b>
     and <b>instruction-tuned</b>: the same weights before and after post-training. Running both is a comparison the
     original paper did not report, and it is where the interesting result came from.
     Layers are sampled, not swept: twenty across the stack (0 to 57, every third) for the geometry and
@@ -729,7 +729,7 @@ TEMPLATE = r"""<!DOCTYPE html>
       twelve. A story can lead all three lines here and still do poorly out of twelve, so this panel
       illustrates the mechanism rather than carrying the headline number.</p>
     </details>
-    <div class="src">story <span id="storyId"></span>, from notebooks/05_trajectories.ipynb. Centered cosine against the self-generated 12-emotion bank. The average across the whole story corpus is
+    <div class="src">story <span id="storyId"></span>, from notebooks/05_trajectories.ipynb. Centered cosine against the twelve emotion vectors built from the model's own stories. The average across the whole story corpus is
     subtracted first, so 0 means "typical for these stories" rather than "no emotion". A line
     above 0 is leaning towards that emotion more than the corpus does on average.</div>
   </div>
@@ -752,8 +752,8 @@ TEMPLATE = r"""<!DOCTYPE html>
   <p class="narrow"><b>Why the instruction-tuned model, when parts one and two just showed its emotion
   structure is the messier of the two?</b> Because the twelve-emotion vector sets only exist for it: an
   emotion vector has to be built from stories, and these were built from stories the instruction-tuned model
-  wrote about itself. Running the same test on the base arm would mean rebuilding the bank from
-  base-model stories, which we did not do. So this section reads the model people actually talk to,
+  wrote about itself. Running the same test on the base model would mean rebuilding all twelve vectors
+  from base-model stories, which we did not do. So this section reads the model people actually talk to,
   and the base model is absent here rather than losing.</p>
   <div class="card" style="margin-top:22px">
     <div class="controls">
@@ -971,8 +971,8 @@ TEMPLATE = r"""<!DOCTYPE html>
     how common each answer already is. We record what failed as failed. The notebooks re-run from those files on any
     machine.</p>
     <p class="muted">One correction is worth flagging because it reversed a headline. Our first round of
-    detection tests found nothing passing anywhere. A later audit found that the readout had skipped the
-    subtract-the-average step from block 1. With that step restored, the same data passes on both
+    detection tests found nothing passing anywhere. A later audit found that the extraction code had skipped
+    the subtract-the-average step from block 1. With that step restored, the same data passes on both
     models. We report both, and the section-3 figure is the corrected one.</p>
   </details>
 </div></section>
@@ -996,7 +996,7 @@ TEMPLATE = r"""<!DOCTYPE html>
     </details>
     <details class="howto" style="border-top:none">
       <summary style="font-size:15px">Why Gemma 4 and not the model in the paper?</summary>
-      <p>Because both arms are available at the same size: base and instruction-tuned, otherwise identical weights. The original paper reports one model and no base-vs-instruction-tuned comparison, so that comparison was open, and it is where our main finding came from.</p>
+      <p>Because both versions are available at the same size: base and instruction-tuned, otherwise identical weights. The original paper reports one model and no base-vs-instruction-tuned comparison, so that comparison was open, and it is where our main finding came from.</p>
     </details>
     <details class="howto" style="border-top:none">
       <summary style="font-size:15px">Could the mystery axis just be a bug in your pipeline?</summary>
@@ -1103,19 +1103,21 @@ function drawMethod(){
   svg.appendChild(txt(479,84,"\u2212 mean over emotions",{size:11,fill:P.orange,weight:600}));
   svg.appendChild(txt(479,116,"3. difference of means",{size:10.5,fill:P.muted,weight:600}));
   svg.appendChild(txt(479,130,"centering is load-bearing",{size:9.5,fill:P.orange}));
-  arrow(560,612,yMid);
-  // 4. the vector, and what it is used for
-  svg.appendChild(box(612,44,110,52,"#fff",P.navy));
-  svg.appendChild(el("line",{x1:628,y1:82,x2:706,y2:56,stroke:P.navy,"stroke-width":2.2}));
-  svg.appendChild(el("path",{d:"M700,54 L707,55 L703,62",fill:"none",stroke:P.navy,"stroke-width":2.2}));
-  svg.appendChild(txt(667,116,"4. emotion vector",{size:10.5,fill:P.muted,weight:600}));
-  svg.appendChild(txt(667,130,"one direction per emotion",{size:9.5,fill:P.muted}));
-  // the two reads that follow
-  const rx=742;
-  svg.appendChild(el("line",{x1:722,y1:yMid,x2:rx-4,y2:yMid,stroke:P.muted,"stroke-width":1.4}));
+  arrow(560,596,yMid);
+  // 4. the vector, and what it is used for. Shifted left of where this used to
+  // sit: the two branch labels on the right ran past the viewBox and were cut.
+  svg.appendChild(box(596,44,100,52,"#fff",P.navy));
+  svg.appendChild(el("line",{x1:610,y1:82,x2:680,y2:56,stroke:P.navy,"stroke-width":2.2}));
+  svg.appendChild(el("path",{d:"M674,54 L681,55 L677,62",fill:"none",stroke:P.navy,"stroke-width":2.2}));
+  svg.appendChild(txt(646,116,"4. emotion vector",{size:10.5,fill:P.muted,weight:600}));
+  svg.appendChild(txt(646,130,"one direction per emotion",{size:9.5,fill:P.muted}));
+  // The two reads that follow. Labels stay short so they fit inside W=880; the
+  // paragraph above the figure carries the full definition of the cosine.
+  const rx=712;
+  svg.appendChild(el("line",{x1:696,y1:yMid,x2:rx-4,y2:yMid,stroke:P.muted,"stroke-width":1.4}));
   svg.appendChild(el("line",{x1:rx-4,y1:44,x2:rx-4,y2:112,stroke:P.muted,"stroke-width":1.4}));
-  [[44,"PCA over the 171 vectors","\u2192 parts one, two"],
-   [112,"cos(residual stream, vector)","\u2192 per token, part three"]].forEach(([y,a,b])=>{
+  [[44,"PCA over the 171","\u2192 parts one, two"],
+   [112,"cos(stream, vector)","\u2192 per token, part three"]].forEach(([y,a,b])=>{
     arrow(rx-4,rx+12,y);
     svg.appendChild(txt(rx+18,y-2,a,{anchor:"start",size:11,weight:600}));
     svg.appendChild(txt(rx+18,y+12,b,{anchor:"start",size:9.5,fill:P.muted}));
