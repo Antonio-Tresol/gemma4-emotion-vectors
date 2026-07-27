@@ -52,11 +52,15 @@ is true.
   builder was silently stale, and re-running one would have overwritten a
   finished notebook with its pre-extraction ancestor (`git log -- scripts/`
   has them if you ever need to look).
-- `docs/` — the talk: `index.html` (interactive, self-contained), `slides/`
-  (PDF and PPTX), and the builders that generate them. Numbers are transcribed
-  from notebook printed records, one block per figure naming its source, so a
-  number changes in the notebook first and here second. The slide charts are
-  screenshots of `index.html`'s own code, so the two cannot disagree.
+- `docs/` — the talk: `index.html` (interactive, self-contained) and the
+  `build.py` that generates it from `docs/data/`. Numbers are transcribed from
+  notebook printed records, one block per figure naming its source, so a number
+  changes in the notebook first and here second. `index.html` is generated —
+  edit `build.py`, never the HTML. A `slides/` directory (PDF, PPTX, a story
+  clip, and their builders) was deleted on 2026-07-26 after a rewrite of the
+  page left the deck stale; `git log -- docs/slides/` has it. If a deck is ever
+  wanted again, regenerate from the current page rather than reviving those
+  outputs.
 - `data/papers/` (literature PDFs), `data/lexicons/` (third-party, manual
   download), `notes/` (drafts and registration drafts).
 - `check.sh` — the repo gate (format, lint, tests, validator); the shared

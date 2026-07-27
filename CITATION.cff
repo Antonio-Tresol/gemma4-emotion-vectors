@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this work, please cite it as below."
-title: "Replicating emotion-concept vectors on Gemma-4-31B: circumplex geometry and control-prompt validation"
+title: "Emotion vectors in Gemma-4-31B: circumplex replication, what instruction tuning displaces, and tracking emotion through a story"
 abstract: >-
   A replication of Sofroniew et al. (2026), "Emotion Concepts and their Function
   in a Large Language Model", which found internal representations of emotion
@@ -8,10 +8,13 @@ abstract: >-
   work tests whether the finding transfers to an open-weights model, Gemma-4-31B:
   difference-of-means emotion vectors from the residual stream, a valence-arousal
   circumplex geometry check, and the cosine-similarity control-prompt validation
-  that the earlier open replication omitted. Conditional on that validation gate,
-  it further tests whether the model can detect the emotional direction it is
-  being steered toward, and whether its misidentifications are graded in
-  valence-arousal space.
+  that the earlier open replication omitted. The base checkpoint reproduces the
+  circumplex; the instruction-tuned checkpoint does not, and one large
+  non-affective direction dominates it instead. A second line of work, not in the
+  original paper, reads emotion vectors token by token through stories written to
+  move between three emotions, and finds tracking above chance but uneven, with a
+  large share of the variation attributable to who wrote the stories the vectors
+  were built from.
 type: software
 authors:
   - family-names: "Badilla-Olivas"
@@ -54,6 +57,6 @@ references:
       - {family-names: Olah, given-names: Chris}
       - {family-names: Lindsey, given-names: Jack}
 
-# PRIVATE repository. GitHub shows the "Cite this repository" button only to
-# people who can see the repo, and Zenodo cannot archive a private repository, so
-# this file is preparation for release rather than a working citation today.
+# Update `version` and add a `date-released` when a release is tagged. If the
+# repository is archived to Zenodo, add the DOI as `doi:` above `repository-code`
+# so the citation resolves to a fixed snapshot rather than a moving branch.

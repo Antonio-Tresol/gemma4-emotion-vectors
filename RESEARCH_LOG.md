@@ -18,6 +18,62 @@ one lives in the harness repo's own tree and log.
 
 Newest entry first. Every entry answers the same four questions.
 
+### 2026-07-26
+
+* What I did: A communication pass over `docs/index.html` (the interactive talk), prompted by the
+judgement that it was hard to read, incoherent, and full of invented vocabulary. No experiment ran and
+no number changed. Edits are all in `docs/build.py`; `index.html` is regenerated from it. (1) Removed
+the invented register: `THE READ` / "What we take from these bars" became `Takeaway`; three different
+phrasings of "the registered bar" became one plain statement of the pre-set threshold; `probe bank`,
+`unablated`, `attractors`, `competences`, `post-fix instrument`, `top-1`, bare `|r|`, and an unexpanded
+`RSA` are gone from reader-visible text; the page title's own unexpanded `LLMs` is expanded. (2) Fixed
+the structural incoherence: three competing numbering systems (teaser 1-3, part 1-3, section 1-10) are
+now one, and each figure states its claim once (setup paragraph, then evidence, then a one-line
+takeaway) instead of three times. (3) Figures: chart text moved off monospace onto the UI sans; added
+the missing y-axis on the dose chart and axis titles on the lineage, PCA and layer charts; gave the
+dual-scale layer chart a colour-matched axis per series; annotated the failure and ceiling anchors;
+stopped the RSA figure leaking its raw notebook keys into the page. (4) Added a four-term glossary
+(internal reading / layer / emotion vector / circumplex) because the page used all four before defining
+any of them. (5) Fixed a real portability bug found while building: `build.py` called
+`read_text`/`write_text` with no `encoding=`, so the build had never run on Windows (cp1252 cannot
+encode `▸`).
+
+* What I expected vs what happened: Expected a wording pass. Got a correctness incident. A four-role
+subagent review (cold non-specialist reader; scientific-writing editor against the Oxford MPLS
+criteria; skeptical domain reviewer; figure critic) found that plain-language rewriting had silently
+broken the science in nine places, every one traced back to code or TREE and confirmed before fixing.
+The worst: section 7's second measurement is `r(anticipation lead, |ΔV|)` — whether the *size* of the
+model's lean tracks the *size* of the coming valence change — and the rewrite had described it as the
+lean itself, contradicting the figure's own surviving tooltip. Also wrong: "with this story's own
+average subtracted" (it is the whole story-set mean, `q3_conventions.story_set_mean`); "173 stories"
+(173 *triples*, 8,938 phases); "the matching vector is the one that responds" (the criterion is
+target-in-top-3-of-12, `score_e11_lineage.py:battery_counts`, so chance is 25% not 8%); "less than a
+1-in-1000 chance of being luck" (inverse-probability fallacy, newly introduced by me); one of three
+principal angles presented as the whole relationship; "everything else held identical" across four arms
+of which two share a writer and whose n spans 1,539-12,262.
+
+* What this changes about my thinking: Two things. First, simplification is an edit to the claim, not
+just to the sentence — every gloss that replaces a technical term is a new assertion that needs the
+same evidence check as a number, and none of mine got one until the reviewer forced it. Second, the
+verification I designed had a hole exactly where I did the most work: diffing visible numerals across
+the rebuild excluded `<script>`, which is where every chart label and tooltip lives. A second diff over
+script string literals closed it and confirmed exactly one intentional numeric deletion (a
+"probe-to-preference correlation" tooltip whose quantity the page never explained). A numeral diff
+proves numbers survived; it cannot prove their descriptions did.
+
+* What I will do next: Two evidence-grading gaps this pass exposed and only papered over on the page,
+both needing a real decision rather than better wording. `Q1.H1.C2` (chat-tuning demotes the
+circumplex) is still `[unvalidated]` while the page treats it as a headline — it needs its post-fix
+falsification gate. And Part three's story-following results have no claim node at all: `Q3.H1.E2/E3`
+are explicitly exploratory, and the detection bar we *did* pre-register was written for the
+171-emotion bank, which failed it at every layer; what passes is the 12-emotion banks, a substitution
+made after seeing results. The page now says both of these out loud, which is the honest stopgap, not
+the fix. Separately, `docs/slides/` was deleted at the end of this session (user's call): the deck, the
+story clip and the four builders that made them. The deck was a screenshot of the pre-rewrite page, so
+it disagreed with `index.html` on every relabelled figure, and a stale deck is worse than none.
+`index.html` is now the only talk artefact; `git log -- docs/slides/` has the builders if a deck is
+wanted again, but it should be regenerated from the current page rather than revived.
+
 ### 2026-07-23
 
 * What I did: The overnight tail of yesterday's session ran past local midnight, so two addenda

@@ -46,8 +46,13 @@ def kept_rows(stories_path: Path) -> list[dict]:
 
 
 def story_id(row: dict) -> str:
-    """Stable shard id: triple, mode, permutation, and a content hash."""
-    digest = hashlib.sha1(row["text"].encode()).hexdigest()[:8]
+    """Stable shard id: triple, mode, permutation, and a content hash.
+
+    sha1 is a naming device here, not a security primitive: it de-duplicates
+    story text into a short stable filename. The algorithm cannot be changed
+    without renaming every published shard, so the flag is what moves.
+    """
+    digest = hashlib.sha1(row["text"].encode(), usedforsecurity=False).hexdigest()[:8]
     return f"t{row['triple_id']:03d}_{row['mode'][:3].lower()}_p{row['perm_idx']}_{digest}"
 
 

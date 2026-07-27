@@ -38,3 +38,10 @@ docs/slides/_fontcache/
 docs/slides/_pages/
 docs/slides/png/
 docs/slides/_slides.html
+
+# playwright-mcp scratch (screenshots, snapshots) — 2026-07-26
+.playwright-mcp/
+
+# Third-party papers are read locally, never redistributed — 2026-07-26.
+# `data/papers/` was already ignored; a root `papers/` had slipped past it.
+papers/

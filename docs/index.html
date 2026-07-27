@@ -5,7 +5,7 @@
      This lives here rather than being hand-added to the published page: it was,
      once, and the next rebuild silently dropped it. -->
 <meta name="robots" content="noindex, nofollow, noarchive">
-<title>Do language models track emotions in stories?</title>
+<title>How are emotions represented in large language models?</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -69,7 +69,7 @@ button.seg:hover:not(.on){border-color:var(--muted);color:var(--text)}
 input[type=range]{-webkit-appearance:none;height:4px;background:var(--border);border-radius:2px;outline:none}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;
 background:var(--orange);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 3px #0003}
-.legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--muted);
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--display);font-size:12.5px;color:var(--muted);
 margin-top:10px}
 .legend i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:5px;vertical-align:-1px}
 .howto{margin-top:14px;border-top:1px dashed var(--border);padding-top:12px}
@@ -77,19 +77,20 @@ margin-top:10px}
 .howto[open] summary{color:var(--text);margin-bottom:8px}
 .howto p{font-size:14.5px;color:var(--body)}
 .callout{border-left:3px solid var(--orange);padding:14px 0 14px 18px;background:transparent;margin:18px 0}
-/* the three parts of the talk, announced the way the slides announce them */
+/* the three parts of the talk, each announced by a full-width divider */
 .partbar{border-top:2px solid var(--navy);margin-top:64px;padding-top:20px}
 /* the deck sets a part off with a small letter-spaced caps label above the
    slide title, so the part reads as a SUPERheading and the section h2 below it
    stays the largest thing on screen. Same hierarchy here. */
-.partbar .pnum{font-family:var(--mono);font-size:30px;font-weight:600;color:var(--navy);
-  margin-right:14px;vertical-align:-3px}
-.partbar .ptitle{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--navy);
-  letter-spacing:.13em;text-transform:uppercase}
+.partbar .ptitle{font-family:var(--display);font-size:18px;font-weight:650;color:var(--navy);
+  letter-spacing:.11em;text-transform:uppercase}
 .partbar .pblurb{max-width:62ch;margin-top:12px;color:var(--muted);font-size:16px}
-@media(max-width:700px){.partbar .pnum{font-size:24px}.partbar .ptitle{font-size:14px}}
+@media(max-width:700px){.partbar .ptitle{font-size:15px}}
 .callout .k{font-family:var(--display);font-weight:650;color:var(--text);display:block;margin-bottom:4px}
-svg text{font-family:var(--mono)}
+/* Chart text is set in the UI sans, not the mono. Monospace advance widths are
+   built for aligning columns of code; at 10px they make axis titles sprawl and
+   wrap, which is most of why these figures read as unlabelled. */
+svg text{font-family:var(--display)}
 table{border-collapse:collapse;width:100%;font-size:14px}
 th{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);
 text-align:left;padding:8px 10px;border-bottom:1px solid var(--border)}
@@ -210,29 +211,26 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
 
 <header><div class="wrap">
   <div class="kicker">CAMBRIA capstone &middot; Hannah Kim &middot; Peyton Li &middot; Antonio Badilla Olivas</div>
-  <h1>How are emotions represented in<br>LLMs?</h1>
-  <p class="lede narrow">We replicated Anthropic's emotion-vector work on Gemma&nbsp;4&nbsp;31B, then pushed it
-  somewhere the paper did not go: stories where the emotion <em>changes</em>. The base model reproduces the
-  emotion geometry almost exactly. The instruction-tuned model does not, and what replaced it is the most
-  interesting thing we found.</p>
-  <div class="controls" style="margin-top:24px">
-    <span class="tag ok">base model: circumplex replicates</span>
-    <span class="tag no">instruct: valence demoted to PC3</span>
-    <span class="tag">emotions tracked in stories, unevenly</span>
-  </div>
+  <h1>How are emotions represented in<br>large language models?</h1>
+  <p class="lede narrow">Anthropic found that a language model keeps a separate internal direction for
+  each emotion, and that those directions arrange themselves the way psychologists arrange emotions.
+  We rebuilt that result on Gemma&nbsp;4&nbsp;31B (a 31-billion-parameter model), in two versions of
+  it. Then we asked a question the paper did not: can the model follow an emotion that
+  <em>changes</em> partway through a story? Three findings, below.</p>
   <div class="grid3" style="margin-top:34px;gap:16px">
-    <div class="card"><h3>1 &middot; We can replicate emotion vectors</h3>
-    <p style="font-size:15px">Anthropic reports that emotion vectors lay out in a
-    valence-by-arousal plane, the <em>circumplex</em>. We rebuilt it on both the base and the
-    instruction-tuned checkpoint, from single-emotion stories.</p></div>
-    <div class="card"><h3>2 &middot; The instruct model diverges from the base</h3>
-    <p style="font-size:15px">The two checkpoints organise emotions differently, in the late
-    layers and in the principal components. Valence is demoted, and something else takes the
-    top slot.</p></div>
-    <div class="card"><h3>3 &middot; Stories are tracked better than chance</h3>
-    <p style="font-size:15px">We wrote stories that move through three emotions in sequence.
-    The vectors follow the emotions and their transitions above chance &mdash; but
-    imperfectly, and unevenly across emotions.</p></div>
+    <div class="card"><h3>The plain model reproduces the result</h3>
+    <p style="font-size:15px">Sort 171 emotions by the model's internal readings alone and the biggest thing telling them apart
+    is pleasant-versus-unpleasant &mdash; the same axis people use. Nobody asked for that. It is the
+    published result, reproduced on a new model.</p></div>
+    <div class="card"><h3>The chat-tuned version buries it</h3>
+    <p style="font-size:15px">Train that same model to follow instructions and pleasantness drops
+    from first place to third &mdash; still present, but no longer how the model mainly sorts
+    emotions. A larger axis takes over, and it matches nothing in the plain model. We can measure
+    it; we cannot yet say what it means.</p></div>
+    <div class="card"><h3>It follows a story's emotion, roughly</h3>
+    <p style="font-size:15px">In stories written to move through three emotions, the model's internal
+    state hands over from one emotion to the next &mdash; better than guessing, often before the
+    written turn, but never reliably, and much better for some emotions than others.</p></div>
   </div>
   <div class="index" id="coverIndex"></div>
   <div class="muted" style="font-family:var(--display);font-size:13px;margin-top:18px">
@@ -245,367 +243,521 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
 <section id="question"><div class="wrap">
   <div class="kicker">What we were trying to find out</div>
   <h2><span class="secno">1</span>Why does this matter?</h2>
-  <div class="grid3" style="margin-top:26px">
-    <div class="card"><h3>1. Does it replicate?</h3><p style="font-size:15px">Anthropic reports that
-    emotion vectors, one direction per emotion, lay out in a valence-by-arousal plane: the
-    <em>circumplex</em> psychologists have used for decades. We rebuilt it on a different model,
-    on both the base and the instruction-tuned checkpoint.</p></div>
-    <div class="card"><h3>2. Why do the two models differ?</h3><p style="font-size:15px">They diverge
-    sharply. Instruction tuning does not erase the emotion structure, it <em>demotes</em> it and puts
-    something else in the top slot. We went looking for what.</p></div>
-    <div class="card"><h3>3. Does it track a story?</h3><p style="font-size:15px">A vector that only
-    labels static text is a dictionary. We wrote stories that move through three emotions and asked
-    whether the model follows along, token by token.</p></div>
+  <h3 style="margin-top:26px">Five words this page uses constantly</h3>
+  <p class="narrow" style="margin-bottom:18px">Everything that follows is built out of these five
+  ideas, so they are worth a minute up front.</p>
+  <div class="grid3">
+    <div class="card"><h3>An internal reading</h3><p style="font-size:15px">While the model reads text,
+    we can pause it and write down the numbers it is holding at that moment &mdash; thousands of them.
+    That list is the model's <b>internal reading</b>, and it is the only thing measured anywhere on
+    this page. Nothing here comes from asking the model a question or reading what it writes. Two readings can be
+    compared: readings taken while reading similar things point in similar directions.</p></div>
+    <div class="card"><h3>A layer</h3><p style="font-size:15px">The model does not read text in one
+    go. It passes the text through a stack of stages, one after another, and we can take an internal
+    reading after any of them. Each stage is a <b>layer</b>. This model's stack runs to at least layer
+    57, and the experiments here sample it rather than test every stage: twenty layers evenly spaced
+    across the stack for most of the work, six of them for the story work. It matters because the answer often changes with depth,
+    which is why nearly every number here comes with a layer attached.</p></div>
+    <div class="card"><h3>An emotion vector</h3><p style="font-size:15px">Show the model short stories
+    written to feel <em>afraid</em> and take an internal reading of each. Average those readings and
+    you get one list of numbers &mdash; a direction &mdash; that stands for "afraid" inside the
+    model. Do it for every emotion word and you have a set of directions to measure new text against.
+    How many stories go into one vector matters: the 171-emotion set in part one averages only about
+    <b>nine</b> stories per emotion, which is thin enough that we treat those directions as
+    noise-limited; the twelve-emotion sets used from part three onwards average <b>256</b>.</p></div>
+    <div class="card"><h3>The circumplex</h3><p style="font-size:15px">Ask people to rate hundreds of
+    emotion words and the ratings collapse onto two axes: how <em>pleasant</em> the feeling is, and
+    how <em>worked-up</em> it is. Furious and elated are both high-energy; content and miserable are
+    both low. Psychologists have called this arrangement the <b>circumplex</b> for decades. The
+    published result we set out to reproduce is that a model's emotion directions lay themselves out
+    the same way, unprompted.</p></div>
+    <div class="card"><h3>Plain vs. chat-tuned</h3><p style="font-size:15px">Two versions of one model.
+    The <b>plain</b> one was only ever trained to predict the next word. The <b>chat-tuned</b> one is
+    that same model after further training to follow instructions and behave like an assistant.
+    Comparing them shows what that further training does to the emotion structure &mdash; the
+    comparison the original paper could not run.</p></div>
   </div>
   <h3 style="margin-top:38px">Why should anyone care whether this works?</h3>
   <p class="narrow" style="margin-bottom:20px">Five reasons, and they pull in different directions.
-  Some want the representation to be strong; one of them is interesting precisely if it turns out weak.</p>
+  Four of them want the emotion signal to be strong. The last one is interesting precisely if it
+  turns out to be weak.</p>
   <div class="grid3" style="gap:16px">
-    <div class="card"><h3>A lever to pull</h3><p style="font-size:15px">A readable, causal
-    representation of emotional state is something you can inspect and something you can
-    <em>move</em>. That is interpretability (what is it representing?) and safety (what happens when
-    you push on it?) in one object.</p></div>
+    <div class="card"><h3>Something you can read and push on</h3><p style="font-size:15px">If a
+    direction really stands for an emotion, you can do two things with it: read it off while the model
+    works, and add it back in to change how the model behaves. One object gives you both the
+    "what is it representing?" question and the "what happens if we push?" question.</p></div>
     <div class="card"><h3>Models as listeners</h3><p style="font-size:15px">People already bring models
-    their worst days, and products are being sold as companions and therapists. That job is not
-    sentiment classification on one message: it is following how someone's state <em>moves</em>
-    across a long conversation. Precisely what we tested, and precisely where it gets shaky.</p></div>
+    their worst days, and companies are selling them as companions and therapists. Doing that well is
+    not a matter of labelling one message as positive or negative. It means following how someone's
+    state <em>moves</em> across a long conversation. Precisely what we tested, and precisely where it gets shaky.</p></div>
     <div class="card"><h3>Internal evidence, for the welfare question</h3><p style="font-size:15px">
     Arguments about model welfare mostly run on what a model <em>says</em>. Emotion vectors are one of
     the few handles on internal state instead. A caveat we take seriously: we measured the model
     reading emotions in a <em>story</em>, not having them. Those are different claims, and conflating
     them is the easiest mistake in this area.</p></div>
-    <div class="card"><h3>How it carves up the world</h3><p style="font-size:15px">The emotion space we
-    recover is the model's, not ours. Where it disagrees with human ratings, that gap is a map of what
-    is idiosyncratic about its concepts, and instruction tuning visibly redraws it.</p></div>
+    <div class="card"><h3>Where the model's concepts differ from ours</h3><p style="font-size:15px">The
+    emotion layout we recover belongs to the model, not to us. Wherever it disagrees with how humans
+    rate the same words, that gap tells us something the model does not share with us &mdash; and the
+    chat-tuning step visibly redraws it.</p></div>
     <div class="card" style="border-color:var(--orange)"><h3>Or: it may just not be very emotional</h3>
-    <p style="font-size:15px">The interesting possibility we cannot rule out. Maybe emotion is simply
-    not a load-bearing axis for this model, and we keep finding a weak signal because that is all there
-    is. A null here would be a real finding about what these systems represent, not a failed
-    experiment.</p></div>
+    <p style="font-size:15px">The possibility we cannot rule out, and the one we find most interesting.
+    Maybe emotion is simply not one of the big organising ideas in this model, and we keep measuring a
+    weak signal because a weak signal is all there is. That would be a real answer about what these
+    systems represent, not a failed experiment.</p></div>
   </div>
 </div></section>
 
-<div class="partbar"><div class="wrap"><span class="pnum">1</span><span class="ptitle">Replicating emotion vectors</span><p class="pblurb">Can we rebuild Anthropic's emotion vectors on a different model? First: the vectors are only as good as the stories behind them.</p></div></div>
+<div class="partbar"><div class="wrap"><span class="ptitle">Part one &middot; Rebuilding the emotion vectors</span><p class="pblurb">Does the published result hold up on a different model? Before that question can be answered, a prior one: an emotion vector is only as good as the stories used to build it, and it turns out that matters a great deal.</p></div></div>
 <section id="probes"><div class="wrap">
-  <div class="kicker">1 &middot; Replicating emotion vectors</div>
-  <h2><span class="secno">2</span>Where the vectors come from matters</h2>
-  <p class="narrow">Every emotion vector is built by averaging the model's activations over stories that
-  evoke that emotion. So who <em>writes</em> those stories is a free parameter, and nobody reports it.
-  We built four probe sets from four different authors and scored them identically.</p>
+  <h2><span class="secno">2</span>Who writes the stories changes the answer</h2>
+  <p class="narrow">To build an emotion vector you need stories written to feel like that emotion &mdash;
+  so somebody has to write them. Nobody reports who. We built four sets of emotion vectors from four
+  different story sources &mdash; three writers, with
+  the strongest of them appearing twice under different prompting &mdash; and put all four through
+  the same test.</p>
+  <p class="narrow">The test: give the model a piece of text whose emotion we know, rank all twelve
+  emotion vectors by how well each matches, and check whether the correct one lands in the top three.
+  A layer of the model counts as <b>working</b> if it does that for at least 8 of 12 pieces of test
+  text, on two separate sets. Guessing would put the right answer in the top three about a quarter of
+  the time, so the bar is 8 of 12 against a chance rate of 3 of 12. We fixed that mark in advance,
+  before looking at any results, so we could not move it to suit the answer.</p>
   <div class="card" style="margin-top:22px">
     <div id="lineageChart"></div>
-    <div class="legend"><span><i style="background:var(--navy)"></i>layers where the probes pass the
-    registered detection bar (8 of 12 scenarios, on two separate batteries)</span></div>
+    <div class="legend"><span><i style="background:var(--navy)"></i>each bar shows how many of the 20
+    tested layers reach the 8-of-12 mark. Taller is better; 0 would mean the vectors never
+    work.</span></div>
     <details class="howto"><summary>How to read this</summary>
-      <p>Each bar is one probe set, differing only in who wrote the stories behind it. Height is how many
-      of the 20 tested layers pass a bar that was registered before any of this was scored. Zero would
-      mean the probes never work; the best we saw is 9.</p>
-      <p><b>The ordering is the finding.</b> A stronger external writer (DeepSeek) gives probes that work
-      at nine layers. The model's own writing gives five. A weaker model's writing gives one. So "the
-      model understands its own emotions best" is false here: it is out-written.</p>
+      <p><b>Four story sources, one identical test.</b> Three different writers, plus a second attempt
+      by the strongest of them under a different prompt recipe. The corpus sizes differ too, from 1,539
+      stories to 12,262, so this compares sources as a whole rather than isolating one variable. Bar
+      height is how many of the 20 tested layers give emotion vectors that work, by the standard above.
+      <b>A bad result is 0</b> &mdash; the vectors never detect anything. <b>A good result is 20</b>,
+      every layer working. Nothing we built came close: the best writer reached 9.</p>
+      <p><b>The ordering is the finding.</b> The strongest outside writer here is DeepSeek, a different
+      company's language model. Its stories produced vectors that work at nine layers. The model's own writing produced five. A smaller model's writing
+      produced one. So the intuitive guess &mdash; that a model understands its own emotional writing
+      best &mdash; is wrong here. It is out-written.</p>
     </details>
     <div class="src">source: notebooks/07_generator_lineages.ipynb (experiments E11 and E12)</div>
   </div>
   <div class="grid2" style="margin-top:20px">
     <div class="card"><h3>Why its own stories are worse</h3>
-      <p style="font-size:15px">Asked for 3,072 emotional stories, the model wrote a character named
-      <b>Elias</b> in <b>98.2%</b> of them. Its self-written corpus repeats 5-word phrases
-      <b>53&times;</b> more often than DeepSeek's. Narrow, repetitive text makes a narrow vector: the
-      probe learns the model's writing habits alongside the emotion.</p>
-      <p style="font-size:15px" class="muted">This is also the clearest thing we saw about what is
-      idiosyncratic to this model. Ask it for variety and it gives you Elias, 3,000 times.</p></div>
+      <p style="font-size:15px">Asked for 3,072 stories about emotions, the model named its character
+      <b>Elias</b> in <b>98.2%</b> of them. Its own writing reuses five-word phrases <b>53&times;</b>
+      as often as DeepSeek's does. That matters because narrow, repetitive stories make a narrow
+      vector: whatever the stories have in common gets averaged in, so the vector ends up standing for
+      the model's writing habits as much as for the emotion.</p>
+      <p style="font-size:15px" class="muted">It is also the sharpest thing we saw about what is
+      peculiar to this particular model. Ask it for variety and it gives you Elias, 3,000 times.</p></div>
     <div class="card"><h3>How many stories do you actually need?</h3>
       <div id="doseChart"></div>
-      <p style="font-size:15px;margin-top:8px">About <b>64</b> per emotion. By then the probes reach
-      8.6 of their 9-layer ceiling, and 4&times; more data buys almost nothing.</p></div>
+      <p style="font-size:15px;margin-top:8px">About <b>64</b> per emotion. At that point the vectors
+      already reach 8.6 working layers out of the 9 this writer ever achieves &mdash; a fraction
+      because it is an average over five random draws of that many stories &mdash; and quadrupling
+      the stories buys almost nothing.</p></div>
   </div>
-  <div class="takeaway"><span class="lbl">the read</span><b>What we take from these bars:</b> the quality of an emotion vector is set by who wrote the stories behind it. The model is out-written by a stronger external author, and its own writing is too repetitive to make a broad probe.</div>
+  <div class="takeaway"><span class="lbl">Takeaway</span>An emotion vector is only as good as the writer of the stories behind it &mdash; a nine-fold difference here, from the same model and the same test. The model is out-written by a stronger outside author, and its own writing is too repetitive to build a broad vector from.</div>
 </div></section>
 
 <section id="replication"><div class="wrap">
-  <div class="kicker">1 &middot; Replicating emotion vectors</div>
-  <h2><span class="secno">3</span>The circumplex replicates, then collapses</h2>
-  <p class="narrow">Each bar is one principal component of the 171 emotion vectors at layer 33. Height is
-  how much of the spread it explains; the coloured bars are how strongly it correlates with human ratings
-  of <b>valence</b> (pleasant/unpleasant), <b>arousal</b> (calm/excited), <b>dominance</b>, and with a
-  confound we had to check: <b>how long the stories were</b>.</p>
+  <div class="kicker">Part one &middot; Rebuilding the emotion vectors</div>
+  <h2><span class="secno">3</span>Pleasantness leads the plain model, and loses first place in the chat-tuned one</h2>
+  <p class="narrow">We have 171 emotion vectors, one per emotion word, read at layer 33 of the model.
+  Ask what separates them most and
+  you get a ranked list of axes. The first axis is whatever splits the 171 emotions apart the most.
+  The second is the largest split left over once the first is accounted for, and so on down the list. This is
+  <b>principal component analysis</b>; the axes are called <b>PC1, PC2</b> and so on, and they come
+  from the model's internal readings alone, with no human input.</p>
+  <p class="narrow">The question is then whether those model-found axes mean anything to us. So we take
+  each axis and check how closely it lines up with published human ratings of the same 171 words.
+  People rated three things: how <b>pleasant</b> the emotion is (psychologists call this
+  <em>valence</em>), how <b>worked-up</b> (<em>arousal</em>), and how <b>in control</b> the person feels
+  (<em>dominance</em>). We also check it
+  against one thing that has nothing to do with emotion but could fake the whole result: <b>how long the
+  stories were</b>. A perfect match scores 1.0; no relationship scores 0.</p>
   <div class="card" style="margin-top:22px">
     <div class="controls">
-      <button class="seg on" data-model="base">base model</button>
-      <button class="seg" data-model="instruct">instruction-tuned</button>
-      <span class="muted mono" style="margin-left:auto" id="pcVerdict"></span>
+      <button class="seg on" data-model="base">plain model</button>
+      <button class="seg" data-model="instruct">chat-tuned model</button>
+      <span class="muted" style="margin-left:auto;font-size:13px" id="pcVerdict"></span>
     </div>
     <div id="pcChart"></div>
     <div class="legend">
-      <span><i style="background:var(--navy)"></i>valence</span>
-      <span><i style="background:var(--teal)"></i>arousal</span>
-      <span><i style="background:var(--green)"></i>dominance</span>
-      <span><i style="background:var(--amber)"></i>story length (confound)</span>
-      <span><i style="background:#D4D4D4"></i>variance explained</span>
+      <span><i style="background:var(--navy)"></i>pleasantness (valence)</span>
+      <span><i style="background:var(--teal)"></i>energy (arousal)</span>
+      <span><i style="background:var(--green)"></i>control (dominance)</span>
+      <span><i style="background:var(--amber)"></i>story length &mdash; the fake-result check</span>
+      <span><i style="background:#D4D4D4"></i>grey backdrop: how much of the total spread this axis
+      accounts for</span>
     </div>
     <details class="howto"><summary>How to read this</summary>
-      <p>A good replication looks like the base model: the <em>first</em> component is valence
-      (|r| = 0.83) and the second is arousal (|r| = 0.55). That is the circumplex, recovered without
-      being asked for. A failure looks like the instruct model: its first component correlates with
-      valence at only 0.11, barely more than nothing, while explaining almost twice as much variance
-      (28% against 15%). Valence has not disappeared, it has been pushed down to the third component
-      (|r| = 0.72). Watch the amber bar too: the instruct model's second component tracks story
-      <em>length</em> at 0.66, which is a reminder that not every strong axis is about emotion.</p>
+      <p><b>What a success looks like:</b> the plain model. Its biggest axis matches human pleasantness
+      ratings at 0.83, and its second matches energy at 0.55. Those are the two axes of the circumplex,
+      in order, found by a method that never saw a human rating. That is the published result,
+      reproduced.</p>
+      <p><b>What a failure looks like:</b> the chat-tuned model. Its biggest axis matches pleasantness
+      at 0.11 &mdash; near zero. The 171 emotions differ from one another in many ways at once, and
+      this single axis accounts for 28% of all of that variation, against 15% for the plain model's
+      top axis. So it is not merely a big axis, it is nearly twice as dominant &mdash; and it is not
+      pleasantness.</p>
+      <p>Pleasantness has not vanished, it has moved down: the chat-tuned model's <em>third</em> axis
+      matches it at 0.72. And watch the amber bar. The chat-tuned model's second axis matches story
+      length at 0.66, harder than it matches any emotion rating &mdash; a standing reminder that a big
+      axis is not automatically an emotional one.</p>
     </details>
-    <div class="src">source: notebooks/02_circumplex_geometry.ipynb, layer 33, post-fix instrument</div>
+    <div class="src">source: notebooks/02_circumplex_geometry.ipynb, layer 33, measured after the centering
+    correction described in Method block 4</div>
   </div>
-  <div class="takeaway"><span class="lbl">the read</span><b>What we take from this plot:</b> on the base model the biggest axis <em>is</em> valence, so the circumplex is recovered without asking for it. On the instruct model the biggest axis is something else, and valence has been pushed down to third.</div>
+  <div class="takeaway"><span class="lbl">Takeaway</span>Sort the plain model's emotions by what separates them most and the answer is pleasantness &mdash; the human circumplex, recovered without being asked for. Do the same on the chat-tuned model and the top axis is something else entirely, with pleasantness pushed down to third.</div>
 </div></section>
 
-<div class="partbar"><div class="wrap"><span class="pnum">2</span><span class="ptitle">Instruction vs. base model</span><p class="pblurb">The two checkpoints disagree, and what replaced valence in the instruction-tuned model is the most interesting thing we found.</p></div></div>
+<div class="partbar"><div class="wrap"><span class="ptitle">Part two &middot; Plain model vs. chat-tuned model</span><p class="pblurb">The two versions of the model organise emotions differently. Working out what pushed pleasantness out of first place is the part of this project we are least able to explain and most interested in.</p></div></div>
 <section id="displaced"><div class="wrap">
-  <div class="kicker">2 &middot; Instruction vs. base model</div>
-  <h2><span class="secno">4</span>So what took valence's place in the PCA?</h2>
-  <p class="narrow">We compared every instruct component against every base component. If instruction
-  tuning merely rotated the space, each instruct axis would find a partner. Hover any cell.</p>
+  <h2><span class="secno">4</span>What took pleasantness's place?</h2>
+  <p class="narrow">Suppose chat-tuning had simply shuffled the same information around. Then every axis
+  in the chat-tuned model would have a partner somewhere in the plain model: the same emotions
+  separated the same way, just renumbered. So we checked all 25 pairings &mdash; each of the chat-tuned
+  model's top five axes against each of the plain model's top five. <b>1.0 means the two axes carry the
+  same information; 0 means they have nothing in common.</b> Hover any square.</p>
   <div class="grid2" style="margin-top:22px">
     <div class="card">
       <div id="gridChart"></div>
-      <div id="gridNote" class="mono muted" style="margin-top:10px;min-height:34px"></div>
+      <div id="gridNote" class="muted" style="margin-top:10px;min-height:34px;font-size:13.5px"></div>
     </div>
     <div class="card">
-      <h3>The top axis has no partner</h3>
-      <p style="font-size:15px">The instruct model's largest axis matches its best base counterpart at
-      just <b>0.14</b>. It is not a rotation of anything the base model had: it is new structure,
-      inserted by instruction tuning, and it is the single biggest direction in the space.</p>
-      <p style="font-size:15px">Meanwhile the old valence axis is still there, intact, one floor down:
-      instruct PC3 matches base PC1 at <b>0.83</b>.</p>
+      <h3>The top row is the finding: nothing matches</h3>
+      <p style="font-size:15px">Read the top row of the grid. The chat-tuned model's biggest axis
+      scores <b>0.14</b> against its closest relative among the plain model's five biggest axes
+      &mdash; near the bottom of the scale. It is not a renaming or a reshuffle of anything the plain model had. It is
+      new, chat-tuning put it there, and it is now the largest single thing separating the model's
+      emotions.</p>
+      <p style="font-size:15px">Now read down the first column. Pleasantness is still in there, intact,
+      one floor down: the chat-tuned model's third axis scores <b>0.83</b> against the plain model's
+      first. Chat-tuning did not delete the circumplex. It demoted it.</p>
       <div style="margin-top:16px">
-        <div class="mono muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.07em">
-          what sits at each end of that new axis</div>
-        <div style="margin-top:8px"><b>low:</b> <span class="mono" id="pc1low"></span></div>
-        <div style="margin-top:6px"><b>high:</b> <span class="mono" id="pc1high"></span></div>
-        <p class="muted" style="font-size:14px;margin-top:10px">Read the two lists. It is not
-        pleasant-versus-unpleasant: <em>miserable</em> and <em>jubilant</em> sit together at one end.
-        It looks more like a low-grade irritation or agitation axis. We do not yet know what it is.
-        That is our open question.</p>
+        <div class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.07em;
+          font-family:var(--display);font-weight:600">
+          the emotions at each end of that new axis</div>
+        <div style="margin-top:8px;font-size:14.5px"><b>one end:</b> <span id="pc1low"></span></div>
+        <div style="margin-top:6px;font-size:14.5px"><b>the other:</b> <span id="pc1high"></span></div>
+        <p class="muted" style="font-size:14px;margin-top:10px">Reading the two lists is the honest way
+        to guess what an axis means, and here the guess fails. It is clearly not pleasant-versus-
+        unpleasant, because <em>miserable</em> and <em>jubilant</em> sit at the same end. If anything
+        it looks like low-grade irritation. But we do not know, and naming it without evidence is
+        exactly the mistake we are trying to avoid. It stays an open question.</p>
       </div>
     </div>
   </div>
-  <h3 style="margin-top:38px">Similarity of representations by layer</h3>
-  <p class="narrow" style="margin-bottom:14px">The same question asked a second way, without
-  principal components: does each layer organise the 171 emotions the way its neighbours do?</p>
+  <h3 style="margin-top:38px">The same question, asked without any of that machinery</h3>
+  <p class="narrow" style="margin-bottom:14px">Principal components are one way to look, and a reader
+  is right to wonder whether the finding is a by-product of that particular method. So here is a second look that
+  uses no components at all. A model has many layers, stacked from input to output. At each layer, ask
+  which emotions it treats as similar to which; that gives one emotion-by-emotion similarity table per
+  layer. Every square below compares two of those tables, for every possible pairing of layers. <b>Dark means the two layers sort the
+  171 emotions the same way; pale means they disagree.</b></p>
   <div class="card">
     <div class="controls">
-      <span class="mono muted">show</span><span id="rsaBtns"></span>
-      <span class="mono muted" id="rsaNote" style="margin-left:auto"></span>
+      <span class="muted" style="font-size:13px">showing</span><span id="rsaBtns"></span>
+      <span class="muted" id="rsaNote" style="margin-left:auto;font-size:12.5px"></span>
     </div>
     <div id="rsaChart"></div>
     <details class="howto"><summary>How to read this</summary>
-      <p>Each square compares the <em>shape of emotion space</em> at two layers: take the full
-      emotion-by-emotion similarity matrix at layer A and at layer B, and correlate them. <b>Dark</b>
-      means the two layers organise the emotions the same way; <b>pale</b> means they disagree.</p>
-      <p>A model with one stable emotion geometry is dark everywhere. Start on <b>base, as measured</b>
-      to see what that looks like: its late layers agree with each other at <b>0.94</b>. Switch to
-      <b>instruct, as measured</b> and the same measure falls to <b>0.79</b>, and the grid splits into
-      blocks. That is the fragmentation, and the base view is the control that makes it visible &mdash;
-      without it you cannot tell a fragmented model from a measure that always looks like this.</p>
-      <p>Switch to <b>top component removed</b> and the blocks largely merge, which is the evidence that
-      one dominant axis was causing the split rather than the emotion structure being absent.</p>
-      <p><b>instruct vs base</b> is the only view with a different model on each axis, and the only one
-      that is not symmetric: rows are instruct layers, columns are base layers, so the diagonal is
-      &quot;how much did instruction tuning change this depth?&quot; and it is not 1. It reads 0.97 at
-      layer 3 and 0.21 at layer 57 &mdash; early layers survived, the late half was rebuilt.</p>
+      <p><b>What a good result looks like:</b> dark everywhere. That is a model whose layers all agree
+      on what emotions are, one stable picture from bottom to top. <b>What a bad result looks like:</b>
+      pale patches and visible blocks &mdash; groups of layers that agree with each other but not with
+      the rest, meaning the model has no single account of emotion.</p>
+      <p>Every square is scored from 0 to 1: 1 means the two layers sort the 171 emotions identically,
+      0 means they share nothing. Start on <b>plain model</b> and you get close to the good case: its
+      late layers agree with each other at <b>0.94</b> out of 1. Now switch to <b>chat-tuned
+      model</b>. The same measure drops to <b>0.79</b> and the grid visibly breaks into blocks. The plain view matters here as the control:
+      without it, you could not tell a genuinely broken-up model from a measure that just always looks
+      blotchy.</p>
+      <p>Now switch to <b>chat-tuned, biggest axis subtracted</b>. We remove just the biggest axis at each
+      layer &mdash; and the blocks largely merge back together. That is the evidence that the one dominant
+      axis <em>caused</em> the fragmentation, rather than the emotion structure having gone missing.</p>
+      <p><b>plain vs. chat-tuned</b> is the odd one out: it is the only view with a different model on
+      each axis, so it is the only one that is not a mirror image about its diagonal. Rows are
+      chat-tuned layers, columns are plain layers, and the diagonal answers "how much did chat-tuning
+      change this particular depth?". If chat-tuning changed nothing the diagonal would read 1.0
+      throughout. It reads 0.97 at layer 3 and 0.21 at layer 57: the early layers came through intact,
+      the late half was rebuilt.</p>
     </details>
     <div class="src">source: notebooks/02_circumplex_geometry.ipynb, section 9</div>
   </div>
 
-  <div class="callout"><span class="k">The honest caveat</span>
-  The first principal angle between the two models' top-3 subspaces is <b>86.1&deg;</b>, essentially a
-  right angle. But when we remove just the top instruct component, cross-model similarity of the late
-  layers jumps from <b>0.29</b> to <b>0.60</b>. The shared emotion geometry is not gone. It is buried
-  under one dominant, non-affective direction.</div>
-  <div class="takeaway"><span class="lbl">the read</span><b>What we take from this grid:</b> the instruct model's top axis is not a rotation of anything the base model had. It is new structure, it is the largest thing in the space, and we cannot yet say what it encodes.</div>
+  <div class="callout"><span class="k">The caveat that cuts the other way</span>
+  Taken at face value, the two models look largely unrelated. Comparing each model's top three axes
+  as a set gives three angles &mdash; <b>86.1&deg;</b>, 56.0&deg; and 46.1&deg; &mdash; where 90&deg;
+  means two directions share nothing and 0&deg; that they coincide. The widest is almost a right
+  angle; even the closest pair is only partly aligned.
+  But subtract that one mystery axis and the late layers of the two models jump from <b>0.29</b>
+  agreement to <b>0.60</b>, on the same 0-to-1 scale as the grid above. So the shared emotion structure is not gone. It is sitting underneath one
+  large direction that has nothing to do with emotion.</div>
+  <div class="takeaway"><span class="lbl">Takeaway</span>The biggest thing separating emotions in the chat-tuned model is not a rearrangement of anything the plain model had. It is new, chat-tuning put it there, and it breaks the model's layers into disagreeing blocks. We can show all of that. We still cannot say what it encodes.</div>
 </div></section>
 
-<div class="partbar"><div class="wrap"><span class="pnum">3</span><span class="ptitle">Tracking emotion vectors over time</span><p class="pblurb">The part the paper did not do: stories where the emotion changes, read token by token.</p></div></div>
+<div class="partbar"><div class="wrap"><span class="ptitle">Part three &middot; Following an emotion as it changes</span><p class="pblurb">The step past the published work: stories written to move through three emotions, read one word at a time, to see whether the model changes its mind when the story does.</p></div></div>
 <section id="story"><div class="wrap">
-  <div class="kicker">3 &middot; Tracking emotion vectors over time</div>
-  <h2><span class="secno">5</span>Watch it track one story, token by token</h2>
-  <p class="narrow">Four real stories from our corpus. At every token we measure how close the model's
-  internal state sits to each of the three emotion probes; scrub the token slider and watch both panels
-  move together. Three of the four use the <b>same three emotions</b> and differ only in how they are
-  written, and the model tracks them very differently. That is the point of this section: quality is not
-  a property of the emotion alone.</p>
+  <h2><span class="secno">5</span>Watch it follow one story, word by word</h2>
+  <p class="narrow">Everything so far has been about static text: one story, one emotion, one reading.
+  Here the story <em>moves</em>. Each of these four was written to pass through three emotions in turn,
+  with the turns marked. We feed one to the model and, at every single word, measure how close its
+  internal state sits to each of the three emotion vectors. Drag the word slider and both panels
+  advance together.</p>
+  <p class="narrow">Three of the four stories use the <b>same three emotions</b> and differ only in how
+  they are written &mdash; and the model follows them very differently. That is the point of this
+  section: how well the model follows an emotion is not a property of the emotion alone.</p>
   <div class="card" style="margin-top:22px">
     <div class="controls" style="margin-bottom:6px">
-      <span class="mono muted">story</span><span id="storyBtns"></span>
-      <span class="mono muted" id="storyQual" style="margin-left:auto"></span>
+      <span class="muted" style="font-size:13px">story</span><span id="storyBtns"></span>
+      <span class="muted" id="storyQual" style="margin-left:auto;font-size:12.5px"></span>
     </div>
     <div class="controls">
-      <span class="mono muted">layer</span>
+      <span class="muted" style="font-size:13px">layer</span>
       <span id="layerBtns"></span>
       <span style="margin-left:auto;display:flex;align-items:center;gap:10px">
-        <span class="mono muted">token</span>
+        <span class="muted" style="font-size:13px">word</span>
         <input type="range" id="tokSlider" min="0" max="235" value="0" style="width:230px">
         <span class="mono" id="tokLabel" style="min-width:78px;display:inline-block"></span>
       </span>
     </div>
+    <!-- the live readout doubles as the colour legend: it is the only thing on the
+         figure that says which line is which emotion, so it sits above the panels
+         rather than inside the plot where the lines used to run through it -->
+    <div id="storyReadout" class="legend" style="margin:10px 0 2px"></div>
     <div class="grid2" style="gap:24px">
-      <div><div class="mono muted" style="font-size:11.5px;margin-bottom:6px">
-        the three readings over the story</div><div id="lineChart"></div></div>
-      <div><div class="mono muted" style="font-size:11.5px;margin-bottom:6px">
-        the same walk, inside the triangle of the three emotions</div><div id="ternChart"></div></div>
+      <div><div class="muted" style="font-size:12.5px;margin-bottom:6px">
+        one line per emotion, over the length of the story</div><div id="lineChart"></div></div>
+      <div><div class="muted" style="font-size:12.5px;margin-bottom:6px">
+        the same three numbers, as a position between the three emotions</div>
+        <div id="ternChart"></div></div>
     </div>
     <div style="margin-top:20px">
-      <div class="mono muted" style="font-size:11.5px;margin-bottom:6px">
-        the story the model is reading (the phase you are scrubbing is highlighted)</div>
+      <div class="muted" style="font-size:12.5px;margin-bottom:6px">
+        the story the model is reading &mdash; the part you are currently on is highlighted</div>
       <div class="storybox" id="storyBox"></div>
     </div>
     <details class="howto"><summary>How to read this</summary>
-      <p><b>Left:</b> one line per emotion probe. Higher means the model's state is closer to that
-      emotion. The two vertical marks are where the story is written to turn. A perfect tracker would
-      hand the lead from the red line to the blue to the green, right at those marks.</p>
-      <p><b>Right:</b> the same three numbers as a position inside a triangle. Each corner is one
-      emotion; the dot sits nearer the corner it most resembles. A perfect tracker walks corner to
-      corner. A model that ignored the story would sit still in the middle.</p>
-      <p><b>What actually happens:</b> the walk is real but sloppy. The handover happens, and it tends to
-      happen <em>early</em>, before the written boundary: the model anticipates the turn. Switch layers
-      and the picture changes character, which is section 7.</p>
-      <p><b>Why four stories, and how "well tracked" is measured here.</b> The last three are the best,
-      the middle and the worst of a random sample of 24 stories, scored on <em>exactly what this figure
-      plots</em>: in each of the three phases, does the phase's own emotion have the highest curve, and
-      by how much? Leading all three is the ceiling; one of three is what luck gives, since there are
-      three curves.</p>
-      <p>Note this is an easier question than the one section 6 asks. Here the model only has to pick
-      the right emotion out of the story's own three. There it has to pick it out of twelve. A story can
-      lead all three curves here and still place poorly out of twelve, so do not read this panel as the
-      headline tracking number.</p>
+      <p><b>Left panel.</b> One line per emotion. Higher means the model's internal state is closer to
+      that emotion right now. The two vertical marks are where the story was written to turn.
+      <b>A good result</b> is the lead passing cleanly from the red line to the blue to the green, at
+      those marks. <b>A bad result</b> is three flat lines that never change order &mdash; a model
+      reading the same emotion all the way through.</p>
+      <p><b>Right panel.</b> The same three numbers, drawn as a position inside a triangle. Each corner
+      is one emotion, and the dot sits nearest whichever it currently resembles most. <b>A good
+      result</b> is a walk from corner to corner. <b>A bad result</b> is a dot that never leaves the
+      middle, which is what a model ignoring the story would give you.</p>
+      <p><b>What actually happens.</b> The handover is real, and it is messy. It also tends to arrive
+      <em>early</em> &mdash; the lead changes before the written turn, so the model is picking up the
+      shift while still reading the previous part. Change the layer and the character of the picture
+      changes, which is what section 7 is about.</p>
+      <p><b>Why these four stories, and what "followed well" means here.</b> The last three come out of a
+      random sample of 24: the best, the middle and the worst. We scored them on exactly what this
+      figure draws &mdash; in each of the three parts, is the part's own emotion the highest line, and by
+      how much?
+      Leading in all three parts is the best possible; leading in one is what luck alone gives, since
+      there are three lines.</p>
+      <p><b>This is an easier test than the next section's, deliberately.</b> Here the model only has
+      to pick the right emotion out of the story's own three. In section 6 it has to pick out of
+      twelve. A story can lead all three lines here and still do poorly out of twelve, so this panel
+      illustrates the mechanism rather than carrying the headline number.</p>
     </details>
-    <div class="src">story t000_seq_p2_2f9faf62, from notebooks/05_trajectories.ipynb; centered cosine against self-generated probes</div>
+    <div class="src">story <span id="storyId"></span>, from notebooks/05_trajectories.ipynb. Closeness is how nearly the
+    model's internal reading points the same way as each emotion vector (cosine similarity), measured
+    against vectors built from the model's own stories. The average across the whole story corpus is
+    subtracted first, so 0 means "typical for these stories" rather than "no emotion" &mdash; a line
+    above 0 is leaning towards that emotion more than the corpus does on average.</div>
   </div>
-  <div class="takeaway"><span class="lbl">the read</span><b>What we take from this story:</b> the handover between emotions really happens, and it tends to happen <em>early</em>, before the written turn. The walk is real but noisy, and it looks different at different layers.</div>
+  <div class="takeaway"><span class="lbl">Takeaway</span>The model really does hand over from one emotion to the next as the story turns &mdash; and it tends to do so <em>early</em>, before the written turn arrives. The signal is real and it is noisy, and it looks different depending which layer you read.</div>
 </div></section>
 
 <section id="emotions"><div class="wrap">
-  <div class="kicker">3 &middot; Tracking emotion vectors over time</div>
-  <h2><span class="secno">6</span>Some emotions are tracked, others are not</h2>
-  <p class="narrow">For each tagged emotion, how often does its own probe win outright? Chance is 1 in
-  12. Hover any bar for the full picture, and switch layers: the ranking is not stable across depth.</p>
+  <div class="kicker">Part three &middot; Following an emotion as it changes</div>
+  <h2><span class="secno">6</span>Some emotions are followed well, others not at all</h2>
+  <p class="narrow">Now the harder test, run over all the stories rather than one. Take every part of every
+  story and find which emotion vector the model's internal reading sits closest to. How often is
+  the winner the emotion that part was written to convey?</p>
+  <p class="narrow">Note the shift from 171 emotions to <b>twelve</b>. The stories were written to
+  move between these twelve, so twelve is what there is to choose from &mdash; and picking one of
+  twelve is a test we can actually score. Picking at random would be right 1 time in 12, or 8%.
+  Each bar is one emotion's score.</p>
+  <p class="narrow">The two buttons swap in a different set of emotion vectors, built from a different
+  writer's stories &mdash; the same swap as section 2. The layer buttons read the same measurement at a
+  different depth of the model. Hover any bar to see where its wrong answers went.</p>
+  <p class="narrow"><b>Why the chat-tuned model, when parts one and two just showed its emotion
+  structure is the messier of the two?</b> Because the twelve-emotion vector sets only exist for it: an
+  emotion vector has to be built from stories, and these were built from stories the chat-tuned model
+  wrote about itself. Running the same test on the plain model would mean rebuilding the whole set from
+  plain-model stories, which we did not do. So this section reads the model people actually talk to,
+  and the plain model is absent here rather than losing.</p>
   <div class="card" style="margin-top:22px">
     <div class="controls">
-      <button class="seg on" data-bank="selfgen">probes from stories Gemma wrote</button>
-      <button class="seg" data-bank="deepseek">probes from stories DeepSeek wrote</button>
+      <button class="seg on" data-bank="selfgen">vectors from Gemma's own stories</button>
+      <button class="seg" data-bank="deepseek">vectors from DeepSeek's stories</button>
       <span style="margin-left:auto;display:flex;align-items:center;gap:8px">
-        <span class="mono muted">layer</span><span id="emoLayerBtns"></span>
+        <span class="muted" style="font-size:13px">layer</span><span id="emoLayerBtns"></span>
       </span>
     </div>
     <div id="emoChart"></div>
-    <div id="emoNote" class="mono" style="margin-top:12px;min-height:36px;color:var(--body)"></div>
+    <div id="emoNote" style="margin-top:12px;min-height:36px;color:var(--body);font-size:14px"></div>
     <details class="howto"><summary>How to read this</summary>
-      <p>The dashed line at 8% is what guessing gives you. At layer 33 in the Gemma-written bank,
-      11 of the 12 emotions beat it, so something real is being tracked. But nothing clears 50%, and
-      the spread is wide: <em>loving</em> and <em>guilty</em> win about half their phases while
-      <em>nervous</em> (5.8%) sits below chance. Switch layers and the ranking moves, which is why
-      no single layer should be quoted as "how well the model tracks emotion".</p>
-      <p>The wrong answers are not random, and this is the part we did not expect. In the Gemma-written
-      bank, wrong answers pile into two attractors: <b>guilty</b> and <b>happy</b> absorb the mistakes
-      from emotion after emotion. Switch to the DeepSeek bank and the attractors vanish, and overall
-      accuracy goes up. So a good chunk of what looks like "the model cannot track emotions" is
-      actually a property of the probe set, not of the model.</p>
+      <p><b>The grading scale.</b> The dashed line at 8% is guessing &mdash; a bar at or below it means
+      that emotion is not being followed at all. 100% would mean perfect. Neither extreme happens.</p>
+      <p><b>What we see.</b> At layer 33 with Gemma's own vectors, 11 of the 12 emotions beat guessing,
+      so we are measuring something real. But nothing reaches even 50%, and the spread is enormous:
+      <em>loving</em> and <em>guilty</em> win about half the time while <em>nervous</em> (5.8%) sits
+      below guessing. Change the layer and the order shuffles &mdash; which is exactly why nobody should
+      quote a single layer as "how well the model follows emotion".</p>
+      <p><b>The part we did not expect.</b> The wrong answers are not spread evenly. With Gemma's own
+      vectors, mistakes pile up on two emotions: whatever the true answer was, the model keeps
+      answering <b>guilty</b> or <b>happy</b>. Switch to DeepSeek's vectors and that pile-up
+      disappears, and overall accuracy rises. So a real share of what looks like "the model cannot
+      follow emotions" is a property of the vectors we handed it, not of the model.</p>
     </details>
-    <div class="src">source: notebooks/11_tracking_taxonomy.ipynb, layer 33, instruct reader</div>
+    <div class="src">source: notebooks/11_tracking_taxonomy.ipynb, layer 33, chat-tuned model reading</div>
   </div>
-  <div class="takeaway"><span class="lbl">the read</span><b>What we take from these bars:</b> tracking is real but uneven, and a good part of the unevenness belongs to the probe set rather than the model. Switching the probe bank changes both the accuracy and which emotions absorb the mistakes.</div>
+  <div class="takeaway"><span class="lbl">Takeaway</span>The model follows emotion better than guessing, but unevenly and never reliably &mdash; and a large part of that unevenness comes from the emotion vectors rather than the model. Swap in a different writer's vectors and both the accuracy and the pattern of mistakes change.</div>
 </div></section>
 
 <section id="layers"><div class="wrap">
-  <div class="kicker">3 &middot; Tracking emotion vectors over time</div>
+  <div class="kicker">Part three &middot; Following an emotion as it changes</div>
   <h2><span class="secno">7</span>Different layers are good at different things</h2>
-  <p class="narrow">There is no single "emotion layer". Naming the current emotion is best early;
-  anticipating the <em>next</em> one is best late. Those are different jobs, done in different places.</p>
+  <p class="narrow">There is no single "emotion layer". We measured two different skills at six depths of
+  the model, and they peak in different places. The first is the one from section 6:
+  <b>does it name the emotion right now?</b> The second asks something subtler.
+  Before each turn the model leans slightly towards the emotion about to arrive; this measures
+  whether the <em>size</em> of that lean tracks the <em>size</em> of the coming emotional change.
+  A big swing from cheerful to devastated should produce a bigger lean than a small shift from
+  content to calm. The two lines are on different scales, so each has its own axis and its own
+  failure line &mdash; read them as two charts sharing an x-axis.</p>
   <div class="grid2" style="margin-top:22px">
     <div class="card"><div id="layerChart"></div>
       <div class="legend">
-        <span><i style="background:var(--navy)"></i>names the right emotion (top-1 rate)</span>
-        <span><i style="background:var(--orange)"></i>anticipates the size of the coming jump</span>
+        <span><i style="background:var(--navy)"></i>names the current emotion right (left axis, 8% is
+        guessing)</span>
+        <span><i style="background:var(--orange)"></i>the lean tracks how big the coming change is
+        (right axis, 0 means the size of the lean says nothing about the size of the change)</span>
       </div>
     </div>
     <div class="card">
-      <h3>Two different competences</h3>
-      <p style="font-size:15px">Layer 6 names the current emotion best (<b>58%</b> top-1). By layer 33
-      that has fallen to <b>27%</b>. But the ability to anticipate <em>how big</em> the next emotional
-      jump will be climbs the other way, from <b>+0.03</b> at layer 6 to <b>+0.26</b> at layer 51.</p>
-      <p style="font-size:15px">Even when it is wrong, it is wrong <em>nearby</em>: the emotion it
-      picks instead is consistently closer in human valence-arousal space than a random emotion would
-      be, at every single layer.</p>
-      <div class="callout" style="margin-top:6px"><span class="k">A late surprise</span>
-      At layer 33, the model's own probe geometry predicts its confusions better than human ratings do.
-      At layer 51 that reverses. Our headline finding is layer-dependent, and we only noticed because
-      every figure re-computes its verdict per layer.</div>
+      <h3>Two different skills, in two different places</h3>
+      <p style="font-size:15px">Naming peaks early and falls: averaged over all twelve emotions, layer 6
+      gets the current emotion right <b>58%</b> of the time, and by layer 33 that is down to
+      <b>27%</b>. This curve is the average of section 6's twelve bars, on
+      the Gemma-written vectors: at layer 33 the best single emotion reaches 49% and the worst
+      sits at 6%, below guessing. The other measure runs the other way,
+      climbing from <b>+0.03</b> at layer 6 to <b>+0.26</b> at layer 51 &mdash; but
+      not smoothly: it reaches +0.143 by layer 24, collapses to +0.001 at layer 33, then climbs again.
+      Whatever the model is doing, it is not doing it all in one place, and the middle of the stack
+      behaves differently from either end.</p>
+      <p style="font-size:15px">One consolation in the errors: when the model names the wrong emotion,
+      it names a <em>near</em> one. The emotion it picks instead sits closer to the true one in the
+      human pleasantness-and-energy layout than a randomly chosen emotion would &mdash; and that holds
+      at every layer we looked at.</p>
+      <div class="callout" style="margin-top:6px"><span class="k">A result that reverses with depth</span>
+      The model's own emotion layout explains its mistakes better at layer 33; human ratings explain
+      them better at layer 51. So the answer to "does it confuse emotions the way people do?" depends
+      on where you look. We only caught this because every figure recomputes
+      its verdict per layer instead of quoting one.</div>
     </div>
   </div>
-  <div class="src">source: notebooks/11_tracking_taxonomy.ipynb (per-layer reads)</div>
-  <div class="takeaway"><span class="lbl">the read</span><b>What we take from these curves:</b> there is no single "emotion layer". Naming the current emotion is an early-layer skill, anticipating the next one is a late-layer skill.</div>
+  <div class="src">source: notebooks/11_tracking_taxonomy.ipynb (measurements repeated at each layer)</div>
+  <div class="takeaway"><span class="lbl">Takeaway</span>There is no single "emotion layer". Naming the emotion in front of it is an early-layer skill. Registering <em>how big</em> the coming emotional change is grows with depth and peaks at the deepest layer we read &mdash; unevenly, with a collapse at layer 33 we cannot explain. Any result quoted at one depth is a result about that depth.</div>
 </div></section>
 
 
 
 <section id="next"><div class="wrap">
   <div class="kicker">Where this leaves us</div>
-  <h2><span class="secno">8</span>Future Directions</h2>
+  <h2><span class="secno">8</span>What we would do next</h2>
+  <p class="narrow" style="margin-bottom:4px">Three experiments, in the order we would run them. Each
+  one attacks a specific thing we could not settle.</p>
   <div class="grid3" style="margin-top:24px">
-    <div class="card"><h3>Investigating PC1 in the instruct model</h3><p style="font-size:15px">It is
-    not yet clear what explains the variance in the instruction-tuned model's first component. It is
-    not valence, arousal, dominance, or story length. What could be causing it? The test: steer along
-    it and see what changes in the model's behaviour.</p></div>
-    <div class="card"><h3>Understand the role of different layers</h3><p style="font-size:15px">The
-    emotion vectors change across layers in both checkpoints, and naming an emotion turns out to be an
-    early-layer skill while anticipating the next one is a late-layer skill. We have not yet explored
-    why the work divides that way.</p></div>
-    <div class="card"><h3>A more precise emotion measurement</h3><p style="font-size:15px">We test on
-    sequential stories with three emotions. What happens when the <em>intensities</em> vary rather
-    than the labels? And attractors appeared in one probe bank but not the other, so separating the
-    probe set from the model deserves its own experiment.</p></div>
+    <div class="card"><h3>Find out what the mystery axis is</h3><p style="font-size:15px">We can
+    measure the chat-tuned model's biggest emotion axis and we cannot say what it encodes. It is not
+    pleasantness, energy, control, or story length &mdash; we checked all four. The next test is to
+    stop looking and start pushing: add that direction into the model while it writes, and see what
+    changes in the output. Whatever changes is what the axis was for.</p></div>
+    <div class="card"><h3>Find out why the layers divide the work</h3><p style="font-size:15px">Naming
+    the emotion in front of it is an early-layer skill; registering the size of the change about
+    to arrive is a late-layer one. We can show the split exists and we have no account of why. One guess worth
+    testing: early layers may be reading the emotion words on the page rather than the situation, in
+    which case a story that implies an emotion without ever naming it should break them.</p></div>
+    <div class="card"><h3>Separate the vectors from the model</h3><p style="font-size:15px">Our
+    stories switch emotions by label. A sharper test varies the <em>intensity</em> of one emotion
+    instead, which is a harder thing to fake. And since the pile-up of wrong answers appeared with one
+    writer's vectors and vanished with another's, telling "the model cannot do this" apart from "these
+    vectors cannot do this" deserves an experiment of its own.</p></div>
   </div>
-  <div class="callout"><span class="k">What we are confident in, and what we are not</span>
-  Confident: the base model reproduces the circumplex; the instruct model does not, and one non-affective
-  axis dominates it. Emotion probes do track a story better than chance. Not confident: what the new axis
-  <em>is</em>; how much of the tracking quality is the probe set rather than the model. Everything here
-  is registered in a research tree with the evidence file behind each number, including the results that
-  came out null.</div>
-  <div class="callout" style="border-color:var(--navy)"><span class="k">The reading we cannot yet rule
-  out, and would like to</span>
-  Every positive result here is real but small: above chance, below any bar you would want before
-  trusting it. The tidy story is that emotion is represented and we are measuring it imperfectly. The
-  other story is that emotion is simply not a major axis of this model's world, and a weak signal is
-  the honest answer rather than a measurement problem. Distinguishing those two is the experiment we
-  would run next, and it is the more interesting question either way.</div>
+  <div class="callout"><span class="k">Three results, three different grades of evidence</span>
+  We track claims in a research tree that records how far each one has been tested, and the three
+  results on this page are not equally settled. <b>Only the first has finished the process.</b>
+  <br><br>
+  <b>1. The plain model reproduces the circumplex &mdash; tested and survived.</b> It has been through
+  the full falsification pass and came out the other side, including a re-run after we corrected an
+  extraction bug.
+  <br><br>
+  <b>2. Chat-tuning demotes it and puts a large non-emotional axis on top &mdash; measured, not yet
+  formally tested.</b> Every number behind it is real and reproducible, but the claim is still marked
+  unvalidated in our tree: its falsification pass is owed. Read it as a strong observation, not a
+  settled result.
+  <br><br>
+  <b>3. Emotion vectors follow a story better than guessing &mdash; exploratory.</b> Parts three's
+  measurements are registered as hypothesis-generating work with no pass bar attached, and one thing
+  should be said plainly: the detection bar we <em>did</em> register in advance was written for the
+  171-emotion vector set, and that set failed it at every layer. What passes is the twelve-emotion
+  sets, which is a substitution we made after seeing the results. It may well be the right call. It is
+  not the thing we pre-registered, and we are not going to describe it as though it were.
+  <br><br>
+  <b>Not confident about, in any of the three:</b> what the new axis is, and how much of the
+  story-following quality belongs to the model rather than to the stories we built the vectors from.
+  Every number on
+  this page, including the ones that came out null, is registered in the project's research tree with
+  the evidence file behind it.</div>
+  <div class="callout" style="border-color:var(--navy)"><span class="k">The explanation we cannot rule
+  out</span>
+  Every positive result here is real and small: better than guessing, worse than anything you would
+  want to rely on. There are two readings and we cannot yet separate them. The comfortable one is that
+  emotion is genuinely represented and our instruments are blunt. The other is that emotion is simply
+  not one of the big organising ideas in this model, and a weak signal is the correct answer rather
+  than a measurement failure. Telling those apart is the experiment we would most like to run, and
+  either outcome is worth having.</div>
 </div></section>
 
 
 <section id="methods"><div class="wrap">
   <div class="kicker">How we measured it</div>
-  <h2><span class="secno">9</span>Method, in enough detail to argue with</h2>
-  <p class="narrow">Each block is collapsed. Open the one you want to challenge.</p>
+  <h2><span class="secno">9</span>How we measured it, in enough detail to argue with</h2>
+  <p class="narrow">Four blocks, all collapsed. Open whichever one you want to challenge; each carries
+  the formula, the pseudo-code and a glossary for every symbol in it.</p>
 
   <details class="howto" style="border-top:none;margin-top:18px">
     <summary style="font-size:15px">1. How an emotion becomes a vector</summary>
-    <p>We take a corpus where every story is labelled with the emotion it is written to evoke, feed each
-    story to the model, and record the activations at a chosen layer. For one emotion, we average those
-    activations over all its stories. That gives one vector per emotion, 171 of them.</p>
+    <p>We start from a collection of stories, each labelled with the emotion it was written to evoke.
+    Each story goes through the model and we take an internal reading at a chosen layer. For one
+    emotion, we average those readings across all of its stories. That average is the emotion vector.
+    Repeat for every emotion word and you have 171 of them.</p>
     <div id="m1"></div>
-    <p>Two details that change the numbers. <b>Centering:</b> we subtract the mean over all 12 or 171
-    emotions, so what is left is what makes <em>this</em> emotion different rather than what all text has
-    in common. Skipping this step is the difference between a result and an artefact.
-    <b>Which tokens:</b> a story is many tokens, and we pool them: mask the padding, drop the first 50
-    as narrative framing (the source paper's convention), and average over the rest, capped at 512
-    tokens. Both choices were fixed before scoring. Notice this differs from the story-tracking read in
-    block 3, where we deliberately keep every token instead of pooling.</p>
+    <p>Two details that change the numbers. <b>Subtracting the average (centering):</b> we subtract the
+    mean across all the emotions in the set &mdash; all 12 or all 171, and which pool we use changes
+    the answer &mdash; so what remains is what makes <em>this</em> emotion different rather than what all
+    English prose has in common. Skipping this step is the difference between a result
+    and a number produced by the method rather than by the model &mdash; and we know, because we
+    skipped it once (block 4). <b>Which words count:</b>
+    a story is hundreds of words and we combine them into one recording: ignore the padding, drop the
+    first 50 as scene-setting (the convention the original paper used), and average the rest, up to 512.
+    (Strictly these are <em>tokens</em>, the word-fragments the model actually reads &mdash; roughly
+    three-quarters of a word each. We say "word" elsewhere on this page for readability.) We fixed both choices before any scoring. Note this is the opposite of what block 3 does,
+    where we deliberately keep every word separate instead of averaging.</p>
   </details>
 
   <details class="howto" style="border-top:none">
-    <summary style="font-size:15px">2. What "PC1 = valence, |r| 0.83" actually means</summary>
+    <summary style="font-size:15px">2. What "the biggest axis is pleasantness, 0.83" actually means</summary>
     <p>This is the one worth spelling out, because the phrase hides four steps.</p>
     <p><b>Step one.</b> We have 171 emotion vectors, each thousands of numbers long. Principal component
     analysis finds the directions along which those 171 points differ most. The first component (PC1) is
-    the single direction that captures the most spread. It is derived only from the model: no human
-    labels are involved in finding it.</p>
+    the single direction that captures the most spread. It comes only from the model: we use no human
+    labels to find it.</p>
     <p><b>Step two.</b> Each of the 171 emotions gets a <em>score</em> on PC1: how far along that
     direction it sits. So "elated" gets a number, "miserable" gets a number, and so on.</p>
     <p><b>Step three.</b> Separately, we look up each emotion word in the
@@ -613,98 +765,104 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
     human ratings where people scored thousands of words for valence, arousal and dominance. 164 of our
     171 words are in it.</p>
     <p><b>Step four.</b> We correlate the model's 164 PC1 scores against the humans' 164 valence ratings.
-    That correlation is <b>0.83</b> on the base model. In words: the direction of largest variation in
+    That correlation is <b>0.83</b> on the plain model. In words: the direction of largest variation in
     the model's emotion space, found without reference to any human judgement, lines up strongly with
     what people call pleasant versus unpleasant.</p>
     <div id="m2"></div>
-    <p><b>Why |r| and not r.</b> The sign of a principal component is arbitrary, so we report absolute
-    correlation. <b>What would count as failure:</b> |r| near 0, meaning the model's biggest axis has
-    nothing to do with valence. That is close to what the instruct model gives (0.11).</p>
+    <p><b>Why we ignore the sign.</b> A principal component points along an axis, but which of its two
+    directions gets called "positive" is arbitrary &mdash; flip it and the correlation flips sign
+    without anything changing. So we report the size of the correlation and not its sign.
+    <b>What would count as failure:</b> a number near 0, meaning the model's biggest axis has nothing
+    to do with pleasantness. That is close to what the chat-tuned model gives (0.11).</p>
   </details>
 
   <details class="howto" style="border-top:none">
-    <summary style="font-size:15px">3. How "does it track the story?" was scored</summary>
-    <p>We wrote 173 three-emotion story sets, each moving through three tagged phases. Here nothing is
-    pooled away: the model reads the story once and we keep the activation at <b>every token</b>, then
-    take the cosine against each of 12 emotion probes at each position. A phase's score is the mean over
-    the tokens inside that phase; phases shorter than 4 tokens are skipped rather than averaged. Two
-    questions follow, both with pre-registered answers.</p>
-    <p><b>Naming (the gate):</b> within a phase written as "afraid", where does the afraid probe rank
-    among the 12? Rank 1 is perfect, 6.5 is guessing. <b>Anticipation (the lead):</b> in the window
-    before a written turn, does the <em>next</em> emotion's probe already start to lead? Zero would mean
-    the model does not see the turn coming.</p>
+    <summary style="font-size:15px">3. How "does it follow the story?" was scored</summary>
+    <p>We wrote 173 three-emotion recipes and generated stories from each, giving a corpus of
+    8,938 labelled story parts and 5,934 transitions between them. Nothing is averaged away here:
+    the model reads the story once, we keep its state at <b>every single word</b>, and at each position
+    we measure the angle between that state and each of the 12 emotion vectors. A part's score is the
+    average over the words inside it; we skip parts shorter than 4 words rather than averaging them in.
+    Two questions follow, and we wrote down what would count as passing before running either.</p>
+    <p><b>Naming:</b> inside a part written as "afraid", where does the afraid vector place among the
+    12? First place is perfect; 6.5th on average is what guessing gives. <b>Anticipation:</b> in the
+    words just before a written turn, has the <em>next</em> emotion's vector already begun to pull
+    ahead? Zero would mean the model does not see the turn coming.</p>
     <div id="m3"></div>
-    <p>Both are compared against a wrong-emotion shuffle: the same computation with the labels permuted.
-    That shuffle, not our intuition, is the floor.</p>
+    <p>We compare both against a shuffle: the identical computation with the emotion labels randomly
+    reassigned. That shuffle, not our intuition about what looks good, is the floor.</p>
     <div id="m4"></div>
   </details>
 
   <details class="howto" style="border-top:none">
     <summary style="font-size:15px">4. What kept us honest</summary>
-    <p>Every prediction and its pass bar was written into a research tree before the data existed. Claims
-    only graduate after a falsification pass: permutation nulls, bootstrap confidence intervals clustered
-    by story, random-direction controls, and base-rate checks. Results that failed are recorded as
-    failed. Every number in this deck resolves to a file in the repository, and the notebooks re-run from
-    those files on any machine.</p>
-    <p class="muted">One convention change is worth flagging because it flipped a headline: our first
-    detection campaign found nothing passing, and a later audit showed the readout had skipped the
-    centering step in step 1. With centering, the same data passes on both models. We report both.</p>
+    <p>We wrote down every prediction, and the mark it had to beat, before the data existed. Nothing
+    is called a finding until it has survived a round of deliberate attempts to destroy it. We re-run
+    every measurement with the emotion labels shuffled. We put error bars on it that treat each story as
+    one unit rather than each word, because words within a story are not independent. We check whether a
+    randomly chosen direction scores just as well. And we check that the result is not simply reproducing
+    how common each answer already is. We record what failed as failed. The notebooks re-run from those files on any
+    machine.</p>
+    <p class="muted">One correction is worth flagging because it reversed a headline. Our first round of
+    detection tests found nothing passing anywhere. A later audit found that the readout had skipped the
+    subtract-the-average step from block 1. With that step restored, the same data passes on both
+    models. We report both, and the section-3 figure is the corrected one.</p>
   </details>
 </div></section>
 
 <section id="appendix"><div class="wrap">
   <div class="kicker">Appendix</div>
   <h2><span class="secno">10</span>Questions we expect, and our honest answers</h2>
-  <p class="narrow">Collapsed, so we can jump to whichever one gets asked.</p>
+  <p class="narrow">All collapsed, so we can open whichever one actually gets asked.</p>
   <div style="margin-top:18px">
     <details class="howto" style="border-top:none">
       <summary style="font-size:15px">Isn't this just sentiment analysis with extra steps?</summary>
-      <p>Sentiment analysis gives one label for a span of text. We are reading a direction in the model's internal state, at every token, without asking the model anything. That lets us do two things a classifier cannot: watch the representation move <em>through</em> a story, and intervene on it. The interesting result is not the label, it is that valence organises the space on its own.</p>
+      <p>Sentiment analysis attaches one label to a piece of text. We read the model's internal state directly, at every word, without asking the model any question at all. That buys two things a classifier cannot give you: you can watch the state move <em>through</em> a story, and you can push on it. And the interesting result is not the labelling accuracy &mdash; it is that pleasantness turns out to be the axis the model sorts emotions along, with nobody having asked for that.</p>
     </details>
     <details class="howto" style="border-top:none">
       <summary style="font-size:15px">Does the model actually feel anything?</summary>
-      <p>Nothing here shows that, and we would resist the leap. We measured the model representing emotions <em>in a story it is reading</em>, which is closer to reading comprehension than to having a feeling. It is relevant as internal evidence, because most welfare arguments run on what a model says rather than on its internals, but reading an emotion and having one are different claims.</p>
+      <p>Nothing here shows that, and we would push back on the leap. What we measured is the model representing the emotions <em>of a story it is reading</em> &mdash; closer to reading comprehension than to feeling anything. It matters as evidence about internals, because most arguments in this area run entirely on what a model says about itself. But recognising an emotion and having one are different claims, and running them together is the easiest mistake available here.</p>
     </details>
     <details class="howto" style="border-top:none">
       <summary style="font-size:15px">The correlations are small. Isn't this noise?</summary>
-      <p>Some of them are, and we say so. The geometry result is not small: |r| 0.83 on 164 words is a strong effect. The tracking results are modest and beat a shuffle null at p below 0.001. The intensity result we deliberately report as sign-only, because a control showed random directions reach the same correlation size, so only the direction is evidence.</p>
+      <p>Some of them are, and we say so where they are. The layout result is not small: 0.83 across 164 words is a strong effect. (The original paper's comparable figure was computed over 45 emotions against a different set of human ratings, so ours is directionally but not procedurally comparable to it.) The story-following results are modest, but they beat the shuffled-label version of themselves at p below 0.001: if the emotion labels carried no information at all, a gap this large would turn up in fewer than 1 shuffle in 1,000. One measurement not shown on this page shows how we handle a weak result. We also asked whether the vectors track how <em>strongly</em> an emotion is felt. For that one we report only which way the effect pointed, never how big it was, because a control found that randomly chosen directions scored just as high &mdash; so the size carries no information and only the sign does.</p>
     </details>
     <details class="howto" style="border-top:none">
       <summary style="font-size:15px">Why Gemma 4 and not the model in the paper?</summary>
-      <p>We could run both a base and an instruction-tuned checkpoint of the same size, which is exactly the comparison the paper cannot make. That constraint produced our main finding.</p>
+      <p>Because both versions of it are available at the same size: the plain model and the chat-tuned model, otherwise identical. That is exactly the comparison the original paper could not run, and it is where our main finding came from.</p>
     </details>
     <details class="howto" style="border-top:none">
-      <summary style="font-size:15px">Could the instruct PC1 just be an artefact of your pipeline?</summary>
-      <p>We checked the obvious ones. It is not story length (|r| 0.39, and PC2 tracks length harder at 0.66). It survives an extraction-convention audit that changed other numbers. It is not a sign flip or a rotation, since its best match against any base component is 0.14. What it <em>is</em> remains open, and we would rather say that than name it.</p>
+      <summary style="font-size:15px">Could the mystery axis just be a bug in your pipeline?</summary>
+      <p>Fair question, and we checked the obvious ways it could be. Story length is the fake-result check we worried about most, and it does not account for this axis. On the 0-to-1 scale of section 3 the mystery axis matches length at 0.39, below the 0.5 we treat as clearly related. The <em>second</em> axis matches length at 0.66 and plainly is about length. It survived an audit of our extraction conventions that did change other numbers on this page. It is not a sign flip or a rearrangement, because its best match against any of the plain model's five biggest axes is 0.14. What it <em>is</em> stays open, and we would rather leave it open than name it.</p>
     </details>
     <details class="howto" style="border-top:none">
-      <summary style="font-size:15px">How much of the tracking result is your probe set rather than the model?</summary>
-      <p>More than we would like, and that is a finding in itself. Swapping who wrote the stories behind the probes moves passing layers from 1 to 9, and the confusion attractors present in one bank vanish in another. Any paper reporting emotion-probe accuracy without reporting probe provenance is under-specified.</p>
+      <summary style="font-size:15px">How much of the story-following result comes from your emotion vectors rather than the model?</summary>
+      <p>More than we would like, and that is itself a finding. Changing only who wrote the stories moves the number of working layers from 1 to 9, and the pile-up of wrong answers that appears with one writer's vectors disappears with another's. Any paper reporting how accurately emotion vectors detect emotion, without saying who wrote the stories those vectors were built from, is under-specified.</p>
     </details>
     <details class="howto" style="border-top:none">
       <summary style="font-size:15px">Why does layer 6 name emotions better than layer 33?</summary>
-      <p>We do not know, and it is our favourite loose end. One hypothesis: early layers stay closer to surface lexical cues, and our stories contain emotional words, so a shallow reader does well. The deciding test is a corpus where the emotion is implied but never lexically present.</p>
+      <p>We do not know, and it is our favourite loose end. One guess: the early layers stay closer to the actual words on the page, and our stories do contain emotional words, so a shallow reading does well on them. The test that would settle it is a set of stories where the emotion is unmistakable but never named.</p>
     </details>
     <details class="howto" style="border-top:none">
       <summary style="font-size:15px">What would have changed your mind?</summary>
-      <p>For the geometry: a base model whose PC1 did not correlate with valence. For the tracking: probe ranks indistinguishable from the wrong-emotion shuffle, which is what the constant-emotion control arm came close to. We ran that control precisely so a null had somewhere to show up.</p>
+      <p>For the layout result: a plain model whose biggest axis had nothing to do with pleasantness. For the story-following result: scores indistinguishable from the shuffled-label version &mdash; which is roughly what our control stories, the ones holding a single emotion throughout, actually gave. We ran that control precisely so that a null would have somewhere to show up.</p>
     </details>
     <details class="howto" style="border-top:none">
       <summary style="font-size:15px">What is the single weakest part of this work?</summary>
-      <p>The absolute effect sizes on tracking. Everything is above chance and below where you would want it before trusting it in a product. We cannot yet separate 'weak measurement of a real thing' from 'accurate measurement of a weak thing'.</p>
+      <p>The size of the story-following effects. Everything is above guessing and below anywhere you would want to be before relying on it. We cannot yet tell a weak measurement of a real thing apart from an accurate measurement of a weak thing &mdash; and those two have very different implications.</p>
     </details>
   </div>
   <div class="callout" style="margin-top:24px"><span class="k">If you remember one thing</span>
-  The base model reproduces the emotion circumplex almost exactly. Instruction tuning does not destroy
-  that structure, it demotes it and puts one large non-affective axis on top. And whichever model you
-  ask, how well its emotion probes work depends heavily on who wrote the stories you built them from.</div>
+  The plain model lays its emotions out the way psychologists do, without being asked. Chat-tuning does
+  not destroy that layout &mdash; it demotes it, and puts one large axis on top that we cannot explain.
+  And whichever model you ask, how well any of this works depends heavily on who wrote the stories the
+  emotion vectors were built from.</div>
 </div></section>
 
 <footer><div class="wrap">
-  <div>CAMBRIA capstone &middot; Gemma 4 31B, base and instruction-tuned &middot; every figure regenerated
+  <div>CAMBRIA capstone &middot; Gemma 4 31B, plain and chat-tuned &middot; every figure regenerated
   from the notebooks in the project repository.</div>
-  <div class="src">Interactive figures built from the committed notebook outputs. Numbers shown here are
-  the printed records of notebooks 02, 05, 08 and 11.</div>
+  <div class="src">A short sprint, not a peer-reviewed paper: no external review, and the null results are included and labelled as such. Every number here is transcribed from the printed output of notebooks 02, 05, 08 and 11.</div>
 </div></footer>
 
 <script>
@@ -750,13 +908,15 @@ function drawPCs(model){
     tx.textContent=v.toFixed(2); svg.appendChild(tx);
   });
   // both ends of the scale, said in words rather than left to the reader
-  [[1,"|r| = 1: the component IS that human rating",P.green],
-   [0.5,"0.5: meaningfully aligned",P.muted],
-   [0,"0: no relation at all",P.alert]].forEach(([v,label,col])=>{
+  [[1,"1.0 — this axis is exactly that human rating",P.green],
+   [0.5,"0.5 — clearly related",P.muted],
+   [0,"0 — nothing to do with it",P.alert]].forEach(([v,label,col])=>{
     const y=T+ih-v*ih;
     svg.appendChild(el("line",{x1:L,x2:W-R,y1:y,y2:y,stroke:col,"stroke-dasharray":"4 3",
       "stroke-width":v===0.5?1:1.4,opacity:v===0.5?.5:.9}));
-    const t=el("text",{x:W-R-2,y:y-5,"text-anchor":"end","font-size":10,fill:col});
+    // the zero line sits at the foot of the bars, so its label goes below the
+    // axis rather than on top of PC5's columns
+    const t=el("text",{x:W-R-2,y:v===0?y+13:y-5,"text-anchor":"end","font-size":10,fill:col});
     t.textContent=label; svg.appendChild(t);
   });
   rows.forEach((r,i)=>{
@@ -768,25 +928,31 @@ function drawPCs(model){
     keys.forEach((k,j)=>{
       const h=r[k]*ih;
       const bar=el("rect",{x:x0+13+j*sw,y:T+ih-h,width:sw-3,height:h,fill:C[k],rx:2});
-      const nm={valence:"valence",arousal:"arousal",dominance:"dominance",length:"story length"}[k];
-      tipOn(bar,`<b>PC${r.pc} vs ${nm}</b>: |r| = ${r[k].toFixed(2)}`+
-        `<span class="t-sub">this component explains ${(r.evr*100).toFixed(1)}% of the spread`+
-        `<br>|r| of 1 = perfectly aligned, 0 = unrelated</span>`);
+      const nm={valence:"pleasantness",arousal:"energy",dominance:"control",
+        length:"story length"}[k];
+      tipOn(bar,`<b>axis PC${r.pc} vs human ${nm} ratings</b>: ${r[k].toFixed(2)}`+
+        `<span class="t-sub">1.0 would mean this axis is exactly that rating, 0 that it has nothing `+
+        `to do with it.<br>PC${r.pc} accounts for ${(r.evr*100).toFixed(1)}% of everything that `+
+        `separates the 171 emotions.</span>`);
       svg.appendChild(bar);
     });
     const back=el("rect",{x:x0+8,y:T+ih-r.evr*ih,width:bw-16,height:r.evr*ih,fill:"transparent"});
-    tipOn(back,`<b>PC${r.pc}</b> explains ${(r.evr*100).toFixed(1)}% of the variance`+
-      `<span class="t-sub">grey backdrop = variance explained</span>`);
+    tipOn(back,`<b>axis PC${r.pc}</b> accounts for ${(r.evr*100).toFixed(1)}% of everything that `+
+      `separates the 171 emotions<span class="t-sub">that is what the grey backdrop bar shows</span>`);
     svg.appendChild(back);
     const lab=el("text",{x:x0+bw/2,y:H-24,"text-anchor":"middle","font-size":11,fill:P.text});
-    lab.textContent="PC"+r.pc; svg.appendChild(lab);
+    lab.textContent=r.pc===1?"PC1 (biggest axis)":"PC"+r.pc; svg.appendChild(lab);
     const ev=el("text",{x:x0+bw/2,y:H-10,"text-anchor":"middle","font-size":9.5,fill:P.muted});
-    ev.textContent=(r.evr*100).toFixed(1)+"% var"; svg.appendChild(ev);
+    ev.textContent=(r.evr*100).toFixed(1)+"% of the spread"; svg.appendChild(ev);
   });
+  // the y axis had tick numbers but never said what they measured
+  const yl=el("text",{x:14,y:T+ih/2,"font-size":10.5,fill:P.muted,
+    transform:`rotate(-90 14 ${T+ih/2})`,"text-anchor":"middle"});
+  yl.textContent="match with the human rating (higher is closer)"; svg.appendChild(yl);
   host.appendChild(svg);
   document.getElementById("pcVerdict").textContent = model==="base"
-    ? "PC1 = valence (|r| 0.83). the circumplex is right there."
-    : "PC1 = ? (valence |r| 0.11). valence is demoted to PC3.";
+    ? "biggest axis = pleasantness, 0.83. the circumplex, recovered."
+    : "biggest axis = unknown. pleasantness scores 0.11 here, and leads PC3 instead.";
 }
 document.querySelectorAll("[data-model]").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("[data-model]").forEach(x=>x.classList.remove("on"));
@@ -803,20 +969,27 @@ function drawGrid(){
     const x=L+j*cell,y=T+i*cell;
     const g=el("rect",{x,y,width:cell-3,height:cell-3,rx:3,
       fill:`rgba(29,53,87,${(v*0.95).toFixed(3)})`,style:"cursor:pointer"});
-    tipOn(g,`<b>instruct PC${i+1} vs base PC${j+1}</b>: |r| = ${v.toFixed(2)}`+
+    tipOn(g,`<b>chat-tuned axis ${i+1} vs plain axis ${j+1}</b>: ${v.toFixed(2)}`+
       `<span class="t-sub">`+
-      (i===0 ? "instruct PC1 is the biggest axis in the instruct model. Its best match anywhere in the base model is 0.14, so it is new structure." :
-       i===2&&j===0 ? "this is valence: the base model's top axis, still intact but demoted to third place." :
-       "1 would mean the two components carry the same information; 0 means unrelated.")+
+      (i===0 ? "This row is the finding. The chat-tuned model's biggest axis scores at most 0.14 against any of the plain model's five biggest axes, so it is new structure rather than a rearrangement of them." :
+       i===2&&j===0 ? "This is pleasantness: the plain model's top axis, still intact, but demoted to third place by chat-tuning." :
+       "1 would mean the two axes carry the same information; 0 that they have nothing in common.")+
       `</span>`);
     svg.appendChild(g);
     const t=el("text",{x:x+(cell-3)/2,y:y+(cell-3)/2+4,"text-anchor":"middle","font-size":11,
       fill:v>0.45?"#fff":P.text}); t.textContent=v.toFixed(2); svg.appendChild(t);
   }));
+  // column and row headers, plus one line naming which model each side belongs to,
+  // because "it PC1" read as an abbreviation nobody on the page had defined
+  const ch=el("text",{x:L,y:14,"font-size":10.5,fill:P.muted,"font-weight":600});
+  ch.textContent="the plain model's five biggest axes"; svg.appendChild(ch);
   for(let j=0;j<5;j++){const t=el("text",{x:L+j*cell+(cell-3)/2,y:T-12,"text-anchor":"middle",
-    "font-size":10.5,fill:P.muted});t.textContent="base PC"+(j+1);svg.appendChild(t);}
+    "font-size":10.5,fill:P.muted});t.textContent="plain "+(j+1);svg.appendChild(t);}
   for(let i=0;i<5;i++){const t=el("text",{x:L-8,y:T+i*cell+(cell-3)/2+4,"text-anchor":"end",
-    "font-size":10.5,fill:P.muted});t.textContent="it PC"+(i+1);svg.appendChild(t);}
+    "font-size":10.5,fill:P.muted});t.textContent="chat "+(i+1);svg.appendChild(t);}
+  const rh=el("text",{x:12,y:T+(5*cell)/2,"font-size":10.5,fill:P.muted,"font-weight":600,
+    transform:`rotate(-90 12 ${T+(5*cell)/2})`,"text-anchor":"middle"});
+  rh.textContent="the chat-tuned model's five biggest axes"; svg.appendChild(rh);
   // a scale strip, so a shade can be read without hovering
   const sx=L, sy=T+5*cell+14, sw=5*cell-3;
   for(let i=0;i<40;i++){
@@ -824,12 +997,12 @@ function drawGrid(){
       fill:`rgba(29,53,87,${((i/39)*0.95).toFixed(3)})`}));
   }
   // only the two ends are labelled: a middle tick collided with the right label
-  [["0 = unrelated",0,"start"],["1 = the same information",1,"end"]].forEach(([lab,f,anc])=>{
+  [["0 — nothing in common",0,"start"],["1 — the same information",1,"end"]].forEach(([lab,f,anc])=>{
     const t=el("text",{x:sx+f*sw,y:sy+22,"text-anchor":anc,"font-size":10,fill:P.muted});
     t.textContent=lab; svg.appendChild(t);
   });
   host.appendChild(svg);
-  note.textContent="hover a cell";
+  note.textContent="hover any square for what that pairing means";
 }
 document.getElementById("pc1low").textContent=D.itpc1.low.join(", ");
 document.getElementById("pc1high").textContent=D.itpc1.high.join(", ");
@@ -857,7 +1030,7 @@ function drawStory(){
   const ys=S.lines_by_layer[curLayer];
   // line chart
   const host=document.getElementById("lineChart"); host.innerHTML="";
-  const W=470,H=300,L=46,R=12,T=14,B=38;
+  const W=470,H=300,L=62,R=12,T=14,B=44;
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
   const iw=W-L-R, ih=H-T-B, n=S.n_tokens;
   let lo=Infinity,hi=-Infinity; ys.forEach(s=>s.forEach(v=>{lo=Math.min(lo,v);hi=Math.max(hi,v);}));
@@ -866,8 +1039,15 @@ function drawStory(){
   // the zero line is the story's own average: above it the model leans toward
   // that emotion, below it away. Labelled, because an unlabelled zero is noise.
   svg.appendChild(el("line",{x1:L,x2:W-R,y1:Y(0),y2:Y(0),stroke:P.greyMid,"stroke-dasharray":"3 3"}));
-  const zl=el("text",{x:W-R-2,y:Y(0)+11,"text-anchor":"end","font-size":9,fill:P.muted});
-  zl.textContent="0 = this story's average"; svg.appendChild(zl);
+  // in the left margin, not over the plot: the three lines cross the zero line
+  // constantly, so an inline label sat on top of the data for most stories
+  [[hi,hi.toFixed(2)],[0,"0"],[lo,lo.toFixed(2)]].forEach(([v,lab])=>{
+    const t=el("text",{x:L-6,y:Y(v)+3,"text-anchor":"end","font-size":9,
+      fill:v===0?P.text:P.muted});
+    t.textContent=lab; svg.appendChild(t);
+  });
+  const zl2=el("text",{x:L-6,y:Y(0)+12,"text-anchor":"end","font-size":8,fill:P.muted});
+  zl2.textContent="corpus avg"; svg.appendChild(zl2);
   S.boundaries.forEach(b=>{
     svg.appendChild(el("line",{x1:X(b),x2:X(b),y1:T,y2:T+ih,stroke:P.text,"stroke-width":1,"stroke-dasharray":"4 3",opacity:.45}));
   });
@@ -875,29 +1055,40 @@ function drawStory(){
     let d="";serie.forEach((v,i)=>{d+=(i?"L":"M")+X(i).toFixed(1)+","+Y(v).toFixed(1);});
     svg.appendChild(el("path",{d,fill:"none",stroke:EC[k],"stroke-width":1.9,opacity:.9}));
     const hit=el("path",{d,fill:"none",stroke:"transparent","stroke-width":11});
-    tipOn(hit,()=>`<b>${S.emotions[k]}</b> at token ${curTok}: ${serie[curTok].toFixed(3)}`+
-      `<span class="t-sub">how close the model's state sits to the ${S.emotions[k]} probe. `+
-      `Higher means closer. Layer ${curLayer}.</span>`);
+    tipOn(hit,()=>`<b>${S.emotions[k]}</b> at word ${curTok}: ${serie[curTok].toFixed(3)}`+
+      `<span class="t-sub">how close the model's state sits to the ${S.emotions[k]} vector. `+
+      `Higher means closer. Read at layer ${curLayer}.</span>`);
     svg.appendChild(hit);
   });
   svg.appendChild(el("line",{x1:X(curTok),x2:X(curTok),y1:T,y2:T+ih,stroke:P.orange,"stroke-width":2}));
   ys.forEach((serie,k)=>svg.appendChild(el("circle",{cx:X(curTok),cy:Y(serie[curTok]),r:4.5,
     fill:EC[k],stroke:"#fff","stroke-width":1.5})));
-  S.emotions.forEach((nm,k)=>{
-    const t=el("text",{x:L+2,y:T+12+k*14,"font-size":11,fill:EC[k],"font-weight":600});
-    t.textContent=nm+"  "+ys[k][curTok].toFixed(3); svg.appendChild(t);
+  const readout=document.getElementById("storyReadout");
+  if(readout) readout.innerHTML = S.emotions.map((nm,k)=>
+    `<span><i style="background:${EC[k]}"></i>${nm} <b style="color:${EC[k]}">`+
+    `${ys[k][curTok].toFixed(3)}</b></span>`).join("")+
+    `<span style="margin-left:auto">reading at word ${curTok}, layer ${curLayer}</span>`;
+  [[0,"0"],[S.boundaries[0],"turn 1 · "+S.boundaries[0]],
+   [S.boundaries[1],"turn 2 · "+S.boundaries[1]],[n-1,String(n-1)]].forEach(([i,lab],k)=>{
+    const t=el("text",{x:X(i),y:T+ih+13,"text-anchor":k===0?"start":(k===3?"end":"middle"),
+      "font-size":9,fill:k===1||k===2?P.text:P.muted});
+    t.textContent=lab; svg.appendChild(t);
   });
-  const xl=el("text",{x:L+iw/2,y:H-8,"text-anchor":"middle","font-size":10.5,fill:P.muted});
-  xl.textContent=`token in the story (turns marked at ${S.boundaries.join(" and ")})`;
+  const xl=el("text",{x:L+iw/2,y:H-6,"text-anchor":"middle","font-size":10.5,fill:P.muted});
+  xl.textContent="word in the story";
   svg.appendChild(xl);
   const yl=el("text",{x:12,y:T+ih/2,"font-size":10.5,fill:P.muted,
     transform:`rotate(-90 12 ${T+ih/2})`,"text-anchor":"middle"});
-  yl.textContent="closeness to the emotion probe"; svg.appendChild(yl);
+  yl.textContent="closeness to each emotion vector"; svg.appendChild(yl);
+  // the y range is re-fitted per layer, so say so rather than let the reader
+  // assume the shapes are comparable across the layer buttons
+  const rn=el("text",{x:W-R,y:T+8,"text-anchor":"end","font-size":8.5,fill:P.muted});
+  rn.textContent="y range re-fitted per layer"; svg.appendChild(rn);
   host.appendChild(svg);
 
   // ternary
   const th=document.getElementById("ternChart"); th.innerHTML="";
-  const TW=470,TH=300,cx=TW/2,top=26,side=232,hgt=side*Math.sin(Math.PI/3);
+  const TW=470,TH=316,cx=TW/2,top=26,side=232,hgt=side*Math.sin(Math.PI/3);
   const s2=el("svg",{viewBox:`0 0 ${TW} ${TH}`,width:"100%"});
   const A=[cx,top], B2=[cx-side/2,top+hgt], Cc=[cx+side/2,top+hgt];
   s2.appendChild(el("polygon",{points:`${A[0]},${A[1]} ${B2[0]},${B2[1]} ${Cc[0]},${Cc[1]}`,
@@ -908,10 +1099,17 @@ function drawStory(){
   // non-negative then normalised, so every story can be shown the same way
   const floor=Math.min(...ys.flat()), shift=v=>v-floor+1e-3;
   const mix=i=>[shift(ys[0][i]),shift(ys[1][i]),shift(ys[2][i])];
-  let d="";
+  // Only the path already walked is drawn. Drawing the whole story from t=0
+  // showed the reader the future and made the walk look directionless.
+  let dPast="", dRest="";
   for(let i=0;i<S.n_tokens;i++){const m=mix(i);const p=proj(m[0],m[1],m[2]);
-    d+=(i?"L":"M")+p[0].toFixed(1)+","+p[1].toFixed(1);}
-  s2.appendChild(el("path",{d,fill:"none",stroke:P.muted,"stroke-width":1.4,opacity:.55}));
+    const seg=p[0].toFixed(1)+","+p[1].toFixed(1);
+    if(i<=curTok) dPast+=(i?"L":"M")+seg;
+    if(i>=curTok) dRest+=(i===curTok?"M":"L")+seg;}
+  // what is still to come, barely visible, so the shape is not a surprise
+  s2.appendChild(el("path",{d:dRest,fill:"none",stroke:P.border,"stroke-width":1.2,
+    "stroke-dasharray":"2 3",opacity:.6}));
+  s2.appendChild(el("path",{d:dPast,fill:"none",stroke:P.muted,"stroke-width":1.6,opacity:.75}));
   for(let i=0;i<=curTok;i+=3){const m=mix(i);const p=proj(m[0],m[1],m[2]);
     const ph=i<S.boundaries[0]?0:(i<S.boundaries[1]?1:2);
     s2.appendChild(el("circle",{cx:p[0],cy:p[1],r:2.4,fill:EC[ph],opacity:.5}));}
@@ -935,12 +1133,13 @@ function drawStory(){
   const mid=proj(1,1,1);
   s2.appendChild(el("circle",{cx:mid[0],cy:mid[1],r:3,fill:"none",stroke:P.muted,
     "stroke-dasharray":"2 2"}));
-  const ml=el("text",{x:mid[0],y:mid[1]+16,"text-anchor":"middle","font-size":9.5,fill:P.muted});
-  ml.textContent="centre = undecided"; s2.appendChild(ml);
-  const cl2=el("text",{x:cx,y:TH-22,"text-anchor":"middle","font-size":9.5,fill:P.muted});
-  cl2.textContent="a corner = reads purely as that emotion"; s2.appendChild(cl2);
-  const cap=el("text",{x:cx,y:TH-8,"text-anchor":"middle","font-size":10.5,fill:P.muted});
-  cap.textContent="written to walk "+S.emotions.join(" → "); s2.appendChild(cap);
+  const cl2=el("text",{x:cx,y:TH-38,"text-anchor":"middle","font-size":9.5,fill:P.muted});
+cl2.textContent="corner = reads purely as that emotion · middle = undecided"; s2.appendChild(cl2);
+  const cap=el("text",{x:cx,y:TH-23,"text-anchor":"middle","font-size":9.5,fill:P.muted});
+cap.textContent="solid line = the walk so far · dotted = still to come · "+
+    "big dot = where it is now"; s2.appendChild(cap);
+  const cap2=el("text",{x:cx,y:TH-7,"text-anchor":"middle","font-size":10.5,fill:P.muted});
+  cap2.textContent="written to walk "+S.emotions.join(" → "); s2.appendChild(cap2);
   th.appendChild(s2);
 
   document.getElementById("tokLabel").textContent="t = "+curTok+" / "+(S.n_tokens-1);
@@ -974,8 +1173,9 @@ function selectStory(i){
     ? `${S.qual.wins} of 3 phases led by the right emotion (per phase: `+
       `${S.qual.perPhase.map(w=>w?"yes":"no").join(", ")}); average margin `+
       `${S.qual.margin>=0?"+":""}${S.qual.margin.toFixed(3)}. One of three by luck.`
-    : "the walkthrough story, shown first";
+    : "the worked example; the other three are scored, best / middle / worst of a random 24";
   document.getElementById("storyQual").textContent=q;
+  document.getElementById("storyId").textContent=S.id;
   drawStory();
 }
 (function(){
@@ -1006,14 +1206,31 @@ let emoBank="selfgen", emoLayer="33";
 function drawEmo(){
   const host=document.getElementById("emoChart"); host.innerHTML="";
   const rows=D.emoByLayer[emoBank][emoLayer];
-  const W=880,H=310,L=26,R=26,T=20,B=70;
+  const W=880,H=330,L=64,R=150,T=20,B=70;
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
   const iw=W-L-R, ih=H-T-B, bw=iw/rows.length;
-  const chance=1/12, top=Math.max(0.7,Math.ceil(rows[0].rate*10)/10+0.05), Y=v=>T+ih-(v/top)*ih;
+  // Fixed 0-100% domain. It used to rescale to the tallest bar, so switching
+  // vector set redrew 49% and 83% at almost the same length — on the one
+  // control the section exists to make you compare.
+  const chance=1/12, Y=v=>T+ih-v*ih;
+  [0,0.25,0.5,0.75,1].forEach(v=>{
+    svg.appendChild(el("line",{x1:L,x2:W-R,y1:Y(v),y2:Y(v),stroke:P.border}));
+    const t=el("text",{x:L-7,y:Y(v)+3.5,"text-anchor":"end","font-size":9.5,fill:P.muted});
+    t.textContent=(v*100)+"%"; svg.appendChild(t);
+  });
+  const yl=el("text",{x:16,y:T+ih/2,"font-size":10.5,fill:P.muted,
+    transform:`rotate(-90 16 ${T+ih/2})`,"text-anchor":"middle"});
+  yl.textContent="story parts where this emotion’s own vector wins"; svg.appendChild(yl);
   svg.appendChild(el("line",{x1:L,x2:W-R,y1:Y(chance),y2:Y(chance),stroke:P.alert,
     "stroke-dasharray":"5 4","stroke-width":1.5}));
-  const ct=el("text",{x:L+4,y:Y(chance)-6,"text-anchor":"start","font-size":10.5,fill:P.alert});
-  ct.textContent="guessing = 8%"; svg.appendChild(ct);
+  // in the right margin, clear of the bars: inside the plot this label was
+  // drawn in dark red across the two tallest navy bars
+  const ct=el("text",{x:W-R+6,y:Y(chance)+3.5,"font-size":10.5,fill:P.alert});
+  ct.textContent="guessing (8%)"; svg.appendChild(ct);
+  const ct2=el("text",{x:W-R+6,y:Y(chance)+16,"font-size":9.5,fill:P.muted});
+  ct2.textContent="at or below this line: no signal"; svg.appendChild(ct2);
+  const gt=el("text",{x:W-R+6,y:Y(1)+3.5,"font-size":10.5,fill:P.green});
+  gt.textContent="100% = always right"; svg.appendChild(gt);
   rows.forEach((r,i)=>{
     const x=L+i*bw, h=Math.max(0,(T+ih)-Y(r.rate));
     const bar=el("rect",{x:x+7,y:r.rate>0?Y(r.rate):T+ih-3,width:bw-14,height:r.rate>0?h:3,
@@ -1025,8 +1242,9 @@ function drawEmo(){
       `<span class="t-sub">its own probe wins <b>${pct(r.rate)}</b> of ${r.n} story phases`+
       ` (guessing would give 8%).<br>When it is wrong, the model says: ${wrongHtml}.</span>`);
     svg.appendChild(bar);
-    const v=el("text",{x:x+bw/2,y:Y(r.rate)-6,"text-anchor":"middle","font-size":10.5,
-      fill:r.rate>0?P.text:P.alert});
+    const nearChance=Math.abs(r.rate-chance)<0.03;
+    const v=el("text",{x:x+bw/2,y:Y(r.rate)+(nearChance?-14:-6),"text-anchor":"middle",
+      "font-size":10.5,fill:r.rate>0?P.text:P.alert});
     v.textContent=r.rate>0?pct(r.rate):"never"; svg.appendChild(v);
     const t=el("text",{x:x+bw/2,y:T+ih+16,"text-anchor":"end","font-size":11,fill:P.body,
       transform:`rotate(-40 ${x+bw/2} ${T+ih+16})`}); t.textContent=r.e; svg.appendChild(t);
@@ -1035,8 +1253,9 @@ function drawEmo(){
   // the standing note restates the verdict for whichever layer and bank is showing
   const best=rows[0], nWin=rows.filter(r=>r.rate>=chance).length, nNever=rows.filter(r=>r.rate===0).length;
   document.getElementById("emoNote").innerHTML =
-    `<b>layer ${emoLayer}, ${emoBank==="selfgen"?"Gemma-written":"DeepSeek-written"} probe bank:</b> `+
-    `${nWin} of 12 emotions beat guessing, best is ${best.e} at ${pct(best.rate)}`+
+    `<b>layer ${emoLayer}, vectors from ${emoBank==="selfgen"?"Gemma's own":"DeepSeek's"} stories:</b> `+
+`${nWin} of 12 emotions beat guessing, best is ${best.e} at ${pct(best.rate)}`+
+    ` (${rows[0].n} story parts per emotion)`+
     (nNever?`, and ${nNever} never win at all`:"")+". Hover any bar for its wrong answers.";
 }
 (function(){
@@ -1058,20 +1277,42 @@ document.querySelectorAll("[data-bank]").forEach(b=>b.onclick=()=>{
 /* ---------- naming vs anticipating, by layer ---------- */
 function drawLayers(){
   const host=document.getElementById("layerChart"); host.innerHTML="";
-  const rows=D.byLayer, W=470,H=320,L=44,R=44,T=26,B=44;
+  const rows=D.byLayer, W=470,H=320,L=52,R=52,T=34,B=44;
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
   const iw=W-L-R, ih=H-T-B;
   const X=i=>L+(i/(rows.length-1))*iw;
   const Y1=v=>T+ih-(v/0.65)*ih, Y2=v=>T+ih-(v/0.30)*ih;
+  // Two measurements on two scales share this chart, so each line gets its own
+  // axis title in its own colour and its own labelled failure line. Without the
+  // colour pairing a reader cannot tell which y-value belongs to which curve.
+  const yLeft=el("text",{x:13,y:T+ih/2,"font-size":10,fill:P.navy,
+    transform:`rotate(-90 13 ${T+ih/2})`,"text-anchor":"middle"});
+  yLeft.textContent="how often it names the emotion right"; svg.appendChild(yLeft);
+  const yRight=el("text",{x:W-13,y:T+ih/2,"font-size":10,fill:P.orange,
+    transform:`rotate(90 ${W-13} ${T+ih/2})`,"text-anchor":"middle"});
+  yRight.textContent="lean size vs size of the coming change"; svg.appendChild(yRight);
+  [[0,"0%"],[0.3,"30%"],[0.6,"60%"]].forEach(([v,lab])=>{
+    const t=el("text",{x:L-7,y:Y1(v)+3.5,"text-anchor":"end","font-size":9.5,fill:P.navy});
+    t.textContent=lab; svg.appendChild(t);
+  });
+  [[0,"0"],[0.15,"+0.15"],[0.30,"+0.30"]].forEach(([v,lab])=>{
+    const t=el("text",{x:W-R+7,y:Y2(v)+3.5,"font-size":9.5,fill:P.orange});
+    t.textContent=lab; svg.appendChild(t);
+  });
   // anchors: guessing for the naming curve, zero for the anticipation curve
   svg.appendChild(el("line",{x1:L,x2:W-R,y1:Y1(1/12),y2:Y1(1/12),stroke:P.navy,
     "stroke-dasharray":"4 3",opacity:.55}));
-  const a1=el("text",{x:L+2,y:Y1(1/12)-5,"font-size":9.5,fill:P.navy});
-  a1.textContent="guessing = 8% of emotions named right"; svg.appendChild(a1);
+  const a1=el("text",{x:W-R-2,y:Y1(1/12)-6,"text-anchor":"end","font-size":9.5,fill:P.navy});
+  a1.textContent="guessing (8%)"; svg.appendChild(a1);
   svg.appendChild(el("line",{x1:L,x2:W-R,y1:Y2(0),y2:Y2(0),stroke:P.orange,
     "stroke-dasharray":"4 3",opacity:.55}));
-  const a2=el("text",{x:W-R-2,y:Y2(0)+13,"text-anchor":"end","font-size":9.5,fill:P.orange});
-  a2.textContent="0 = sees no turn coming"; svg.appendChild(a2);
+  // above its own line, not below: below puts it on the x-axis tick labels, and
+  // both zero lines land at the same height because the two scales share a floor
+  const a2=el("text",{x:W-R-2,y:Y2(0)-6,"text-anchor":"end","font-size":9.5,fill:P.orange});
+  // kept short on purpose: right-anchored, this label extends leftwards into the
+  // plot, and layer 33 sits exactly ON the zero line — a longer string runs
+  // straight under that point. The axis title carries the full meaning.
+  a2.textContent="0 — no relation"; svg.appendChild(a2);
   let d1="",d2="";
   rows.forEach((r,i)=>{d1+=(i?"L":"M")+X(i)+","+Y1(r.top1);d2+=(i?"L":"M")+X(i)+","+Y2(r.r_dval);});
   svg.appendChild(el("path",{d:d1,fill:"none",stroke:P.navy,"stroke-width":2.4}));
@@ -1079,13 +1320,15 @@ function drawLayers(){
   rows.forEach((r,i)=>{
     const c1=el("circle",{cx:X(i),cy:Y1(r.top1),r:7,fill:P.navy});
     tipOn(c1,`<b>layer ${r.layer}: names the right emotion ${pct(r.top1)} of the time</b>`+
-      `<span class="t-sub">when it is wrong, the emotion it picks sits ${r.vad.toFixed(2)} away in `+
-      `valence-arousal space, against ${r.shuffle.toFixed(2)} for a random emotion: wrong, but nearby.</span>`);
+      `<span class="t-sub">when it is wrong, the emotion it picks instead sits ${r.vad.toFixed(2)} `+
+      `away in the human pleasantness-and-energy layout, against ${r.shuffle.toFixed(2)} for a `+
+      `randomly chosen emotion: wrong, but nearby.</span>`);
     svg.appendChild(c1);
     const c2=el("circle",{cx:X(i),cy:Y2(r.r_dval),r:7,fill:P.orange});
-    tipOn(c2,`<b>layer ${r.layer}: anticipation r = +${r.r_dval.toFixed(3)}</b>`+
-      `<span class="t-sub">how well the lead before a turn tracks the size of the coming `+
-      `valence jump. 0 would mean the model does not see the turn coming at all.</span>`);
+    tipOn(c2,`<b>layer ${r.layer}: anticipation +${r.r_dval.toFixed(3)}</b>`+
+      `<span class="t-sub">in the words before a turn, how well the model's lean towards the next `+
+      `emotion matches how big the coming change in pleasantness will be. 0 would mean it does not `+
+      `see the turn coming at all.</span>`);
     svg.appendChild(c2);
     const t=el("text",{x:X(i),y:H-24,"text-anchor":"middle","font-size":11,fill:P.text});
     t.textContent="L"+r.layer; svg.appendChild(t);
@@ -1103,24 +1346,27 @@ function drawLayers(){
 /* ---------- probe lineage: who wrote the stories ---------- */
 function drawLineage(){
   const host=document.getElementById("lineageChart"); host.innerHTML="";
-  const rows=D.lineage, W=880,H=280,L=30,R=30,T=22,B=76;
+  const rows=D.lineage, W=880,H=290,L=58,R=30,T=34,B=76;
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
-  const iw=W-L-R, ih=H-T-B, bw=iw/rows.length, Y=v=>T+ih-(v/10)*ih;
-  [0,5,10].forEach(v=>{
+  const iw=W-L-R, ih=H-T-B, bw=iw/rows.length, Y=v=>T+ih-(v/20)*ih;
+  [0,5,10,15,20].forEach(v=>{
     svg.appendChild(el("line",{x1:L,x2:W-R,y1:Y(v),y2:Y(v),stroke:P.border}));
     const t=el("text",{x:L-6,y:Y(v)+4,"text-anchor":"end","font-size":10,fill:P.muted});
     t.textContent=v; svg.appendChild(t);
   });
+  // The failure anchor (0 of 20) is named in the legend below the chart rather
+  // than on the baseline: the shortest bar is 1, so a baseline label sits under it.
   rows.forEach((r,i)=>{
     const x=L+i*bw, h=(T+ih)-Y(r.layers);
     const bar=el("rect",{x:x+16,y:Y(r.layers),width:bw-32,height:h,rx:3,
-      fill:r.key==="fixed"?P.navy:(r.key==="weak"?P.greyMid:P.teal)});
-    tipOn(bar,`<b>stories by ${r.label}</b>`+
-      `<span class="t-sub">${r.layers} of 20 layers pass the registered bar `+
-      `(${D.bar} of 12 scenarios correct on both batteries).<br>`+
-      `Best probe-to-preference correlation: |r| = ${r.pref.toFixed(3)}.<br>`+
-      `Corpus: ${r.n.toLocaleString()} stories`+
-      (r.overlap!==null?`, phrase overlap ${r.overlap}`:"")+`.</span>`);
+      fill:P.navy});
+    tipOn(bar,`<b>stories written by ${r.label}</b>`+
+      `<span class="t-sub">${r.layers} of the 20 tested layers reach the mark set in advance: `+
+      `${D.bar} of 12 checks with the right emotion in the top three, on both sets of test text `+
+      `(guessing gives about 3 of 12).<br>`+
+      `Written from ${r.n.toLocaleString()} stories`+
+      (r.overlap!==null?`. Five-word phrase repetition: ${r.overlap} — higher means the stories keep `+
+        `reusing the same phrasing`:"")+`.</span>`);
     svg.appendChild(bar);
     const v=el("text",{x:x+bw/2,y:Y(r.layers)-8,"text-anchor":"middle","font-size":15,
       "font-weight":600,fill:P.text}); v.textContent=r.layers; svg.appendChild(v);
@@ -1129,29 +1375,53 @@ function drawLineage(){
     const sub=el("text",{x:x+bw/2,y:T+ih+33,"text-anchor":"middle","font-size":10.5,fill:P.muted});
     sub.textContent=r.sub; svg.appendChild(sub);
   });
-  const yl=el("text",{x:L,y:T-8,"font-size":10.5,fill:P.muted});
-  yl.textContent="layers (of 20) where these probes detect emotion above the registered bar";
-  svg.appendChild(yl);
+  // One title saying what the bars count, and one rotated axis label saying what
+  // the numbers are. The old single line tried to be both and was neither.
+  const ttl=el("text",{x:L,y:16,"font-size":13,fill:P.text,"font-weight":600});
+  ttl.textContent="Who wrote the stories decides whether the emotion vectors work at all";
+  svg.appendChild(ttl);
+  // the success anchor, drawn rather than left in the prose: nothing we built
+  // came close to it, and the old 0-10 axis hid that
+  svg.appendChild(el("line",{x1:L,x2:W-R,y1:Y(20),y2:Y(20),stroke:P.green,
+    "stroke-dasharray":"4 3","stroke-width":1.4}));
+  const gl=el("text",{x:W-R-2,y:Y(20)+12,"text-anchor":"end","font-size":10,fill:P.green});
+  gl.textContent="20 = every tested layer works"; svg.appendChild(gl);
+  const yl=el("text",{x:16,y:T+ih/2,"font-size":10.5,fill:P.muted,
+    transform:`rotate(-90 16 ${T+ih/2})`,"text-anchor":"middle"});
+  yl.textContent="layers that work, out of 20 tested"; svg.appendChild(yl);
   host.appendChild(svg);
 }
 
 /* dose-response: how many stories per emotion you actually need */
 function drawDose(){
   const host=document.getElementById("doseChart"); host.innerHTML="";
-  const ns=Object.keys(D.dose), W=380,H=170,L=34,R=14,T=14,B=34;
+  const ns=Object.keys(D.dose), W=380,H=190,L=52,R=14,T=18,B=42;
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
   const iw=W-L-R, ih=H-T-B;
-  const X=i=>L+(i/(ns.length-1))*iw, Y=v=>T+ih-(v/10)*ih;
+  const X=i=>L+(i/(ns.length-1))*iw, Y=v=>T+ih-(v/20)*ih;
+  // This chart shares its y-scale with the bar chart beside it but used to draw
+  // no axis at all, so its dots floated free of the "9 of 20" they refer to.
+  [0,10,20].forEach(v=>{
+    svg.appendChild(el("line",{x1:L,x2:W-R,y1:Y(v),y2:Y(v),stroke:P.border}));
+    const t=el("text",{x:L-6,y:Y(v)+3.5,"text-anchor":"end","font-size":9.5,fill:P.muted});
+    t.textContent=v; svg.appendChild(t);
+  });
+  const yl=el("text",{x:14,y:T+ih/2,"font-size":9.5,fill:P.muted,
+    transform:`rotate(-90 14 ${T+ih/2})`,"text-anchor":"middle"});
+  yl.textContent="layers that work, of 20"; svg.appendChild(yl);
+  const src=el("text",{x:L,y:H-3,"font-size":8.5,fill:P.muted});
+  src.textContent="notebooks/07_generator_lineages.ipynb (E12)"; svg.appendChild(src);
   svg.appendChild(el("line",{x1:L,x2:W-R,y1:Y(9),y2:Y(9),stroke:P.green,
     "stroke-dasharray":"4 3"}));
-  const cl=el("text",{x:W-R,y:Y(9)-5,"text-anchor":"end","font-size":9.5,fill:P.green});
-  cl.textContent="ceiling: 9 layers"; svg.appendChild(cl);
+  // left-anchored: right-anchored, the trailing "9" sat under the last marker
+  const cl=el("text",{x:L+4,y:Y(9)-5,"font-size":9.5,fill:P.green});
+  cl.textContent="best this writer ever reaches: 9 of 20"; svg.appendChild(cl);
   let d=""; ns.forEach((n,i)=>{d+=(i?"L":"M")+X(i)+","+Y(D.dose[n]);});
   svg.appendChild(el("path",{d,fill:"none",stroke:P.navy,"stroke-width":2.2}));
   ns.forEach((n,i)=>{
     const c=el("circle",{cx:X(i),cy:Y(D.dose[n]),r:6,fill:P.navy});
-    tipOn(c,`<b>${n} stories per emotion</b><span class="t-sub">gives ${D.dose[n]} passing layers `+
-      `on average across 5 seeded subsamples (ceiling is 9).</span>`);
+    tipOn(c,`<b>${n} stories per emotion</b><span class="t-sub">gives ${D.dose[n]} working layers, `+
+      `averaged over 5 random draws of that many stories. The most this writer ever reaches is 9.</span>`);
     svg.appendChild(c);
     const t=el("text",{x:X(i),y:H-16,"text-anchor":"middle","font-size":10,fill:P.muted});
     t.textContent=n; svg.appendChild(t);
@@ -1399,7 +1669,7 @@ codeTabs("m3","q3_conventions.py, score_q3_gate_r1.py",
   <span class="gl"><b>Anticipation.</b> The mean cosine in the 16 tokens before the turn minus the mean
   in the 16 before those. Above zero means the next emotion is already rising before the story turns.
   Both windows are referenced to the boundary, so story length cannot drive the effect.</span>`,
-`W = 16                       # window, registered before scoring
+`W = 16                       # window size, fixed before any scoring
 LAYERS = [6, 15, 24, 33, 42, 51]
 MIN_PHASE_TOKENS = 4         # shorter phases are skipped, not averaged
 
@@ -1469,7 +1739,7 @@ codeTabs("m4","score_q3_gate_r1.py (N1, N2)",
   set, used to calibrate a per-layer noise scale. An effect must clear half that noise standard
   deviation, so a tiny but consistent drift cannot pass on a <i>p</i>-value alone. A claim graduates
   only when <b>both</b> conditions hold.</span>`,
-`B = 10_000                    # shuffles, registered
+`B = 10_000                    # shuffles, count fixed in advance
 
 def wrong_emotion_null(cos, phases, bank, rng):
     # rank EVERY probe once, then index the shuffled picks: 10k shuffles
@@ -1544,10 +1814,17 @@ addEventListener("keydown",e=>{
 
 /* ---------- cross-layer RSA matrices ---------- */
 const RSA_KEYS=Object.keys(D.rsa);
-const RSA_LABEL={"instruct RSA (unablated)":"instruct, as measured",
-  "base RSA (unablated)":"base, as measured",
-  "instruct RSA (top component removed)":"instruct, top component removed",
-  "cross-model RSA: instruct vs base":"instruct vs base"};
+/* Button label AND figure title come from here. The raw keys are the notebook's
+   own names and carry jargon ("unablated", "RSA"); they never reach the page. */
+const RSA_LABEL={"instruct RSA (unablated)":"chat-tuned model",
+  "base RSA (unablated)":"plain model",
+  "instruct RSA (top component removed)":"chat-tuned, biggest axis subtracted",
+  "cross-model RSA: instruct vs base":"plain vs. chat-tuned"};
+/* the one-line reminder under the buttons: what THIS view is for */
+const RSA_NOTE={"instruct RSA (unablated)":"do the chat-tuned model's layers agree with each other?",
+  "base RSA (unablated)":"the control: the same question on the plain model",
+  "instruct RSA (top component removed)":"the same layers, with only the mystery axis removed",
+  "cross-model RSA: instruct vs base":"one model on each axis — what did chat-tuning change?"};
 let rsaKey=RSA_KEYS[0];
 function drawRsa(){
   const host=document.getElementById("rsaChart"); if(!host) return;
@@ -1557,17 +1834,19 @@ function drawRsa(){
   // Only the cross-model view has a different model on each axis, and it is the
   // one view that is NOT symmetric — so orientation has to be on the figure.
   const isCross=rsaKey.indexOf("cross-model")===0;
-  const rowName=isCross?"layer of the instruct model":"layer of the model";
-  const colName=isCross?"layer of the base model":"layer of the model";
+  const rowName=isCross?"layer of the chat-tuned model"
+                       :"layer of the model (same model on both axes)";
+  const colName=isCross?"layer of the plain model"
+                       :"layer of the model (same model on both axes)";
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
   const size=Math.min((W-L-Rr)/n,(H-T-B)/n);
   for(let i=0;i<n;i++)for(let j=0;j<n;j++){
     const v=z[i][j];
     const cell=el("rect",{x:L+j*size,y:T+i*size,width:size+.5,height:size+.5,
       fill:`rgba(29,53,87,${Math.max(0,Math.min(1,v)).toFixed(3)})`});
-    tipOn(cell,`<b>${isCross?"instruct":""} layer ${layers[i]} vs ${isCross?"base":""} `+
+    tipOn(cell,`<b>${isCross?"chat-tuned":""} layer ${layers[i]} vs ${isCross?"plain":""} `+
       `layer ${layers[j]}</b>: agreement ${v.toFixed(2)}`+
-      `<span class="t-sub">1 means these two layers organise the 171 emotions the same way; `+
+      `<span class="t-sub">1 means these two layers sort the 171 emotions the same way; `+
       `0 means they disagree completely.</span>`);
     svg.appendChild(cell);
   }
@@ -1582,9 +1861,9 @@ function drawRsa(){
   for(let i=0;i<40;i++)
     svg.appendChild(el("rect",{x:sx,y:sy+sh-(i+1)*(sh/40),width:13,height:sh/40+.5,
       fill:`rgba(29,53,87,${((i/39)).toFixed(3)})`}));
-  [["1.0  same shape of emotion space",sy+6],
+  [["1.0  sort emotions identically",sy+6],
    ["0.5  partly agree",sy+sh/2],
-   ["0.0  completely different",sy+sh]].forEach(([t,y])=>{
+   ["0.0  no agreement at all",sy+sh]].forEach(([t,y])=>{
     const tx=el("text",{x:sx+18,y:y+4,"font-size":10,fill:P.muted}); tx.textContent=t; svg.appendChild(tx);
   });
   const xl=el("text",{x:L+(n*size)/2,y:H-8,"text-anchor":"middle","font-size":10.5,fill:P.muted});
@@ -1597,7 +1876,7 @@ function drawRsa(){
   const ttl=el("text",{x:L,y:20,"font-size":12.5,fill:P.text,"font-weight":600});
   ttl.textContent=RSA_LABEL[rsaKey]||rsaKey; svg.appendChild(ttl);
   host.appendChild(svg);
-  document.getElementById("rsaNote").textContent=rsaKey;
+  document.getElementById("rsaNote").textContent=RSA_NOTE[rsaKey]||"";
 }
 (function(){
   const host=document.getElementById("rsaBtns"); if(!host) return;
