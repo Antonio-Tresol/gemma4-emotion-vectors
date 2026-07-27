@@ -1,7 +1,12 @@
-# docs/ — the talk
+# docs/ — the talk, and the GitHub Pages source
 
 The sprint's findings as an interactive page. Everything here is generated from
 the notebooks and `results/`; nothing is typed by hand.
+
+**This directory is what GitHub Pages serves** (Settings → Pages → Deploy from a
+branch, `main`, folder `/docs`), so `index.html` must stay committed and must
+stay here — it is the published page, not a build artifact you can gitignore.
+It is self-contained: no build step, no server, opens from the filesystem.
 
 | File | What it is |
 |---|---|

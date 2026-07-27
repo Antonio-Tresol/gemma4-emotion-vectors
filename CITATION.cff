@@ -21,7 +21,7 @@ authors:
     given-names: "Antonio"
     email: antonio1dbo@gmail.com
     orcid: "https://orcid.org/0009-0000-6891-1562"
-repository-code: "https://github.com/Antonio-Tresol/cbai-cambria-project"
+repository-code: "https://github.com/Antonio-Tresol/gemma4-emotion-vectors"
 license: MIT
 keywords:
   - emotion vectors

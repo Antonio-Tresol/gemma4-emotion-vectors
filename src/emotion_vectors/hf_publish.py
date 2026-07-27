@@ -26,7 +26,7 @@ def write_readme(out_dir: Path, config: dict[str, object]) -> None:
         f"""# Emotion vectors — {config["model"]}
 
 Per-story pooled residual-stream activations and per-emotion mean vectors,
-extracted with [cbai-cambria-project](https://github.com/Antonio-Tresol/cbai-cambria-project)
+extracted with [gemma4-emotion-vectors](https://github.com/Antonio-Tresol/gemma4-emotion-vectors)
 `scripts/extract_emotion_vectors.py` (reference-faithful adaptation of
 sinievanderben/emotion_experiment `extract_emotion_vectors.py`).
 

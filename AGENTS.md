@@ -53,7 +53,9 @@ is true.
   finished notebook with its pre-extraction ancestor (`git log -- scripts/`
   has them if you ever need to look).
 - `docs/` — the talk: `index.html` (interactive, self-contained) and the
-  `build.py` that generates it from `docs/data/`. Numbers are transcribed from
+  `build.py` that generates it from `docs/data/`. This directory is the GitHub
+  Pages source, so `index.html` stays committed and stays here. Numbers are
+  transcribed from
   notebook printed records, one block per figure naming its source, so a number
   changes in the notebook first and here second. `index.html` is generated —
   edit `build.py`, never the HTML. A `slides/` directory (PDF, PPTX, a story

@@ -1,6 +1,6 @@
 # Emotion vectors in Gemma 4 31B
 
-**[Read the interactive write-up →](https://antonio-tresol.github.io/cbai-cambria-project/)**
+**[Read the interactive write-up →](https://antonio-tresol.github.io/gemma4-emotion-vectors/)**
 
 Anthropic reported that a language model keeps a separate internal direction for
 each emotion, and that those directions arrange themselves the way psychologists
@@ -86,6 +86,11 @@ Rebuild the write-up (reads `docs/data/`, writes `docs/index.html`):
 ```bash
 cd docs && python build.py
 ```
+
+`docs/` is also the GitHub Pages source — Settings → Pages → Deploy from a
+branch, `main`, folder `/docs` — so committing a rebuilt `index.html` publishes
+it. The page is self-contained: no build step, no server, and it opens from the
+filesystem.
 
 Run every mechanical check — formatter, linter, tests, and the research-integrity
 validator that checks TREE.md and RESEARCH_LOG.md against the files they cite:

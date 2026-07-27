@@ -189,7 +189,7 @@ def card(commit: str, rows: list[tuple[str, str]]) -> str:
     return f"""# Emotion-vectors replication on Gemma-4-31B: experiment artifacts
 
 Every activation tensor, prompt set, and scored output behind the report
-notebooks of [cbai-cambria-project](https://github.com/Antonio-Tresol/cbai-cambria-project)
+notebooks of [gemma4-emotion-vectors](https://github.com/Antonio-Tresol/gemma4-emotion-vectors)
 (commit `{commit}`), published so replication does NOT require re-running
 inference. The research record (hypotheses, pre-registered predictions,
 verdicts) is the repo's TREE.md; the daily log is RESEARCH_LOG.md.
