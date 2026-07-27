@@ -1,0 +1,59 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "Replicating emotion-concept vectors on Gemma-4-31B: circumplex geometry and control-prompt validation"
+abstract: >-
+  A replication of Sofroniew et al. (2026), "Emotion Concepts and their Function
+  in a Large Language Model", which found internal representations of emotion
+  concepts in Claude Sonnet 4.5 that causally influence the model's outputs. This
+  work tests whether the finding transfers to an open-weights model, Gemma-4-31B:
+  difference-of-means emotion vectors from the residual stream, a valence-arousal
+  circumplex geometry check, and the cosine-similarity control-prompt validation
+  that the earlier open replication omitted. Conditional on that validation gate,
+  it further tests whether the model can detect the emotional direction it is
+  being steered toward, and whether its misidentifications are graded in
+  valence-arousal space.
+type: software
+authors:
+  - family-names: "Badilla-Olivas"
+    given-names: "Antonio"
+    email: antonio1dbo@gmail.com
+    orcid: "https://orcid.org/0009-0000-6891-1562"
+repository-code: "https://github.com/Antonio-Tresol/cbai-cambria-project"
+license: MIT
+keywords:
+  - emotion vectors
+  - activation steering
+  - circumplex model
+  - Gemma
+  - AI safety
+  - mechanistic interpretability
+# The work being replicated. Recorded here so the relationship is machine-readable
+# and travels with the citation, rather than living only in prose. Author list and
+# title transcribed from papers/Emotion_Concepts_and_their_Function_in_a_LLM.pdf
+# page 1, read in-session -- not from memory or a search summary.
+references:
+  - type: article
+    title: "Emotion Concepts and their Function in a Large Language Model"
+    year: 2026
+    url: "https://transformer-circuits.pub/2026/emotions/index.html"
+    authors:
+      - {family-names: Sofroniew, given-names: Nicholas}
+      - {family-names: Kauvar, given-names: Isaac}
+      - {family-names: Saunders, given-names: William}
+      - {family-names: Chen, given-names: Runjin}
+      - {family-names: Henighan, given-names: Tom}
+      - {family-names: Hydrie, given-names: Sasha}
+      - {family-names: Citro, given-names: Craig}
+      - {family-names: Pearce, given-names: Adam}
+      - {family-names: Tarng, given-names: Julius}
+      - {family-names: Gurnee, given-names: Wes}
+      - {family-names: Batson, given-names: Joshua}
+      - {family-names: Zimmerman, given-names: Sam}
+      - {family-names: Rivoire, given-names: Kelley}
+      - {family-names: Fish, given-names: Kyle}
+      - {family-names: Olah, given-names: Chris}
+      - {family-names: Lindsey, given-names: Jack}
+
+# PRIVATE repository. GitHub shows the "Cite this repository" button only to
+# people who can see the repo, and Zenodo cannot archive a private repository, so
+# this file is preparation for release rather than a working citation today.
