@@ -408,9 +408,11 @@ TEMPLATE = r"""<!DOCTYPE html>
   <div class="kicker">What we were trying to find out</div>
   <h2><span class="secno">1</span>Why does this matter?</h2>
   <h3 style="margin-top:26px">The setup, in one picture</h3>
-  <p class="narrow" style="margin-bottom:14px">Difference-of-means emotion vectors from the residual
-  stream, then read back by cosine. Nothing on this page comes from prompting the model or reading its
-  output.</p>
+  <p class="narrow" style="margin-bottom:14px">Emotion vectors are built as a difference of means
+  over residual stream activations, and read back as the <b>cosine similarity between the residual
+  stream at a given token and each emotion vector</b>. Centered, meaning the mean over the story
+  set is subtracted first, so 0 is the corpus average rather than no emotion. Nothing on this
+  page comes from prompting the model or reading its output.</p>
   <div class="card"><div id="methodDiagram"></div>
     <div class="legend">
       <span>171 emotions in parts one and two, ~9 stories each; the 12-emotion banks used from part
@@ -419,8 +421,8 @@ TEMPLATE = r"""<!DOCTYPE html>
   </div>
   <div class="grid2" style="margin-top:18px">
     <div class="card"><h3>The two arms</h3><p style="font-size:15px">Gemma&nbsp;4&nbsp;31B <b>base</b>
-    and <b>instruction-tuned</b>: the same weights before and after post-training. Running both is the
-    comparison the original paper could not make, and it is where the interesting result came from.
+    and <b>instruction-tuned</b>: the same weights before and after post-training. Running both is a comparison the
+    original paper did not report, and it is where the interesting result came from.
     Layers are sampled, not swept: twenty across the stack (0 to 57, every third) for the geometry and
     detection work, six for the trajectories.</p></div>
     <div class="card"><h3>The result being replicated</h3><p style="font-size:15px">Anthropic reports
@@ -614,7 +616,7 @@ TEMPLATE = r"""<!DOCTYPE html>
       <p>Every square is scored from 0 to 1: 1 means the two layers sort the 171 emotions identically,
       0 means they share nothing. Start on <b>base model</b> and you get close to the good case: its
       late layers agree with each other at <b>0.94</b> out of 1. Now switch to <b>instruction-tuned
-      model</b>. The same measure drops to <b>0.79</b> and the grid visibly breaks into blocks. The plain view matters here as the control:
+      model</b>. The same measure drops to <b>0.79</b> and the grid visibly breaks into blocks. The base view matters here as the control:
       without it, you could not tell a genuinely broken-up model from a measure that just always looks
       blotchy.</p>
       <p>Now switch to <b>instruction-tuned, top PC removed</b>. We remove just the biggest axis at each
@@ -622,7 +624,7 @@ TEMPLATE = r"""<!DOCTYPE html>
       axis <em>caused</em> the fragmentation, rather than the emotion structure having gone missing.</p>
       <p><b>base vs. instruction-tuned</b> is the odd one out: it is the only view with a different model on
       each axis, so it is the only one that is not a mirror image about its diagonal. Rows are
-      instruction-tuned layers, columns are plain layers, and the diagonal answers "how much did instruction tuning
+      instruction-tuned layers, columns are base layers, and the diagonal answers "how much did instruction tuning
       change this particular depth?". If instruction tuning changed nothing the diagonal would read 1.0
       throughout. It reads 0.97 at layer 3 and 0.21 at layer 57: the early layers came through intact,
       the late half was rebuilt.</p>
@@ -730,8 +732,8 @@ TEMPLATE = r"""<!DOCTYPE html>
   <p class="narrow"><b>Why the instruction-tuned model, when parts one and two just showed its emotion
   structure is the messier of the two?</b> Because the twelve-emotion vector sets only exist for it: an
   emotion vector has to be built from stories, and these were built from stories the instruction-tuned model
-  wrote about itself. Running the same test on the base model would mean rebuilding the whole set from
-  plain-model stories, which we did not do. So this section reads the model people actually talk to,
+  wrote about itself. Running the same test on the base arm would mean rebuilding the bank from
+  base-model stories, which we did not do. So this section reads the model people actually talk to,
   and the base model is absent here rather than losing.</p>
   <div class="card" style="margin-top:22px">
     <div class="controls">
@@ -972,7 +974,7 @@ TEMPLATE = r"""<!DOCTYPE html>
     </details>
     <details class="howto" style="border-top:none">
       <summary style="font-size:15px">Why Gemma 4 and not the model in the paper?</summary>
-      <p>Because both versions of it are available at the same size: the base model and the instruction-tuned model, otherwise identical. That is exactly the comparison the original paper could not run, and it is where our main finding came from.</p>
+      <p>Because both arms are available at the same size: base and instruction-tuned, otherwise identical weights. The original paper reports one model and no base-vs-instruction-tuned comparison, so that comparison was open, and it is where our main finding came from.</p>
     </details>
     <details class="howto" style="border-top:none">
       <summary style="font-size:15px">Could the mystery axis just be a bug in your pipeline?</summary>
@@ -1003,7 +1005,7 @@ TEMPLATE = r"""<!DOCTYPE html>
 </div></section>
 
 <footer><div class="wrap">
-  <div>CAMBRIA capstone &middot; Gemma 4 31B, plain and instruction-tuned &middot; every figure regenerated
+  <div>CAMBRIA capstone &middot; Gemma 4 31B, base and instruction-tuned &middot; every figure regenerated
   from the notebooks in the project repository.</div>
   <div class="src">A short sprint, not a peer-reviewed paper: no external review, and the null results are included and labelled as such. Every number here is transcribed from the printed output of notebooks 02, 05, 08 and 11.</div>
 </div></footer>
@@ -1090,7 +1092,8 @@ function drawMethod(){
   const rx=742;
   svg.appendChild(el("line",{x1:722,y1:yMid,x2:rx-4,y2:yMid,stroke:P.muted,"stroke-width":1.4}));
   svg.appendChild(el("line",{x1:rx-4,y1:44,x2:rx-4,y2:112,stroke:P.muted,"stroke-width":1.4}));
-  [[44,"PCA over 171","\u2192 parts one, two"],[112,"cosine per token","\u2192 part three"]].forEach(([y,a,b])=>{
+  [[44,"PCA over the 171 vectors","\u2192 parts one, two"],
+   [112,"cos(residual stream, vector)","\u2192 per token, part three"]].forEach(([y,a,b])=>{
     arrow(rx-4,rx+12,y);
     svg.appendChild(txt(rx+18,y-2,a,{anchor:"start",size:11,weight:600}));
     svg.appendChild(txt(rx+18,y+12,b,{anchor:"start",size:9.5,fill:P.muted}));
