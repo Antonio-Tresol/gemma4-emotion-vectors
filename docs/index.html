@@ -10,7 +10,7 @@
 <title>How are emotions represented in large language models?</title>
 <meta name="description" content="Replicating Anthropic's emotion-vector result on Gemma 4 31B: the base model reproduces the circumplex, the instruction-tuned model buries it under an axis we cannot explain, and emotion tracking through a story is real but small.">
 <meta property="og:title" content="How are emotions represented in large language models?">
-<meta property="og:description" content="A short research sprint on emotion vectors in Gemma 4 31B — replication, what instruction tuning displaces, and reading emotion token by token through a story.">
+<meta property="og:description" content="A short research sprint on emotion vectors in Gemma 4 31B: replication, what instruction tuning displaces, and reading emotion token by token through a story.">
 <meta property="og:type" content="article">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -326,8 +326,8 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
   the strongest appearing twice under different prompting, and corpus sizes spanning 1,539 to 12,262
   stories. So read the four together as a comparison of corpora, not as an ablation over authorship.</p>
   <p class="narrow"><b>The test.</b> Take a short message of the kind a person actually sends a
-  chatbot &mdash; <em>"My daughter just took her first steps today! What are some ways to capture more
-  of these precious moments?"</em> &mdash; which implies an emotion without ever naming it. Run it as a
+  chatbot, say <em>"My daughter just took her first steps today! What are some ways to capture more
+  of these precious moments?"</em>. It implies an emotion without ever naming it. Run it as a
   chat turn, and read the residual stream at the last token before the reply would start. Rank all
   twelve emotion vectors by cosine and ask whether the right one lands in the top three.</p>
   <p class="narrow">Two things make this harder than it sounds. The vectors were built from
@@ -335,7 +335,7 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
   emotion is never stated, so matching on the words cannot work. A layer counts as <b>working</b> when
   it gets at least 8 of the 12 scenarios right on the paper's battery <em>and</em> on a held-out set of
   twelve we wrote before scoring anything. Both marks were fixed in advance.</p>  <div class="card" style="margin-top:22px">
-    <div id="lineageChart"></div>
+    <div id="lineageChart" data-figtitle="Detection by story source and layer"></div>
     <div class="legend"><span>Darker is more scenarios correct. A row's number is its ringed cells: the layers where these vectors detect the emotion behind a message. 0 of 20 would mean they never work at all.</span></div>
     <details class="howto"><summary>How to read this</summary>
       <p>One row per story source, one column per sampled layer. The cell is how many of the twelve
@@ -370,7 +370,7 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
       <p style="font-size:15px" class="muted">It is also the sharpest thing we saw about what is
       peculiar to this particular model. Ask it for variety and it gives you Elias, 3,000 times.</p></div>
     <div class="card"><h3>How many stories do you actually need?</h3>
-      <div id="doseChart"></div>
+      <div id="doseChart" data-figtitle="Detection against corpus size"></div>
       <p style="font-size:15px;margin-top:8px">About <b>64</b> per emotion. At that point the vectors
       already reach 8.6 working layers out of the 9 this writer ever achieves. (It is a
       fraction because it averages five random draws of that many stories.) Quadrupling the
@@ -399,7 +399,7 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
       <button class="seg" data-model="instruct">instruction-tuned model</button>
       <span class="muted" style="margin-left:auto;font-size:13px" id="pcVerdict"></span>
     </div>
-    <div id="pcChart"></div>
+    <div id="pcChart" data-figtitle="Principal components of the 171 emotion vectors, layer 33"></div>
     <div class="legend">
       <span><i style="background:var(--navy)"></i>valence</span>
       <span><i style="background:var(--teal)"></i>arousal</span>
@@ -439,8 +439,9 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
   same information; 0 means they have nothing in common.</b> Hover any square.</p>
   <div class="grid2" style="margin-top:22px">
     <div class="card">
-      <div id="gridChart"></div>
+      <div id="gridChart" data-figtitle="Instruction-tuned axes against base axes, top five of each"></div>
       <div id="gridNote" class="muted" style="margin-top:10px;min-height:34px;font-size:13.5px"></div>
+      <div class="src">source: notebooks/02_circumplex_geometry.ipynb, layer 33</div>
     </div>
     <div class="card">
       <h3>The top row is the finding: nothing matches</h3>
@@ -478,7 +479,7 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
       <span class="muted" style="font-size:13px">showing</span><span id="rsaBtns"></span>
       <span class="muted" id="rsaNote" style="margin-left:auto;font-size:12.5px"></span>
     </div>
-    <div id="rsaChart"></div>
+    <div id="rsaChart" data-figtitle="Do the model's layers agree on how emotions are organised?"></div>
     <details class="howto"><summary>How to read this</summary>
       <p><b>What a good result looks like:</b> dark everywhere. That is a model whose layers all agree
       on what emotions are, one stable picture from bottom to top. <b>What a bad result looks like:</b>
@@ -544,14 +545,14 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
          rather than inside the plot where the lines used to run through it -->
     <div id="storyReadout" class="legend" style="margin:10px 0 2px"></div>
     <div class="grid2" style="gap:24px">
-      <div><div class="muted" style="font-size:12.5px;margin-bottom:6px">
-        one line per emotion, over the length of the story</div><div id="lineChart"></div></div>
-      <div><div class="muted" style="font-size:12.5px;margin-bottom:6px">
+      <div><div class="figcap muted" style="font-size:12.5px;margin-bottom:6px">
+        one line per emotion, over the length of the story</div><div id="lineChart" data-figtitle="Three emotion vectors over one story"></div></div>
+      <div><div class="figcap muted" style="font-size:12.5px;margin-bottom:6px">
         the same three numbers, as a position between the three emotions</div>
-        <div id="ternChart"></div></div>
+        <div id="ternChart" data-figtitle="The same three readings, as a position between the emotions"></div></div>
     </div>
     <div style="margin-top:20px">
-      <div class="muted" style="font-size:12.5px;margin-bottom:6px">
+      <div class="figcap muted" style="font-size:12.5px;margin-bottom:6px">
         the story the model is reading. The part you are currently on is highlighted</div>
       <div class="storybox" id="storyBox"></div>
     </div>
@@ -614,7 +615,7 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
         <span class="muted" style="font-size:13px">layer</span><span id="emoLayerBtns"></span>
       </span>
     </div>
-    <div id="emoChart"></div>
+    <div id="emoChart" data-figtitle="How often each emotion's own vector wins"></div>
     <div id="emoNote" style="margin-top:12px;min-height:36px;color:var(--body);font-size:14px"></div>
     <details class="howto"><summary>How to read this</summary>
       <p><b>The grading scale.</b> The dashed line at 8% is chance: a bar at or below it means
@@ -647,13 +648,15 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
   content to calm. The two lines are on different scales, so each has its own axis and its own
   failure line. Read them as two charts sharing an x-axis.</p>
   <div class="grid2" style="margin-top:22px">
-    <div class="card"><div id="layerChart"></div>
+    <div class="card"><div id="layerChart" data-figtitle="Naming the current emotion vs sensing the next, by depth"></div>
       <div class="legend">
         <span><i style="background:var(--navy)"></i>names the current emotion right (left axis, 8% is
         chance)</span>
         <span><i style="background:var(--orange)"></i>the lean tracks how big the coming change is
         (right axis, 0 means the size of the lean says nothing about the size of the change)</span>
       </div>
+      <div class="src">source: notebooks/11_tracking_taxonomy.ipynb (measurements repeated at each
+      layer)</div>
     </div>
     <div class="card">
       <h3>Two different skills, in two different places</h3>
@@ -1081,7 +1084,7 @@ function drawGrid(){
       fill:`rgba(29,53,87,${((i/39)*0.95).toFixed(3)})`}));
   }
   // only the two ends are labelled: a middle tick collided with the right label
-  [["0 — nothing in common",0,"start"],["1 — the same information",1,"end"]].forEach(([lab,f,anc])=>{
+  [["0 = nothing in common",0,"start"],["1 = the same information",1,"end"]].forEach(([lab,f,anc])=>{
     const t=el("text",{x:sx+f*sw,y:sy+22,"text-anchor":anc,"font-size":10,fill:P.muted});
     t.textContent=lab; svg.appendChild(t);
   });
@@ -1396,7 +1399,7 @@ function drawLayers(){
   // kept short on purpose: right-anchored, this label extends leftwards into the
   // plot, and layer 33 sits exactly ON the zero line — a longer string runs
   // straight under that point. The axis title carries the full meaning.
-  a2.textContent="0 — no relation"; svg.appendChild(a2);
+  a2.textContent="0 = no relation"; svg.appendChild(a2);
   let d1="",d2="";
   rows.forEach((r,i)=>{d1+=(i?"L":"M")+X(i)+","+Y1(r.top1);d2+=(i?"L":"M")+X(i)+","+Y2(r.r_dval);});
   svg.appendChild(el("path",{d:d1,fill:"none",stroke:P.navy,"stroke-width":2.4}));
@@ -1937,7 +1940,7 @@ const RSA_LABEL={"instruct RSA (unablated)":"instruction-tuned model",
 const RSA_NOTE={"instruct RSA (unablated)":"do the instruction-tuned model's layers agree with each other?",
   "base RSA (unablated)":"the control: the same question on the base model",
   "instruct RSA (top component removed)":"the same layers, with only the mystery axis removed",
-  "cross-model RSA: instruct vs base":"one model on each axis — what did instruction tuning change?"};
+  "cross-model RSA: instruct vs base":"one model on each axis: what did instruction tuning change?"};
 let rsaKey=RSA_KEYS[0];
 function drawRsa(){
   const host=document.getElementById("rsaChart"); if(!host) return;
@@ -2029,10 +2032,10 @@ addEventListener("keydown",e=>{if(e.key==="Escape") closeModal();});
 // the element holding each chart's live state, to carry into the expanded view
 const FIG_NOTE={pcChart:"pcVerdict", gridChart:"gridNote", lineChart:"tokLabel",
   ternChart:"tokLabel", emoChart:"emoNote", rsaChart:"rsaNote"};
-function addModalLine(text,marginBottom){
+function addModalLine(text,cls,style){
   const d=document.createElement("div");
-  d.className="mono muted";
-  d.style.cssText=`font-size:13px;margin:${marginBottom==="0"?"12px 0 0":"0 0 "+marginBottom}`;
+  d.className=cls||"muted";
+  d.style.cssText=style||"font-size:13px;margin:0 0 12px";
   d.textContent=text; MODAL_BODY.appendChild(d);
 }
 // wrap every chart host so it gets an expand button; the modal shows a live clone
@@ -2047,15 +2050,34 @@ function addModalLine(text,marginBottom){
   b.onclick=()=>{
     const svg=host.querySelector("svg"); if(!svg) return;
     MODAL_BODY.innerHTML="";
-    // A chart's caption sits in a sibling div and its live state (which token,
-    // which layer, which probe bank) in the controls row - both outside the svg.
-    // Cloning the svg alone dropped them, so an expanded figure arrived with no
-    // title and no way to tell which state you were looking at.
+    // Everything that explains a figure lives OUTSIDE its svg: the heading and
+    // source line in the enclosing card, the caption in a sibling div, the live
+    // state in the controls row. Cloning the svg alone produced an expanded
+    // figure with no title, which is the least readable view of all.
+    const card=host.closest(".card") || parent;
+    // the figure names itself via data-figtitle, so the expanded view never
+    // depends on whatever markup happens to surround the chart
+    const title=host.dataset.figtitle || (card.querySelector("h3")||{}).textContent;
+    if(title) addModalLine(title,"",
+      "font-family:var(--display);font-size:17px;font-weight:600;color:var(--text);margin:0 0 4px");
     const cap=host.previousElementSibling;
-    if(cap && cap.classList && cap.classList.contains("mono")) addModalLine(cap.textContent,"12px");
-    MODAL_BODY.appendChild(svg.cloneNode(true));
+    if(cap && cap.classList && cap.classList.contains("figcap"))
+      addModalLine(cap.textContent,"muted","font-size:13px;margin:0 0 10px");
     const note=FIG_NOTE[id] && document.getElementById(FIG_NOTE[id]);
-    if(note && note.textContent.trim()) addModalLine(note.textContent,"0");
+    if(note && note.textContent.trim())
+      addModalLine(note.textContent,"muted","font-size:13px;margin:0 0 10px");
+    MODAL_BODY.appendChild(svg.cloneNode(true));
+    // the how-to-read block and the evidence file, both of which the acceptance
+    // test for these figures depends on
+    const howto=card.querySelector("details.howto");
+    if(howto){
+      const d=document.createElement("details");
+      d.className="howto"; d.style.marginTop="14px";
+      d.innerHTML=howto.innerHTML;
+      MODAL_BODY.appendChild(d);
+    }
+    const src=card.querySelector(".src");
+    if(src) addModalLine(src.textContent,"src","font-size:11px;margin-top:10px");
     MODAL.classList.add("on");
   };
   parent.appendChild(b);
