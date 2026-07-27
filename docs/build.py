@@ -467,8 +467,11 @@ TEMPLATE = r"""<!DOCTYPE html>
 <section id="probes"><div class="wrap">
   <h2><span class="secno">2</span>Who writes the stories changes the answer</h2>
   <p class="narrow">An emotion vector is only as good as the corpus behind it, and the corpus is a
-  free parameter before anything is measured. We built four sets that differ in nothing but who wrote
-  the stories, then put all four through the same test.</p>
+  free parameter before anything is measured. We built four sets from four different corpora and put
+  them through the same test.</p>
+  <p class="narrow"><b>They are not a clean one-variable sweep, and it matters.</b> Three sources, with
+  the strongest appearing twice under different prompting, and corpus sizes spanning 1,539 to 12,262
+  stories. So read the four together as a comparison of corpora, not as an ablation over authorship.</p>
   <p class="narrow"><b>The test.</b> Take a short message of the kind a person actually sends a
   chatbot &mdash; <em>"My daughter just took her first steps today! What are some ways to capture more
   of these precious moments?"</em> &mdash; which implies an emotion without ever naming it. Run it as a
@@ -489,10 +492,16 @@ TEMPLATE = r"""<!DOCTYPE html>
       <p><b>The grading scale.</b> 0 of 20 layers would mean these vectors never detect anything.
       20 of 20 would mean every depth works. Nothing we built came close to the top: the best story
       source reaches 9, and the worst reaches 1.</p>
-      <p><b>The ordering is the finding.</b> Only the corpus changed. A stronger outside writer
-      (DeepSeek) gives vectors that work at nine layers; the model's own writing gives five; a smaller
-      model's writing gives one. So the intuitive guess, that a model reads its own emotional writing
-      best, is wrong here. It is out-written.</p>
+      <p><b>The ordering is the finding.</b> A stronger outside writer (DeepSeek) gives vectors that
+      work at nine layers; the model's own writing gives five; a smaller model's writing gives one. So
+      the intuitive guess, that a model reads its own emotional writing best, is wrong here. It is
+      out-written.</p>
+      <p><b>Why two DeepSeek rows?</b> They share a writer and differ in the prompt recipe: one fixed
+      prompt against a persona-by-setting grid meant to force variety. The varied corpus is four times
+      the size and still scores lower, which is the opposite of what we expected. A separate run
+      controls for size properly (5 seeds per point, same scorer): matched on stories per emotion, the
+      fixed-prompt corpus reaches <b>8.6</b> passing layers at 64 stories each, while the varied one
+      needs <b>1,024</b> each to reach <b>6.8</b>. Forced diversity is a tax here, not a benefit.</p>
       <p><b>Where</b> matters as well as how many. No source works in the first third of the stack, and
       the passing layers cluster late, around 33 to 57. A single quoted layer would have hidden that.</p>
     </details>
@@ -515,7 +524,7 @@ TEMPLATE = r"""<!DOCTYPE html>
       stories buys almost nothing.</p>
       <div class="src">source: notebooks/07_generator_lineages.ipynb (experiment E12)</div></div>
   </div>
-  <div class="takeaway"><span class="lbl">Takeaway</span>An emotion vector is only as good as the writer of the stories behind it. A nine-fold difference here, from the same model and the same test. The model is out-written by a stronger outside author, and its own writing is too repetitive to build a broad vector from.</div>
+  <div class="takeaway"><span class="lbl">Takeaway</span>An emotion vector is only as good as the corpus behind it: same model, same test, and a nine-fold spread in how many layers work. The model is out-written by a stronger outside author, and its own writing is too repetitive to build a broad vector from. The corpora differ in size as well as source, so treat the ordering as a comparison of corpora rather than a clean ablation over authorship.</div>
 </div></section>
 
 <section id="replication"><div class="wrap">
@@ -1575,7 +1584,7 @@ function drawLineage(){
   const host=document.getElementById("lineageChart"); if(!host) return;
   host.innerHTML="";
   const LL=D.lineageLayers, layers=LL.layers, rows=D.lineage;
-  const W=880,H=300,L=196,R=104,T=78,B=48;
+  const W=880,H=300,L=232,R=104,T=78,B=48;
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
   const iw=W-L-R, ih=H-T-B;
   const cw=iw/layers.length, rh=ih/rows.length;
@@ -1593,7 +1602,9 @@ function drawLineage(){
     const nm=el("text",{x:L-12,y:y+rh/2-2,"text-anchor":"end","font-size":11.5,fill:P.text});
     nm.textContent=r.label; svg.appendChild(nm);
     const sb=el("text",{x:L-12,y:y+rh/2+11,"text-anchor":"end","font-size":10,fill:P.muted});
-    sb.textContent=r.sub; svg.appendChild(sb);
+    // corpus size on the row, because it is the confound: the four arms span
+    // 1,539 to 12,262 stories, so this is not a single-variable comparison
+    sb.textContent=`${r.sub} · ${r.n.toLocaleString()} stories`; svg.appendChild(sb);
     layers.forEach((layer,j)=>{
       const paper=arm.paper[j], held=arm.heldout[j], worst=Math.min(paper,held);
       const passes=paper>=LL.bar && held>=LL.bar;
