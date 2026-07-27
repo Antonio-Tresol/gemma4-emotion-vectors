@@ -467,8 +467,8 @@ TEMPLATE = r"""<!DOCTYPE html>
 <div class="partbar"><div class="wrap"><span class="ptitle">Part one &middot; Rebuilding the emotion vectors</span><p class="pblurb">Does the published result hold up on a different model? A prior question comes first. An emotion vector is only as good as the stories used to build it, and that turns out to matter a great deal.</p></div></div>
 <section id="probes"><div class="wrap">
   <h2><span class="secno">2</span>Who writes the stories changes the answer</h2>
-  <p class="narrow">An emotion vector is only as good as the corpus behind it, and the corpus is a
-  free parameter before anything is measured. We built four sets from four different corpora and put
+  <p class="narrow">An emotion vector is only as good as the corpus behind it, and nothing in the
+  method says what that corpus should be. We built four sets from four different corpora and put
   them through the same test.</p>
   <p class="narrow"><b>The test.</b> Take a short message of the kind a person actually sends a
   chatbot, say <em>"My daughter just took her first steps today! What are some ways to capture more
@@ -478,13 +478,13 @@ TEMPLATE = r"""<!DOCTYPE html>
   <p class="narrow">Two things make this harder than it sounds. The vectors were built from
   <em>stories</em> and are being tested on <em>messages</em>, so nothing guarantees transfer. And the
   emotion is never stated, so matching on the words cannot work. A layer counts as <b>working</b> when
-  it gets at least 8 of the 12 scenarios right on the paper's battery <em>and</em> on a held-out set of
-  twelve we wrote before scoring anything. Both marks were fixed in advance.</p>  <div class="card" style="margin-top:22px">
+  it gets at least 8 of 12 right on the paper's twelve scenarios <em>and</em> on a second twelve we
+  wrote ourselves before scoring anything. Both marks were fixed in advance.</p>  <div class="card" style="margin-top:22px">
     <div id="lineageChart" data-figtitle="Detection by story source and layer"></div>
     <div class="legend"><span>Darker is more scenarios correct. A row's number is its ringed cells: the layers where these vectors detect the emotion behind a message. 0 of 20 would mean they never work at all.</span></div>
     <details class="howto"><summary>How to read this</summary>
       <p>One row per story source, one column per sampled layer. The cell is how many of the twelve
-      scenarios that layer got right, taking the worse of the two batteries, because a layer has to
+      scenarios that layer got right, taking the worse of the two sets of twelve, because a layer has to
       clear the mark on both. <b>Ringed cells clear it.</b> The number on the right is how many rings
       the row has.</p>
       <p><b>The grading scale.</b> 0 of 20 layers would mean these vectors never detect anything.
@@ -775,8 +775,8 @@ TEMPLATE = r"""<!DOCTYPE html>
       below chance. Change the layer and the order shuffles, which is exactly why nobody should
       quote a single layer as "how well the model follows emotion".</p>
       <p><b>The part we did not expect.</b> The wrong answers are not spread evenly. With Gemma's own
-      vectors, wrong answers pile into two attractors: whatever the true answer was, the model keeps
-      answering <b>guilty</b> or <b>happy</b>. Switch to DeepSeek's vectors and that pile-up
+      vectors, the wrong answers pile onto two emotions: whatever the true answer was, the model
+      keeps replying <b>guilty</b> or <b>happy</b>. Switch to DeepSeek's vectors and that pile-up
       disappears, and overall accuracy rises. So a real share of what looks like "the model cannot
       follow emotions" is a property of the vectors we handed it, not of the model.</p>
     </details>
@@ -853,7 +853,7 @@ TEMPLATE = r"""<!DOCTYPE html>
     which case a story that implies an emotion without ever naming it should break them.</p></div>
     <div class="card"><h3>Separate the vectors from the model</h3><p style="font-size:15px">Our
     stories switch emotions by label. A sharper test varies the <em>intensity</em> of one emotion
-    instead, which is a harder thing to fake. And since the confusion attractors appeared with one
+    instead, which is a harder thing to fake. And since that pile-up onto two emotions appeared with one
     writer's vectors and vanished with another's, telling "the model cannot do this" apart from "these
     vectors cannot do this" deserves an experiment of its own.</p></div>
   </div>
@@ -1005,7 +1005,7 @@ TEMPLATE = r"""<!DOCTYPE html>
     </details>
     <details class="howto" style="border-top:none">
       <summary style="font-size:15px">How much of the story-following result comes from your emotion vectors rather than the model?</summary>
-      <p>More than we would like, and that is itself a finding. Changing only who wrote the stories moves the number of working layers from 1 to 9, and the confusion attractors present with one writer's vectors are absent with another's. On our evidence, a detection or tracking number is not interpretable without the corpus that produced the vectors, so we report ours and would want to see anyone else's.</p>
+      <p>More than we would like, and that is itself a finding. Changing only who wrote the stories moves the number of working layers from 1 to 9. And the pile-up of wrong answers onto two emotions happens with one writer's vectors, not with another's. On our evidence, a detection or tracking number is not interpretable without the corpus that produced the vectors, so we report ours and would want to see anyone else's.</p>
     </details>
     <details class="howto" style="border-top:none">
       <summary style="font-size:15px">Why does layer 6 name emotions better than layer 33?</summary>
@@ -1618,7 +1618,7 @@ function drawLineage(){
       const x=L+j*cw;
       const cell=el("rect",{x:x+1,y:y+3,width:cw-2,height:rh-6,rx:2,fill:shade(worst)});
       tipOn(cell,`<b>${r.label}, layer ${layer}</b>: `+
-        `${paper} of 12 on the paper battery, ${held} of 12 on the held-out one`+
+        `${paper} of 12 on the paper's scenarios, ${held} of 12 on ours`+
         `<span class="t-sub">${passes?"passes":"fails"} the ${LL.bar}-of-12 mark, which has to be met `+
         `on both. The scenarios are user messages that imply an emotion without naming it; the `+
         `reading is taken at the last token before the reply.</span>`);
@@ -2318,10 +2318,49 @@ def check_prose(html: str) -> None:
     )
 
 
+# Words a reader has already had to ask about. Each was fixed only after being
+# queried, so the list exists to stop them returning rather than to be clever.
+# A term earns removal from this list by being defined on the page at first use.
+BANNED_WORDS = {
+    "battery": "say what is in it: \u201cthe paper\u2019s twelve scenarios\u201d",
+    "batteries": "say \u201cboth sets of scenarios\u201d",
+    "arm": "say \u201cmodel\u201d, \u201cversion\u201d or \u201ccondition\u201d",
+    "arms": "say \u201cthe two models we compare\u201d",
+    "probe bank": "say \u201cthe twelve emotion vectors\u201d",
+    "readout": "say what the code actually does",
+    "unablated": "say \u201cas measured\u201d",
+    "attractor": "say \u201cthe wrong answers pile onto X\u201d",
+    "attractors": "say \u201cthe wrong answers pile onto X\u201d",
+    "lineage": "say \u201cstory source\u201d or \u201ccorpus\u201d",
+    "substrate": "say \u201cthe stories\u201d or \u201cthe corpus\u201d",
+    "free parameter": "say that nothing in the method fixes it",
+    "ablation": "say what was removed and what happened",
+    "the read": "say \u201cTakeaway\u201d",
+    "registered bar": "say \u201cthe mark we fixed in advance\u201d",
+}
+
+
+def check_jargon(html: str) -> None:
+    """Fail the build on terms a reader has already had to ask about."""
+    prose = " ".join(prose_sentences(html)).lower()
+    hits = [
+        f"  {word!r}: {fix}"
+        for word, fix in BANNED_WORDS.items()
+        if re.search(r"\b" + re.escape(word) + r"\b", prose)
+    ]
+    if hits:
+        raise SystemExit(
+            "jargon check failed; these were each queried by a reader before:\n"
+            + "\n".join(hits)
+        )
+    print(f"jargon: none of the {len(BANNED_WORDS)} flagged terms present")
+
+
 if __name__ == "__main__":
     out = HERE / "index.html"
     html = build()
     check_em_dashes(html)
     check_prose(html)
+    check_jargon(html)
     out.write_text(html, encoding="utf-8")
     print(f"wrote {out} ({out.stat().st_size / 1024:.0f} KB)")
