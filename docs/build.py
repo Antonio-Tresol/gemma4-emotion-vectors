@@ -438,16 +438,17 @@ TEMPLATE = r"""<!DOCTYPE html>
   <div class="grid3" style="gap:16px">
     <div class="card"><h3>Readable and steerable in one object</h3><p style="font-size:15px">A direction you can read off
     mid-forward-pass is also a direction you can add back in. That makes emotion vectors an
-    interpretability object and an intervention in the same breath, which is rarer than it sounds.</p></div>
+    interpretability object and an intervention in the same breath.</p></div>
     <div class="card"><h3>Models as listeners</h3><p style="font-size:15px">People already bring models
     their worst days, and companies are selling them as companions and therapists. Doing that well is
     not a matter of labelling one message as positive or negative. It means following how someone's
     state <em>moves</em> across a long conversation. Precisely what we tested, and precisely where it gets shaky.</p></div>
     <div class="card"><h3>Internal evidence, for the welfare question</h3><p style="font-size:15px">
-    Arguments about model welfare mostly run on what a model <em>says</em>. Emotion vectors are one of
-    the few handles on internal state instead. A caveat we take seriously: we measured the model
-    reading emotions in a <em>story</em>, not having them. Those are different claims, and conflating
-    them is the easiest mistake in this area.</p></div>
+    Welfare arguments lean heavily on model self-report. Reading internal state instead sidesteps the
+    obvious objection to that, which is why we think this line is worth pursuing at all. The caveat is
+    load-bearing and we would rather state it twice than once: what we measured is the model
+    representing the emotions <em>of a story it is reading</em>. That is not evidence about what the
+    model feels.</p></div>
     <div class="card"><h3>Where its ontology differs from ours</h3><p style="font-size:15px">The geometry we recover is the
     model's, not ours. Where it departs from human VAD ratings, the residual is a map of what is
     idiosyncratic to the model, and instruction tuning visibly redraws it.</p></div>
@@ -462,7 +463,8 @@ TEMPLATE = r"""<!DOCTYPE html>
 <section id="probes"><div class="wrap">
   <h2><span class="secno">2</span>Who writes the stories changes the answer</h2>
   <p class="narrow">To build an emotion vector you need stories written to feel like that emotion,
-  so somebody has to write them. Nobody reports who. We built four sets of emotion vectors from four
+  so the corpus is a free parameter before anything is measured. We varied only that, and it moves the
+  result more than anything else we changed. We built four sets of emotion vectors from four
   different story sources: three writers, with the strongest of them appearing twice under
   different prompting. All four went through the same test.</p>
   <p class="narrow">The test: give the model a piece of text whose emotion we know, rank all twelve
@@ -966,7 +968,7 @@ TEMPLATE = r"""<!DOCTYPE html>
     </details>
     <details class="howto" style="border-top:none">
       <summary style="font-size:15px">Does the model actually feel anything?</summary>
-      <p>Nothing here shows that, and we would push back on the leap. What we measured is the model representing the emotions <em>of a story it is reading</em>, closer to reading comprehension than to feeling anything. It matters as evidence about internals, because most arguments in this area run entirely on what a model says about itself. But recognising an emotion and having one are different claims, and running them together is the easiest mistake available here.</p>
+      <p>Nothing here shows that, and we would push back on the leap. What we measured is the model representing the emotions <em>of a story it is reading</em>, closer to reading comprehension than to feeling anything. It matters as evidence about internals, because most arguments in this area run entirely on what a model says about itself. But recognising an emotion and having one are different claims, and this is the point at which we would most expect a reader to slide from one to the other.</p>
     </details>
     <details class="howto" style="border-top:none">
       <summary style="font-size:15px">The correlations are small. Isn't this noise?</summary>
@@ -982,7 +984,7 @@ TEMPLATE = r"""<!DOCTYPE html>
     </details>
     <details class="howto" style="border-top:none">
       <summary style="font-size:15px">How much of the story-following result comes from your emotion vectors rather than the model?</summary>
-      <p>More than we would like, and that is itself a finding. Changing only who wrote the stories moves the number of working layers from 1 to 9, and the confusion attractors that appears with one writer's vectors disappears with another's. Any paper reporting how accurately emotion vectors detect emotion, without saying who wrote the stories those vectors were built from, is under-specified.</p>
+      <p>More than we would like, and that is itself a finding. Changing only who wrote the stories moves the number of working layers from 1 to 9, and the confusion attractors present with one writer's vectors are absent with another's. On our evidence, a detection or tracking number is not interpretable without the corpus that produced the vectors, so we report ours and would want to see anyone else's.</p>
     </details>
     <details class="howto" style="border-top:none">
       <summary style="font-size:15px">Why does layer 6 name emotions better than layer 33?</summary>
@@ -1105,7 +1107,11 @@ drawMethod();
 /* ---------- circumplex: principal-component bars ---------- */
 function drawPCs(model){
   const host=document.getElementById("pcChart"); host.innerHTML="";
-  const rows=D.pcs[model], W=640,H=290,L=52,R=14,T=16,B=44;
+  // R is wide on purpose: the three scale labels live in the right margin,
+  // outside the plot. Inside it, the 1.0 label crossed the tallest bars and the
+  // 0 label sat on top of the PC5 category tick, whichever side of the line it
+  // was placed. A grading anchor that overlaps the data is not an anchor.
+  const rows=D.pcs[model], W=780,H=290,L=52,R=168,T=16,B=44;
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
   const iw=W-L-R, ih=H-T-B, bw=iw/rows.length;
   // grading band: |r| above 0.5 is where a component is meaningfully aligned
@@ -1117,16 +1123,16 @@ function drawPCs(model){
     tx.textContent=v.toFixed(2); svg.appendChild(tx);
   });
   // both ends of the scale, said in words rather than left to the reader
-  [[1,"1.0 — this axis is exactly that human rating",P.green],
-   [0.5,"0.5 — clearly related",P.muted],
-   [0,"0 — nothing to do with it",P.alert]].forEach(([v,label,col])=>{
+  [[1,"1.0","exactly that human rating",P.green],
+   [0.5,"0.5","clearly related",P.muted],
+   [0,"0","nothing to do with it",P.alert]].forEach(([v,num,label,col])=>{
     const y=T+ih-v*ih;
     svg.appendChild(el("line",{x1:L,x2:W-R,y1:y,y2:y,stroke:col,"stroke-dasharray":"4 3",
       "stroke-width":v===0.5?1:1.4,opacity:v===0.5?.5:.9}));
-    // the zero line sits at the foot of the bars, so its label goes below the
-    // axis rather than on top of PC5's columns
-    const t=el("text",{x:W-R-2,y:v===0?y+13:y-5,"text-anchor":"end","font-size":10,fill:col});
-    t.textContent=label; svg.appendChild(t);
+    const t=el("text",{x:W-R+8,y:y+3.5,"font-size":10.5,fill:col,"font-weight":600});
+    t.textContent=num; svg.appendChild(t);
+    const t2=el("text",{x:W-R+30,y:y+3.5,"font-size":10,fill:col});
+    t2.textContent=label; svg.appendChild(t2);
   });
   rows.forEach((r,i)=>{
     const x0=L+i*bw;
@@ -1157,7 +1163,7 @@ function drawPCs(model){
   // the y axis had tick numbers but never said what they measured
   const yl=el("text",{x:14,y:T+ih/2,"font-size":10.5,fill:P.muted,
     transform:`rotate(-90 14 ${T+ih/2})`,"text-anchor":"middle"});
-  yl.textContent="match with the human rating (higher is closer)"; svg.appendChild(yl);
+  yl.textContent="|r| with the human rating"; svg.appendChild(yl);
   host.appendChild(svg);
   document.getElementById("pcVerdict").textContent = model==="base"
     ? "biggest axis = valence, 0.83. the circumplex, recovered."
