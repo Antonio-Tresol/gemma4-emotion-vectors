@@ -28,6 +28,9 @@ EMO_BY_LAYER_JSON = SCRATCH / "emo_by_layer.json"  # per-layer confusion, all si
 THREE_STORIES_JSON = SCRATCH / "three_stories.json"
 # the three 20x20 layer-by-layer RSA matrices from notebook 02 section 9
 RSA_JSON = SCRATCH / "rsa_matrices.json"
+# per-layer detection scores behind the lineage figure, so the chart can show
+# the measurement instead of asserting a count derived from it
+LINEAGE_LAYERS_JSON = SCRATCH / "lineage_layers.json"
 
 # ---------------------------------------------------------------------------
 # All figures below come from notebooks/02 and notebooks/11 printed records and
@@ -330,6 +333,7 @@ def build() -> str:
         "emoByLayer": json.loads(EMO_BY_LAYER_JSON.read_text(encoding="utf-8")),
         "three": json.loads(THREE_STORIES_JSON.read_text(encoding="utf-8")),
         "rsa": json.loads(RSA_JSON.read_text(encoding="utf-8")),
+        "lineageLayers": json.loads(LINEAGE_LAYERS_JSON.read_text(encoding="utf-8")),
         "pcs": PCS,
         "grid": SCORE_GRID,
         "angles": PRINCIPAL_ANGLES,
@@ -462,33 +466,35 @@ TEMPLATE = r"""<!DOCTYPE html>
 <div class="partbar"><div class="wrap"><span class="ptitle">Part one &middot; Rebuilding the emotion vectors</span><p class="pblurb">Does the published result hold up on a different model? Before that question can be answered, a prior one: an emotion vector is only as good as the stories used to build it, and it turns out that matters a great deal.</p></div></div>
 <section id="probes"><div class="wrap">
   <h2><span class="secno">2</span>Who writes the stories changes the answer</h2>
-  <p class="narrow">To build an emotion vector you need stories written to feel like that emotion,
-  so the corpus is a free parameter before anything is measured. We varied only that, and it moves the
-  result more than anything else we changed. We built four sets of emotion vectors from four
-  different story sources: three writers, with the strongest of them appearing twice under
-  different prompting. All four went through the same test.</p>
-  <p class="narrow">The test: give the model a piece of text whose emotion we know, rank all twelve
-  emotion vectors by how well each matches, and check whether the correct one lands in the top three.
-  A layer of the model counts as <b>working</b> if it does that for at least 8 of 12 pieces of test
-  text, on two separate sets. Chance puts the right answer in the top three about a quarter of
-  the time, so the bar is 8 of 12 against a chance rate of 3 of 12. We fixed that mark in advance,
-  before looking at any results, so we could not move it to suit the answer.</p>
-  <div class="card" style="margin-top:22px">
+  <p class="narrow">An emotion vector is only as good as the corpus behind it, and the corpus is a
+  free parameter before anything is measured. We built four sets that differ in nothing but who wrote
+  the stories, then put all four through the same test.</p>
+  <p class="narrow"><b>The test.</b> Take a short message of the kind a person actually sends a
+  chatbot &mdash; <em>"My daughter just took her first steps today! What are some ways to capture more
+  of these precious moments?"</em> &mdash; which implies an emotion without ever naming it. Run it as a
+  chat turn, and read the residual stream at the last token before the reply would start. Rank all
+  twelve emotion vectors by cosine and ask whether the right one lands in the top three.</p>
+  <p class="narrow">Two things make this harder than it sounds. The vectors were built from
+  <em>stories</em> and are being tested on <em>messages</em>, so nothing guarantees transfer. And the
+  emotion is never stated, so matching on the words cannot work. A layer counts as <b>working</b> when
+  it gets at least 8 of the 12 scenarios right on the paper's battery <em>and</em> on a held-out set of
+  twelve we wrote before scoring anything. Both marks were fixed in advance.</p>  <div class="card" style="margin-top:22px">
     <div id="lineageChart"></div>
-    <div class="legend"><span><i style="background:var(--navy)"></i>each bar shows how many of the 20
-    tested layers reach the 8-of-12 mark. Taller is better; 0 would mean the vectors never
-    work.</span></div>
+    <div class="legend"><span>Darker is more scenarios correct. A row's number is its ringed cells: the layers where these vectors detect the emotion behind a message. 0 of 20 would mean they never work at all.</span></div>
     <details class="howto"><summary>How to read this</summary>
-      <p><b>Four story sources, one identical test.</b> Three different writers, plus a second attempt
-      by the strongest of them under a different prompt recipe. The corpus sizes differ too, from 1,539
-      stories to 12,262, so this compares sources as a whole rather than isolating one variable. Bar
-      height is how many of the 20 tested layers give emotion vectors that work, by the standard above.
-      <b>A bad result is 0</b>: the vectors never detect anything. <b>A good result is 20</b>,
-      every layer working. Nothing we built came close: the best writer reached 9.</p>
-      <p><b>The ordering is the finding.</b> The strongest outside writer here is DeepSeek, a different
-      company's language model. Its stories produced vectors that work at nine layers. The model's own writing produced five. A smaller model's writing
-      produced one. So the intuitive guess, that a model understands its own emotional writing
+      <p>One row per story source, one column per sampled layer. The cell is how many of the twelve
+      scenarios that layer got right, taking the worse of the two batteries, because a layer has to
+      clear the mark on both. <b>Ringed cells clear it.</b> The number on the right is how many rings
+      the row has.</p>
+      <p><b>The grading scale.</b> 0 of 20 layers would mean these vectors never detect anything.
+      20 of 20 would mean every depth works. Nothing we built came close to the top: the best story
+      source reaches 9, and the worst reaches 1.</p>
+      <p><b>The ordering is the finding.</b> Only the corpus changed. A stronger outside writer
+      (DeepSeek) gives vectors that work at nine layers; the model's own writing gives five; a smaller
+      model's writing gives one. So the intuitive guess, that a model reads its own emotional writing
       best, is wrong here. It is out-written.</p>
+      <p><b>Where</b> matters as well as how many. No source works in the first third of the stack, and
+      the passing layers cluster late, around 33 to 57. A single quoted layer would have hidden that.</p>
     </details>
     <div class="src">source: notebooks/07_generator_lineages.ipynb (experiments E11 and E12)</div>
   </div>
@@ -506,7 +512,8 @@ TEMPLATE = r"""<!DOCTYPE html>
       <p style="font-size:15px;margin-top:8px">About <b>64</b> per emotion. At that point the vectors
       already reach 8.6 working layers out of the 9 this writer ever achieves. (It is a
       fraction because it averages five random draws of that many stories.) Quadrupling the
-      stories buys almost nothing.</p></div>
+      stories buys almost nothing.</p>
+      <div class="src">source: notebooks/07_generator_lineages.ipynb (experiment E12)</div></div>
   </div>
   <div class="takeaway"><span class="lbl">Takeaway</span>An emotion vector is only as good as the writer of the stories behind it. A nine-fold difference here, from the same model and the same test. The model is out-written by a stronger outside author, and its own writing is too repetitive to build a broad vector from.</div>
 </div></section>
@@ -1559,51 +1566,80 @@ function drawLayers(){
 
 
 /* ---------- probe lineage: who wrote the stories ---------- */
+/* Grid, not bars. The old chart showed "passing layers", a count of a count:
+   a layer passes when >=8 of 12 chat scenarios put the target emotion in the
+   top 3 of 12, on BOTH batteries. Neither level was visible, so the number had
+   to be taken on trust. Here every score is drawn and the count is the number
+   of ringed cells in a row. */
 function drawLineage(){
-  const host=document.getElementById("lineageChart"); host.innerHTML="";
-  const rows=D.lineage, W=880,H=290,L=58,R=30,T=34,B=76;
+  const host=document.getElementById("lineageChart"); if(!host) return;
+  host.innerHTML="";
+  const LL=D.lineageLayers, layers=LL.layers, rows=D.lineage;
+  const W=880,H=300,L=196,R=104,T=78,B=48;
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
-  const iw=W-L-R, ih=H-T-B, bw=iw/rows.length, Y=v=>T+ih-(v/20)*ih;
-  [0,5,10,15,20].forEach(v=>{
-    svg.appendChild(el("line",{x1:L,x2:W-R,y1:Y(v),y2:Y(v),stroke:P.border}));
-    const t=el("text",{x:L-6,y:Y(v)+4,"text-anchor":"end","font-size":10,fill:P.muted});
-    t.textContent=v; svg.appendChild(t);
-  });
-  // The failure anchor (0 of 20) is named in the legend below the chart rather
-  // than on the baseline: the shortest bar is 1, so a baseline label sits under it.
-  rows.forEach((r,i)=>{
-    const x=L+i*bw, h=(T+ih)-Y(r.layers);
-    const bar=el("rect",{x:x+16,y:Y(r.layers),width:bw-32,height:h,rx:3,
-      fill:P.navy});
-    tipOn(bar,`<b>stories written by ${r.label}</b>`+
-      `<span class="t-sub">${r.layers} of the 20 tested layers reach the mark set in advance: `+
-      `${D.bar} of 12 checks with the right emotion in the top three, on both sets of test text `+
-      `(chance gives about 3 of 12).<br>`+
-      `Written from ${r.n.toLocaleString()} stories`+
-      (r.overlap!==null?`. Five-word phrase repetition: ${r.overlap} — higher means the stories keep `+
-        `reusing the same phrasing`:"")+`.</span>`);
-    svg.appendChild(bar);
-    const v=el("text",{x:x+bw/2,y:Y(r.layers)-8,"text-anchor":"middle","font-size":15,
-      "font-weight":600,fill:P.text}); v.textContent=r.layers; svg.appendChild(v);
-    const nm=el("text",{x:x+bw/2,y:T+ih+18,"text-anchor":"middle","font-size":11.5,fill:P.text});
-    nm.textContent=r.label; svg.appendChild(nm);
-    const sub=el("text",{x:x+bw/2,y:T+ih+33,"text-anchor":"middle","font-size":10.5,fill:P.muted});
-    sub.textContent=r.sub; svg.appendChild(sub);
-  });
-  // One title saying what the bars count, and one rotated axis label saying what
-  // the numbers are. The old single line tried to be both and was neither.
-  const ttl=el("text",{x:L,y:16,"font-size":13,fill:P.text,"font-weight":600});
-  ttl.textContent="Who wrote the stories decides whether the emotion vectors work at all";
+  const iw=W-L-R, ih=H-T-B;
+  const cw=iw/layers.length, rh=ih/rows.length;
+  const shade=v=>`rgba(29,53,87,${(0.06+0.94*Math.min(1,v/12)).toFixed(3)})`;
+
+  const ttl=el("text",{x:14,y:18,"font-size":13,fill:P.text,"font-weight":600});
+  ttl.textContent="Can these emotion vectors spot the emotion behind a user's message?";
   svg.appendChild(ttl);
-  // the success anchor, drawn rather than left in the prose: nothing we built
-  // came close to it, and the old 0-10 axis hid that
-  svg.appendChild(el("line",{x1:L,x2:W-R,y1:Y(20),y2:Y(20),stroke:P.green,
-    "stroke-dasharray":"4 3","stroke-width":1.4}));
-  const gl=el("text",{x:W-R-2,y:Y(20)+12,"text-anchor":"end","font-size":10,fill:P.green});
-  gl.textContent="20 = every tested layer works"; svg.appendChild(gl);
-  const yl=el("text",{x:16,y:T+ih/2,"font-size":10.5,fill:P.muted,
-    transform:`rotate(-90 16 ${T+ih/2})`,"text-anchor":"middle"});
-  yl.textContent="layers that work, out of 20 tested"; svg.appendChild(yl);
+  const sub=el("text",{x:14,y:34,"font-size":10.5,fill:P.muted});
+  sub.textContent="cell = of 12 scenarios, how many put the right emotion in its top 3";
+  svg.appendChild(sub);
+
+  rows.forEach((r,i)=>{
+    const arm=LL.arms[r.key], y=T+i*rh;
+    const nm=el("text",{x:L-12,y:y+rh/2-2,"text-anchor":"end","font-size":11.5,fill:P.text});
+    nm.textContent=r.label; svg.appendChild(nm);
+    const sb=el("text",{x:L-12,y:y+rh/2+11,"text-anchor":"end","font-size":10,fill:P.muted});
+    sb.textContent=r.sub; svg.appendChild(sb);
+    layers.forEach((layer,j)=>{
+      const paper=arm.paper[j], held=arm.heldout[j], worst=Math.min(paper,held);
+      const passes=paper>=LL.bar && held>=LL.bar;
+      const x=L+j*cw;
+      const cell=el("rect",{x:x+1,y:y+3,width:cw-2,height:rh-6,rx:2,fill:shade(worst)});
+      tipOn(cell,`<b>${r.label}, layer ${layer}</b>: `+
+        `${paper} of 12 on the paper battery, ${held} of 12 on the held-out one`+
+        `<span class="t-sub">${passes?"passes":"fails"} the ${LL.bar}-of-12 mark, which has to be met `+
+        `on both. The scenarios are user messages that imply an emotion without naming it; the `+
+        `reading is taken at the last token before the reply.</span>`);
+      svg.appendChild(cell);
+      if(passes) svg.appendChild(el("rect",{x:x+1,y:y+3,width:cw-2,height:rh-6,rx:2,
+        fill:"none",stroke:P.orange,"stroke-width":2}));
+    });
+    // the bar chart's number, now just the ringed cells in this row
+    const cnt=el("text",{x:W-R+10,y:y+rh/2-1,"font-size":15,fill:P.orange,"font-weight":700});
+    cnt.textContent=arm.passing.length; svg.appendChild(cnt);
+    const cl=el("text",{x:W-R+30,y:y+rh/2-1,"font-size":10.5,fill:P.muted});
+    cl.textContent="of 20 layers"; svg.appendChild(cl);
+  });
+
+  // layer axis
+  layers.forEach((layer,j)=>{
+    if(j%3) return;
+    const t=el("text",{x:L+j*cw+cw/2,y:T+ih+15,"text-anchor":"middle","font-size":9.5,fill:P.muted});
+    t.textContent=layer; svg.appendChild(t);
+  });
+  const xl=el("text",{x:L+iw/2,y:H-6,"text-anchor":"middle","font-size":10.5,fill:P.muted});
+  xl.textContent="layer of the model (20 sampled, every third from 0 to 57)"; svg.appendChild(xl);
+
+  // colour key, with the pass mark on it
+  const kx=L, ky=T-26, kw=140;
+  for(let i=0;i<30;i++)
+    svg.appendChild(el("rect",{x:kx+i*(kw/30),y:ky,width:kw/30+.5,height:8,
+      fill:shade((i/29)*12)}));
+  const k0=el("text",{x:kx-4,y:ky+7,"text-anchor":"end","font-size":9,fill:P.muted});
+  k0.textContent="0"; svg.appendChild(k0);
+  const k12=el("text",{x:kx+kw+4,y:ky+7,"font-size":9,fill:P.muted});
+  k12.textContent="12 of 12"; svg.appendChild(k12);
+  const bx=kx+(LL.bar/12)*kw;
+  svg.appendChild(el("line",{x1:bx,x2:bx,y1:ky-3,y2:ky+11,stroke:P.orange,"stroke-width":1.6}));
+  const bl=el("text",{x:kx+kw+62,y:ky+7,"font-size":9.5,fill:P.orange,"font-weight":600});
+  bl.textContent="↑ 8 = pass mark, fixed before scoring"; svg.appendChild(bl);
+  const rl=el("text",{x:W-R+10,y:ky+7,"font-size":9.5,fill:P.orange});
+  rl.textContent="ringed = passes"; svg.appendChild(rl);
+
   host.appendChild(svg);
 }
 
@@ -1624,8 +1660,6 @@ function drawDose(){
   const yl=el("text",{x:14,y:T+ih/2,"font-size":9.5,fill:P.muted,
     transform:`rotate(-90 14 ${T+ih/2})`,"text-anchor":"middle"});
   yl.textContent="layers that work, of 20"; svg.appendChild(yl);
-  const src=el("text",{x:L,y:H-3,"font-size":8.5,fill:P.muted});
-  src.textContent="notebooks/07_generator_lineages.ipynb (E12)"; svg.appendChild(src);
   svg.appendChild(el("line",{x1:L,x2:W-R,y1:Y(9),y2:Y(9),stroke:P.green,
     "stroke-dasharray":"4 3"}));
   // left-anchored: right-anchored, the trailing "9" sat under the last marker
