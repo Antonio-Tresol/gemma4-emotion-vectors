@@ -17,6 +17,10 @@ abstract: >-
   were built from.
 type: software
 authors:
+  - family-names: "Kim"
+    given-names: "Hannah"
+  - family-names: "Li"
+    given-names: "Peyton"
   - family-names: "Badilla-Olivas"
     given-names: "Antonio"
     email: antonio1dbo@gmail.com
