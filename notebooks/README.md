@@ -18,6 +18,8 @@ the data first, or at 10 if you want the argument first.
 | 09 | `09_trajectory_explorer_deepseek_arm.ipynb` | The DeepSeek-written-stories arm of 05: same figures and levers, three probe banks including E11's DeepSeek contrasts |
 | 10 | `10_the_sprint_story.ipynb` | The review synthesis: every claim with its method in plain language, its numbers computed in-cell, and its tree status, in seven acts |
 | 11 | `11_tracking_taxonomy.ipynb` | Q3.H1.E2 + E3 (exploratory): what the model tracks well vs poorly (emotion, family, VAD distance, confusions, position), then the named confusion tables, boundary-lag vs stable-relabeling timing, and probe-geometry-predicts-difficulty reads |
+| — | `explore_layers.ipynb` | Off the reading order, an exploration surface: the figures that 02 and 04 pin to one layer (the circumplex, the logit lens) made scrubbable over all 20 swept layers. It settles nothing and changes no claim; `scripts/logit_lens.py --all-layers` writes the sweep that fills in its second figure |
+| — | `05_trajectories.ipynb` | Off the reading order, superseded: a stale copy of notebook 05 at the filename it had before the rename, kept only because `docs/build.py` still cites this path as a figure source. Read `05_trajectory_explorer_instruct.ipynb` instead — this copy predates the linked plot-and-text view and still reports the Q3.H1.E1 reads as unregistered |
 
 ## Running them (laptop or the shared pod)
 
@@ -27,10 +29,11 @@ datasets otherwise (they flip public at sprint end).
 
 1. `uv sync` (the venv already includes plotly, ipykernel, jupyterlab).
 2. Put an `HF_TOKEN=...` line in the repo-root `.env` — `fetch()` loads it
-   automatically, including inside notebook kernels (both pod clones already
-   have one).
-3. In VS Code / Jupyter, select the **project `.venv`** as the kernel — the
-   conda `arena-env` kernel does not have this package.
+   automatically, including inside notebook kernels, so there is nothing to
+   export in your shell first.
+3. In VS Code / Jupyter, select the **project `.venv`** as the kernel — any
+   other kernel (a system Python, a conda base environment) does not have this
+   package installed, and every import in the first cell fails.
 4. Headless check: `.venv/bin/python -m nbconvert --to notebook --execute
    notebooks/05_trajectory_explorer_instruct.ipynb --output /tmp/check.ipynb`.
 

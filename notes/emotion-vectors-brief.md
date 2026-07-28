@@ -1,9 +1,14 @@
 # Emotion vectors: replication + introspection stretch — distilled brief
 
-Distilled 2026-07-20 from the planning brief compiled 2026-07-19. Numbers and
-claims below come from that brief's reading of the sources; none have been
-independently verified in-session yet — verify against the linked primaries
-before any of them enters a deliverable.
+A reading brief, compiled 2026-07-20 from the sources linked at the bottom of
+this page. Everything here is second-hand: the numbers and claims are as
+recorded when those sources were read, and none were independently reproduced.
+Treat this page as orientation, not as evidence — the project's verified
+numbers live in the published write-up and in TREE.md, and the primary sources
+are linked below for anyone who wants to check a figure directly.
+
+(This brief was distilled from an earlier planning document dated 2026-07-19,
+which is not included in this repository.)
 
 ## The core (scope to protect)
 
@@ -38,8 +43,8 @@ switching" — the analogy generates predictions; it is not the claim. Note the
 pipeline change: this needs per-token trajectories, not the extraction
 pipeline's mean-pooled activations.
 
-Scope rule: anything in the source planning brief that is not on the path to
-these two parts (hackathon logistics, staffing splits, cut negotiations,
+Scope rule: anything in that earlier planning document (not included here) that
+is not on the path to these two parts (hackathon logistics, staffing splits, cut negotiations,
 speculative extensions) was deliberately NOT adopted here. Its extended
 related-work list is kept only as one-line context below — background
 reading, not commitments.
@@ -70,9 +75,11 @@ part the replication skipped — our primary goal fills it.
 ## Decisions carried over from planning (the ones that matter)
 
 - Subject: Gemma-4-31B dense — not the MoE variant (routing muddies the
-  residual stream); same family as the replication's E4B, and a June 2026
-  LessWrong post documents introspection-adjacent signal on exactly this
-  model, so a null is informative.
+  residual stream); same family as the replication's E4B, and — on an uncited
+  recollection of a June 2026 LessWrong post whose author, title and link are
+  not recorded here, so treat it as hearsay until someone finds it —
+  introspection-adjacent signal has been reported on exactly this model, which
+  would make a null informative.
 - Skip story generation; reuse the published Gemma corpus (corpus choice
   measurably leaks into vectors, especially arousal — keep it fixed across
   all conditions).
@@ -109,4 +116,6 @@ part the replication skipped — our primary goal fills it.
 - Mechanisms of introspective awareness: arXiv 2603.21396
 - Gemma 4 technical report: arXiv 2607.02770
 - Concurrent affect-geometry work: arXiv 2604.03147, arXiv 2604.07382
-- Full extended link list: see the original planning brief (2026-07-19)
+- The extended link list lived in the earlier planning document (2026-07-19),
+  which is not included in this repository; the sources above are the ones this
+  brief actually rests on.

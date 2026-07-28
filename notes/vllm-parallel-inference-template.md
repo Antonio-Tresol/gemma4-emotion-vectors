@@ -399,7 +399,6 @@ links, and it's reproducible by *re-reading*, not by *re-rolling*.
 - [ ] Resume verified: kill mid-run, re-run, it continues rather than restarts.
 - [ ] Findings reported to the orchestrator for TREE.md / RESEARCH_LOG.md — not
       written from the pod.
-```
 
 ---
 

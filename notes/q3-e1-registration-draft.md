@@ -1,5 +1,9 @@
 # SUPERSEDED: see TREE.md Q3.H1.E1 for the governing registration
 
+Reader's note: the **[choose]** markers below are unresolved options from the
+drafting stage, left exactly as written and kept as the discussion record; the
+registration named in the heading governs instead.
+
 Correction (2026-07-23, before any scoring): this draft was written after a
 context compaction, without re-reading the tree. Q3.H1.E1 already carries a
 richer registered suite (gate read G, anticipation R1 with a cue-referenced

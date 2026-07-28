@@ -37,7 +37,7 @@ keywords:
 # The work being replicated. Recorded here so the relationship is machine-readable
 # and travels with the citation, rather than living only in prose. Author list and
 # title transcribed from papers/Emotion_Concepts_and_their_Function_in_a_LLM.pdf
-# page 1, read in-session -- not from memory or a search summary.
+# page 1, read in-session, not from memory or a search summary.
 references:
   - type: article
     title: "Emotion Concepts and their Function in a Large Language Model"

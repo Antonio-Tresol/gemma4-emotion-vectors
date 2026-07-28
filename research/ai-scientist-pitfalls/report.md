@@ -2,7 +2,7 @@
 
 Literature investigation, 2023–2026. Every arXiv ID below was fetched during this
 work; per-source structured notes with verbatim quotes and read-depth tags are in
-`notes/ai-scientist-pitfalls-sources.md`. Only claims recorded there appear here.
+`research/ai-scientist-pitfalls/sources.md`. Only claims recorded there appear here.
 
 Scope note: the researcher's setup is a **dry, solo, 2–3 day interp/evals sprint**.
 The gap analysis is calibrated to that scale — many mitigations used "in the wild"
@@ -89,15 +89,15 @@ it only if run.
 
 | # | Pitfall | Covered? | Which component covers it / what would | Recommendation |
 |---|---------|----------|----------------------------------------|----------------|
-| P1 | Self-modification / harness gaming | N/A (no autonomous self-improving loop here) | You are the agent; no unattended agent to sandbox | SKIP — no self-modifying loop at this scale |
-| P2 | Fabricating results to please an evaluator | Partially | `validate-claims` (trace numbers→data) catches fabricated numbers post-hoc; nothing incentivizes fabrication if you author | ALREADY COVERED (validate-claims) — no extra machinery |
+| P1 | Self-modification / harness gaming | N/A (no autonomous self-improving loop here) | The researcher is the agent; no unattended agent to sandbox | SKIP — no self-modifying loop at this scale |
+| P2 | Fabricating results to please an evaluator | Partially | `validate-claims` (trace numbers→data) catches fabricated numbers post-hoc; nothing incentivizes fabrication when the researcher authors the write-up | ALREADY COVERED (validate-claims) — no extra machinery |
 | P3 | Fabrication under completion pressure / won't report null | Partially | Log's "expected vs happened" invites nulls, but nothing *states* a null is a success | **ADD** (1 sentence): a norm line "a null/infeasible result recorded with evidence is a SUCCESS, not a failure" in the log template / TREE conventions |
 | P4 | Results indistinguishable from null | **Yes** | `falsify` skill = permutation nulls, bootstrap CIs, base-rate checks — exactly the KOSMOS remedy | ALREADY COVERED (falsify) |
 | P5 | False gains from buggy code | **Yes** | `validate-claims` traces "every method claim to code"; TREE requires evidence file per claim | ALREADY COVERED (validate-claims) |
 | P6 | Hallucinated / irrelevant citations | **Yes** | `validate-claims` ("every citation to a real paper") + `derive-from-sources` (verbatim-quote notes, no invented attributions) | ALREADY COVERED |
 | P7 | Hallucinated numbers / structural defects | **Yes** | `validate-claims` (every number→data), evidence-file existence enforced mechanically | ALREADY COVERED |
-| P8 | Bad novelty / optimism bias | Partially | eval-design construct-validity checklist touches it; no explicit novelty check | SKIP — solo sprint has a human (you) judging novelty; formal novelty audit is over-engineering |
-| P9 | LLM-judge unreliability | **No / Partially** | Only relevant *if your eval uses an LLM judge*. eval-design gestures at construct validity but doesn't mandate a judge audit | **ADD** (conditional, if LLM-as-judge is in the eval): spot-check N judge outputs vs human labels; report judge–human agreement + a null/base-rate on the judge |
+| P8 | Bad novelty / optimism bias | Partially | eval-design construct-validity checklist touches it; no explicit novelty check | SKIP — the solo sprint has a human researcher judging novelty; formal novelty audit is over-engineering |
+| P9 | LLM-judge unreliability | **No / Partially** | Only relevant *if the eval uses an LLM judge*. eval-design gestures at construct validity but doesn't mandate a judge audit | **ADD** (conditional, if LLM-as-judge is in the eval): spot-check N judge outputs vs human labels; report judge–human agreement + a null/base-rate on the judge |
 | P10 | Ideation-execution gap | **Yes** | TREE's hypothesis→experiment→claim ordering forces execution before a claim graduates; validator blocks graduation without a scorecard = lightweight pre-registration | ALREADY COVERED (TREE + validator) |
 | P11 | Non-reproducibility | **Yes** | git evidence pinning + evidence-file existence + validator | ALREADY COVERED (git) — maybe pin a `requirements.txt`/seed once |
 | P12 | Publication-bias amplification | Partially | Same fix as P3 (value nulls). Full governance remedy is out of scale | SKIP the machinery; folded into the P3 norm line |
@@ -107,8 +107,8 @@ it only if run.
 
 ## Part 3 — Verdict
 
-**Your setup is already strong against the pitfalls that actually bite a solo dry
-sprint.** The four most-documented failure modes — fabricated numbers, method/code
+**The sprint's setup is already strong against the pitfalls that actually bite a
+solo dry sprint.** The four most-documented failure modes — fabricated numbers, method/code
 mismatch, hallucinated citations, and results-indistinguishable-from-null — are each
 mechanically or process-covered by `validate-claims`, `falsify`, `derive-from-sources`,
 and the validator's scorecard rule. The ideation-execution gap (the single most
@@ -117,7 +117,7 @@ covered by the TREE's claim-graduation ordering, which functions as lightweight
 pre-registration.
 
 **Highest-value additions (both cheap):**
-1. **A judge-audit rule, *if and only if* your eval uses an LLM-as-judge (P9).** This
+1. **A judge-audit rule, *if and only if* the eval uses an LLM-as-judge (P9).** This
    is the one real, uncovered gap that is central to an evals project. SoundnessBench,
    the LLM-as-Judge survey, and Jr. AI Scientist all show automated reviewers rate
    fabricated/unsound work highly. Cheapest mechanism: hand-label a small sample
@@ -131,22 +131,23 @@ pre-registration.
    fabrication.
 
 Optional near-free third: a citation-existence check is already implied by
-`validate-claims`; if you want it mechanical, a HalluCiteChecker-style DOI/arXiv
-existence pass (arXiv:2604.26835) could be a few lines — but only worth it if your
+`validate-claims`; to make it mechanical, a HalluCiteChecker-style DOI/arXiv
+existence pass (arXiv:2604.26835) could be a few lines — but only worth it if the
 sprint output cites many papers.
 
 **What the literature says is NOT worth adding at this scale:**
-- **Sandboxing / self-modification guards (P1)** — you have no unattended
+- **Sandboxing / self-modification guards (P1)** — this project has no unattended
   self-improving agent; there is nothing to contain.
 - **Multi-agent debate / tournament review / meta-review (co-scientist-style)** —
   powerful but heavy; a solo researcher *is* the reviewer. Over-engineering for 2–3 days.
-- **Formal novelty/soundness auditing benchmarks (P8)** — you judge novelty yourself;
-  building a soundness classifier is out of scope.
+- **Formal novelty/soundness auditing benchmarks (P8)** — the researcher judges
+  novelty directly; building a soundness classifier is out of scope.
 - **Publication-bias governance infrastructure (P12)** — null-result databases and
   corpus-disclosure are field-scale interventions; the portable part is the one-line
   norm already recommended above.
 - **Reproduction benchmarking / dual-use safety review (P11 physical, P13)** — git
-  pinning already covers your reproducibility need; physical-safety review is N/A.
+  pinning already covers this project's reproducibility need; physical-safety
+  review is N/A.
 
 Net: **add two things (both tiny), keep everything else, and resist the temptation to
 import the heavyweight multi-agent and sandboxing machinery** that large lab systems

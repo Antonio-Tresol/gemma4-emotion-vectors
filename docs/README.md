@@ -1,11 +1,11 @@
-# docs/ — the talk, and the GitHub Pages source
+# docs/: the talk, and the GitHub Pages source
 
 The sprint's findings as an interactive page. Everything here is generated from
 the notebooks and `results/`; nothing is typed by hand.
 
 **This directory is what GitHub Pages serves** (Settings → Pages → Deploy from a
-branch, `main`, folder `/docs`), so `index.html` must stay committed and must
-stay here — it is the published page, not a build artifact you can gitignore.
+branch, `main`, folder `/docs`). So `index.html` must stay committed, and it must
+stay here. It is the published page, not a build artifact you can gitignore.
 It is self-contained: no build step, no server, opens from the filesystem.
 
 | File | What it is |
@@ -18,7 +18,7 @@ A PDF/PPTX deck and a silent story-trajectory clip used to live in `slides/`,
 built by screenshotting this page. They were deleted on 2026-07-26: the page had
 been rewritten and the deck had not, so the two disagreed, and a stale deck is
 worse than no deck. `git log -- docs/slides/` has the builders if a deck is ever
-wanted again — but regenerate from the current `index.html`, not from those
+wanted again. Regenerate from the current `index.html`, not from those
 outputs.
 
 ## How the numbers get here
@@ -45,6 +45,6 @@ pseudo-code and a symbol glossary for every measurement, so a claim can be
 traced to code without leaving the page.
 
 The three headline results are not equally settled, and section 8 says so on the
-page: the plain-model circumplex has survived a falsification pass, the
-chat-tuning result is measured but its gate is still owed, and the
+page. The base-model circumplex has survived a falsification pass. The
+instruction-tuning result is measured, but its gate is still owed. The
 story-following work is registered as exploratory.

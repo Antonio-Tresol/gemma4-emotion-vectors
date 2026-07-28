@@ -256,8 +256,9 @@ Harness components referenced: skills **research**, **derive-from-sources**,
 **eval-design** (threat model -> spec -> questions -> QC, construct-validity checklist,
 LLM-judge audit rule), **falsify** (permutation nulls, bootstrap CIs, base-rate checks),
 **validate-claims** (number->data, method->code, citation->paper), **research-log**
-(TREE.md, RESEARCH_LOG.md); validators `scripts/validate_research.py` and
-`scripts/lint_skills.py`; git evidence pinning; nulls-first-class norm.
+(TREE.md, RESEARCH_LOG.md); the validator `scripts/validate_research.py` and a
+proposed `scripts/lint_skills.py` (not present in this repo); git evidence
+pinning; nulls-first-class norm.
 
 **Verification note:** the "Covered?" column was checked against the actual skill files
 in `.claude/skills/` (not just a summary). Confirmed by reading: `falsify/SKILL.md` is
@@ -286,7 +287,7 @@ existing coverage in `eval-design`'s construct-validity checklist.
 | L14 | Report detection/classification results at a stated false-positive rate, with benign negatives (2510.16255) | **Partial** | **SKIP as a standing rule** - applies only if the sprint produces a detector/classifier. If it does, `falsify` already mandates base rates; the FPR framing is a natural extension to mention there in one clause, not a new section. |
 | L15 | Human-baseline reporting rigour: 115 baselines reviewed, methods "neither sufficiently rigorous nor sufficiently well-documented" (2506.13776); RE-Bench's budget-conditioned reversal | **No** | **ADD a conditional one-liner to `validate-claims`:** any comparative claim ("beats X", "better than human/baseline") must state the baseline's budget, n, and protocol in the same sentence. RE-Bench shows the comparison can *reverse* under a different budget - the budget is part of the claim, not context. |
 | L16 | Adaptive attacks defeat models robust to fixed suites; "adaptivity is crucial" (2404.02151) | **Partial** | **SKIP the machinery, ADD half a sentence to the nulls norm:** a negative result from a fixed procedure is weak evidence of absence - record what an adaptive version of the test would have been. Relevant because the harness makes nulls first-class, and this is the main way a null misleads. |
-| L17 | Rubrics co-developed with domain authors (2504.01848); ground-truth-anchored synthetic units (2404.14394); rediscover-a-known-answer with selectivity (2304.14997); plant-and-search-blind (2503.10965, 2602.22755) | **No** (as a named pattern) | **ADD a short "ground-truth-first" section to `eval-design`.** Before running a discovery/interpretation method on an unknown target, run it on a target whose answer you planted or already know, and report **both recall and selectivity** (ACDC's 5/5 and 68-of-32,000 is the template). For a 2-3 day interp sprint this is genuinely feasible - a handful of synthetic features or one known circuit - and it is the strongest validation design in the entire literature. |
+| L17 | Rubrics co-developed with domain authors (2504.01848); ground-truth-anchored synthetic units (2404.14394); rediscover-a-known-answer with selectivity (2304.14997); plant-and-search-blind (2503.10965, 2602.22755) | **No** (as a named pattern) | **ADD a short "ground-truth-first" section to `eval-design`.** Before running a discovery/interpretation method on an unknown target, run it on a target whose answer you planted or already know, and report **both recall and selectivity** (ACDC's 5/5 and 68-of-32,000 is the template). For a 2-3 day interp sprint this is genuinely feasible - a handful of synthetic features or one known circuit - and it is the strongest validation design in this survey. |
 | L18 | Multi-agent auditing infrastructure, 56-model benchmarks, super-agent aggregation pipelines, sandboxed agentic environments | N/A | **SKIP - over-engineering at this scale.** Same verdict as the prior survey reached on multi-agent tournaments and sandboxing. Import the *methodology* (plant ground truth, report distributions, control for nudges), not the infrastructure. |
 
 ---
@@ -302,7 +303,7 @@ literatures attack the *measurement instrument* rather than the researcher's hon
 1. **L1 - discrimination tests for qualitative claims.** `falsify` currently protects
    numbers (permutation nulls, bootstrap CIs, base rates) and leaves labels unprotected.
    For an interpretability sprint, labels *are* the output. McCann's result is not a
-   hand-wave: the standard metric is *proven* invariant to the failure, 82.1% of real
+   hand-wave: the standard metric is *reported* invariant to the failure, 82.1% of real
    annotated features exhibit it, and the inflation is about a third of the identifying
    information. This is the clearest "the harness has a hole here" finding in the survey.
 
