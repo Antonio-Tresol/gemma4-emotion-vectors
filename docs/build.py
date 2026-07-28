@@ -379,7 +379,7 @@ TEMPLATE = r"""<!DOCTYPE html>
 </div></nav>
 
 <header><div class="wrap">
-  <div class="kicker">CAMBRIA capstone &middot; Hannah Kim &middot; Peyton Li &middot; Antonio Badilla Olivas</div>
+  <div class="kicker">CAMBRIA capstone &middot; Hannah Kim &middot; Peyton Li &middot; Antonio Badilla-Olivas</div>
   <h1>How are emotions represented in<br>large language models?</h1>
   <p class="lede narrow">Anthropic found that a language model keeps a separate internal direction for
   each emotion, and that those directions arrange themselves the way psychologists arrange emotions.
