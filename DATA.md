@@ -49,10 +49,10 @@ sets are the blessed instrument for all work from 2026-07-22 on.
 | dataset | contents | public? |
 |---|---|---|
 | `abotresol/emotion-vectors-gemma-4-31b` / `-it` | Corpus-lineage emotion means, pre-fix, base/instruct | yes |
-| `abotresol/emotion-vectors-gemma-4-31b-postfix` / `-it-postfix` | Post-fix re-extractions (the blessed sets) | private until sprint end |
-| `abotresol/emotion-selfstory-vectors-gemma-4-31b-it` (+ `-postfix`) | Self-generated-lineage vectors | pre-fix yes / postfix private |
+| `abotresol/emotion-vectors-gemma-4-31b-postfix` / `-it-postfix` | Post-fix re-extractions (the blessed sets) | yes |
+| `abotresol/emotion-selfstory-vectors-gemma-4-31b-it` (+ `-postfix`) | Self-generated-lineage vectors | yes |
 | `abotresol/emotion-dialogue-vectors-gemma-4-31b` / `-it` | Dialogue-lineage vectors | yes |
-| `abotresol/neutral-vectors-gemma-4-31b-it` (+ `-postfix`) | Neutral-transcript activation vectors | pre-fix yes / postfix private |
+| `abotresol/neutral-vectors-gemma-4-31b-it` (+ `-postfix`) | Neutral-transcript activation vectors | yes |
 | `abotresol/emotion-deepseek-vectors-gemma-4-31b-it` | Fixed-DeepSeek battery contrasts (best detection probes; also the Q3 "deepseek" probe bank) | yes |
 | `abotresol/emotion-deepseek-diverse-vectors-gemma-4-31b-it` | Diverse-DeepSeek per-story vectors (dose-response subsampling needs no GPU) | yes |
 | `abotresol/emotion-vectors-gemma-4-31b-smoke` | Smoke-test artifact, ignore | yes |

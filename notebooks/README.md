@@ -24,8 +24,8 @@ the data first, or at 10 if you want the argument first.
 ## Running them (laptop or the shared pod)
 
 Any clone works the same way — every input resolves through
-`emotion_vectors.artifacts.fetch()`: local `results/` first, the private HF
-datasets otherwise (they flip public at sprint end).
+`emotion_vectors.artifacts.fetch()`: local `results/` first, the public HF
+datasets otherwise.
 
 1. `uv sync` (the venv already includes plotly, ipykernel, jupyterlab).
 2. Put an `HF_TOKEN=...` line in the repo-root `.env` — `fetch()` loads it

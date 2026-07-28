@@ -22,8 +22,21 @@ def check_hf_auth(logger: logging.Logger) -> None:
 
 
 def write_readme(out_dir: Path, config: dict[str, object]) -> None:
+    # The frontmatter is not decoration: Hugging Face reads it for the licence
+    # and for search. Cards published without it left 20 public datasets with no
+    # stated terms, which a downloader has no way to resolve.
     (out_dir / "README.md").write_text(
-        f"""# Emotion vectors — {config["model"]}
+        f"""---
+license: mit
+task_categories:
+  - feature-extraction
+tags:
+  - interpretability
+  - emotion
+  - gemma
+---
+
+# Emotion vectors — {config["model"]}
 
 Per-story pooled residual-stream activations and per-emotion mean vectors,
 extracted with [gemma4-emotion-vectors](https://github.com/Antonio-Tresol/gemma4-emotion-vectors)
@@ -42,7 +55,18 @@ sinievanderben/emotion_experiment `extract_emotion_vectors.py`).
 - `run_config.json`: full extraction config, seed {config["seed"]},
   commit `{config["git_commit"]}`.
 
-Reproduce: `uv run python scripts/extract_emotion_vectors.py`
+Re-extracting needs the model weights and a GPU with enough memory for a 31B
+model in bf16. Analysis does not: the per-emotion means here are enough to redo
+the geometry and detection work on a laptop.
+
+```
+uv run python scripts/extract_emotion_vectors.py
+```
+
+## Licence
+
+MIT, matching the project repository. The model weights and the story corpora
+carry their own licences.
 """
     )
 
