@@ -13,6 +13,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+from einops import rearrange
 from jaxtyping import Float
 
 
@@ -46,6 +47,9 @@ def centered_cos(
 ) -> Float[np.ndarray, "tokens layers probes"]:
     """Centered cosine per (token, layer, probe): story-set mean subtracted
     from the stored dots, norms_centered denominator."""
-    return (shard["dots"].astype(np.float32) - mean_dots) / np.clip(
-        shard["norms_centered"].astype(np.float32)[:, :, None], 1e-6, None
-    )
+    dots: Float[np.ndarray, "tokens layers probes"] = shard["dots"].astype(np.float32)
+    norms: Float[np.ndarray, "tokens layers"] = shard["norms_centered"].astype(np.float32)
+    # the denominator is one norm per (token, layer), so it needs a trailing
+    # probe axis to divide the dots. Spelling that out beats an anonymous None.
+    denominator = rearrange(np.clip(norms, 1e-6, None), "tokens layers -> tokens layers 1")
+    return (dots - mean_dots) / denominator
