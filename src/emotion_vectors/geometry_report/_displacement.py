@@ -323,7 +323,8 @@ def _s9_band_stats(
     ctx: GeometryContext, flat_by_key: dict[tuple[str, int, int], Float[np.ndarray, " pairs"]]
 ) -> tuple[dict[str, Any], list[str]]:
     """Within-late and mid-to-late RSA means per (model, top-k removed), plus
-    cross-model late-band agreement unablated and with instruct top-k removed."""
+    cross-model late-band agreement as measured and with instruct top-k
+    removed."""
     mid_pos = [
         ctx.layers.index(layer) for layer in ctx.layers if MID_BAND[0] <= layer <= MID_BAND[1]
     ]
@@ -356,22 +357,23 @@ def _s9_band_stats(
         )
         stats["cross_late"][k] = float(cross[np.ix_(late_pos, late_pos)].mean())
         if k == 0:
-            stats["cross_matrix_unablated"] = cross
-        tag = "unablated" if k == 0 else f"instruct top-{k} removed (post-hoc)"
+            stats["cross_matrix_as_measured"] = cross
+        tag = "no component removed" if k == 0 else f"instruct top-{k} removed (post-hoc)"
         lines.append(f"cross-model late x late, {tag}: {stats['cross_late'][k]:.3f}")
     return stats, lines
 
 
 def _s9_figure(ctx: GeometryContext, stats: dict[str, Any]) -> go.Figure:
-    """Four-panel mechanism figure: instruct RSA unablated and top-1-ablated,
-    cross-model RSA, and top-component continuity with the handoff band."""
+    """Four-panel mechanism figure: instruct RSA as measured and with its top
+    component removed, cross-model RSA, and top-component continuity with the
+    handoff band."""
     fig = make_subplots(
         rows=2,
         cols=2,
         horizontal_spacing=0.12,
         vertical_spacing=0.18,
         subplot_titles=(
-            "instruct RSA, unablated (section 6's left panel)",
+            "instruct RSA, no component removed (section 6's left panel)",
             "instruct RSA, per-layer top component removed",
             "cross-model RSA: instruct (rows) x base (cols)",
             "top-component continuity between adjacent layers",
@@ -383,11 +385,11 @@ def _s9_figure(ctx: GeometryContext, stats: dict[str, Any]) -> go.Figure:
         ticktext=[str(layer) for layer in ctx.layers],
         tickfont=dict(size=8),
     )
-    fig.add_trace(go.Heatmap(z=stats["rsa_it_unablated"], **heat_kw), row=1, col=1)
+    fig.add_trace(go.Heatmap(z=stats["rsa_it_as_measured"], **heat_kw), row=1, col=1)
     fig.add_trace(go.Heatmap(z=stats["rsa_it_top1_removed"], **heat_kw), row=1, col=2)
     fig.add_trace(
         go.Heatmap(
-            z=stats["cross_matrix_unablated"],
+            z=stats["cross_matrix_as_measured"],
             colorscale="Viridis",
             zmin=0,
             zmax=1,
@@ -464,7 +466,8 @@ def _s9_title(ctx: GeometryContext, stats: dict[str, Any]) -> str:
         f"<br><sup>removing each layer's top component lifts instruct mid-to-late agreement "
         f"{stats['bands'][it, 0][1]:.2f} to {stats['bands'][it, 1][1]:.2f} but lowers base "
         f"{stats['bands'][base, 0][1]:.2f} to {stats['bands'][base, 1][1]:.2f}; "
-        f"instruct-vs-base late-band agreement {stats['cross_late'][0]:.2f} unablated, "
+        f"instruct-vs-base late-band agreement {stats['cross_late'][0]:.2f} with no "
+        "component removed, "
         f"{stats['cross_late'][2]:.2f} with instruct top-2 removed</sup>"
         "<br><sup>shaded band: the 24-30 handoff where the instruct top component changes "
         "identity | vectors read by each model from gemma-4-4B-written stories</sup>"
@@ -476,7 +479,7 @@ def s9_fragmentation_figure(ctx: GeometryContext) -> tuple[go.Figure, dict[str, 
 
     Returns ``(figure, stats)``. ``stats["lines"]`` is the printed record:
     within-late / mid-to-late RSA means per model under top-0/1/2 component
-    ablation, then cross-model late-band agreement unablated and with the
+    ablation, then cross-model late-band agreement as measured and with the
     instruct top components removed. ``stats["continuity"][label]`` holds the
     adjacent-layer |cos| of each model's top component direction.
     """
@@ -484,7 +487,7 @@ def s9_fragmentation_figure(ctx: GeometryContext) -> tuple[go.Figure, dict[str, 
     stats, lines = _s9_band_stats(ctx, flat_by_key)
     stats["lines"] = lines
     it = ctx.it_label
-    stats["rsa_it_unablated"] = np.corrcoef(
+    stats["rsa_it_as_measured"] = np.corrcoef(
         np.stack([flat_by_key[it, layer, 0] for layer in ctx.layers])
     )
     stats["rsa_it_top1_removed"] = np.corrcoef(

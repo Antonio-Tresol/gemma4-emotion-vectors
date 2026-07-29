@@ -1,4 +1,7 @@
-"""Notebook-07 exhibit library: the E11/E12 generator-lineage figures.
+"""Notebook-07 exhibit library: the E11/E12 story-source figures.
+
+The question these figures answer is whose stories the probes were built
+from, and whether that choice changes what the probes measure.
 
 Every code cell in ``notebooks/07_generator_lineages.ipynb`` is
 load-call-show over this package: ``load_evidence`` / ``load_corpora``
@@ -20,15 +23,15 @@ from ._caveat import extraction_format_figure
 from ._data import (
     CHANCE_CORRECT,
     GEOMETRY_LAYER,
-    LINEAGE_COLORS,
-    LINEAGE_LABELS,
-    LINEAGE_ORDER,
     N_EMOTIONS,
     PASS_BAR,
     PROBED_MODEL,
     REQUESTED_PER_EMOTION,
+    STORY_SOURCE_COLORS,
+    STORY_SOURCE_LABELS,
+    STORY_SOURCE_ORDER,
     TOP_K,
-    LineageEvidence,
+    StorySourceEvidence,
     load_corpora,
     load_evidence,
     per_layer_counts,
@@ -41,15 +44,15 @@ from ._verdict import verdict_stats
 __all__ = [
     "CHANCE_CORRECT",
     "GEOMETRY_LAYER",
-    "LINEAGE_COLORS",
-    "LINEAGE_LABELS",
-    "LINEAGE_ORDER",
     "N_EMOTIONS",
     "PASS_BAR",
     "PROBED_MODEL",
     "REQUESTED_PER_EMOTION",
+    "STORY_SOURCE_COLORS",
+    "STORY_SOURCE_LABELS",
+    "STORY_SOURCE_ORDER",
     "TOP_K",
-    "LineageEvidence",
+    "StorySourceEvidence",
     "corpus_overview",
     "detection_figure",
     "diversity_figure",

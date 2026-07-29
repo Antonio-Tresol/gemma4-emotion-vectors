@@ -23,7 +23,8 @@ from emotion_vectors.artifacts import ROUTES, fetch
 from emotion_vectors.corpus import load_emotions_data
 
 # The open replication's story corpus (written by gemma-4-4B), the extraction
-# source for all corpus-lineage vectors. Not ours; lives only on Hugging Face.
+# source for every vector labelled "corpus". Not ours; lives only on Hugging
+# Face.
 REFERENCE_CORPUS_ID = "snae/emotion_stories_gemma_4_4B"
 
 
@@ -90,7 +91,7 @@ PLAIN_CORPORA = [
         "self stories, instruct",
         "self_stories_it/dialogues_grouped.jsonl",
         "gemma-4-31b-it (ours)",
-        "scale test E6; self-generated lineage E10/E11",
+        "scale test E6; self-generated stories E10/E11",
     ),
     (
         "dialogues_base",
@@ -118,7 +119,7 @@ PLAIN_CORPORA = [
         "DeepSeek, fixed prompt",
         "openrouter_stories/stories_grouped.jsonl",
         "deepseek-v4-pro (ours)",
-        "external-generator lineage E11",
+        "external-generator stories E11",
     ),
 ]
 # The diverse DeepSeek arm, kept separate because it is the one corpus allowed

@@ -1,4 +1,4 @@
-"""Section 1 exhibit: the battery sweep over layer x readout x prompt format.
+"""Section 1 exhibit: the scenario sweep over layer x pooling x prompt format.
 
 One builder, used twice: once for the instruction-tuned model (two prompt
 formats) and once for the base model (plain format only). Every score here
@@ -18,13 +18,13 @@ from jaxtyping import Int
 from plotly.subplots import make_subplots
 
 from ._data import (
-    BATTERY_ROLES,
-    BATTERY_SHORT,
     CHANCE_CORRECT,
     N_SCENARIOS,
     PASS_BAR,
     READOUT_LABELS,
     READOUTS,
+    SCENARIO_SET_ROLES,
+    SCENARIO_SET_SHORT,
     ModelSweep,
     battery_counts,
     figure_title,
@@ -32,19 +32,20 @@ from ._data import (
 
 SWEEP_WIDTH_PX = 1000
 PANEL_HEIGHT_PX = 520
-SweepGrids = dict[tuple[str, str], Int[np.ndarray, "layers readouts"]]
+SweepGrids = dict[tuple[str, str], Int[np.ndarray, "layers poolings"]]
 
 
 def sweep_grids(model: ModelSweep) -> SweepGrids:
-    """Score every (format, battery, layer, readout) cell of one model's sweep.
+    """Score every (format, scenario set, layer, pooling) cell of one sweep.
 
-    Input: one :class:`~._data.ModelSweep`. Returns {(format, battery):
-    grid}, each grid [layers readouts] holding scenarios of 12 whose target
+    Input: one :class:`~._data.ModelSweep`. Returns {(format, scenario set):
+    grid}, each grid [layers poolings] holding scenarios of 12 whose target
     emotion ranked in the top 3. Centering is the sweep convention (the full
     extraction), which is what sections 1 and 2 registered.
     """
     grids: SweepGrids = {}
     for fmt in model.formats:
+        # "scenario" and "heldout" are the stored prompt ``kind`` values
         columns = {"scenario": [], "heldout": []}  # type: dict[str, list[list[int]]]
         for layer_pos in range(len(model.layers)):
             counts = [
@@ -52,11 +53,11 @@ def sweep_grids(model: ModelSweep) -> SweepGrids:
                     model,
                     model.probe_means(layer_pos),
                     fmt,
-                    readout,
+                    pooling,
                     layer_pos,
                     center_pool=model.center_pool(layer_pos),
                 )
-                for readout in READOUTS
+                for pooling in READOUTS
             ]
             columns["scenario"].append([paper for paper, _ in counts])
             columns["heldout"].append([held_out for _, held_out in counts])
@@ -66,7 +67,7 @@ def sweep_grids(model: ModelSweep) -> SweepGrids:
 
 
 def combination_rows(grids: SweepGrids, layers: list[int]) -> list[tuple[int, int, str, int, str]]:
-    """Every swept combination as (paper, held-out, format, layer, readout).
+    """Every swept combination as (paper, held-out, format, layer, pooling).
 
     Sorted best first, so the notebook cell can print the head of the ranking
     and then apply the registered pass rule to the whole list in plain sight.
@@ -74,15 +75,15 @@ def combination_rows(grids: SweepGrids, layers: list[int]) -> list[tuple[int, in
     formats = sorted({fmt for fmt, _ in grids})
     rows = [
         (
-            int(grids[fmt, "scenario"][layer_pos, readout_pos]),
-            int(grids[fmt, "heldout"][layer_pos, readout_pos]),
+            int(grids[fmt, "scenario"][layer_pos, pooling_pos]),
+            int(grids[fmt, "heldout"][layer_pos, pooling_pos]),
             fmt,
             int(layers[layer_pos]),
-            readout,
+            pooling,
         )
         for fmt in formats
         for layer_pos in range(len(layers))
-        for readout_pos, readout in enumerate(READOUTS)
+        for pooling_pos, pooling in enumerate(READOUTS)
     ]
     rows.sort(reverse=True)
     return rows
@@ -93,8 +94,8 @@ def _sweep_title(model_label: str, grids: SweepGrids, layers: list[int], source_
 
     Reports two numbers a reader could otherwise confuse: the single
     brightest cell anywhere (which is a selection-inflated best) and the best
-    combination measured on BOTH batteries, which is what the registered rule
-    actually grades.
+    combination measured on BOTH scenario sets, which is what the registered
+    rule actually grades.
     """
     rows = combination_rows(grids, layers)
     best_cell = max(int(grid.max()) for grid in grids.values())
@@ -103,11 +104,12 @@ def _sweep_title(model_label: str, grids: SweepGrids, layers: list[int], source_
     n_at_bar = sum(int((grid >= PASS_BAR).sum()) for grid in grids.values())
     verdict = "No" if best_joint < PASS_BAR else "Yes"
     return figure_title(
-        f"Can any layer x readout x format combination detect the implied emotion? {verdict}:"
-        f" the brightest single cell reaches {best_cell} of 12, the best combination measured on"
-        f" BOTH batteries reaches {best_joint} of 12, and the registered bar is {PASS_BAR}",
+        f"Can any combination of layer, pooling and prompt format detect the implied emotion?"
+        f" {verdict}: the brightest single cell reaches {best_cell} of 12, the best combination"
+        f" measured on BOTH sets of scenarios reaches {best_joint} of 12, and the registered bar"
+        f" is {PASS_BAR}",
         [
-            f"one cell = one (layer, readout) combination, scored as the number of scenarios"
+            f"one cell = one (layer, pooling) combination, scored as the number of scenarios"
             f" (of {N_SCENARIOS}) whose true emotion ranked in the top 3 of the 12 probes;"
             " left panel = the scenarios used to pick the best cell, right panel = fresh"
             " held-out scenarios",
@@ -115,7 +117,7 @@ def _sweep_title(model_label: str, grids: SweepGrids, layers: list[int], source_
             f" {CHANCE_CORRECT:.0f} of 12 times; strength anchor: the registered"
             f" {PASS_BAR}-of-12 bar, printed in bold where a cell reaches it"
             f" ({n_at_bar} of {n_cells} cells do)",
-            f"probes and battery activations from {model_label}; {source_note}",
+            f"probes and scenario activations from {model_label}; {source_note}",
         ],
         SWEEP_WIDTH_PX,
     )
@@ -123,7 +125,7 @@ def _sweep_title(model_label: str, grids: SweepGrids, layers: list[int], source_
 
 def _add_sweep_panel(
     fig: go.Figure,
-    grid: Int[np.ndarray, "layers readouts"],
+    grid: Int[np.ndarray, "layers poolings"],
     layers: list[int],
     row: int,
     col: int,
@@ -158,16 +160,16 @@ def _add_sweep_panel(
                     "12 = all",
                 ],
             ),
-            hovertemplate="layer %{y}<br>readout %{x}<br>%{z} of 12 correct<extra></extra>",
+            hovertemplate="layer %{y}<br>pooling %{x}<br>%{z} of 12 correct<extra></extra>",
         ),
         row=row,
         col=col,
     )
     for layer_pos in range(grid.shape[0]):
-        for readout_pos in range(grid.shape[1]):
-            value = int(grid[layer_pos, readout_pos])
+        for pooling_pos in range(grid.shape[1]):
+            value = int(grid[layer_pos, pooling_pos])
             fig.add_annotation(
-                x=readout_pos,
+                x=pooling_pos,
                 y=layer_pos,
                 text=f"<b>{value}</b>" if value >= PASS_BAR else str(value),
                 showarrow=False,
@@ -177,7 +179,7 @@ def _add_sweep_panel(
             )
     fig.update_xaxes(
         tickvals=list(range(len(READOUTS))),
-        ticktext=[READOUT_LABELS[readout] for readout in READOUTS],
+        ticktext=[READOUT_LABELS[pooling] for pooling in READOUTS],
         tickfont=dict(size=9),
         row=row,
         col=col,
@@ -199,16 +201,16 @@ def sweep_figure(
     Inputs: the model's :class:`~._data.ModelSweep`, its ``sweep_grids``
     output, and ``source_note`` (the sentence naming the source figure this
     extends). Returns ``(figure, stats)``; ``stats["lines"]`` prints the per
-    (format, battery) maxima and ``stats["best_joint"]`` is the best score a
-    single combination achieved on both batteries.
+    (format, scenario set) maxima and ``stats["best_joint"]`` is the best score
+    a single combination achieved on both sets.
     """
     formats = model.formats
     # two short lines per panel title: plotly does not wrap them, and one long
     # line collides with the neighbouring panel's title
     titles = [
-        f"{fmt} format<br><sub>{BATTERY_ROLES[kind]}</sub>"
+        f"{fmt} format<br><sub>{SCENARIO_SET_ROLES[kind]}</sub>"
         for fmt in formats
-        for kind in BATTERY_ROLES
+        for kind in SCENARIO_SET_ROLES
     ]
     fig = make_subplots(
         rows=len(formats),
@@ -219,7 +221,7 @@ def sweep_figure(
         vertical_spacing=0.10,
     )
     for format_pos, fmt in enumerate(formats):
-        for kind_pos, kind in enumerate(BATTERY_ROLES):
+        for kind_pos, kind in enumerate(SCENARIO_SET_ROLES):
             _add_sweep_panel(
                 fig,
                 grids[fmt, kind],
@@ -231,7 +233,7 @@ def sweep_figure(
         fig.update_yaxes(title_text="layer", row=format_pos + 1, col=1)
     for col in (1, 2):  # x-axis title on the bottom row only, so it cannot collide
         fig.update_xaxes(
-            title_text="readout (how the prompt becomes one vector)", row=len(formats), col=col
+            title_text="how the prompt is pooled into one vector", row=len(formats), col=col
         )
     for annotation in fig.layout.annotations[: 2 * len(formats)]:  # the subplot titles
         annotation.font = dict(size=11)
@@ -249,11 +251,11 @@ def sweep_figure(
     rows = combination_rows(grids, model.layers)
     best_joint = max(min(paper, held_out) for paper, held_out, _, _, _ in rows)
     lines = [
-        f"{model.label}, {fmt} format, {BATTERY_SHORT[kind]} battery:"
+        f"{model.label}, {fmt} format, {SCENARIO_SET_SHORT[kind]} scenarios:"
         f" best cell {int(grid.max())} of 12 (chance {CHANCE_CORRECT:.0f}, bar {PASS_BAR})"
         for (fmt, kind), grid in grids.items()
     ]
     lines.append(
-        f"best single combination across BOTH batteries: {best_joint} of 12, bar {PASS_BAR}"
+        f"best single combination across BOTH scenario sets: {best_joint} of 12, bar {PASS_BAR}"
     )
     return fig, {"lines": lines, "best_joint": best_joint, "rows": rows}

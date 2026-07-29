@@ -19,18 +19,24 @@ RowSources = dict[str, tuple[Mapping, str]]
 LAYERS_Q3 = [6, 15, 24, 33, 42, 51]
 # the registered primary cell of the Q3 factorial
 PRIMARY_LAYER_Q3 = 33
-BANKS = ["corpus", "selfgen", "deepseek"]
-BANK_SIZE = {"corpus": 171, "selfgen": 12, "deepseek": 12}
-BANK_LABEL = {
+PROBE_SETS = ["corpus", "selfgen", "deepseek"]
+PROBE_SET_SIZE = {"corpus": 171, "selfgen": 12, "deepseek": 12}
+PROBE_SET_LABEL = {
     "corpus": "corpus-171 probes",
     "selfgen": "self-gen probes (12)",
     "deepseek": "DeepSeek probes (12)",
 }
 
 
-def _factorial_cell(source: Mapping, arm: str, read: str, bank: str, layer: int) -> Mapping | None:
-    """One (arm, read, bank, layer) cell of a Q3 gate/R1 evidence file, or None."""
-    return source[arm][read].get(bank, {}).get("per_layer", {}).get(str(layer))
+def _factorial_cell(
+    source: Mapping, arm: str, read: str, probe_set: str, layer: int
+) -> Mapping | None:
+    """One (arm, read, probe set, layer) cell of a Q3 evidence file, or None.
+
+    ``read`` is ``"gate_G"`` (the identity read; the evidence files use that
+    older name) or ``"r1_anticipation"``.
+    """
+    return source[arm][read].get(probe_set, {}).get("per_layer", {}).get(str(layer))
 
 
 def _act6_lines(row_sources: RowSources, base_arm: Mapping, calibration: Mapping) -> list[str]:
@@ -39,22 +45,25 @@ def _act6_lines(row_sources: RowSources, base_arm: Mapping, calibration: Mapping
     lines = []
     for label, (source, arm) in row_sources.items():
         parts = []
-        for bank in BANKS:
-            gate_cell = _factorial_cell(source, arm, "gate_G", bank, PRIMARY_LAYER_Q3)
-            lead_cell = _factorial_cell(source, arm, "r1_anticipation", bank, PRIMARY_LAYER_Q3)
-            if gate_cell:
+        for probe_set in PROBE_SETS:
+            identity_cell = _factorial_cell(source, arm, "gate_G", probe_set, PRIMARY_LAYER_Q3)
+            lead_cell = _factorial_cell(source, arm, "r1_anticipation", probe_set, PRIMARY_LAYER_Q3)
+            if identity_cell:
                 lead_sd = (
                     (lead_cell["mean_lead"] / lead_cell["noise_sd"])
                     if lead_cell and lead_cell.get("noise_sd")
                     else float("nan")
                 )
-                parts.append(f"{bank}: rank {gate_cell['median_rank']:g}, lead {lead_sd:+.1f} sd")
+                parts.append(
+                    f"{probe_set}: rank {identity_cell['median_rank']:g}, lead {lead_sd:+.1f} sd"
+                )
         lines.append(f"{label.replace('<br>', ' '):50s} " + " | ".join(parts))
-    base_gate = base_arm["true_arm"]["gate_G"]["corpus"]["per_layer"]
+    # "gate_G" is the identity read's key in the evidence files, kept as-is
+    base_identity = base_arm["true_arm"]["gate_G"]["corpus"]["per_layer"]
     base_lead = base_arm["true_arm"]["r1_anticipation"]["corpus"]["per_layer"]
     lines.append(
-        "base reader, corpus-171 bank, median rank by layer: "
-        + ", ".join(f"L{layer} {base_gate[str(layer)]['median_rank']:g}" for layer in LAYERS_Q3)
+        "base reader, corpus-171 probes, median rank by layer: "
+        + ", ".join(f"L{layer} {base_identity[str(layer)]['median_rank']:g}" for layer in LAYERS_Q3)
     )
     base_lead_sds = [
         base_lead[str(layer)]["mean_lead"] / base_lead[str(layer)]["noise_sd"]
@@ -75,13 +84,15 @@ def _act6_grids(row_sources: RowSources, layer: int) -> tuple[list, list, list, 
     identity_grid, anticipation_grid, identity_labels, anticipation_labels = [], [], [], []
     for _, (source, arm) in row_sources.items():
         identity_row, anticipation_row, identity_text, anticipation_text = [], [], [], []
-        for bank in BANKS:
-            gate_cell = _factorial_cell(source, arm, "gate_G", bank, layer)
-            lead_cell = _factorial_cell(source, arm, "r1_anticipation", bank, layer)
-            if gate_cell:
-                star = " *" if gate_cell.get("passes") else ""
-                identity_row.append(gate_cell["median_rank"] / BANK_SIZE[bank])
-                identity_text.append(f"{gate_cell['median_rank']:g}/{BANK_SIZE[bank]}{star}")
+        for probe_set in PROBE_SETS:
+            identity_cell = _factorial_cell(source, arm, "gate_G", probe_set, layer)
+            lead_cell = _factorial_cell(source, arm, "r1_anticipation", probe_set, layer)
+            if identity_cell:
+                star = " *" if identity_cell.get("passes") else ""
+                identity_row.append(identity_cell["median_rank"] / PROBE_SET_SIZE[probe_set])
+                identity_text.append(
+                    f"{identity_cell['median_rank']:g}/{PROBE_SET_SIZE[probe_set]}{star}"
+                )
             else:
                 identity_row.append(None)
                 identity_text.append("n/a")
@@ -104,36 +115,36 @@ def _act6_title(
     row_sources: RowSources, gemma_v1: Mapping, deepseek_arm: Mapping, base_arm: Mapping, layer: int
 ) -> str:
     """The figure title, recomputed for the slider's layer so verdicts never go stale."""
-    small_bank_ranks, it_corpus_ranks = [], []
+    small_set_ranks, it_corpus_ranks = [], []
     for label, (source, arm) in row_sources.items():
         if "BASE" in label:
             continue
-        for bank in ("selfgen", "deepseek"):
-            gate_cell = _factorial_cell(source, arm, "gate_G", bank, layer)
-            if gate_cell:
-                small_bank_ranks.append(gate_cell["median_rank"])
-        gate_cell = _factorial_cell(source, arm, "gate_G", "corpus", layer)
-        if gate_cell:
-            it_corpus_ranks.append(gate_cell["median_rank"])
+        for probe_set in ("selfgen", "deepseek"):
+            identity_cell = _factorial_cell(source, arm, "gate_G", probe_set, layer)
+            if identity_cell:
+                small_set_ranks.append(identity_cell["median_rank"])
+        identity_cell = _factorial_cell(source, arm, "gate_G", "corpus", layer)
+        if identity_cell:
+            it_corpus_ranks.append(identity_cell["median_rank"])
     base_rank = base_arm["true_arm"]["gate_G"]["corpus"]["per_layer"][str(layer)]["median_rank"]
     gemma_lead_cell = _factorial_cell(gemma_v1, "true_arm", "r1_anticipation", "selfgen", layer)
     gemma_lead = gemma_lead_cell["mean_lead"] / gemma_lead_cell["noise_sd"]
     deepseek_best = max(
         cell["mean_lead"] / cell["noise_sd"]
-        for bank in BANKS
-        if (cell := _factorial_cell(deepseek_arm, "true_arm", "r1_anticipation", bank, layer))
+        for probe_set in PROBE_SETS
+        if (cell := _factorial_cell(deepseek_arm, "true_arm", "r1_anticipation", probe_set, layer))
         and cell.get("noise_sd")
     )
     return (
         "Does the model track and anticipate what it reads? Identity follows the "
-        "probe bank; anticipation only on Gemma-written stories<br>"
-        f"<sup>layer {layer}: 12-probe banks rank "
-        f"{min(small_bank_ranks):g}-{max(small_bank_ranks):g} "
+        "probe set; anticipation only on Gemma-written stories<br>"
+        f"<sup>layer {layer}: the sets of twelve probes rank "
+        f"{min(small_set_ranks):g}-{max(small_set_ranks):g} "
         f"of 12 vs corpus-171 rank {min(it_corpus_ranks):g}-{max(it_corpus_ranks):g} of 171 "
         f"(instruct reader) and {base_rank:g} of 171 (base reader); self-gen lead "
         f"{gemma_lead:+.1f}x noise on Gemma-written vs best {deepseek_best:+.1f}x on "
         "DeepSeek-written</sup><br>"
-        "<sup>one cell = one (story set + reader, probe bank); every row is the instruct "
+        "<sup>one cell = one (story set + reader, probe set); every row is the instruct "
         "reader except the marked base-reader row; * = passes its registered bar | evidence: "
         "q3_gate_r1_(it, deepseek, it_v2, base).json</sup>"
     )
@@ -150,7 +161,7 @@ def _act6_add_heatmaps(fig: go.Figure, row_sources: RowSources) -> None:
         fig.add_trace(
             go.Heatmap(
                 z=identity_grid,
-                x=[BANK_LABEL[bank] for bank in BANKS],
+                x=[PROBE_SET_LABEL[probe_set] for probe_set in PROBE_SETS],
                 y=list(row_sources),
                 text=identity_labels,
                 texttemplate="%{text}",
@@ -158,7 +169,7 @@ def _act6_add_heatmaps(fig: go.Figure, row_sources: RowSources) -> None:
                 zmin=0,
                 zmax=0.6,
                 colorbar=dict(
-                    title=dict(text="rank / bank size", side="right"),
+                    title=dict(text="rank as a fraction<br>of the probe set", side="right"),
                     x=0.42,
                     len=0.75,
                     thickness=12,
@@ -171,7 +182,7 @@ def _act6_add_heatmaps(fig: go.Figure, row_sources: RowSources) -> None:
         fig.add_trace(
             go.Heatmap(
                 z=anticipation_grid,
-                x=[BANK_LABEL[bank] for bank in BANKS],
+                x=[PROBE_SET_LABEL[probe_set] for probe_set in PROBE_SETS],
                 y=list(row_sources),
                 text=anticipation_labels,
                 texttemplate="%{text}",
@@ -212,7 +223,11 @@ def act6_factorial_figure(
         "DeepSeek-written stories": (deepseek_arm, "true_arm"),
         "constant-emotion control": (gemma_v1, "control_arm"),
         "Gemma-written (v2 post-fix probes)": (gemma_v2, "true_arm"),
-        "Gemma-written, BASE reader<br>(base-lineage corpus probes)": (base_arm, "true_arm"),
+        # the "BASE" in this label is load-bearing: _act6_title filters on it
+        "Gemma-written, BASE reader<br>(probes from the base model's corpus)": (
+            base_arm,
+            "true_arm",
+        ),
     }
     fig = make_subplots(
         rows=1,
@@ -220,7 +235,8 @@ def act6_factorial_figure(
         shared_yaxes=True,
         horizontal_spacing=0.16,
         subplot_titles=(
-            "identity (gate G): rank / bank size<br>lower + darker = better; * = passes bar",
+            "identity: rank as a fraction of the probe set"
+            "<br>lower + darker = better; * = passes bar",
             "anticipation (R1): pre-boundary lead, noise-sd units<br>"
             "blue positive = rising early; * = passes bar",
         ),
@@ -255,11 +271,14 @@ def act6_factorial_figure(
         height=540,
         margin=dict(t=130, b=140),
     )
-    base_gate = base_arm["true_arm"]["gate_G"]["corpus"]["per_layer"]
+    # "gate_G" is the identity read's key in the evidence files, kept as-is
+    base_identity = base_arm["true_arm"]["gate_G"]["corpus"]["per_layer"]
     base_lead = base_arm["true_arm"]["r1_anticipation"]["corpus"]["per_layer"]
     stats = {
         "lines": _act6_lines(row_sources, base_arm, calibration),
-        "base_gate_ranks": {layer: base_gate[str(layer)]["median_rank"] for layer in LAYERS_Q3},
+        "base_identity_ranks": {
+            layer: base_identity[str(layer)]["median_rank"] for layer in LAYERS_Q3
+        },
         "base_lead_sds": {
             layer: base_lead[str(layer)]["mean_lead"] / base_lead[str(layer)]["noise_sd"]
             for layer in LAYERS_Q3
@@ -323,7 +342,8 @@ def act6_addendum_lines(records: Mapping, records_meta: Mapping, vad_lexicon_pat
     selfgen_cols = [pos for pos, label in enumerate(probe_labels) if label.startswith("selfgen:")]
     selfgen_emotions = [probe_labels[pos].split(":", 1)[1] for pos in selfgen_cols]
 
-    # per-emotion top-1 rate over phases tagged with a battery emotion; slice
+    # per-emotion top-1 rate over phases tagged with one of the twelve scenario
+    # emotions; slice
     # (phase, layer, probe) down to (phase, selfgen_probe) at the primary layer
     phase_scores = records["phase_scores"][:, layer_pos_33, :][:, selfgen_cols]
     tagged = [record["emotion"] for record in records_meta["phase_records"]]
@@ -340,7 +360,7 @@ def act6_addendum_lines(records: Mapping, records_meta: Mapping, vad_lexicon_pat
         + ", ".join(f"{emotion} {top1[emotion]:.2f}" for emotion in ranked[-3:])
     ]
 
-    # family mean anticipation lead, transitions into battery emotions;
+    # family mean anticipation lead, transitions into the twelve scenario emotions;
     # trans_lead axes: (transition, layer, probe), sliced at the primary layer
     lead33 = records["trans_lead"][:, layer_pos_33, :]
     family_leads: dict[str, list[float]] = {}

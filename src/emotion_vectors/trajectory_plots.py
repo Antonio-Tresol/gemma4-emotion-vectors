@@ -15,10 +15,10 @@ Two linked views of the same story, by convention shown together:
   the paper's token -> local-context -> planned-emotion story predicts corner
   snaps at lexical cues early and anticipatory arcs mid-late.
 
-Cosines are computed from the stored shard substrate (raw dots onto unit
-probes + raw/centered norms): centered dots are the stored dots minus their
-per-story token mean (dot products are linear), divided by the stored
-centered norms.
+Cosines are computed from the arrays each stored shard holds (raw dots onto
+unit probes, plus raw and centered norms): centered dots are the stored dots
+minus their per-story token mean (dot products are linear), divided by the
+stored centered norms.
 """
 
 from __future__ import annotations
@@ -36,7 +36,12 @@ DEFAULT_TEMPERATURE = 28.0
 SERIES_COLORS = ["#6366f1", "#dc2626", "#d97706"]
 
 
+# ``lineage`` names the story source a probe was built from ("corpus",
+# "selfgen"). The parameter keeps that name because notebooks 05, 06 and 09
+# pass it by keyword, and because the value is the literal prefix of each
+# stored probe label, "<story source>:<emotion>".
 def probe_index(labels: list[str], emotion: str, lineage: str) -> int:
+    """Row of ``labels`` holding one emotion's probe from one story source."""
     return labels.index(f"{lineage}:{emotion}")
 
 

@@ -1,8 +1,8 @@
 """Section 7: what instruction tuning changes.
 
 No figure — this section is a printed record: first-component variance
-shares, the base model's valence direction read out on the instruct vectors
-against the pre-fix record, and the neutral-subspace projection test
+shares, the base model's valence direction measured on the instruct model's
+vectors against the pre-fix record, and the neutral-subspace projection test
 (prediction P1). ``s7_tuning_stats`` returns a stats dict whose ``lines``
 the notebook prints.
 """
@@ -23,8 +23,8 @@ from emotion_vectors.artifacts import fetch
 from ._context import N_COMPONENTS, GeometryContext
 
 
-def _cross_readout_lines(ctx: GeometryContext) -> tuple[list[str], float]:
-    """Base model's valence direction read out on the instruct model's vectors,
+def _cross_model_valence_lines(ctx: GeometryContext) -> tuple[list[str], float]:
+    """Base model's valence direction measured on the instruct model's vectors,
     with the pre-fix instrument's numbers as comparators."""
     layer_pos = ctx.layers.index(ctx.default_layer)
     base_plane = ctx.plane[ctx.base_label][ctx.default_layer]
@@ -75,16 +75,17 @@ def s7_tuning_stats(ctx: GeometryContext) -> dict[str, Any]:
     """Section 7 record: every number the section text quotes (no figure).
 
     ``stats["lines"]`` holds, in print order: PC1 variance shares (base then
-    instruct), the cross-model readout against the pre-fix record, and the
-    neutral-projection before/after read; ``stats["cross_model_abs_r"]`` is
-    the base-direction-on-instruct-vectors |r|.
+    instruct), the base model's valence direction measured on the instruct
+    model's vectors against the pre-fix record, and the neutral-projection
+    before/after read; ``stats["cross_model_abs_r"]`` is the
+    base-direction-on-instruct-vectors |r|.
     """
     lines = [
         f"{label}: PC1 variance share at layer {ctx.default_layer} = "
         f"{ctx.plane[label][ctx.default_layer]['evr'][0]:.2f}"
         for label in (ctx.base_label, ctx.it_label)
     ]
-    readout_lines, cross_abs_r = _cross_readout_lines(ctx)
-    lines += readout_lines
+    cross_model_lines, cross_abs_r = _cross_model_valence_lines(ctx)
+    lines += cross_model_lines
     lines += _neutral_projection_lines(ctx)
     return {"lines": lines, "cross_model_abs_r": cross_abs_r}

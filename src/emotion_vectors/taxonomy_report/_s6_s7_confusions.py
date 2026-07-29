@@ -17,26 +17,26 @@ from ._data import (
     S7_CATEGORIES,
     Arms,
     Row,
-    bank_columns,
     layer_slider,
+    probe_set_columns,
 )
 
 
 def confusion(
     arms: Arms,
     arm: str,
-    bank: str,
+    probe_set: str,
     layer_pos: int,
     restrict: list[str] | None = None,
 ) -> tuple[Int[np.ndarray, " kept_phases"], list[Row], list[str]]:
-    """Winning probe per phase for one (arm, bank) at one layer position.
+    """Winning probe per phase for one (arm, probe set) at one layer position.
 
-    ``restrict`` optionally cuts the bank to a subset of emotion names (used
-    to put the corpus bank on the battery-12 footing). Returns (winner
-    position within the kept bank per kept phase, kept phase metadata rows,
-    bank emotion names after the cut).
+    ``restrict`` optionally cuts the set to a subset of emotion names (used to
+    put the corpus probes on the same twelve emotions as the others). Returns
+    (winner position within the kept set per kept phase, kept phase metadata
+    rows, the emotion names after the cut).
     """
-    columns, names = bank_columns(arms, arm, bank)
+    columns, names = probe_set_columns(arms, arm, probe_set)
     if restrict is not None:
         columns = [column for column, name in zip(columns, names) if name in restrict]
         names = [name for name in names if name in restrict]
@@ -46,22 +46,25 @@ def confusion(
     return winners, [phase_records[pos] for pos in kept], names
 
 
-def _s6_table_lines(arms: Arms, battery: list[str]) -> tuple[dict[str, object], list[str]]:
+def _s6_table_lines(arms: Arms, twelve_emotions: list[str]) -> tuple[dict[str, object], list[str]]:
     """The three named-confusion tables at the primary layer.
 
-    Per table (reader/bank combination) and per expected emotion: the top-3
+    Per table (reader and probe set) and per expected emotion: the top-3
     reported emotions with their win rates. Returns (``tables[label][emotion]
     = {"n", "top1", "reported"}``, the printed lines).
     """
     primary_pos = LAYERS.index(PRIMARY_LAYER)
     tables: dict[str, object] = {}
     lines: list[str] = []
-    for label, (arm, bank, restrict) in [
-        ("it_v2 / selfgen bank", ("it_v2", "selfgen", None)),
-        ("it_v2 / deepseek bank", ("it_v2", "deepseek", None)),
-        ("base reader / corpus bank, battery-12 subset", ("base", "corpus", battery)),
+    for label, (arm, probe_set, restrict) in [
+        ("it_v2 / probes from its own stories", ("it_v2", "selfgen", None)),
+        ("it_v2 / probes from DeepSeek stories", ("it_v2", "deepseek", None)),
+        (
+            "base reader / corpus probes, cut to the same twelve emotions",
+            ("base", "corpus", twelve_emotions),
+        ),
     ]:
-        winners, phase_rows, names = confusion(arms, arm, bank, primary_pos, restrict)
+        winners, phase_rows, names = confusion(arms, arm, probe_set, primary_pos, restrict)
         table = {}
         lines.append(f"=== {label}, layer {PRIMARY_LAYER}: expected -> model reports (rate) ===")
         for expected_pos, expected in enumerate(names):
@@ -88,10 +91,14 @@ def _s6_table_lines(arms: Arms, battery: list[str]) -> tuple[dict[str, object], 
 
 def _s6_family_lines(arms: Arms) -> list[str]:
     """Per designed family: wrong-answer rate and the emotions the model
-    substitutes (it_v2, selfgen bank, primary layer). Returns printed lines."""
+    substitutes (it_v2, its own stories' probes, primary layer). Returns
+    printed lines."""
     primary_pos = LAYERS.index(PRIMARY_LAYER)
     winners, phase_rows, names = confusion(arms, "it_v2", "selfgen", primary_pos)
-    lines = ["", "=== wrong-answer profile per designed family (it_v2, selfgen bank) ==="]
+    lines = [
+        "",
+        "=== wrong-answer profile per designed family (it_v2, probes from its own stories) ===",
+    ]
     for family in FAMILIES:
         family_idx = [pos for pos, row in enumerate(phase_rows) if row["category"] == family]
         wrong_idx = [pos for pos in family_idx if names[winners[pos]] != phase_rows[pos]["emotion"]]
@@ -125,21 +132,22 @@ def _s6_title(diagonal_by_layer: dict[int, float], n_emotions: int, layer: int) 
         "<br><sup>one cell = the fraction of one expected emotion's phases (a row)</sup>"
         "<br><sup>that the base reader assigned to a given emotion (a column);</sup>"
         "<br><sup>rows sum to 1, so the diagonal is correct naming and everything</sup>"
-        "<br><sup>off it is a confusion. Corpus-bank probes cut to the battery 12,</sup>"
-        "<br><sup>base-model reader. Anchors: a perfect reader is a solid diagonal</sup>"
+        "<br><sup>off it is a confusion. Corpus probes cut to the same twelve</sup>"
+        "<br><sup>emotions, base reader. Anchors: a perfect reader is a solid diagonal</sup>"
         f"<br><sup>at 1.0, a guessing reader is a flat map at {chance:.0%}; the slider picks</sup>"
         "<br><sup>the layer and this headline follows it</sup>"
     )
 
 
-def _s6_base_heatmap(arms: Arms, battery: list[str]) -> go.Figure:
+def _s6_base_heatmap(arms: Arms, twelve_emotions: list[str]) -> go.Figure:
     """Row-normalized confusion heatmap for the BASE reader on the corpus
-    bank cut to the battery 12, one trace per layer with a slider."""
+    probes cut to the same twelve emotions, one trace per layer with a
+    slider."""
     fig = go.Figure()
     diagonal_by_layer: dict[int, float] = {}
     names: list[str] = []
     for layer_pos, layer in enumerate(LAYERS):
-        winners, phase_rows, names = confusion(arms, "base", "corpus", layer_pos, battery)
+        winners, phase_rows, names = confusion(arms, "base", "corpus", layer_pos, twelve_emotions)
         confusion_counts = np.zeros((len(names), len(names)))
         for phase_pos, row in enumerate(phase_rows):
             confusion_counts[names.index(row["emotion"]), winners[phase_pos]] += 1
@@ -187,25 +195,25 @@ def s6_named_confusions(arms: Arms) -> tuple[go.Figure, dict[str, object]]:
     block: the three named-confusion tables followed by the per-family
     wrong-answer profile.
     """
-    battery = bank_columns(arms, "it_v2", "selfgen")[1]
-    tables, lines = _s6_table_lines(arms, battery)
+    twelve_emotions = probe_set_columns(arms, "it_v2", "selfgen")[1]
+    tables, lines = _s6_table_lines(arms, twelve_emotions)
     lines += _s6_family_lines(arms)
-    fig = _s6_base_heatmap(arms, battery)
+    fig = _s6_base_heatmap(arms, twelve_emotions)
     return fig, {"tables": tables, "lines": lines}
 
 
 def third_match(
-    arms: Arms, arm: str, bank: str
+    arms: Arms, arm: str, probe_set: str
 ) -> tuple[Bool[np.ndarray, "kept_phases thirds layers"], list[Row]]:
     """Whether the tagged probe wins each token-count third of each phase.
 
     Returns (match [kept_phases, 3 thirds, layers], kept phase metadata
-    rows); a phase is kept when its tagged emotion has a probe in the bank.
+    rows); a phase is kept when its tagged emotion has a probe in the set.
     """
-    columns, names = bank_columns(arms, arm, bank)
+    columns, names = probe_set_columns(arms, arm, probe_set)
     phase_records = arms[arm]["phases"]
     kept = [pos for pos, row in enumerate(phase_records) if row["emotion"] in names]
-    # thirds: [kept_phases, 3 thirds, layers, bank_probes] centered cosines
+    # thirds: [kept_phases, 3 thirds, layers, probes] centered cosines
     thirds = arms[arm]["phase_thirds"][kept][:, :, :, columns]
     target = np.array([names.index(phase_records[pos]["emotion"]) for pos in kept])
     match = thirds.argmax(axis=3) == target[:, None, None]
@@ -214,10 +222,13 @@ def third_match(
 
 def _s7_family_lines(arms: Arms) -> list[str]:
     """Converges vs never-right share per designed family at the primary
-    layer (it_v2, selfgen bank). Returns printed lines."""
+    layer (it_v2, probes from its own stories). Returns printed lines."""
     primary_pos = LAYERS.index(PRIMARY_LAYER)
     match, phase_rows = third_match(arms, "it_v2", "selfgen")
-    lines = [f"layer {PRIMARY_LAYER} per family (it_v2, selfgen): converges vs never-right"]
+    lines = [
+        f"layer {PRIMARY_LAYER} per family (it_v2, probes from its own stories):"
+        " converges vs never-right"
+    ]
     for family in FAMILIES:
         family_idx = [pos for pos, row in enumerate(phase_rows) if row["category"] == family]
         first_third = match[family_idx, 0, primary_pos]
@@ -268,7 +279,7 @@ def _s7_title(shares_by_layer: dict[int, dict[str, dict[str, float]]], layer: in
         "<br><sup>the four bars sum to 1 per panel. 'converges' is the boundary-lag"
         " signature (the model catches up after the boundary), 'never right' the"
         " stable-relabeling one;</sup>"
-        "<br><sup>failure anchor: a bank that never found the tagged emotion would put"
+        "<br><sup>failure anchor: probes that never found the tagged emotion would put"
         " everything in 'never right'; a perfect tracker everything in 'always"
         " right'.</sup>"
         "<br><sup>Self-generated probes, both story authors</sup>"
@@ -279,7 +290,8 @@ def s7_thirds_figure(arms: Arms) -> tuple[go.Figure, dict[str, object]]:
     """S7: boundary lag vs stable relabeling, from phase-third correctness.
 
     Classifies every phase by whether the tagged probe wins its first and
-    last token-count third, per story arm (selfgen bank). Returns the
+    last token-count third, per story arm, read with the probes the model
+    built from its own stories. Returns the
     two-panel share figure (layer slider) and ``stats = {"shares":
     {arm: {category: share}} at the primary layer, "verdict": the dominant
     failure mode, "lines": the printed per-family block}``.

@@ -11,12 +11,12 @@ from __future__ import annotations
 
 from typing import Any
 
-from ._data import LINEAGE_LABELS, LineageEvidence, seed_mean_by_n
+from ._data import STORY_SOURCE_LABELS, StorySourceEvidence, seed_mean_by_n
 from ._e11 import R1_SOURCES
 from ._e12 import _matched_n_detection
 
 
-def verdict_stats(evidence: LineageEvidence) -> dict[str, Any]:
+def verdict_stats(evidence: StorySourceEvidence) -> dict[str, Any]:
     """Every number cited by the section-7 verdict.
 
     Input: ``load_evidence()`` output. Returns ``stats`` with:
@@ -24,11 +24,11 @@ def verdict_stats(evidence: LineageEvidence) -> dict[str, Any]:
                              E12 seed-mean dose-response tables, the
                              matched-n detection comparison, and the
                              preference values)
-      n_passing           -- lineage -> R1 passing-layer count
+      n_passing           -- story source -> R1 passing-layer count
       matched_detection   -- the matched-n detection numbers (from
                              ``dose_response_figure``'s helper, so the
                              verdict and the figure cannot drift)
-      pref_abs_r          -- lineage -> preference max |r|
+      pref_abs_r          -- story source -> preference max |r|
       pref_matched_mean   -- diverse-at-n=256 seed-mean |r|
 
     The extraction-format caveat's numbers live in
@@ -36,13 +36,16 @@ def verdict_stats(evidence: LineageEvidence) -> dict[str, Any]:
     """
     lines: list[str] = []
 
-    # R1: passing-layer counts per lineage (verdict item 1)
+    # R1: passing-layer counts per story source (verdict item 1).
+    # "r1_dual_battery" is the frozen key the scorers wrote for the
+    # detection read scored on both sets of scenarios.
     n_passing: dict[str, int] = {}
     for key, (attribute, name) in R1_SOURCES.items():
         arm = getattr(evidence, attribute)["r1_dual_battery"][name]
         n_passing[key] = len(arm["passing_layers"])
         lines.append(
-            f"R1 {LINEAGE_LABELS[key]}: {n_passing[key]} passing layers {arm['passing_layers']}"
+            f"R1 {STORY_SOURCE_LABELS[key]}: {n_passing[key]} passing layers"
+            f" {arm['passing_layers']}"
         )
 
     # E12: seed-mean dose-response tables (verdict items 2 and 3)
@@ -73,7 +76,7 @@ def verdict_stats(evidence: LineageEvidence) -> dict[str, Any]:
     }
     lines.append(
         "preference max |r|: "
-        + ", ".join(f"{LINEAGE_LABELS[key]} {value:.3f}" for key, value in pref_abs_r.items())
+        + ", ".join(f"{STORY_SOURCE_LABELS[key]} {value:.3f}" for key, value in pref_abs_r.items())
     )
     matched_seeds = evidence.matched_n["diverse_n256_seeds"]
     pref_matched_mean = evidence.matched_n["diverse_n256_mean"]

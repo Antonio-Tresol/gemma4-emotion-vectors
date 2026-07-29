@@ -5,9 +5,9 @@ generator quality?) and E12 (scale and diversity dose-response), plus the
 E4b extraction-format caveat. This module resolves every input through
 ``emotion_vectors.artifacts.fetch`` (local ``results/`` first, then the
 published Hugging Face datasets), so the notebook runs unchanged on any
-clone, and pins the shared vocabulary: lineage labels that name the ROLE of
-each probe set (whose stories the probes were built from), one fixed color
-per lineage, and the scoring constants of the registered detection read.
+clone, and pins the shared vocabulary: story-source labels that name the ROLE
+of each probe set (whose stories the probes were built from), one fixed color
+per story source, and the scoring constants of the registered detection read.
 
 Nothing in this package re-scores; every function slices the frozen
 evidence JSONs written by ``scripts/score_e11_lineage.py`` and
@@ -36,24 +36,24 @@ PROBED_MODEL = "google/gemma-4-31b-it"
 
 # Constants of the registered detection read (R1, registered in TREE.md
 # under Q1.H2.E11 before scoring).
-N_EMOTIONS = 12  # battery size: candidate emotions ranked per scenario
-N_SCENARIOS = 12  # scenarios per battery
+N_EMOTIONS = 12  # candidate emotions ranked for each scenario
+N_SCENARIOS = 12  # scenario prompts in each of the two sets
 TOP_K = 3  # a scenario is correct if the target emotion ranks in the top 3
-PASS_BAR = 8  # dual-battery bar: >= 8 of 12 correct on BOTH batteries
+PASS_BAR = 8  # the registered bar: >= 8 of 12 correct on BOTH scenario sets
 # top-3 of 12 emotions by luck: 3/12 chance per scenario, so 3 of 12 expected
 CHANCE_CORRECT = N_SCENARIOS * TOP_K / N_EMOTIONS
 GEOMETRY_LAYER = 33  # the registered geometry read (R2) is defined here only
 
-# Canonical lineage order for every figure, and the ROLE each label names:
-# the generator that wrote the probe-building stories.
-LINEAGE_ORDER = ["selfgen", "weak_external", "fixed_deepseek", "diverse_deepseek"]
-LINEAGE_LABELS = {
+# Canonical story-source order for every figure, and the ROLE each label
+# names: the generator that wrote the probe-building stories.
+STORY_SOURCE_ORDER = ["selfgen", "weak_external", "fixed_deepseek", "diverse_deepseek"]
+STORY_SOURCE_LABELS = {
     "selfgen": "self-generated (stories by the probed model)",
     "weak_external": "weak external (stories by gemma-4-4B)",
     "fixed_deepseek": "fixed DeepSeek (stories by deepseek-v4-pro)",
     "diverse_deepseek": "diverse DeepSeek (deepseek-v4-pro, persona x setting grid)",
 }
-LINEAGE_COLORS = {
+STORY_SOURCE_COLORS = {
     "selfgen": "#2ca02c",
     "weak_external": "#7f7f7f",
     "fixed_deepseek": "#1f77b4",
@@ -63,7 +63,7 @@ LINEAGE_COLORS = {
 # sentence would collide with its neighbours. The role still reads off the
 # tick ("who wrote the stories"); the full sentence stays in the printed
 # record and in the figure subtitles.
-LINEAGE_TICK_LABELS = {
+STORY_SOURCE_TICK_LABELS = {
     "selfgen": "self-generated<br>(probed model)",
     "weak_external": "weak external<br>(gemma-4-4B)",
     "fixed_deepseek": "fixed DeepSeek<br>(deepseek-v4-pro)",
@@ -110,7 +110,7 @@ def figure_title(headline: str, subtitles: list[str], width_px: int) -> str:
 
 
 @dataclass(frozen=True)
-class LineageEvidence:
+class StorySourceEvidence:
     """The five frozen evidence JSONs notebook 07 reads.
 
     Fields (each the parsed dict of one committed results file):
@@ -135,7 +135,7 @@ def _read_json(relpath: str) -> dict[str, Any]:
     return json.loads(fetch(relpath).read_text())
 
 
-def load_evidence() -> LineageEvidence:
+def load_evidence() -> StorySourceEvidence:
     """Resolve and cross-check the five evidence files.
 
     Two arms (self-generated and fixed DeepSeek) were scored into BOTH
@@ -146,7 +146,7 @@ def load_evidence() -> LineageEvidence:
     disagreement there would let one figure and another figure print
     different values for the same measured quantity.
     """
-    evidence = LineageEvidence(
+    evidence = StorySourceEvidence(
         e11=_read_json("e11_lineage.json"),
         full_grid=_read_json("e12_diverse_fullcorpus_grid.json"),
         scale_curves=_read_json("e12_scale_curve.json"),
@@ -158,13 +158,17 @@ def load_evidence() -> LineageEvidence:
         ("strong_external", "fixed_deepseek_n256"),
     ]
     for e11_name, grid_name in r1_overlap:
+        # "r1_dual_battery" is the key the scorers wrote into the frozen
+        # evidence JSONs; it holds the two-scenario-set detection read
         e11_row = evidence.e11["r1_dual_battery"][e11_name]["passing_layers"]
         grid_row = evidence.full_grid["r1_dual_battery"][grid_name]["passing_layers"]
         if e11_row != grid_row:
             raise ValueError(
                 f"R1 grids disagree on shared arm {e11_name}/{grid_name}: {e11_row} != {grid_row}"
             )
-    # the one probe-set pair measured in both files: self-generated vs fixed DeepSeek
+    # The one probe-set pair measured in both files: self-generated vs fixed
+    # DeepSeek. "r2_cross_lineage_layer33" is the frozen key the scorers
+    # wrote; it holds the pairwise geometry read at layer 33.
     e11_pair = evidence.e11["r2_cross_lineage_layer33"]["selfgen_vs_strong_external"]
     grid_pair = evidence.full_grid["r2_cross_lineage_layer33"][
         "selfgen_postfix_vs_fixed_deepseek_n256"

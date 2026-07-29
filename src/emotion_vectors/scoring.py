@@ -1,13 +1,14 @@
-"""Battery scoring and corpus quality control — the promoted analysis layer.
+"""Scenario scoring and corpus quality control — the promoted analysis layer.
 
-"Battery" means the scenario test set: the Anthropic paper's 12
-implicit-emotion prompts (Table 2) plus our held-out 12. Scoring asks, for
-each scenario, whether its target emotion's probe (per-emotion direction
-vector) ranks among the top 3 by cosine similarity.
+The scenarios are two sets of twelve implicit-emotion prompts: the Anthropic
+paper's twelve (Table 2) and the twelve we held out. Scoring asks, for each
+scenario, whether its target emotion's probe (per-emotion direction vector)
+ranks among the top 3 by cosine similarity.
 
 Every function here produced tree-linked evidence from inside notebooks before
 being promoted (the engineering contract's rule: logic that evidence rests on
-lives in the package, typed and lint-gated; notebooks narrate and call).
+lives in the package, typed and checked by the linter; notebooks narrate and
+call).
 """
 
 from __future__ import annotations
@@ -55,6 +56,7 @@ def leakage(corpus_file: Path, stems: dict[str, list[str]] = EMOTION_STEMS) -> t
     return leaked, total
 
 
+# name kept: imported by scripts/ and by detection_report
 def battery_matrix(
     probe_means: "Float[np.ndarray, 'emotions d_model']",
     activations: "Float[np.ndarray, 'scenarios d_model']",
@@ -74,16 +76,17 @@ def battery_matrix(
 def top3_count(matrix: "Float[np.ndarray, 'emotions scenarios']") -> int:
     """Scenarios whose target emotion (the diagonal) ranks in the top 3 probes.
 
-    Assumes probe row i is scenario i's target, the battery convention."""
+    Assumes probe row i is scenario i's target, the scoring convention."""
     n = matrix.shape[1]
     return sum(int(n - rankdata(matrix[:, j])[j]) + 1 <= 3 for j in range(n))
 
 
+# name kept: imported by scripts/ and by detection_report
 def score_battery(
     probe_means: "Float[np.ndarray, 'emotions d_model']",
     activations: "Float[np.ndarray, 'scenarios d_model']",
     center_pool: "Float[np.ndarray, 'pool d_model'] | None" = None,
 ) -> tuple[int, "Float[np.ndarray, 'emotions scenarios']"]:
-    """(top-3 count, full cosine matrix) — the registered battery statistic."""
+    """(top-3 count, full cosine matrix) — the registered scoring statistic."""
     matrix = battery_matrix(probe_means, activations, center_pool)
     return top3_count(matrix), matrix

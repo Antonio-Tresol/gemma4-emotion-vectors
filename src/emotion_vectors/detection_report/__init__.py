@@ -2,7 +2,7 @@
 
 Every code cell in ``notebooks/03_detection_probe_campaign.ipynb`` is
 load-call-show over this package: :func:`load_sweep_context` resolves both
-models' probe bundles and swept battery activations through
+models' probe bundles and swept scenario activations through
 ``emotion_vectors.artifacts.fetch`` (local ``results/`` first, then the
 published Hugging Face datasets), and one builder per section returns
 ``(figure, stats)`` where ``stats["lines"]`` holds every number the notebook
@@ -11,7 +11,7 @@ importing a function and calling it with parameters instead of executing the
 notebook.
 
 What deliberately does NOT live here: the registered pass rules. The
-dual-battery rule ("at least 8 of 12 on BOTH batteries") and the archival
+both-sets rule ("at least 8 of 12 on BOTH sets of scenarios") and the archival
 reproduction asserts are applied in the notebook cells, in plain sight, so a
 reader watches the rule being applied to the numbers rather than taking a
 package function's word for it. This package computes counts; the notebook
@@ -29,8 +29,6 @@ from ``results/`` rather than recomputing them.
 
 from ._data import (
     BASE_LABEL,
-    BATTERY_ROLES,
-    BATTERY_SHORT,
     CHANCE_CORRECT,
     IT_LABEL,
     N_EMOTIONS,
@@ -39,6 +37,8 @@ from ._data import (
     READOUT_LABELS,
     READOUTS,
     REGISTERED_LAYER,
+    SCENARIO_SET_ROLES,
+    SCENARIO_SET_SHORT,
     TOP_K,
     ModelSweep,
     SweepContext,
@@ -81,8 +81,6 @@ from ._sweep import combination_rows, sweep_figure, sweep_grids
 
 __all__ = [
     "BASE_LABEL",
-    "BATTERY_ROLES",
-    "BATTERY_SHORT",
     "CHANCE_CORRECT",
     "CHANCE_DIRECTIONS",
     "IT_LABEL",
@@ -96,6 +94,8 @@ __all__ = [
     "READOUT_LABELS",
     "REGISTERED_DIRECTIONS",
     "REGISTERED_LAYER",
+    "SCENARIO_SET_ROLES",
+    "SCENARIO_SET_SHORT",
     "TOP_K",
     "ModelSweep",
     "ScaleCorpus",

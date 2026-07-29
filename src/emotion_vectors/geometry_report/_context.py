@@ -185,8 +185,10 @@ def e4b_deviations(ctx: GeometryContext) -> dict[str, float]:
     """
     audit = json.loads(fetch("e4b_extraction_impact.json").read_text())
     deviations: dict[str, float] = {}
-    for label, lineage in ((ctx.base_label, "corpus_base"), (ctx.it_label, "corpus_it")):
-        audited = audit["lineages"][lineage]["geometry"]["per_layer"]
+    # "lineages" is the frozen key in e4b_extraction_impact.json: one block
+    # per story source that was re-extracted
+    for label, story_source in ((ctx.base_label, "corpus_base"), (ctx.it_label, "corpus_it")):
+        audited = audit["lineages"][story_source]["geometry"]["per_layer"]
         deviations[label] = max(
             abs(ctx.plane[label][layer]["rv"][0] - audited[str(layer)]["pc1_valence_abs_r_after"])
             for layer in ctx.layers

@@ -1,5 +1,6 @@
 """S1 and S2 exhibits: per-emotion tracking quality and designed-family
-difficulty (gate rank and R1 lead per family, with cluster-bootstrap CIs)."""
+difficulty (the tagged probe's rank and the R1 lead per family, with
+cluster-bootstrap CIs)."""
 
 from __future__ import annotations
 
@@ -16,12 +17,19 @@ from ._data import (
     Arms,
     LayerStats,
     cluster_boot_ci,
-    gate_ranks,
     layer_slider,
+    tagged_ranks,
     true_leads,
 )
 
 _S2_ARM_COLORS = {"it_v2": "#4c78a8", "deepseek": "#f58518"}
+# The two twelve-probe sets S1 compares, named as the record dumps name them.
+PROBE_SETS = ["selfgen", "deepseek"]
+# Plain reading of those names, for panel titles and legends.
+PROBE_SET_DISPLAY = {
+    "selfgen": "probes from the model's own stories",
+    "deepseek": "probes from DeepSeek-written stories",
+}
 # plain names for the designed story types; the registry code stays in parentheses
 FAMILY_DISPLAY = {
     "A_superposition": "superposition<br>(A)",
@@ -33,16 +41,17 @@ FAMILY_DISPLAY = {
 
 
 def _s1_stats(arms: Arms) -> dict[str, LayerStats]:
-    """Per bank and layer: emotions sorted by top-1 rate, with median rank and n.
+    """Per probe set and layer: emotions sorted by top-1 rate, with median rank and n.
 
-    ``stats[bank][layer] = {"emotions", "top1", "median_rank", "n"}``, all
+    ``stats[probe_set][layer] = {"emotions", "top1", "median_rank", "n"}``, all
     lists in best-first order at that layer.
     """
-    bank_reads = {bank: gate_ranks(arms, "it_v2", bank) for bank in ["selfgen", "deepseek"]}
-    stats: dict[str, LayerStats] = {"selfgen": {}, "deepseek": {}}
+    # "selfgen" and "deepseek" are the probe-set names written into the record dumps
+    reads = {probe_set: tagged_ranks(arms, "it_v2", probe_set) for probe_set in PROBE_SETS}
+    stats: dict[str, LayerStats] = {probe_set: {} for probe_set in PROBE_SETS}
     for layer_pos, layer in enumerate(LAYERS):
-        for bank in ["selfgen", "deepseek"]:
-            ranks, _, phase_rows = bank_reads[bank]
+        for probe_set in PROBE_SETS:
+            ranks, _, phase_rows = reads[probe_set]
             emotions = sorted({row["emotion"] for row in phase_rows})
             # per-emotion summary at this layer: top-1 rate, median rank, n
             top1, median_rank, n_phases = [], [], []
@@ -53,7 +62,7 @@ def _s1_stats(arms: Arms) -> dict[str, LayerStats]:
                 median_rank.append(float(np.median(emotion_ranks)))
                 n_phases.append(len(phase_idx))
             best_first = np.argsort(top1)[::-1]
-            stats[bank][layer] = {
+            stats[probe_set][layer] = {
                 "emotions": [emotions[pos] for pos in best_first],
                 "top1": [top1[pos] for pos in best_first],
                 "median_rank": [median_rank[pos] for pos in best_first],
@@ -65,7 +74,7 @@ def _s1_stats(arms: Arms) -> dict[str, LayerStats]:
 def _s1_title(stats: dict[str, LayerStats], layer: int) -> str:
     """S1's title for ONE layer: the question, then that layer's own answer.
 
-    Every number is read from ``stats[bank][layer]``, so the slider cannot
+    Every number is read from ``stats[probe_set][layer]``, so the slider cannot
     leave another layer's verdict on screen. Plotly never wraps a title, so
     the text is hand-wrapped with a fixed six-line shape at every layer.
     """
@@ -76,10 +85,10 @@ def _s1_title(stats: dict[str, LayerStats], layer: int) -> str:
     return (
         "Which emotions does the tracker actually recognise?"
         f" At layer {layer}, {above_half} of {len(layer_summary['emotions'])} tagged"
-        "<br>emotions win their bank outright more than half the time,"
+        "<br>emotions win outright among the twelve more than half the time,"
         f" best is {best_emotion} at {best_rate:.0%}"
         "<br><sup>one bar = one tagged emotion; height = the fraction of that emotion's story"
-        " phases where its own probe ranks first in the bank;</sup>"
+        " phases where its own probe ranks first of the twelve;</sup>"
         "<br><sup>bar label = median rank and number of phases."
         " Failure anchor: the dotted line at 1/12 is where guessing lands;</sup>"
         "<br><sup>strength anchor: 1.0 would mean the right probe always wins. Stories"
@@ -90,18 +99,21 @@ def _s1_title(stats: dict[str, LayerStats], layer: int) -> str:
 
 
 def s1_top1_figure(arms: Arms) -> tuple[go.Figure, dict[str, LayerStats]]:
-    """S1: per-emotion top-1 rate and median gate rank, both battery-12 banks.
+    """S1: per-emotion top-1 rate and median rank of the tagged probe.
 
-    One bar per tagged emotion (selfgen panel left, deepseek panel right) on
-    the primary arm, sorted by top-1 rate, with median rank and n as the bar
+    One bar per tagged emotion, for each of the two twelve-probe sets (the
+    model's own stories left, the DeepSeek-written stories right) on the
+    primary arm, sorted by top-1 rate, with median rank and n as the bar
     label. Returns the figure (layer slider) and the ``_s1_stats`` dict.
     """
     stats = _s1_stats(arms)
-    fig = make_subplots(rows=1, cols=2, subplot_titles=["selfgen bank", "deepseek bank"])
-    # traces added layer-major (both banks per layer) so the slider can toggle blocks
+    fig = make_subplots(
+        rows=1, cols=2, subplot_titles=[PROBE_SET_DISPLAY[name] for name in PROBE_SETS]
+    )
+    # traces added layer-major (both probe sets per layer) so the slider can toggle blocks
     for layer in LAYERS:
-        for panel_pos, bank in enumerate(["selfgen", "deepseek"]):
-            layer_summary = stats[bank][layer]
+        for panel_pos, probe_set in enumerate(PROBE_SETS):
+            layer_summary = stats[probe_set][layer]
             fig.add_trace(
                 go.Bar(
                     x=layer_summary["emotions"],
@@ -111,7 +123,7 @@ def s1_top1_figure(arms: Arms) -> tuple[go.Figure, dict[str, LayerStats]]:
                         for med, n in zip(layer_summary["median_rank"], layer_summary["n"])
                     ],
                     textposition="outside",
-                    marker_color="#4c78a8" if bank == "selfgen" else "#f58518",
+                    marker_color="#4c78a8" if probe_set == "selfgen" else "#f58518",
                     showlegend=False,
                 ),
                 row=1,
@@ -150,27 +162,27 @@ def s1_top1_figure(arms: Arms) -> tuple[go.Figure, dict[str, LayerStats]]:
 
 
 def _s2_family_cell(
-    gate_part: tuple[Num[np.ndarray, " family_phases"], list[int]],
+    rank_part: tuple[Num[np.ndarray, " family_phases"], list[int]],
     lead_part: tuple[Float[np.ndarray, " family_trans"], list[int]],
     rng: np.random.Generator,
 ) -> dict[str, object]:
-    """Gate median + CI and lead mean + CI for one family at one layer.
+    """Median rank + CI and lead mean + CI for one family at one layer.
 
-    ``gate_part`` / ``lead_part`` carry (values, triple_ids) for the family's
-    phases and transitions. RNG order: gate CI first, then lead CI, matching
+    ``rank_part`` / ``lead_part`` carry (values, triple_ids) for the family's
+    phases and transitions. RNG order: rank CI first, then lead CI, matching
     the original cell's evaluation order; both are None for an empty family.
     """
-    family_ranks, phase_triples = gate_part
+    family_ranks, phase_triples = rank_part
     family_leads, trans_triples = lead_part
-    gate_median = float(np.median(family_ranks)) if len(family_ranks) else None
-    gate_ci = (
+    median_rank = float(np.median(family_ranks)) if len(family_ranks) else None
+    median_rank_ci = (
         cluster_boot_ci(family_ranks, phase_triples, rng, np.median) if len(family_ranks) else None
     )
     lead_mean = float(family_leads.mean()) if len(family_leads) else None
     lead_ci = cluster_boot_ci(family_leads, trans_triples, rng) if len(family_leads) else None
     return {
-        "gate_median": gate_median,
-        "gate_ci": gate_ci,
+        "median_rank": median_rank,
+        "median_rank_ci": median_rank_ci,
         "n_phases": len(family_ranks),
         "lead_mean": lead_mean,
         "lead_ci": lead_ci,
@@ -179,15 +191,17 @@ def _s2_family_cell(
 
 
 def _s2_family_stats(arms: Arms, rng: np.random.Generator) -> dict[str, LayerStats]:
-    """Gate median rank and mean R1 lead per designed family, both story arms.
+    """Median rank of the tagged probe and mean R1 lead per designed family,
+    for both story arms.
 
-    Returns ``stats[arm][layer][family] = {"gate_median", "gate_ci",
-    "n_phases", "lead_mean", "lead_ci", "n_transitions"}``, selfgen bank.
-    RNG order: arm-major, then layer, then family.
+    Returns ``stats[arm][layer][family] = {"median_rank", "median_rank_ci",
+    "n_phases", "lead_mean", "lead_ci", "n_transitions"}``, read with the
+    probes the model built from its own stories. RNG order: arm-major, then
+    layer, then family.
     """
     stats: dict[str, LayerStats] = {}
     for arm in ["it_v2", "deepseek"]:
-        ranks, _, phase_rows = gate_ranks(arms, arm, "selfgen")
+        ranks, _, phase_rows = tagged_ranks(arms, arm, "selfgen")
         leads, transition_rows = true_leads(arms, arm, "selfgen")
         stats[arm] = {}
         for layer_pos, layer in enumerate(LAYERS):
@@ -213,22 +227,22 @@ def _s2_family_stats(arms: Arms, rng: np.random.Generator) -> dict[str, LayerSta
 
 
 def _s2_add_arm_traces(fig: go.Figure, family_stats: dict[str, object], arm: str) -> None:
-    """Add one arm's gate-rank bars (left panel) and lead bars (right panel)
+    """Add one arm's median-rank bars (left panel) and lead bars (right panel)
     for one layer, with the cluster-CI error bars."""
-    gate_medians = [family_stats[family]["gate_median"] for family in FAMILIES]
-    gate_cis = [family_stats[family]["gate_ci"] for family in FAMILIES]
+    median_ranks = [family_stats[family]["median_rank"] for family in FAMILIES]
+    median_rank_cis = [family_stats[family]["median_rank_ci"] for family in FAMILIES]
     fig.add_trace(
         go.Bar(
             x=[FAMILY_DISPLAY[family] for family in FAMILIES],
-            y=gate_medians,
+            y=median_ranks,
             name="reading Gemma-written stories"
             if arm == "it_v2"
             else "reading DeepSeek-written stories",
             legendgroup=arm,
             marker_color=_S2_ARM_COLORS[arm],
             error_y=dict(
-                array=[ci[1] - value for value, ci in zip(gate_medians, gate_cis)],
-                arrayminus=[value - ci[0] for value, ci in zip(gate_medians, gate_cis)],
+                array=[ci[1] - value for value, ci in zip(median_ranks, median_rank_cis)],
+                arrayminus=[value - ci[0] for value, ci in zip(median_ranks, median_rank_cis)],
             ),
             showlegend=True,
         ),
@@ -274,7 +288,7 @@ def _s2_title(stats: dict[str, LayerStats], layer: int) -> str:
     to the same five-line shape at every layer.
     """
     family_stats = stats["it_v2"][layer]
-    medians = [family_stats[family]["gate_median"] for family in FAMILIES]
+    medians = [family_stats[family]["median_rank"] for family in FAMILIES]
     rises = sum(1 for family in FAMILIES if family_stats[family]["lead_ci"][0] > 0)
     return (
         f"Which designed story types does the tracker handle best? At layer {layer},"
@@ -294,12 +308,12 @@ def _s2_title(stats: dict[str, LayerStats], layer: int) -> str:
 def s2_family_figure(
     arms: Arms, rng: np.random.Generator
 ) -> tuple[go.Figure, dict[str, LayerStats]]:
-    """S2: gate rank and anticipation lead per designed family, with CIs.
+    """S2: tagged-probe rank and anticipation lead per designed family, with CIs.
 
-    Selfgen bank, primary arm vs DeepSeek-story arm. Returns the grouped-bar
-    figure (layer slider) and the ``_s2_family_stats`` dict.
+    Read with the probes the model built from its own stories, primary arm vs
+    DeepSeek-story arm. Returns the grouped-bar figure (layer slider) and the
+    ``_s2_family_stats`` dict.
     """
-    bank = "selfgen"
     stats = _s2_family_stats(arms, rng)
     fig = make_subplots(
         rows=1,

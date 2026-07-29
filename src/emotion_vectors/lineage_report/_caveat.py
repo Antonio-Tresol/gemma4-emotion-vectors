@@ -19,7 +19,7 @@ from typing import Any
 
 import plotly.graph_objects as go
 
-from ._data import GEOMETRY_LAYER, PROBED_MODEL, LineageEvidence, figure_title
+from ._data import GEOMETRY_LAYER, PROBED_MODEL, StorySourceEvidence, figure_title
 
 # Agreement a reader should demand before treating two extraction formats as
 # interchangeable: cosine 1.0 is the same direction, and we draw 0.9 as the
@@ -29,7 +29,7 @@ IDENTICAL_COSINE = 1.0
 INTERCHANGEABLE_BAND = 0.9
 
 
-def _per_layer_records(evidence: LineageEvidence) -> dict[int, dict[str, Any]]:
+def _per_layer_records(evidence: StorySourceEvidence) -> dict[int, dict[str, Any]]:
     """The audit's per-layer block with integer layer keys (the JSON stores
     them as strings); raises if the audit is empty."""
     records = {int(layer): stats for layer, stats in evidence.raw_vs_chat["per_layer"].items()}
@@ -146,7 +146,7 @@ def _agreement_lines(
     return lines
 
 
-def extraction_format_figure(evidence: LineageEvidence) -> tuple[go.Figure, dict[str, Any]]:
+def extraction_format_figure(evidence: StorySourceEvidence) -> tuple[go.Figure, dict[str, Any]]:
     """Section 7 caveat exhibit: raw-text vs chat-template extraction agreement.
 
     Input: ``load_evidence()`` output. Three series against layer, all of

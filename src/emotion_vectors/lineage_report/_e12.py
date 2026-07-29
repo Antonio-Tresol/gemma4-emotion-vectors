@@ -13,17 +13,17 @@ from plotly.subplots import make_subplots
 
 from ._data import (
     GEOMETRY_LAYER,
-    LINEAGE_COLORS,
-    LINEAGE_LABELS,
-    LINEAGE_ORDER,
-    LINEAGE_TICK_LABELS,
     PROBED_MODEL,
-    LineageEvidence,
+    STORY_SOURCE_COLORS,
+    STORY_SOURCE_LABELS,
+    STORY_SOURCE_ORDER,
+    STORY_SOURCE_TICK_LABELS,
+    StorySourceEvidence,
     figure_title,
     seed_mean_by_n,
 )
 
-# dose-response arm -> (canonical lineage key, role label for the legend)
+# dose-response arm -> (canonical story-source key, legend role label)
 ARM_ROLES = {
     "fixed": ("fixed_deepseek", "fixed-prompt DeepSeek stories"),
     "diverse": ("diverse_deepseek", "diverse-prompt DeepSeek stories"),
@@ -31,7 +31,7 @@ ARM_ROLES = {
 N_TOTAL_LAYERS = 20  # the R1 grid scores 20 layers (0..57, every third)
 
 
-def _matched_n_detection(evidence: LineageEvidence) -> dict[str, float]:
+def _matched_n_detection(evidence: StorySourceEvidence) -> dict[str, float]:
     """The matched-n detection comparison quoted in the verdict: diverse arm
     at n=256 vs the fixed arm at its full corpus (n=255, the closest size the
     fixed corpus reaches)."""
@@ -53,9 +53,9 @@ def _matched_n_detection(evidence: LineageEvidence) -> dict[str, float]:
 def _add_dose_response_traces(fig: go.Figure, arms: dict[str, Any]) -> None:
     """Draw both arms into the two panels: faint per-seed markers and the
     seed-mean line, detection on the left, geometry on the right."""
-    for arm, (lineage_key, role) in ARM_ROLES.items():
+    for arm, (story_source_key, role) in ARM_ROLES.items():
         points = arms[arm]["points"]
-        color = LINEAGE_COLORS[lineage_key]
+        color = STORY_SOURCE_COLORS[story_source_key]
         for col, metric in ((1, "n_passing_layers"), (2, "mean_contrast_cos_to_selfgen_L33")):
             seed_means = seed_mean_by_n(points, metric)
             # faint markers: individual seeded subsamples; solid line: seed mean
@@ -137,7 +137,7 @@ def _dose_response_lines(
     """The printed record: seed-mean passing layers per arm, then the
     matched-n detection comparison the verdict asserts on."""
     lines = []
-    for arm, (_lineage_key, role) in ARM_ROLES.items():
+    for arm, (_story_source_key, role) in ARM_ROLES.items():
         seed_means = seed_mean_by_n(arms[arm]["points"], "n_passing_layers")
         lines.append(
             f"{role}, seed-mean passing layers by n: "
@@ -152,13 +152,15 @@ def _dose_response_lines(
     return lines
 
 
-def dose_response_figure(evidence: LineageEvidence) -> tuple[go.Figure, dict[str, Any]]:
+def dose_response_figure(evidence: StorySourceEvidence) -> tuple[go.Figure, dict[str, Any]]:
     """Section 4 exhibit: how many stories per emotion do probes need?
 
-    Left panel: layers passing the dual-battery bar vs stories per emotion
-    (log x), one faint marker per seeded subsample, line = seed mean, with
-    reference lines for the fixed-corpus ceiling, the self-generated n=256
-    result, and the zero-layers failure floor. Right panel: mean contrast
+    Left panel: layers clearing the mark we fixed before scoring (enough
+    scenarios correct on BOTH sets; the bar is ``PASS_BAR`` in ``._data``)
+    against stories per emotion (log x), one faint marker per seeded
+    subsample, line = seed mean, with reference lines for the fixed-corpus
+    ceiling, the self-generated n=256 result, and the zero-layers failure
+    floor. Right panel: mean contrast
     cosine of each subsample's probes to the self-generated probes at layer
     33 (the registered geometry read exists only there), anchored by the
     full-fixed-corpus cosine and the zero (unrelated) floor.
@@ -168,6 +170,9 @@ def dose_response_figure(evidence: LineageEvidence) -> tuple[go.Figure, dict[str
     matched-n numbers the verdict asserts on.
     """
     arms = evidence.scale_curves["arms"]
+    # "r1_dual_battery" and "r2_cross_lineage_layer33" are the frozen keys the
+    # scorers wrote: the detection read on both sets of scenarios, and the
+    # pairwise geometry read at layer 33
     fixed_ceiling = len(evidence.e11["r1_dual_battery"]["strong_external"]["passing_layers"])
     selfgen_n256 = len(evidence.e11["r1_dual_battery"]["selfgen"]["passing_layers"])
     fixed_to_selfgen_cos = evidence.e11["r2_cross_lineage_layer33"]["selfgen_vs_strong_external"][
@@ -181,7 +186,7 @@ def dose_response_figure(evidence: LineageEvidence) -> tuple[go.Figure, dict[str
         rows=1,
         cols=2,
         subplot_titles=(
-            "detection: layers passing the dual-battery bar",
+            "detection: layers clearing the mark fixed in advance",
             f"geometry: cosine to self-generated probes (layer {GEOMETRY_LAYER})",
         ),
     )
@@ -189,7 +194,7 @@ def dose_response_figure(evidence: LineageEvidence) -> tuple[go.Figure, dict[str
     _add_dose_response_anchors(fig, fixed_ceiling, selfgen_n256, fixed_to_selfgen_cos)
     fig.update_xaxes(type="log", title="stories per emotion (log scale)")
     fig.update_yaxes(
-        title=f"layers passing the dual-battery bar (of {N_TOTAL_LAYERS})", row=1, col=1
+        title=f"layers clearing the mark fixed in advance (of {N_TOTAL_LAYERS})", row=1, col=1
     )
     fig.update_yaxes(title="mean contrast cosine to self-generated probes", row=1, col=2)
     fig.update_layout(
@@ -226,7 +231,7 @@ def dose_response_figure(evidence: LineageEvidence) -> tuple[go.Figure, dict[str
 
 def _add_preference_anchors(fig: go.Figure, abs_r: dict[str, float]) -> None:
     """Add the grading scale: the weakest generator's level as the comparator a
-    new lineage has to beat, and |r| = 0 as the failure floor.
+    new story source has to beat, and |r| = 0 as the failure floor.
 
     Both labels live in the right margin because every bar reaches past the
     comparator line, so an in-plot label would sit on top of a bar.
@@ -255,34 +260,34 @@ def _add_preference_anchors(fig: go.Figure, abs_r: dict[str, float]) -> None:
 def _preference_bars(
     abs_r: dict[str, float], r3_sources: dict[str, Any], bar_labels: list[str]
 ) -> go.Bar:
-    """One bar per lineage, colored by the shared lineage palette and labeled
-    with the layer and emotion that won that maximum."""
+    """One bar per story source, colored by the shared story-source palette
+    and labeled with the layer and emotion that won that maximum."""
     return go.Bar(
         x=bar_labels,
-        y=[abs_r[key] for key in LINEAGE_ORDER],
-        marker_color=[LINEAGE_COLORS[key] for key in LINEAGE_ORDER],
+        y=[abs_r[key] for key in STORY_SOURCE_ORDER],
+        marker_color=[STORY_SOURCE_COLORS[key] for key in STORY_SOURCE_ORDER],
         text=[
             f"{abs_r[key]:.3f}<br>layer {r3_sources[key]['layer']}, {r3_sources[key]['emotion']}"
-            for key in LINEAGE_ORDER
+            for key in STORY_SOURCE_ORDER
         ],
         textposition="outside",
         # no legend entry: each bar is named by its own x tick, and one
-        # swatch cannot stand for four different lineage colors. The
+        # swatch cannot stand for four different story-source colors. The
         # subtitle names the color encoding instead.
         showlegend=False,
     )
 
 
-def preference_figure(evidence: LineageEvidence) -> tuple[go.Figure, dict[str, Any]]:
+def preference_figure(evidence: StorySourceEvidence) -> tuple[go.Figure, dict[str, Any]]:
     """Section 6 exhibit: the R3 preference read (probe cosine vs Elo).
 
-    One bar per lineage: the best absolute Pearson correlation between any
-    probe's cosine and the preference Elo over 64 activities (a max over 12
-    emotions x 4 layers, stated on the figure). A diamond with a seed range
-    overlays the diverse bar: the exploratory matched-n check at n=256.
+    One bar per story source: the best absolute Pearson correlation between
+    any probe's cosine and the preference Elo over 64 activities (a max over
+    12 emotions x 4 layers, stated on the figure). A diamond with a seed
+    range overlays the diverse bar: the exploratory matched-n check at n=256.
 
     Returns ``(figure, stats)``; ``stats["lines"]`` prints every bar and the
-    matched-n check, ``stats["abs_r"]`` maps lineage -> max |r| and
+    matched-n check, ``stats["abs_r"]`` maps story source -> max |r| and
     ``stats["matched_mean"]`` is the matched-n seed mean.
     """
     r3_sources = {
@@ -296,12 +301,12 @@ def preference_figure(evidence: LineageEvidence) -> tuple[go.Figure, dict[str, A
     matched_seeds = matched["diverse_n256_seeds"]
     matched_mean = matched["diverse_n256_mean"]
 
-    bar_labels = [LINEAGE_TICK_LABELS[key] for key in LINEAGE_ORDER]
+    bar_labels = [STORY_SOURCE_TICK_LABELS[key] for key in STORY_SOURCE_ORDER]
     width_px = 1000
     fig = go.Figure(_preference_bars(abs_r, r3_sources, bar_labels))
     # the exploratory matched-n check: diverse subsampled to n=256, 5 seeds.
     # The seed range is narrow, so the error bar is a thin whisker, not a gap.
-    diverse_label = bar_labels[LINEAGE_ORDER.index("diverse_deepseek")]
+    diverse_label = bar_labels[STORY_SOURCE_ORDER.index("diverse_deepseek")]
     fig.add_scatter(
         x=[diverse_label],
         y=[matched_mean],
@@ -328,7 +333,7 @@ def preference_figure(evidence: LineageEvidence) -> tuple[go.Figure, dict[str, A
                 " cosine and the preference Elo rating over 64 activities; it is a maximum over"
                 " 12 emotions x 4 layers, so compare levels, not small gaps",
                 "the label on each bar names the layer and emotion that won that maximum;"
-                " bar color = probe lineage, the same palette as the figures above"
+                " bar color = story source, the same palette as the figures above"
                 " (self-generated green, weak external gray, fixed DeepSeek blue,"
                 " diverse DeepSeek red), so color repeats the x axis and adds nothing new",
                 f"probes read from {PROBED_MODEL}; evidence: e11_lineage.json,"
@@ -339,7 +344,7 @@ def preference_figure(evidence: LineageEvidence) -> tuple[go.Figure, dict[str, A
         title_font_size=13,
         yaxis_title="max |Pearson r| (0 = no relation, 1 = perfect)",
         yaxis_range=[0, 0.95],
-        xaxis_title="probe lineage (who wrote the stories)",
+        xaxis_title="story source (who wrote the stories)",
         width=width_px,
         # height grows with the top margin so the plot area itself keeps its
         # size and the legend stays clear of the x-axis title
@@ -350,9 +355,9 @@ def preference_figure(evidence: LineageEvidence) -> tuple[go.Figure, dict[str, A
         legend=dict(orientation="h", yanchor="top", y=-0.28),
     )
     lines = [
-        f"{LINEAGE_LABELS[key]}: max |r| = {abs_r[key]:.3f} (layer {r3_sources[key]['layer']},"
-        f" {r3_sources[key]['emotion']})"
-        for key in LINEAGE_ORDER
+        f"{STORY_SOURCE_LABELS[key]}: max |r| = {abs_r[key]:.3f}"
+        f" (layer {r3_sources[key]['layer']}, {r3_sources[key]['emotion']})"
+        for key in STORY_SOURCE_ORDER
     ]
     lines.append(
         f"matched-n check, diverse subsampled to n=256: mean |r| {matched_mean:.3f}"

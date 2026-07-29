@@ -82,7 +82,7 @@ def _s2_title(base_percent: float, worst_following_percent: float) -> str:
         f" {worst_following_percent:.1f}%, the base model at {base_percent:.1f}%"
         "<br><sup>one bar = one corpus; height = % of its audited texts containing a word-stem"
         " of their target emotion,"
-        f"<br>counted over the {len(EMOTION_STEMS)} battery emotions that have stem lists"
+        f"<br>counted over the {len(EMOTION_STEMS)} scenario-test emotions that have stem lists"
         " (emotion_vectors.scoring.EMOTION_STEMS); 0% = perfect compliance</sup>"
         "<br><sup>grading: inside the green band (at or below the reference corpus the source"
         " papers worked with) = clean enough to reuse;"
@@ -245,9 +245,9 @@ def s2_leakage_figure(ctx: CorporaContext) -> tuple[go.Figure, dict[str, Any]]:
         for label, _, leaked, total in counts
     ]
     lines.append(
-        f"audited = texts whose target emotion is one of the {len(EMOTION_STEMS)} battery"
+        f"audited = texts whose target emotion is one of the {len(EMOTION_STEMS)} scenario-test"
         " emotions with stem lists, so a corpus covering more emotions (the reference corpus"
-        " covers 171) is audited on that battery subset only"
+        " covers 171) is audited on that subset of emotions only"
     )
     return fig, {
         "lines": lines,
@@ -257,5 +257,6 @@ def s2_leakage_figure(ctx: CorporaContext) -> tuple[go.Figure, dict[str, Any]]:
         "base_percent": percent[base_label],
         "reference_label": reference_label,
         "base_label": base_label,
+        # key name kept: notebook 01 reads s2_stats["n_battery_emotions"]
         "n_battery_emotions": len(EMOTION_STEMS),
     }

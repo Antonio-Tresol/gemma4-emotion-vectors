@@ -14,22 +14,23 @@ from ._data import (
     PRIMARY_LAYER,
     Arms,
     LayerStats,
-    bank_columns,
     cluster_boot_ci,
-    gate_ranks,
     layer_slider,
+    probe_set_columns,
+    tagged_ranks,
     true_leads,
 )
 
 
 def _s5_stats(arms: Arms, has_nonaffect: dict[int, bool], rng: np.random.Generator) -> LayerStats:
-    """The two S5 cuts per layer, selfgen bank, primary arm.
+    """The two S5 cuts per layer, primary arm, read with the probes the model
+    built from its own stories.
 
     ``stats[layer] = {"position": {...}, "nonaffect": {...}}`` where each cut
     maps its label to (point estimate, CI, n). RNG order per layer:
     transition 1, transition 2, then flag False, flag True.
     """
-    ranks, _, phase_rows = gate_ranks(arms, "it_v2", "selfgen")
+    ranks, _, phase_rows = tagged_ranks(arms, "it_v2", "selfgen")
     leads, transition_rows = true_leads(arms, "it_v2", "selfgen")
     stats: LayerStats = {}
     for layer_pos, layer in enumerate(LAYERS):
@@ -51,7 +52,8 @@ def _s5_stats(arms: Arms, has_nonaffect: dict[int, bool], rng: np.random.Generat
                 ci,
                 len(trans_idx),
             )
-        # right panel cut: gate median rank with vs without a non-affect phase
+        # right panel cut: median rank of the tagged probe with vs without a
+        # non-affect phase
         nonaffect_cut = {}
         for flag in [False, True]:
             phase_idx = [
@@ -135,10 +137,11 @@ def _s5_title(stats: LayerStats, layer: int) -> str:
 def s5_position_nonaffect_figure(
     arms: Arms, has_nonaffect: dict[int, bool], rng: np.random.Generator
 ) -> tuple[go.Figure, LayerStats]:
-    """S5: R1 lead by transition position; gate rank by the nonaffect flag.
+    """S5: R1 lead by transition position; tagged-probe rank by the nonaffect flag.
 
-    Selfgen bank, primary arm. Returns the two-panel bar figure (layer
-    slider) and the ``_s5_stats`` dict.
+    Primary arm, read with the probes the model built from its own stories.
+    Returns the two-panel bar figure (layer slider) and the ``_s5_stats``
+    dict.
     """
     stats = _s5_stats(arms, has_nonaffect, rng)
     fig = make_subplots(
@@ -198,24 +201,25 @@ def cross_arm_lines(
 ) -> list[str]:
     """The cross-arm table at the primary layer plus Part 1 headline numbers.
 
-    One line per arm (gate median rank and mean R1 lead, selfgen bank), then
-    the S1 best/worst emotions, the S3 valence contrast, and the S4
+    One line per arm (median rank of the tagged probe and mean R1 lead, read
+    with the probes the model built from its own stories), then the S1
+    best/worst emotions, the S3 valence contrast, and the S4
     winner-vs-shuffle distances, pulled from the section stats. Returns the
     lines exactly as the notebook prints them.
     """
     primary_pos = LAYERS.index(PRIMARY_LAYER)
-    lines = [f"=== primary layer {PRIMARY_LAYER}, selfgen bank ==="]
+    lines = [f"=== primary layer {PRIMARY_LAYER}, self-generated probes ==="]
     for arm in ["it_v2", "it", "deepseek", "deepseek_constant", "base"]:
-        if not bank_columns(arms, arm, "selfgen")[0]:
+        if not probe_set_columns(arms, arm, "selfgen")[0]:
             lines.append(
-                f"{arm:22s} no selfgen bank in this arm (base lineage); its corpus-bank "
-                "read lives in S6 and in notebook 10's factorial"
+                f"{arm:22s} this arm has no self-generated probes (its probes come from the "
+                "story corpus); that read lives in S6 and in notebook 10's factorial"
             )
             continue
-        ranks, _, phase_rows = gate_ranks(arms, arm, "selfgen")
+        ranks, _, phase_rows = tagged_ranks(arms, arm, "selfgen")
         leads, transition_rows = true_leads(arms, arm, "selfgen")
         lines.append(
-            f"{arm:22s} gate median rank {np.median(ranks[:, primary_pos]):4.1f} "
+            f"{arm:22s} median rank of tagged probe {np.median(ranks[:, primary_pos]):4.1f} "
             f"(n={len(phase_rows)})   R1 mean lead {leads[:, primary_pos].mean():+.4f} "
             f"(n={len(transition_rows)})"
         )

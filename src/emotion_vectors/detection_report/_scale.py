@@ -6,7 +6,7 @@ those corpus sizes, which is what "more data would help" would require. Both
 read the same frozen bundle, ``results/e6_scale_means.npz``.
 
 Scores here center on the 12 probes themselves: the scale corpus extracted
-the 12 battery emotions only (see :mod:`._data`).
+the 12 scenario emotions only (see :mod:`._data`).
 """
 
 from __future__ import annotations
@@ -34,7 +34,7 @@ from ._data import (
 )
 
 SCALE_WIDTH_PX = 900
-# One scored configuration: (prompt format, layer, readout, paper count, held-out count).
+# One scored configuration: (prompt format, layer, pooling, paper count, held-out count).
 Configuration = tuple[str, int, str, int, int]
 
 
@@ -42,14 +42,14 @@ Configuration = tuple[str, int, str, int, int]
 class ScaleCorpus:
     """The scale bundle: probe means at four corpus sizes, plus neutral text.
 
-    ``means`` [corpus_sizes battery_emotions layers d_model] holds the probe
+    ``means`` [corpus_sizes scenario_emotions layers d_model] holds the probe
     means built from n stories per emotion, ``n_buckets`` the sizes in
     ascending order, ``emotions`` the row order, ``layers`` the layer grid,
     and ``neutral`` [neutral_texts layers d_model] the neutral-transcript
     activations section 6 projects out.
     """
 
-    means: Float[np.ndarray, "corpus_sizes battery_emotions layers d_model"]
+    means: Float[np.ndarray, "corpus_sizes scenario_emotions layers d_model"]
     n_buckets: list[int]
     emotions: list[str]
     layers: list[int]
@@ -82,30 +82,31 @@ def load_scale_corpus(layers: list[int]) -> ScaleCorpus:
 
 
 def best_scores(
-    model: ModelSweep, probe_means: Float[np.ndarray, "battery_emotions layers d_model"]
+    model: ModelSweep, probe_means: Float[np.ndarray, "scenario_emotions layers d_model"]
 ) -> tuple[dict[str, int], Configuration]:
     """Sweep one probe set over every configuration and keep the maxima.
 
     Returns ``(best, configuration)``. ``best`` holds the highest count on
-    each battery taken independently (so the two can come from different
+    each scenario set taken independently (so the two can come from different
     configurations), while ``configuration`` is the single combination whose
-    WORSE battery is highest: that is the one the registered dual-battery
-    rule grades. Ties keep the first configuration in sweep order.
+    WORSE set is highest: that is the one the registered both-sets rule
+    grades. Ties keep the first configuration in sweep order.
     """
+    # "scenario" and "heldout" name the two sets as the stored prompts do
     best = {"scenario": 0, "heldout": 0}
     best_configuration: Configuration | None = None
-    best_worse_battery = -1
+    best_worse_count = -1
     for fmt in model.formats:
         for layer_pos, layer in enumerate(model.layers):
-            for readout in READOUTS:
+            for pooling in READOUTS:
                 paper, held_out = battery_counts(
-                    model, probe_means[:, layer_pos, :], fmt, readout, layer_pos
+                    model, probe_means[:, layer_pos, :], fmt, pooling, layer_pos
                 )
                 best["scenario"] = max(best["scenario"], paper)
                 best["heldout"] = max(best["heldout"], held_out)
-                if min(paper, held_out) > best_worse_battery:
-                    best_worse_battery = min(paper, held_out)
-                    best_configuration = (fmt, int(layer), readout, paper, held_out)
+                if min(paper, held_out) > best_worse_count:
+                    best_worse_count = min(paper, held_out)
+                    best_configuration = (fmt, int(layer), pooling, paper, held_out)
     if best_configuration is None:
         raise ValueError(f"{model.label}: no configurations to score")
     return best, best_configuration
@@ -113,9 +114,9 @@ def best_scores(
 
 def describe_configuration(configuration: Configuration) -> str:
     """One configuration in words, for a printed line or a figure label."""
-    fmt, layer, readout, paper, held_out = configuration
+    fmt, layer, pooling, paper, held_out = configuration
     return (
-        f"{fmt} format, layer {layer}, {READOUT_LABELS[readout]} readout"
+        f"{fmt} format, layer {layer}, pooled over the {READOUT_LABELS[pooling]}"
         f" ({paper}/12 paper, {held_out}/12 held-out)"
     )
 
@@ -135,7 +136,7 @@ def _add_scale_anchors(fig: go.Figure, n_buckets: list[int]) -> None:
         y=PASS_BAR,
         line_dash="dot",
         line_color="#2ca02c",
-        annotation_text=f"registered pass bar: {PASS_BAR} of 12 on BOTH batteries",
+        annotation_text=f"registered pass bar: {PASS_BAR} of 12 on BOTH scenario sets",
         annotation_position="top left",
     )
     fig.add_hline(
@@ -151,12 +152,12 @@ def _add_scale_anchors(fig: go.Figure, n_buckets: list[int]) -> None:
 def scale_figure(
     rows: list[tuple[int, int, int, Configuration]],
 ) -> tuple[go.Figure, dict[str, Any]]:
-    """Section 4 exhibit: best battery score against probe-corpus size.
+    """Section 4 exhibit: best scenario score against probe-corpus size.
 
     Input: ``scale_rows`` output. Returns ``(figure, stats)``;
     ``stats["lines"]`` prints each corpus size's bests and the configuration
     that achieved the best joint score, and ``stats["peak_joint"]`` is the
-    highest score any single combination reached on both batteries.
+    highest score any single combination reached on both scenario sets.
     """
     sizes = [row[0] for row in rows]
     joint = [min(row[3][3], row[3][4]) for row in rows]
@@ -166,19 +167,19 @@ def scale_figure(
     for values, name, dash, color in (
         (
             [row[1] for row in rows],
-            "best on the paper battery (any combination)",
+            "best on the paper scenarios (any combination)",
             "solid",
             "#1f77b4",
         ),
         (
             [row[2] for row in rows],
-            "best on the held-out battery (any combination)",
+            "best on the held-out scenarios (any combination)",
             "dash",
             "#ff7f0e",
         ),
         (
             joint,
-            "best ONE combination scored on both batteries (the graded read)",
+            "best ONE combination scored on both scenario sets (the graded read)",
             "solid",
             "#d62728",
         ),
@@ -195,11 +196,11 @@ def scale_figure(
     fig.update_layout(
         title=figure_title(
             f"Does 16x more probe data fix detection? {verdict}: the best single combination"
-            f" measured on BOTH batteries peaks at {peak_joint} of 12 across the whole range,"
-            f" against a registered bar of {PASS_BAR}",
+            f" measured on BOTH sets of scenarios peaks at {peak_joint} of 12 across the whole"
+            f" range, against a registered bar of {PASS_BAR}",
             [
                 "one marker = one probe-corpus size; the blue and orange lines take the best"
-                " score on each battery separately, so they can come from DIFFERENT"
+                " score on each set of scenarios separately, so they can come from DIFFERENT"
                 " combinations; the red line is the one combination graded by the registered"
                 " rule",
                 f"failure anchor: guessing lands near {CHANCE_CORRECT:.0f} of 12; strength"

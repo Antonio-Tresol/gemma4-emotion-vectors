@@ -19,13 +19,13 @@ from ._data import (
     LAYERS,
     PRIMARY_LAYER,
     Arms,
-    GateRead,
     LayerStats,
     LeadRead,
+    RankRead,
     Vad,
-    bank_columns,
-    gate_ranks,
     layer_slider,
+    probe_set_columns,
+    tagged_ranks,
     true_leads,
 )
 
@@ -47,13 +47,13 @@ def rank_partial(
 
 def selfgen_probe_cosines(
     arms: Arms,
-) -> tuple[Float[np.ndarray, "layers bank_probes bank_probes"], list[str]]:
-    """Reconstruct the exact selfgen probe bank and its within-bank cosines.
+) -> tuple[Float[np.ndarray, "layers probes probes"], list[str]]:
+    """Reconstruct the exact self-generated probe set and its within-set cosines.
 
     Rebuilds the unit contrast probes from the stored extraction means (the
     n=256 bucket the extraction used), reorders them to the recorded label
-    order, and returns (probe-probe cosines [layers, bank_probes,
-    bank_probes] on the LAYERS grid, bank emotion names).
+    order, and returns (probe-probe cosines [layers, probes, probes] on the
+    LAYERS grid, the twelve emotion names).
     """
     corpus_bundle = np.load(
         fetch("emotion_vectors_it_postfix/emotion_means.npz"), allow_pickle=True
@@ -62,24 +62,22 @@ def selfgen_probe_cosines(
     bundle_layer_pos = [list(corpus_bundle["layers"]).index(layer) for layer in LAYERS]
     selfgen_bundle = np.load(fetch("e6_scale_means.npz"), allow_pickle=True)
     bundle_names = list(map(str, selfgen_bundle["emotions"]))
-    # bucket -1 = n=256, the bank the extraction used; layer grid shared with corpus
+    # bucket -1 = n=256, the probe set the extraction used; layer grid shared with corpus
     selfgen_dirs = unit_contrast_probes(selfgen_bundle["means"][-1].astype(np.float32))[
         :, bundle_layer_pos
     ]
-    _, bank_names = bank_columns(arms, "it_v2", "selfgen")
-    bundle_order = [bundle_names.index(emotion) for emotion in bank_names]
+    _, probe_names = probe_set_columns(arms, "it_v2", "selfgen")
+    bundle_order = [bundle_names.index(emotion) for emotion in probe_names]
     ordered_dirs = selfgen_dirs[bundle_order]
     probe_cos = einsum(
         ordered_dirs,
         ordered_dirs,
         "probe_a layers d_model, probe_b layers d_model -> layers probe_a probe_b",
     )
-    return probe_cos, bank_names
+    return probe_cos, probe_names
 
 
-def _vad_distance_matrix(
-    vad: Vad, names: list[str]
-) -> Float[np.ndarray, "bank_probes bank_probes"]:
+def _vad_distance_matrix(vad: Vad, names: list[str]) -> Float[np.ndarray, "probes probes"]:
     """Pairwise Euclidean distance in the valence-arousal plane."""
     return np.array(
         [[np.hypot(vad[a][0] - vad[b][0], vad[a][1] - vad[b][1]) for b in names] for a in names]
@@ -87,14 +85,14 @@ def _vad_distance_matrix(
 
 
 def _s8_crowding(
-    gate: GateRead,
-    probe_cos: Float[np.ndarray, "layers bank_probes bank_probes"],
+    rank_read: RankRead,
+    probe_cos: Float[np.ndarray, "layers probes probes"],
     names: list[str],
 ) -> tuple[LayerStats, list[str]]:
     """Sub-read (a): per layer, Spearman rho between an emotion's crowding
     (mean cosine to the other 11 probes) and its top-1 rate. Returns
     (``stats[layer] = {"crowding_rho", "crowding_p"}``, printed lines)."""
-    _, winner, phase_rows = gate
+    _, winner, phase_rows = rank_read
     not_self = ~np.eye(len(names), dtype=bool)
     lines = ["", "(a) crowding vs tracking quality, per layer (spearman, n=12 emotions):"]
     stats: LayerStats = {}
@@ -114,9 +112,9 @@ def _s8_crowding(
 
 
 def _s8_pair_confusion(
-    gate: GateRead,
-    probe_cos: Float[np.ndarray, "layers bank_probes bank_probes"],
-    vad_dist: Float[np.ndarray, "bank_probes bank_probes"],
+    rank_read: RankRead,
+    probe_cos: Float[np.ndarray, "layers probes probes"],
+    vad_dist: Float[np.ndarray, "probes probes"],
     names: list[str],
 ) -> tuple[LayerStats, list[str]]:
     """Sub-read (b), per layer: does probe cosine predict WHICH wrong answer
@@ -126,7 +124,7 @@ def _s8_pair_confusion(
     contrast (mean confusion rate among the most-similar quartile of pairs
     vs the least-similar quartile). Returns (stats_by_layer, printed lines
     for the primary layer)."""
-    _, winner, phase_rows = gate
+    _, winner, phase_rows = rank_read
     stats: LayerStats = {}
     for layer_pos, layer in enumerate(LAYERS):
         confusion_rate, pair_cos, vad_closeness = [], [], []
@@ -175,21 +173,21 @@ def _s8_pair_confusion(
 
 def _s8_transitions(
     arms: Arms,
-    gate: GateRead,
-    probe_cos: Float[np.ndarray, "layers bank_probes bank_probes"],
+    rank_read: RankRead,
+    probe_cos: Float[np.ndarray, "layers probes probes"],
     names: list[str],
 ) -> tuple[dict[str, float], list[str]]:
     """Sub-read (c): are transitions between similar probes harder?
 
-    At the primary layer, correlates each transition's R1 lead and its
-    post-boundary gate rank with cos(from-probe, to-probe), for transitions
-    whose outgoing emotion is also in the bank. Returns (stats, printed
-    lines).
+    At the primary layer, correlates each transition's R1 lead and the
+    post-boundary rank of the tagged probe with cos(from-probe, to-probe),
+    for transitions whose outgoing emotion also has a probe. Returns (stats,
+    printed lines).
     """
-    ranks, _, phase_rows = gate
+    ranks, _, phase_rows = rank_read
     primary_pos = LAYERS.index(PRIMARY_LAYER)
     leads, transition_rows = true_leads(arms, "it_v2", "selfgen")
-    # the phase AFTER transition k carries phase_index k, so its gate-rank row
+    # the phase AFTER transition k carries phase_index k, so its rank row
     # is looked up by (story_id, transition_index)
     rank_by_key = {
         (row["story_id"], row["phase_index"]): ranks[pos] for pos, row in enumerate(phase_rows)
@@ -218,10 +216,10 @@ def _s8_transitions(
     }
     lines = [
         "",
-        f"(c) transitions with both emotions in the bank (n={len(trans_cos)}, "
+        f"(c) transitions with a probe for both emotions (n={len(trans_cos)}, "
         f"layer {PRIMARY_LAYER}):",
-        f"  R1 lead ~ cos(from, to)             spearman {stats['lead_vs_cos']:+.2f}",
-        f"  post-boundary gate rank ~ cos       spearman {stats['rank_vs_cos']:+.2f}"
+        f"  R1 lead ~ cos(from, to)                spearman {stats['lead_vs_cos']:+.2f}",
+        f"  post-boundary tagged rank ~ cos        spearman {stats['rank_vs_cos']:+.2f}"
         "   (positive = similar probes -> worse rank)",
     ]
     return stats, lines
@@ -371,7 +369,7 @@ def _s8_verdict_figure(pair_stats: LayerStats) -> go.Figure:
 def s8_geometry_figure(arms: Arms, vad: Vad) -> tuple[go.Figure, dict[str, object]]:
     """S8: probe geometry as a difficulty predictor, vs the VAD competitor.
 
-    Reconstructs the exact selfgen probe bank, then runs the three registered
+    Reconstructs the exact self-generated probe set, then runs the three registered
     sub-reads: (a) crowding vs top-1 rate per layer, (b) pairwise probe
     cosine vs confusion rate with VAD rank partials, (c) transition
     difficulty vs cos(from, to). Returns the two-panel verdict figure (layer
@@ -390,12 +388,12 @@ def s8_geometry_figure(arms: Arms, vad: Vad) -> tuple[go.Figure, dict[str, objec
         f"spearman {predictor_corr:+.2f} "
         "(correlated, hence the partials below)"
     ]
-    gate = gate_ranks(arms, "it_v2", "selfgen")
-    crowding_stats, crowding_lines = _s8_crowding(gate, probe_cos, names)
+    rank_read = tagged_ranks(arms, "it_v2", "selfgen")
+    crowding_stats, crowding_lines = _s8_crowding(rank_read, probe_cos, names)
     lines += crowding_lines
-    pair_stats, pair_lines = _s8_pair_confusion(gate, probe_cos, vad_dist, names)
+    pair_stats, pair_lines = _s8_pair_confusion(rank_read, probe_cos, vad_dist, names)
     lines += pair_lines
-    transition_stats, transition_lines = _s8_transitions(arms, gate, probe_cos, names)
+    transition_stats, transition_lines = _s8_transitions(arms, rank_read, probe_cos, names)
     lines += transition_lines
     fig = _s8_verdict_figure(pair_stats)
     stats = {

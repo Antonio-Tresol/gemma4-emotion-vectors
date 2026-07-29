@@ -1,4 +1,4 @@
-"""Q1.H2.E1 prompt battery — verbatim from the Anthropic emotions paper.
+"""Q1.H2.E1 prompt set — verbatim from the Anthropic emotions paper.
 
 Table 2 scenarios and Figure 3 numerical-intensity templates
 (transformer-circuits.pub/2026/emotions, read in-session 2026-07-21). Each
@@ -124,9 +124,10 @@ TEMPLATES: list[tuple[str, str, list[int], str]] = [
 
 TRACKED_PROBES = ["afraid", "calm", "happy", "sad"]  # the four the paper plots in Figure 3
 
-# Held-out confirmation battery for the E2 sweep — written by us 2026-07-21 and
-# committed BEFORE any sweep scoring, so a (layer, readout, format) combination
-# selected on the paper's 12 scenarios must also pass on these 12 fresh ones.
+# Held-out confirmation scenarios for the E2 sweep — written by us 2026-07-21
+# and committed BEFORE any sweep scoring, so a (layer, pooling, format)
+# combination selected on the paper's 12 scenarios must also pass on these 12
+# fresh ones.
 # Same 12 target emotions, implicit content, no emotion words named.
 HELDOUT_SCENARIOS: list[tuple[str, str, str]] = [
     (
@@ -210,8 +211,8 @@ def build_prompts() -> list[dict[str, object]]:
     Human:/Assistant: or the model's chat template) is applied at collection."""
     prompts: list[dict[str, object]] = [
         {"kind": kind, "name": name, "target": target, "text": text}
-        for kind, battery in (("scenario", SCENARIOS), ("heldout", HELDOUT_SCENARIOS))
-        for name, target, text in battery
+        for kind, scenario_set in (("scenario", SCENARIOS), ("heldout", HELDOUT_SCENARIOS))
+        for name, target, text in scenario_set
     ]
     for name, template, values, axis in TEMPLATES:
         prompts += [

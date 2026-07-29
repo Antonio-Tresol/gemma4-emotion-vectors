@@ -1,6 +1,6 @@
 """Loaders, shared constants, and the core data helpers for the notebook-11
-exhibits: record-dump resolution, bank slicing, the gate and R1 reads, the
-cluster bootstrap, and the house layer-slider pattern."""
+exhibits: record-dump resolution, probe-set slicing, the tagged-rank and R1
+reads, the cluster bootstrap, and the house layer-slider pattern."""
 
 from __future__ import annotations
 
@@ -46,14 +46,14 @@ Vad = dict[str, tuple[float, float]]
 ConfidenceInterval = tuple[float, float]
 # Per-layer stats dict: {layer: {stat name: value}}.
 LayerStats = dict[int, dict[str, object]]
-# The gate read for one (arm, bank): tagged-emotion ranks, winner probe
-# positions (both [kept_phases, layers]), and the kept phase metadata rows.
-GateRead = tuple[
+# The tagged-rank read for one (arm, probe set): the tagged emotion's ranks,
+# winner probe positions (both [kept_phases, layers]), and the kept phase rows.
+RankRead = tuple[
     Int[np.ndarray, "kept_phases layers"],
     Int[np.ndarray, "kept_phases layers"],
     list[Row],
 ]
-# The R1 read for one (arm, bank): incoming-emotion leads and the kept
+# The R1 read for one (arm, probe set): incoming-emotion leads and the kept
 # transition metadata rows.
 LeadRead = tuple[Float[np.ndarray, "kept_trans layers"], list[Row]]
 
@@ -80,7 +80,8 @@ def load_arms(arm_names: list[str]) -> Arms:
     ``phase_thirds`` [phase_records, 3, layers, probes], ``trans_lead``
     [transition_records, layers, probes], plus the metadata row lists
     (``phases``, ``transitions``) and the ``labels`` probe-name list
-    ("bank:emotion" strings, one per probe column).
+    (``"<probe set>:<emotion>"`` strings such as ``"selfgen:joy"``, one per
+    probe column).
     """
     arms: Arms = {}
     for arm in arm_names:
@@ -114,28 +115,30 @@ def load_has_nonaffect() -> dict[int, bool]:
     return {triple_id: triple["has_nonaffect"] for triple_id, triple in enumerate(triples)}
 
 
-def bank_columns(arms: Arms, arm: str, bank: str) -> tuple[list[int], list[str]]:
-    """Probe columns belonging to one bank, plus their emotion names."""
+def probe_set_columns(arms: Arms, arm: str, probe_set: str) -> tuple[list[int], list[str]]:
+    """Probe columns belonging to one probe set, plus their emotion names."""
     labels = arms[arm]["labels"]
-    columns = [pos for pos, label in enumerate(labels) if label.startswith(bank + ":")]
+    # the dumped probe labels are "<probe set>:<emotion>"; the set names
+    # ("selfgen", "deepseek", "corpus") are written into the record dumps
+    columns = [pos for pos, label in enumerate(labels) if label.startswith(probe_set + ":")]
     names = [labels[pos].split(":", 1)[1] for pos in columns]
     return columns, names
 
 
-def gate_ranks(arms: Arms, arm: str, bank: str) -> GateRead:
-    """The gate read: rank of the tagged emotion within its bank, per phase.
+def tagged_ranks(arms: Arms, arm: str, probe_set: str) -> RankRead:
+    """Rank of the tagged emotion within its probe set, per story phase.
 
-    Keeps the phases whose tagged emotion has a probe in the bank. Returns
+    Keeps the phases whose tagged emotion has a probe in the set. Returns
     (ranks [kept_phases, layers] with 1 = the tagged probe scored highest,
     winner probe position [kept_phases, layers], kept phase metadata rows).
     """
-    columns, names = bank_columns(arms, arm, bank)
+    columns, names = probe_set_columns(arms, arm, probe_set)
     phase_records = arms[arm]["phases"]
     kept = [pos for pos, row in enumerate(phase_records) if row["emotion"] in names]
-    # scores: [kept_phases, layers, bank_probes] phase-mean centered cosines
+    # scores: [kept_phases, layers, probes] phase-mean centered cosines
     scores = arms[arm]["phase_scores"][kept][:, :, columns]
     target = np.array([names.index(phase_records[pos]["emotion"]) for pos in kept])
-    # rank = 1 + how many bank probes out-score the tagged probe
+    # rank = 1 + how many probes in the set out-score the tagged probe
     target_score = scores[np.arange(len(kept)), :, target]
     tagged = rearrange(target_score, "phases layers -> phases layers 1")
     ranks = (scores > tagged).sum(axis=2) + 1
@@ -144,14 +147,14 @@ def gate_ranks(arms: Arms, arm: str, bank: str) -> GateRead:
     return ranks, winner, kept_rows
 
 
-def true_leads(arms: Arms, arm: str, bank: str) -> LeadRead:
+def true_leads(arms: Arms, arm: str, probe_set: str) -> LeadRead:
     """The R1 read: anticipation lead of the incoming emotion, per transition.
 
-    Keeps the transitions whose incoming emotion has a probe in the bank.
+    Keeps the transitions whose incoming emotion has a probe in the set.
     Returns (leads [kept_transitions, layers] in centered-cosine units,
     kept transition metadata rows).
     """
-    columns, names = bank_columns(arms, arm, bank)
+    columns, names = probe_set_columns(arms, arm, probe_set)
     transition_records = arms[arm]["transitions"]
     kept = [pos for pos, row in enumerate(transition_records) if row["to_emotion"] in names]
     leads = arms[arm]["trans_lead"][kept][:, :, columns]
@@ -169,7 +172,8 @@ def cluster_boot_ci(
     """95% CI for stat(values) from a cluster bootstrap over triple_id.
 
     Whole triples are resampled (with replacement) rather than individual
-    values, because stories from one designed triple share a text lineage.
+    values, because stories from one designed triple come from one source
+    story.
     Consumes exactly one ``rng.integers`` draw per resample, so CI values
     depend on the generator's position; the notebook threads one generator
     through the sections in a fixed order.

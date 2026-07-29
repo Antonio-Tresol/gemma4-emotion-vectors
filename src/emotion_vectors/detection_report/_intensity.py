@@ -21,7 +21,7 @@ from plotly.subplots import make_subplots
 from scipy.stats import spearmanr
 
 from emotion_vectors.probe_prompts import TRACKED_PROBES
-from emotion_vectors.scoring import battery_matrix
+from emotion_vectors.scoring import battery_matrix  # scoring's own name, unchanged
 
 from ._data import BASE_LABEL, IT_LABEL, MODEL_SOURCES, REGISTERED_LAYER, SweepContext, figure_title
 
@@ -77,7 +77,7 @@ def intensity_curves(ctx: SweepContext) -> dict[str, dict[str, TemplateCurve]]:
     Input: the loaded :class:`~._data.SweepContext`. Returns {model label:
     {template name: :class:`TemplateCurve`}}. Each model is read in the
     prompt format it was swept in (chat for the instruct model, plain for the
-    base model, which has no chat template) at the last token, the readout
+    base model, which has no chat template) at the last token, the pooling
     the registered E1 read specifies. Cosines are centered on the full
     extraction, the sweep convention.
     """

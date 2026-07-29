@@ -21,12 +21,14 @@ from emotion_vectors.analysis import project_out_neutral
 from ._data import IT_LABEL, READOUTS, ModelSweep, battery_counts
 from ._scale import ScaleCorpus
 
-# Layers and readouts the table walks: the geometry peak, the layer the
-# centered-readout resolution later passed at, and the deepest collected
-# layer, under the two readouts the campaign reported.
+# Layers and poolings the table walks: the geometry peak, the layer the
+# centered-pooling resolution later passed at, and the deepest collected
+# layer, under the two poolings the campaign reported.
 HIGHLIGHT_LAYERS = (33, 39, 57)
-HIGHLIGHT_READOUTS = ("last", "mean_content")
-# A row is shown when its two batteries together clear this, so the table
+# "last" and "mean_content" are entries of READOUTS, which are also the
+# stored activation-array keys.
+HIGHLIGHT_POOLINGS = ("last", "mean_content")
+# A row is shown when its two scenario sets together clear this, so the table
 # stays short; the deepest layer's content-mean row is always shown as the
 # fixed reference point the campaign record quotes.
 TABLE_INTEREST_TOTAL = 8
@@ -35,8 +37,8 @@ TABLE_INTEREST_TOTAL = 8
 def projection_probes(
     scale: ScaleCorpus,
 ) -> tuple[
-    Float[np.ndarray, "battery_emotions layers d_model"],
-    Float[np.ndarray, "battery_emotions layers d_model"],
+    Float[np.ndarray, "scenario_emotions layers d_model"],
+    Float[np.ndarray, "scenario_emotions layers d_model"],
     dict[int, int],
 ]:
     """Apply the neutral projection to the full-corpus probes, layer by layer.
@@ -59,41 +61,41 @@ def projection_probes(
 
 def projection_table(
     model: ModelSweep,
-    probe_sets: dict[str, Float[np.ndarray, "battery_emotions layers d_model"]],
+    probe_sets: dict[str, Float[np.ndarray, "scenario_emotions layers d_model"]],
     layers: list[int],
     components_removed: dict[int, int],
 ) -> dict[str, Any]:
-    """Score the battery before and after the projection at the shown layers.
+    """Score the scenarios before and after the projection at the shown layers.
 
     Inputs: the instruct model's sweep, {"unprojected": ..., "projected":
     ...}, the shared layer grid, and ``projection_probes``'s
     components-removed map. Returns ``stats`` with ``lines`` (the printed
-    record) and ``counts`` {(probe set, format, layer, readout): (paper,
+    record) and ``counts`` {(probe set, format, layer, pooling): (paper,
     held-out)} for every cell scored.
     """
-    missing = [readout for readout in HIGHLIGHT_READOUTS if readout not in READOUTS]
+    missing = [pooling for pooling in HIGHLIGHT_POOLINGS if pooling not in READOUTS]
     if missing:
-        raise ValueError(f"table asks for unswept readouts {missing}")
+        raise ValueError(f"table asks for unswept poolings {missing}")
     lines = [
         f"model: {IT_LABEL}",
         f"neutral PCs removed per layer (50% of the neutral variance): {components_removed}",
         "",
-        f"{'probes':12s} {'fmt':6s} {'layer':5s} {'readout':13s} {'paper':>6s} {'heldout':>8s}",
+        f"{'probes':12s} {'fmt':6s} {'layer':5s} {'pooling':13s} {'paper':>6s} {'heldout':>8s}",
     ]
     counts: dict[tuple[str, str, int, str], tuple[int, int]] = {}
     for name, probes in probe_sets.items():
         for fmt in model.formats:
             for layer in HIGHLIGHT_LAYERS:
                 layer_pos = layers.index(layer)
-                for readout in HIGHLIGHT_READOUTS:
+                for pooling in HIGHLIGHT_POOLINGS:
                     paper, held_out = battery_counts(
-                        model, probes[:, layer_pos, :], fmt, readout, layer_pos
+                        model, probes[:, layer_pos, :], fmt, pooling, layer_pos
                     )
-                    counts[name, fmt, layer, readout] = (paper, held_out)
-                    is_reference_row = layer == HIGHLIGHT_LAYERS[-1] and readout == "mean_content"
+                    counts[name, fmt, layer, pooling] = (paper, held_out)
+                    is_reference_row = layer == HIGHLIGHT_LAYERS[-1] and pooling == "mean_content"
                     if paper + held_out >= TABLE_INTEREST_TOTAL or is_reference_row:
                         lines.append(
-                            f"{name:12s} {fmt:6s} {layer:5d} {readout:13s}"
+                            f"{name:12s} {fmt:6s} {layer:5d} {pooling:13s}"
                             f" {paper:4d}/12 {held_out:6d}/12"
                         )
     return {"lines": lines, "counts": counts}

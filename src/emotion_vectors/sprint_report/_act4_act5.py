@@ -1,4 +1,4 @@
-"""Act IV and Act V exhibits: the behavior bars and the probe-lineage panels."""
+"""Act IV and Act V exhibits: the behavior bars and the story-source panels."""
 
 from __future__ import annotations
 
@@ -10,8 +10,9 @@ from plotly.subplots import make_subplots
 
 Stats = dict[str, Any]
 
-# Act V ladder: display label -> e11_lineage.json arm key (the roles matter:
-# "external" names who wrote the probe stories, never the probed model)
+# Act V ladder: display label -> arm key inside e11_lineage.json (a committed
+# evidence filename, kept as-is). The roles matter: "external" names who wrote
+# the probe stories, never the probed model.
 _ACT5_LADDER = [
     ("self-generated (probed model's own stories, n=256)", "selfgen"),
     ("weak external (gemma-4-4B corpus)", "weak_external"),
@@ -208,6 +209,7 @@ def _act5_lines(
     """The Act V printout: ladder, seed means, corpus sizes, matched-n reads."""
     lines = []
     for label, arm in _ACT5_LADDER:
+        # "r1_dual_battery" is this block's key in the evidence file, kept as-is
         dual = e11["r1_dual_battery"][arm]
         lines.append(
             f"{label:52s} passing layers: {len(dual['passing_layers']):2d}  "
@@ -266,7 +268,7 @@ def _act5_anchors(fig: go.Figure) -> None:
     )
 
 
-def act5_lineage_figure(
+def act5_story_source_figure(
     e11: Mapping,
     e12_curve: Mapping,
     e12_pref: Mapping,
@@ -274,7 +276,8 @@ def act5_lineage_figure(
 ) -> tuple[go.Figure, Stats]:
     """Act V: the passing-layer ladder (E10/E11) and the dose-response pair (E12).
 
-    ``e11`` is ``e11_lineage.json`` (per-corpus dual-battery passing layers),
+    ``e11`` is ``e11_lineage.json`` (per-corpus passing layers, scored on both
+    sets of twelve scenarios),
     ``e12_curve`` is ``e12_scale_curve.json`` (fixed vs diverse subsampling
     points), ``e12_pref`` is ``e12_pref_matched_n_exploratory.json``. Returns
     the two-panel figure with the ceiling/floor/saturation anchors and stats
@@ -284,6 +287,7 @@ def act5_lineage_figure(
     diverse_means = _seed_means(e12_curve["arms"]["diverse"]["points"])
     fixed_full = e12_curve["arms"]["fixed"]["n_available_min"]
     diverse_full = e12_curve["arms"]["diverse"]["n_available_min"]
+    # "r1_dual_battery" is this block's key in the evidence file, kept as-is
     ladder_counts = [len(e11["r1_dual_battery"][arm]["passing_layers"]) for _, arm in _ACT5_LADDER]
 
     fig = make_subplots(
@@ -331,7 +335,8 @@ def act5_lineage_figure(
             f"emotion ({fixed_means[64]:.1f} of its full-size {fixed_means[fixed_full]:.1f} "
             "passing layers) and beats the diversified corpus at every matched size</sup><br>"
             "<sup>one bar / dot = passing layers of the 20 measured; a layer passes when the "
-            "target emotion ranks top-3 in at least 8 of 12 scenarios on both batteries</sup><br>"
+            "target emotion ranks top-3 in at least 8 of the 12 scenarios in each of the "
+            "two scenario sets</sup><br>"
             f"<sup>probes read from {model_it} | evidence: e11_lineage.json, "
             "e12_scale_curve.json</sup>"
         ),

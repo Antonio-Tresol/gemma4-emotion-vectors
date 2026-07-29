@@ -16,10 +16,10 @@ from ._data import (
     Arms,
     LayerStats,
     Vad,
-    bank_columns,
     cluster_boot_ci,
-    gate_ranks,
     layer_slider,
+    probe_set_columns,
+    tagged_ranks,
     true_leads,
 )
 
@@ -187,7 +187,9 @@ def _s3_title(stats: LayerStats, layer: int) -> str:
 def s3_affective_distance_figure(
     arms: Arms, vad: Vad, rng: np.random.Generator
 ) -> tuple[go.Figure, LayerStats]:
-    """S3: does anticipation follow affective distance? (selfgen bank, it_v2)
+    """S3: does anticipation follow affective distance?
+
+    Primary arm, read with the probes the model built from its own stories.
 
     Left panel: mean R1 lead binned by |NRC valence gap|; right panel:
     cross-valence vs same-valence mean lead. Returns the figure (layer
@@ -238,17 +240,18 @@ def s3_affective_distance_figure(
 def _s4_stats(
     arms: Arms, vad: Vad, rng: np.random.Generator
 ) -> tuple[list[str], dict[int, Float[np.ndarray, "expected reported"]], LayerStats]:
-    """The tagged-by-winner confusion structure per layer, selfgen bank, it_v2.
+    """The tagged-by-winner confusion structure per layer, primary arm, read
+    with the probes the model built from its own stories.
 
     Per layer: the row-normalized confusion matrix, plus the mean VAD
     distance from wrong winners to their target vs the same mean under a
     uniformly random wrong probe (one rng draw per lexicon-covered wrong
-    phase, in phase order). Returns (bank emotion names, {layer: matrix
+    phase, in phase order). Returns (the twelve emotion names, {layer: matrix
     [expected, reported]}, ``stats[layer] = {"top1_rate", "wrong_mean",
     "shuffle_mean", "n_wrong"}``).
     """
-    _, winner, phase_rows = gate_ranks(arms, "it_v2", "selfgen")
-    _, names = bank_columns(arms, "it_v2", "selfgen")
+    _, winner, phase_rows = tagged_ranks(arms, "it_v2", "selfgen")
+    _, names = probe_set_columns(arms, "it_v2", "selfgen")
     heatmaps: dict[int, Float[np.ndarray, "expected reported"]] = {}
     stats: LayerStats = {}
     for layer_pos, layer in enumerate(LAYERS):

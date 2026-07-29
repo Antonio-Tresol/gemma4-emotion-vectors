@@ -133,6 +133,8 @@ def s1_replication_figure(ctx: GeometryContext) -> tuple[go.Figure, dict[str, An
     )
     audit = json.loads(fetch("e4b_extraction_impact.json").read_text())
     per_layer_key = str(ctx.default_layer)
+    # "lineages" is the frozen key in e4b_extraction_impact.json: one block
+    # per story source that was re-extracted
     audited_base = audit["lineages"]["corpus_base"]["geometry"]["per_layer"][per_layer_key]
     audited_it = audit["lineages"]["corpus_it"]["geometry"]["per_layer"][per_layer_key]
     lines = [

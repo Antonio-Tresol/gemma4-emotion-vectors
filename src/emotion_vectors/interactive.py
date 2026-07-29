@@ -392,7 +392,8 @@ def trajectory_heatmap_scrubber(
         ],
     )
     fig.add_annotation(
-        text="Rows are probes (corpus vs selfgen lineages labeled); dashed lines are phase starts.",
+        text="Rows are probes, each labelled with the story source it was built from"
+        " (corpus or selfgen); dashed lines are phase starts.",
         xref="paper",
         yref="paper",
         x=0,

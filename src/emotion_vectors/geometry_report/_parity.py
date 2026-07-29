@@ -70,7 +70,7 @@ def _lens_title(model_label: str, layer: int, headline_verdict: str, note: str) 
         f" {headline_verdict} ({model_label}, layer {layer})"
     )
     subtitles = [
-        "one row = one battery emotion; its cells are the tokens that emotion's vector most"
+        "one row = one of the twelve emotions; its cells are the tokens that emotion's vector most"
         " raises and most lowers when its direction is read through the model's output"
         " vocabulary (the logit lens)",
         "grading, by eye and by eye only (no registered numeric bar): a REPRODUCTION looks like"

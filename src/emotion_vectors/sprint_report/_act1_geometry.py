@@ -26,6 +26,7 @@ def _act1_stats(
     )
     peak_abs_r = abs(peak_row["pc1_valence"]["pearson_r"])
     it_pc1_33 = geometry_it["per_layer"]["33"]["pc1_valence"]["pearson_r"]
+    # "lineages" is this block's key in the evidence file, kept as-is
     audit_geo = extraction_audit["lineages"]["corpus_base"]["geometry"]
     late_band = [
         layer for layer in sorted(int(k) for k in geometry["per_layer"]) if 33 <= layer <= 57
@@ -179,7 +180,7 @@ def act1_addendum_lines(pc_structure: Mapping, rsa_frag: Mapping) -> Stats:
         f"-> {it_ablation['1']['mid_to_late_mean']:.2f} with the top component removed; "
         f"base {base_ablation['0']['mid_to_late_mean']:.2f} -> "
         f"{base_ablation['1']['mid_to_late_mean']:.2f} (only hurts)",
-        f"cross-model late-band agreement: {cross['it_late_x_base_late_mean']:.2f} unablated -> "
+        f"cross-model late-band agreement: {cross['it_late_x_base_late_mean']:.2f} as measured -> "
         f"{cross_post['it_k2_late_x_base_late_mean']:.2f} with instruct top-2 removed "
         "(post-hoc read): base-like geometry intact underneath",
     ]

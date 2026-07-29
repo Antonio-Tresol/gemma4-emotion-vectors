@@ -9,7 +9,7 @@ plain sight; nothing here decides pass or fail.
 
 Every score in this section centers on the 12 probes themselves, not on the
 171-word extraction: the self-generated sets only ever extracted the 12
-battery emotions, so no 171-word pool exists for them (see :mod:`._data`).
+scenario emotions, so no 171-word pool exists for them (see :mod:`._data`).
 """
 
 from __future__ import annotations
@@ -40,8 +40,8 @@ LEAKAGE_CORPORA = {
 
 def _load_vector_dir(
     subtree: str, probe_order: list[str], layers: list[int]
-) -> Float[np.ndarray, "battery_emotions layers d_model"]:
-    """Stack one extraction directory into [battery_emotions layers d_model].
+) -> Float[np.ndarray, "scenario_emotions layers d_model"]:
+    """Stack one extraction directory into [scenario_emotions layers d_model].
 
     One ``<emotion>/layer_<n>_resid.npy`` per emotion and layer; a missing
     emotion directory or layer file raises rather than being skipped.
@@ -60,12 +60,12 @@ def _load_vector_dir(
 
 def load_probe_sets(
     ctx: SweepContext,
-) -> dict[str, Float[np.ndarray, "battery_emotions layers d_model"]]:
-    """The three instruct-model probe sets, in battery-emotion row order.
+) -> dict[str, Float[np.ndarray, "scenario_emotions layers d_model"]]:
+    """The three instruct-model probe sets, in scenario-emotion row order.
 
     Returns {"corpus": gemma-4-4B story probes, "self-story": probes from the
     model's own stories, "dialogue": probes from its own dialogues}, each
-    [battery_emotions layers d_model] over the shared layer grid.
+    [scenario_emotions layers d_model] over the shared layer grid.
     """
     model: ModelSweep = ctx.model(IT_LABEL)
     corpus = np.stack([model.means[row] for row in model.probe_index])
@@ -80,9 +80,9 @@ def load_probe_sets(
 
 
 def _contrast_cosines(
-    reference: Float[np.ndarray, "battery_emotions d_model"],
-    other: Float[np.ndarray, "battery_emotions d_model"],
-) -> Float[np.ndarray, " battery_emotions"]:
+    reference: Float[np.ndarray, "scenario_emotions d_model"],
+    other: Float[np.ndarray, "scenario_emotions d_model"],
+) -> Float[np.ndarray, " scenario_emotions"]:
     """Per-emotion cosine between two probe sets' contrast directions.
 
     Each set's own mean is removed first, so this compares what makes each
@@ -97,7 +97,7 @@ def _contrast_cosines(
 
 
 def direction_similarity(
-    probe_sets: dict[str, Float[np.ndarray, "battery_emotions layers d_model"]],
+    probe_sets: dict[str, Float[np.ndarray, "scenario_emotions layers d_model"]],
     layers: list[int],
 ) -> dict[str, Any]:
     """How far the self-generated probe directions sit from the corpus probes.
@@ -111,7 +111,7 @@ def direction_similarity(
     corpus = probe_sets["corpus"]
     names = [key for key in probe_sets if key != "corpus"]
     per_layer: dict[str, dict[int, float]] = {name: {} for name in names}
-    lines = [f"model: {IT_LABEL} (all probe sets and battery activations)"]
+    lines = [f"model: {IT_LABEL} (all probe sets and scenario activations)"]
     registered_pos = layers.index(REGISTERED_LAYER)
     for name in names:
         cosines = _contrast_cosines(
@@ -161,17 +161,17 @@ def rank_table_lines(
 ) -> list[str]:
     """Format the best few combinations per probe set as the printed table.
 
-    ``rows`` are (paper, held-out, set, format, layer, readout) sorted best
+    ``rows`` are (paper, held-out, set, format, layer, pooling) sorted best
     first; at most ``per_set`` rows per probe set are shown, so one strong set
     cannot crowd the others out of the table.
     """
     lines = [
-        f"probe sets scored on {IT_LABEL} battery activations:",
+        f"probe sets scored on {IT_LABEL} scenario activations:",
         f"  corpus     = {CORPUS_SET_LABEL}",
     ]
     for key, (description, _subtree) in SELF_GENERATED_SETS.items():
         lines.append(f"  {key:10s} = probes from {description}")
-    lines.append(f"{'paper':>6s} {'heldout':>8s}  set         fmt    layer readout")
+    lines.append(f"{'paper':>6s} {'heldout':>8s}  set         fmt    layer pooling")
     shown: dict[str, int] = {}
     for row in rows:
         if shown.get(row[2], 0) < per_set:
