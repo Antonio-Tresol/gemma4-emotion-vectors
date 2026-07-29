@@ -15,6 +15,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import numpy as np
+from einops import rearrange
 
 if TYPE_CHECKING:
     from jaxtyping import Float, Int
@@ -61,7 +62,11 @@ def bradley_terry(
     total_wins = wins.sum(axis=1)
     pi = np.ones(n)
     for _ in range(n_iter):
-        denom = (comparisons / (pi[:, None] + pi[None, :] + 1e-30)).sum(axis=1)
+        # pairwise sums pi[i] + pi[j]: rows are i, columns are j, matching
+        # comparisons[i, j]. The sum over axis 1 then runs over j.
+        strength_i = rearrange(pi, "i -> i 1")
+        strength_j = rearrange(pi, "j -> 1 j")
+        denom = (comparisons / (strength_i + strength_j + 1e-30)).sum(axis=1)
         new = total_wins / np.maximum(denom, 1e-30)
         new = new / np.exp(np.mean(np.log(np.maximum(new, 1e-30))))
         if np.max(np.abs(new - pi)) < tol:

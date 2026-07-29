@@ -10,6 +10,7 @@ from pathlib import Path
 
 import numpy as np
 import plotly.graph_objects as go
+from einops import rearrange
 from jaxtyping import Float, Int, Num
 
 from emotion_vectors.analysis import load_nrc_vad
@@ -136,7 +137,8 @@ def gate_ranks(arms: Arms, arm: str, bank: str) -> GateRead:
     target = np.array([names.index(phase_records[pos]["emotion"]) for pos in kept])
     # rank = 1 + how many bank probes out-score the tagged probe
     target_score = scores[np.arange(len(kept)), :, target]
-    ranks = (scores > target_score[:, :, None]).sum(axis=2) + 1
+    tagged = rearrange(target_score, "phases layers -> phases layers 1")
+    ranks = (scores > tagged).sum(axis=2) + 1
     winner = scores.argmax(axis=2)
     kept_rows = [phase_records[pos] for pos in kept]
     return ranks, winner, kept_rows

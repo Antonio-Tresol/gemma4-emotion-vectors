@@ -28,6 +28,7 @@ import textwrap
 
 import numpy as np
 import plotly.graph_objects as go
+from einops import rearrange
 from jaxtyping import Float
 from plotly.subplots import make_subplots
 
@@ -60,7 +61,8 @@ def story_cosines(
         norms = shard["norms_centered"].astype(np.float32)[:, layer_pos]
     else:
         norms = shard["norms"].astype(np.float32)[:, layer_pos]
-    return picked / np.clip(norms[:, None], 1e-6, None)
+    denominator = rearrange(np.clip(norms, 1e-6, None), "tokens -> tokens 1")
+    return picked / denominator
 
 
 def smooth(
