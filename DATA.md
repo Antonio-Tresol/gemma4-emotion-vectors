@@ -9,7 +9,8 @@ page and that table disagree, the table wins and this page has a bug.
 
 ```python
 from emotion_vectors.artifacts import fetch
-path = fetch("q3_records_it_v2.npz")          # flat file
+
+path = fetch("q3_records_it_v2.npz")  # flat file
 path = fetch("combined_trajectories/manifest.jsonl")  # routed subtree
 ```
 

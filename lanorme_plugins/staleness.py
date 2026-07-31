@@ -32,6 +32,7 @@ Run:
 
 from __future__ import annotations
 
+import os
 import re
 import subprocess
 from dataclasses import dataclass, field
@@ -54,6 +55,11 @@ STALE_002: Final[str] = "STALE-002: a document's `updated:` date matches its las
 
 def git(root: Path, *args: str) -> str | None:
     """Run git, returning stripped stdout, or None when git cannot answer."""
+    # Strip GIT_* before shelling out. Git exports GIT_DIR / GIT_INDEX_FILE to
+    # the processes it spawns and they override `cwd`, so when check.sh runs
+    # from the pre-commit hook this function would answer about the hook's
+    # repository rather than `root` — silently, with a plausible-looking date.
+    env = {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
     try:
         done = subprocess.run(
             ["git", *args],
@@ -62,6 +68,7 @@ def git(root: Path, *args: str) -> str | None:
             text=True,
             check=False,
             timeout=10,
+            env=env,
         )
     except (OSError, subprocess.SubprocessError):
         return None

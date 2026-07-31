@@ -26,6 +26,7 @@ import time
 from pathlib import Path
 
 import numpy as np
+from einops import rearrange
 
 # Blackwell survival settings (see the vllm notes): TRITON_ATTN backend, no
 # flashinfer sampler, in-process V0 engine so hooks live in our process.
@@ -112,7 +113,10 @@ def main() -> int:
             llm.generate(formatted, params, use_tqdm=False)
         finally:
             handle.remove()
-        v = captured[0].reshape(-1, captured[0].shape[-1])[-1].numpy().astype(np.float64)
+        # flatten every leading axis (batch and/or sequence) and take the last
+        # position: the named form says which axis survives, `-1` did not
+        flat = rearrange(captured[0], "... d_model -> (...) d_model")
+        v = flat[-1].numpy().astype(np.float64)
         h = hf_last[idx]
         cosines.append(float(np.dot(v, h) / (np.linalg.norm(v) * np.linalg.norm(h))))
     report["numerics_cosine_min"] = round(min(cosines), 5)

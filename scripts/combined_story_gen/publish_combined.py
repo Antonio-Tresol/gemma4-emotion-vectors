@@ -165,7 +165,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--results", type=Path, default=Path("results"))
     parser.add_argument("--stories-dir", type=Path, default=None)
-    parser.add_argument("--base-only", action="store_true", help="publish only the base trajectory arm")
+    parser.add_argument(
+        "--base-only", action="store_true", help="publish only the base trajectory arm"
+    )
     args = parser.parse_args()
     load_dotenv()
     api = HfApi()

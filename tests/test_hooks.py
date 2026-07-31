@@ -24,12 +24,13 @@ from datetime import date, timedelta
 from pathlib import Path
 
 import pytest
+from _git_env import git_free_env
 
 HOOK = Path(__file__).resolve().parent.parent / "hooks" / "pre-commit"
 
 
 def run_git(root: Path, *args: str) -> None:
-    subprocess.run(["git", *args], cwd=root, check=True, capture_output=True)
+    subprocess.run(["git", *args], cwd=root, check=True, capture_output=True, env=git_free_env())
 
 
 @pytest.fixture()
@@ -59,6 +60,7 @@ def hook(root: Path) -> subprocess.CompletedProcess[str]:
         capture_output=True,
         text=True,
         check=False,
+        env=git_free_env(),  # the hook shells out to git too
     )
 
 

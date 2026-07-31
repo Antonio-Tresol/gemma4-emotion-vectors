@@ -22,6 +22,7 @@ under two models (--model), then compare with --agreement A.jsonl B.jsonl.
     uv run python scripts/judge_transition_cues.py --agreement \
         results/judge_cue_deepseek.jsonl results/judge_cue_gemini.jsonl
 """
+
 from __future__ import annotations
 
 import argparse
@@ -29,6 +30,7 @@ import json
 import os
 import random
 import re
+import statistics
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -51,7 +53,7 @@ CUE_SYSTEM = (
     "The emotion is never named explicitly; judge from how the text reads. "
     "Respond with ONLY a JSON object, no other text: "
     '{"quote": "<the EXACT verbatim contiguous substring of 4-12 words where '
-    "the emotion is first signaled — copy it character-for-character>\", "
+    'the emotion is first signaled — copy it character-for-character>", '
     '"none": false} — or {"quote": "", "none": true} if the emotion is never '
     "conveyed anywhere in the story."
 )
@@ -66,17 +68,22 @@ DISPLAY_SYSTEM = (
 )
 
 
-def call_judge(model: str, system: str, user: str, key: str,
-               retries: int = 3) -> dict:
+def call_judge(model: str, system: str, user: str, key: str, retries: int = 3) -> dict[str, object]:
     for attempt in range(retries):
         try:
             r = requests.post(
                 API,
                 headers={"Authorization": f"Bearer {key}"},
-                json={"model": model, "temperature": 0.0,
-                      "messages": [{"role": "system", "content": system},
-                                   {"role": "user", "content": user}]},
-                timeout=120)
+                json={
+                    "model": model,
+                    "temperature": 0.0,
+                    "messages": [
+                        {"role": "system", "content": system},
+                        {"role": "user", "content": user},
+                    ],
+                },
+                timeout=120,
+            )
             r.raise_for_status()
             content = r.json()["choices"][0]["message"]["content"]
             m = re.search(r"\{.*\}", content, re.DOTALL)
@@ -84,7 +91,7 @@ def call_judge(model: str, system: str, user: str, key: str,
         except Exception as exc:  # noqa: BLE001 — retry then surface
             if attempt == retries - 1:
                 return {"error": f"{type(exc).__name__}: {exc}"}
-            time.sleep(2 ** attempt)
+            time.sleep(2**attempt)
     return {"error": "unreachable"}
 
 
@@ -122,16 +129,27 @@ def build_units(task: str, limit: int | None) -> list[dict]:
         bounds = list(p.phase_char_starts) + [len(p.clean_text)]
         if task == "cue":
             for ti in (1, 2):  # transitions INTO phases 1 and 2
-                units.append(dict(
-                    story_id=sid, unit=f"tr{ti}", emotion=p.phase_emotions[ti],
-                    text=p.clean_text, boundary_char=p.phase_char_starts[ti],
-                    category=r["category"]))
+                units.append(
+                    dict(
+                        story_id=sid,
+                        unit=f"tr{ti}",
+                        emotion=p.phase_emotions[ti],
+                        text=p.clean_text,
+                        boundary_char=p.phase_char_starts[ti],
+                        category=r["category"],
+                    )
+                )
         else:  # display: every phase is a unit
             for pi in range(3):
-                units.append(dict(
-                    story_id=sid, unit=f"ph{pi}", emotion=p.phase_emotions[pi],
-                    text=p.clean_text[bounds[pi]:bounds[pi + 1]],
-                    category=r["category"]))
+                units.append(
+                    dict(
+                        story_id=sid,
+                        unit=f"ph{pi}",
+                        emotion=p.phase_emotions[pi],
+                        text=p.clean_text[bounds[pi] : bounds[pi + 1]],
+                        category=r["category"],
+                    )
+                )
         if limit and len(units) >= limit:
             break
     return units[:limit] if limit else units
@@ -139,22 +157,21 @@ def build_units(task: str, limit: int | None) -> list[dict]:
 
 def run_task(args: argparse.Namespace, key: str) -> None:
     units = build_units(args.task, args.limit)
-    out = Path(args.out or
-               f"results/judge_{args.task}_{args.model.split('/')[-1].split(':')[0]}.jsonl")
+    out = Path(
+        args.out or f"results/judge_{args.task}_{args.model.split('/')[-1].split(':')[0]}.jsonl"
+    )
     done = set()
     if out.exists():
-        done = {(json.loads(l)["story_id"], json.loads(l)["unit"])
-                for l in open(out)}
+        done = {(json.loads(l)["story_id"], json.loads(l)["unit"]) for l in open(out)}
     todo = [u for u in units if (u["story_id"], u["unit"]) not in done]
-    print(f"{args.task}: {len(units)} units, {len(done)} done, {len(todo)} to run "
-          f"-> {out}")
+    print(f"{args.task}: {len(units)} units, {len(done)} done, {len(todo)} to run -> {out}")
     system = CUE_SYSTEM if args.task == "cue" else DISPLAY_SYSTEM
 
-    def work(u: dict) -> dict:
+    def work(u: dict[str, object]) -> dict[str, object]:
         if args.task == "cue":
-            user = (f"Target emotion: {u['emotion']}\n\nStory:\n{u['text']}")
+            user = f"Target emotion: {u['emotion']}\n\nStory:\n{u['text']}"
         else:
-            user = (f"Target emotion: {u['emotion']}\n\nPassage:\n{u['text']}")
+            user = f"Target emotion: {u['emotion']}\n\nPassage:\n{u['text']}"
         res = call_judge(args.model, system, user, key)
         row = {k: u[k] for k in ("story_id", "unit", "emotion", "category")}
         row["model"] = args.model
@@ -165,8 +182,9 @@ def run_task(args: argparse.Namespace, key: str) -> None:
             row["quote"] = res.get("quote", "")
             row["cue_char"] = -1 if row["none"] else locate(row["quote"], u["text"])
             row["boundary_char"] = u["boundary_char"]
-            row["cue_minus_boundary"] = (None if row["cue_char"] < 0
-                                         else row["cue_char"] - u["boundary_char"])
+            row["cue_minus_boundary"] = (
+                None if row["cue_char"] < 0 else row["cue_char"] - u["boundary_char"]
+            )
         else:
             row["rating"] = res.get("rating")
         return row
@@ -180,23 +198,23 @@ def run_task(args: argparse.Namespace, key: str) -> None:
             if i and i % 50 == 0:
                 print(f"  {i}/{len(todo)} ({n_err} errors)")
             if n_err > max(10, 0.2 * (i + 1)):
-                raise SystemExit(f"error rate too high ({n_err}/{i + 1}) — "
-                                 "check model id / key / rate limits")
+                raise SystemExit(
+                    f"error rate too high ({n_err}/{i + 1}) — check model id / key / rate limits"
+                )
     print(f"done: {len(todo)} rows, {n_err} errors")
 
 
 def agreement(file_a: str, file_b: str) -> None:
-    def load(f: str) -> dict:
-        return {(r["story_id"], r["unit"]): r
-                for r in map(json.loads, open(f)) if "error" not in r}
+    def load(f: str) -> dict[tuple[str, object], dict[str, object]]:
+        return {(r["story_id"], r["unit"]): r for r in map(json.loads, open(f)) if "error" not in r}
+
     a, b = load(file_a), load(file_b)
     keys = sorted(set(a) & set(b))
     if not keys:
         raise SystemExit("no overlapping units")
     if "rating" in a[keys[0]]:
         same = sum(a[k]["rating"] == b[k]["rating"] for k in keys)
-        print(f"display agreement: {same}/{len(keys)} exact "
-              f"({same / len(keys):.2f})")
+        print(f"display agreement: {same}/{len(keys)} exact ({same / len(keys):.2f})")
         return
     diffs, none_disagree = [], 0
     for k in keys:
@@ -205,12 +223,13 @@ def agreement(file_a: str, file_b: str) -> None:
             none_disagree += 1
         elif not ra["none"] and ra["cue_char"] >= 0 and rb["cue_char"] >= 0:
             diffs.append(abs(ra["cue_char"] - rb["cue_char"]))
-    import statistics
-    print(f"cue agreement over {len(keys)} units: none-flag disagreements "
-          f"{none_disagree}; |char-offset delta| median "
-          f"{statistics.median(diffs) if diffs else float('nan'):.0f}, "
-          f"within 80 chars (~16 tokens): "
-          f"{sum(d <= 80 for d in diffs)}/{len(diffs)}")
+    print(
+        f"cue agreement over {len(keys)} units: none-flag disagreements "
+        f"{none_disagree}; |char-offset delta| median "
+        f"{statistics.median(diffs) if diffs else float('nan'):.0f}, "
+        f"within 80 chars (~16 tokens): "
+        f"{sum(d <= 80 for d in diffs)}/{len(diffs)}"
+    )
 
 
 def main() -> None:

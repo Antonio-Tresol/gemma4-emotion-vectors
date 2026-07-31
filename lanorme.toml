@@ -35,6 +35,7 @@ plugins = [
 
 select = ["ALL"]
 
+
 ignore = [
     # Parsed YAML/JSON at an I/O boundary is genuinely untyped — dict[str, object]
     # is the honest annotation, not a placeholder for a missing domain type.
@@ -91,3 +92,49 @@ watch = ["results"]
 artefacts = ["TREE.md", "RESEARCH_LOG.md"]
 max_commits_behind = 8
 dated_docs = ["reports/**/*.md", "findings/**/*.md"]
+
+# Size rules, silenced per file with a reason each.
+#
+# lanorme's thresholds are module constants (FILE_WARN_LINES=300/500,
+# FUNC 50/80, PARAM 5/8) and are NOT configurable, so there is no limit to
+# raise. What IS available is this table, which is better than a baseline
+# here: 21 findings in 10 files, each listed next to why it is allowed,
+# rather than a 155-entry JSON blob nobody reads.
+#
+# The trade-off, stated plainly: unlike a baseline this does NOT ratchet.
+# A file listed below can grow without the gate objecting, so a rule silenced
+# here should be re-earned whenever the file is substantially rewritten.
+#
+# Only HARD errors are listed. The 300-line file warnings and the 50-line
+# function warnings still print, and are still worth reading.
+[per-file-ignores]
+
+# A page template, not a program: 2,377 lines that are almost entirely HTML,
+# CSS and JavaScript held in Python strings. Splitting it would scatter one
+# document across files. The gate already proves the page it emits is
+# byte-identical, which is the property that actually matters.
+"docs/build.py" = ["SIZE-001"]
+
+# Plotly figure builders. A figure function legitimately takes 8-9 parameters
+# (data, labels, layer, colours, height, title, anchors) and runs long because
+# it is one figure's full specification: trace, axes, legend, reference lines,
+# annotations. Splitting mid-figure hurts more than it helps.
+"src/emotion_vectors/interactive.py" = ["SIZE-001", "SIZE-002", "PARAM-001"]
+"src/emotion_vectors/trajectory_plots.py" = ["SIZE-001", "SIZE-002"]
+"src/emotion_vectors/linked_trajectory.py" = ["SIZE-002", "PARAM-001"]
+"src/emotion_vectors/sprint_report/_act4_act5.py" = ["SIZE-002"]
+"src/emotion_vectors/sprint_report/_act6_dynamics.py" = ["SIZE-002"]
+
+# A script's main() is argparse plus top-to-bottom orchestration. Reading it
+# in one piece IS the point; factoring it into helpers called once each makes
+# the run order harder to follow, not easier.
+"scripts/bench_vllm_activations.py" = ["SIZE-002"]
+"scripts/score_preferences.py" = ["SIZE-002"]
+"scripts/score_steering.py" = ["SIZE-002"]
+"scripts/combined_story_gen/generate_combined_stories.py" = ["SIZE-002"]
+"scripts/combined_story_gen/generate_combined_openrouter.py" = ["SIZE-002"]
+
+# bootstrap_stability takes both scenario sets, both target arrays, the layer
+# positions and the generator: eight inputs that are one falsification run's
+# full specification.
+"scripts/falsify_c4_gate.py" = ["PARAM-001"]

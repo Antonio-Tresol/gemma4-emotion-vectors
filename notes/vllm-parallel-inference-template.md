@@ -104,28 +104,34 @@ llm = LLM(
     model="google/gemma-4-31B-it",
     dtype="bfloat16",
     gpu_memory_utilization=0.90,
-    max_model_len=2048,        # prompt + max_tokens; keep TIGHT — it sizes the KV cache
+    max_model_len=2048,  # prompt + max_tokens; keep TIGHT — it sizes the KV cache
     seed=20260721,
 )
 
 sampling = SamplingParams(
-    temperature=0.9, top_p=0.95,
+    temperature=0.9,
+    top_p=0.95,
     max_tokens=300,
-    n=8,                       # 8 independent samples per prompt, shared prefill — cheap volume
+    n=8,  # 8 independent samples per prompt, shared prefill — cheap volume
     seed=20260721,
 )
 
 # ONE call, whole list. gemma-4-31B-it has a chat template → use .chat().
 conversations = [
-    [{"role": "user", "content": f"Write a short (~150 word) third-person story "
-      f"in which the main character feels {emotion}. Do not name the emotion or "
-      f"any obvious synonym anywhere in the text."}]
+    [
+        {
+            "role": "user",
+            "content": f"Write a short (~150 word) third-person story "
+            f"in which the main character feels {emotion}. Do not name the emotion or "
+            f"any obvious synonym anywhere in the text.",
+        }
+    ]
     for emotion in ["happy", "afraid", "calm", "sad"]
 ]
 outputs = llm.chat(conversations, sampling)
 
-for conv_out in outputs:                 # one per conversation, input order preserved
-    for sample in conv_out.outputs:      # n samples
+for conv_out in outputs:  # one per conversation, input order preserved
+    for sample in conv_out.outputs:  # n samples
         print(sample.text.strip())
 ```
 
@@ -152,6 +158,7 @@ most one chunk. Write results to JSONL **as each chunk finishes**.
         --emotions-from snae/emotion_stories_gemma_4_4B \
         --per-emotion 64 --out-dir results/story_corpus_it
 """
+
 from __future__ import annotations
 import argparse, json, re
 from pathlib import Path
@@ -175,6 +182,7 @@ def load_emotion_list(source: str) -> list[str]:
     rows = load_dataset(source, split="train")
     return sorted({r["emotion"] for r in rows})
 
+
 def already_done(raw_path: Path) -> dict[str, int]:
     counts: dict[str, int] = {}
     if raw_path.exists():
@@ -184,10 +192,12 @@ def already_done(raw_path: Path) -> dict[str, int]:
                 counts[e] = counts.get(e, 0) + 1
     return counts
 
+
 def leaks_emotion(text: str, emotion: str) -> bool:
     # QC: drop generations that name the target emotion (or its stem).
-    stem = emotion.lower().rstrip("dy").rstrip("e")          # happy→happ, afraid→afrai...
+    stem = emotion.lower().rstrip("dy").rstrip("e")  # happy→happ, afraid→afrai...
     return bool(re.search(rf"\b{re.escape(emotion.lower())}", text.lower())) or stem in text.lower()
+
 
 def main() -> int:
     p = argparse.ArgumentParser()
@@ -202,43 +212,54 @@ def main() -> int:
 
     # ---- FAIL FAST: cheap checks before the 58 GB load ----------------------
     args.out_dir.mkdir(parents=True, exist_ok=True)
-    log = _setup_logger(args.out_dir / "generate.log")   # file + stdout, timestamps
+    log = _setup_logger(args.out_dir / "generate.log")  # file + stdout, timestamps
     emotions = load_emotion_list(args.emotions_from)
     if args.smoke:
         emotions, args.per_emotion = emotions[:2], 2
     log.info(f"config: {vars(args)} | git={_git_commit()} | {len(emotions)} emotions")
 
-    llm = LLM(model=args.model, dtype="bfloat16", gpu_memory_utilization=0.90,
-              max_model_len=2048, seed=args.seed)
+    llm = LLM(
+        model=args.model,
+        dtype="bfloat16",
+        gpu_memory_utilization=0.90,
+        max_model_len=2048,
+        seed=args.seed,
+    )
 
     raw_path = args.out_dir / "stories_raw.jsonl"
-    counts = already_done(raw_path)               # RESUMABLE: pick up where we left off
+    counts = already_done(raw_path)  # RESUMABLE: pick up where we left off
     t0 = _now()
     for i, emotion in enumerate(emotions):
         need = args.per_emotion - counts.get(emotion, 0)
         if need <= 0:
             continue
-        sampling = SamplingParams(temperature=0.9, top_p=0.95,
-                                  max_tokens=args.max_new_tokens, n=need,
-                                  seed=args.seed + i)     # vary seed per emotion
+        sampling = SamplingParams(
+            temperature=0.9, top_p=0.95, max_tokens=args.max_new_tokens, n=need, seed=args.seed + i
+        )  # vary seed per emotion
         conv = [[{"role": "user", "content": _story_instruction(emotion)}]]
         try:
             (out,) = llm.chat(conv, sampling)
-        except Exception as exc:                   # ERROR HANDLING: one emotion can't kill the run
+        except Exception as exc:  # ERROR HANDLING: one emotion can't kill the run
             log.error(f"[{emotion}] failed: {exc!r}")
             _append(raw_path, {"emotion": emotion, "text": None, "error": repr(exc)})
             continue
         kept = 0
-        with open(raw_path, "a") as f:             # STRUCTURED, INCREMENTAL: written as we go
+        with open(raw_path, "a") as f:  # STRUCTURED, INCREMENTAL: written as we go
             for s in out.outputs:
                 text = s.text.strip()
-                row = {"emotion": emotion, "text": text, "seed": args.seed + i,
-                       "leaked": leaks_emotion(text, emotion), "n_chars": len(text)}
-                if len(text) < 100 or row["leaked"]:   # QC: too short / names the emotion → drop
+                row = {
+                    "emotion": emotion,
+                    "text": text,
+                    "seed": args.seed + i,
+                    "leaked": leaks_emotion(text, emotion),
+                    "n_chars": len(text),
+                }
+                if len(text) < 100 or row["leaked"]:  # QC: too short / names the emotion → drop
                     continue
-                f.write(json.dumps(row) + "\n"); kept += 1
+                f.write(json.dumps(row) + "\n")
+                kept += 1
         counts[emotion] = counts.get(emotion, 0) + kept
-        _eta(log, i + 1, len(emotions), t0)        # LOGGING WITH ETA
+        _eta(log, i + 1, len(emotions), t0)  # LOGGING WITH ETA
         log.info(f"[{emotion}] +{kept} (kept) → {counts[emotion]}/{args.per_emotion}")
 
     _assemble_grouped(raw_path, args.out_dir / "stories_grouped.jsonl", args.per_emotion)

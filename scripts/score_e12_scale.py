@@ -25,6 +25,7 @@ from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
+from jaxtyping import Float
 
 sys.path.insert(0, str(Path(__file__).parent))
 from score_e11_lineage import BATTERY, battery_counts, contrast_probes_12pool, load_battery_means
@@ -35,7 +36,7 @@ N_GRID = [8, 16, 32, 64, 128, 256, 512, 1024]
 N_SEEDS = 5
 
 
-def load_shards(shard_dir: Path) -> dict[str, np.ndarray]:
+def load_shards(shard_dir: Path) -> dict[str, Float[np.ndarray, "stories layers d_model"]]:
     """Per-emotion stacks of per-story mean residuals, [stories, 20, 5376]."""
     # shard filename convention: <emotion>__<idx>.npy
     files_by_emotion: dict[str, list[Path]] = defaultdict(list)
@@ -49,7 +50,11 @@ def load_shards(shard_dir: Path) -> dict[str, np.ndarray]:
     return stacks
 
 
-def grid_read(probes_by_layer: np.ndarray, sweep: dict, layers: list[int]) -> dict:
+def grid_read(
+    probes_by_layer: Float[np.ndarray, "emotions layers d_model"],
+    sweep: dict[str, object],
+    layers: list[int],
+) -> dict[str, object]:
     """E11's R1 on one probe bundle: per-layer dual-battery counts + passes."""
     # The sweep's activation rows are ordered: all paper-battery scenarios,
     # then all held-out scenarios. Rebuild that order with each row's target.
@@ -81,8 +86,12 @@ def grid_read(probes_by_layer: np.ndarray, sweep: dict, layers: list[int]) -> di
 
 
 def curve_for_arm(
-    stacks: dict[str, np.ndarray], sweep, layers, selfgen_probes, layer33_pos
-) -> dict:
+    stacks: dict[str, Float[np.ndarray, "stories layers d_model"]],
+    sweep,
+    layers,
+    selfgen_probes,
+    layer33_pos,
+) -> dict[str, object]:
     n_avail = min(len(stacks[emotion]) for emotion in BATTERY)
     curve: dict[str, list] = {"n_available_min": n_avail, "points": []}
 

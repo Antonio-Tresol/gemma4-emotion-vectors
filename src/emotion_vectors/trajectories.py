@@ -45,7 +45,7 @@ def kept_rows(stories_path: Path) -> list[dict]:
     return rows
 
 
-def story_id(row: dict) -> str:
+def story_id(row: dict[str, object]) -> str:
     """Stable shard id: triple, mode, permutation, and a content hash.
 
     sha1 is a naming device here, not a security primitive: it de-duplicates

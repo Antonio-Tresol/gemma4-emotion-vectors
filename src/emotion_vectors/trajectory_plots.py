@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import html
 import textwrap
+from collections.abc import Mapping
 
 import numpy as np
 import plotly.graph_objects as go
@@ -46,7 +47,7 @@ def probe_index(labels: list[str], emotion: str, lineage: str) -> int:
 
 
 def story_cosines(
-    shard: dict,
+    shard: Mapping[str, Float[np.ndarray, "..."]],
     labels: list[str],
     emotions: list[str],
     layer_pos: int,

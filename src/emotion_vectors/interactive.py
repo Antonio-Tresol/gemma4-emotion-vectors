@@ -435,7 +435,7 @@ def trajectory_ternary_animation(
         showlegend=False,
     )
 
-    def dot(t: int) -> dict:
+    def dot(t: int) -> dict[str, object]:
         return dict(
             a=[float(bary[t, 0])],
             b=[float(bary[t, 1])],
@@ -448,7 +448,7 @@ def trajectory_ternary_animation(
             showlegend=False,
         )
 
-    def trail(t: int) -> dict:
+    def trail(t: int) -> dict[str, object]:
         return dict(
             a=_as_list(bary[: t + 1, 0]),
             b=_as_list(bary[: t + 1, 1]),
@@ -586,7 +586,7 @@ def trajectory_story_dropdown(
             )
         )
 
-    def shapes(entry: dict) -> list[dict]:
+    def shapes(entry: dict[str, object]) -> list[dict[str, object]]:
         return [
             dict(
                 type="line",

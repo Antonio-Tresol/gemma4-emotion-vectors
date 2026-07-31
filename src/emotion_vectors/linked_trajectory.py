@@ -40,6 +40,7 @@ from string import Template
 
 import numpy as np
 import plotly.graph_objects as go
+from jaxtyping import Float
 
 from emotion_vectors.trajectory_plots import barycentric
 
@@ -179,7 +180,9 @@ _JS = Template(
 )
 
 
-def _opacity(cos_by_layer: dict[int, np.ndarray], layers: list[int]) -> list:
+def _opacity(
+    cos_by_layer: dict[int, Float[np.ndarray, "tokens emotions"]], layers: list[int]
+) -> list[list[list[float]]]:  # [layer][token][emotion]
     """Per-(layer, emotion) min-max normalized cosine in [0,1] — 'where is this
     emotion strongest in this story at this layer'. Flat columns map to 0."""
     out = []
@@ -196,7 +199,9 @@ def _opacity(cos_by_layer: dict[int, np.ndarray], layers: list[int]) -> list:
 
 
 def _bary_payload(
-    cos_by_layer: dict[int, np.ndarray], layers: list[int], phase_starts: list[int]
+    cos_by_layer: dict[int, Float[np.ndarray, "tokens emotions"]],
+    layers: list[int],
+    phase_starts: list[int],
 ) -> tuple[list, list]:
     """Barycentric (softmax) coords per layer for the triangle: (path, starts),
     each [layerIdx][abc][point], so the JS can restyle the triangle on a layer
@@ -211,7 +216,7 @@ def _bary_payload(
 
 
 def _lines_figure(
-    cos_by_layer: dict[int, np.ndarray],
+    cos_by_layer: dict[int, Float[np.ndarray, "tokens emotions"]],
     emotions: list[str],
     phase_starts: list[int],
     layers: list[int],
@@ -278,7 +283,7 @@ def _lines_figure(
 
 
 def _ternary_figure(
-    cos_by_layer: dict[int, np.ndarray],
+    cos_by_layer: dict[int, Float[np.ndarray, "tokens emotions"]],
     emotions: list[str],
     phase_starts: list[int],
     default_layer: int,
@@ -343,7 +348,7 @@ def _ternary_figure(
 
 
 def _inner_html(
-    cos_by_layer: dict[int, np.ndarray],
+    cos_by_layer: dict[int, Float[np.ndarray, "tokens emotions"]],
     tokens: list[str],
     emotions: list[str],
     phase_starts: list[int],
@@ -461,7 +466,7 @@ def _iframe_height(tokens: list[str], show_ternary: bool) -> int:
 
 
 def linked_trajectory_html(
-    cos_by_layer: dict[int, np.ndarray],
+    cos_by_layer: dict[int, Float[np.ndarray, "tokens emotions"]],
     tokens: list[str],
     emotions: list[str],
     phase_starts: list[int],

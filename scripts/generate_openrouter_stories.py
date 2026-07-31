@@ -72,7 +72,7 @@ def build_prompt(emotion: str, slot: int, diverse: bool) -> str:
 
 def one_story(
     model: str, emotion: str, slot: int, temperature: float, key: str, diverse: bool
-) -> dict:
+) -> dict[str, object]:
     prompt = build_prompt(emotion, slot, diverse)
     body = json.dumps(
         {

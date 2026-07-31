@@ -57,12 +57,16 @@ def cosine_rows(
     return num / (np.linalg.norm(a, axis=-1) * np.linalg.norm(b, axis=-1) + 1e-12)
 
 
-def load_before_npz(path: Path) -> tuple[list[str], list[int], np.ndarray]:
+def load_before_npz(
+    path: Path,
+) -> tuple[list[str], list[int], Float[np.ndarray, "emotions layers d_model"]]:
     z = np.load(path, allow_pickle=True)
     return [str(e) for e in z["emotions"]], [int(x) for x in z["layers"]], z["means"]
 
 
-def load_before_e6_n256(path: Path) -> tuple[list[str], list[int], np.ndarray]:
+def load_before_e6_n256(
+    path: Path,
+) -> tuple[list[str], list[int], Float[np.ndarray, "emotions layers d_model"]]:
     z = np.load(path, allow_pickle=True)
     bucket = int(np.argmax(z["n_buckets"] == 256))
     assert int(z["n_buckets"][bucket]) == 256, "n=256 bucket not found in e6_scale_means"
@@ -70,9 +74,14 @@ def load_before_e6_n256(path: Path) -> tuple[list[str], list[int], np.ndarray]:
 
 
 def align(
-    before: tuple[list[str], list[int], np.ndarray],
-    after: tuple[list[str], list[int], np.ndarray],
-) -> tuple[list[str], list[int], np.ndarray, np.ndarray]:
+    before: tuple[list[str], list[int], Float[np.ndarray, "emotions layers d_model"]],
+    after: tuple[list[str], list[int], Float[np.ndarray, "emotions layers d_model"]],
+) -> tuple[
+    list[str],
+    list[int],
+    Float[np.ndarray, "emotions layers d_model"],
+    Float[np.ndarray, "emotions layers d_model"],
+]:
     """Common (emotions, layers) intersection, both means reordered to match."""
     emotions = sorted(set(before[0]) & set(after[0]))
     layers = [layer for layer in before[1] if layer in set(after[1])]
@@ -86,8 +95,8 @@ def align(
 
 
 def lineage_report(
-    before: tuple[list[str], list[int], np.ndarray],
-    after: tuple[list[str], list[int], np.ndarray],
+    before: tuple[list[str], list[int], Float[np.ndarray, "emotions layers d_model"]],
+    after: tuple[list[str], list[int], Float[np.ndarray, "emotions layers d_model"]],
 ) -> dict[str, object]:
     emotions, layers, b, a = align(before, after)
     per_layer: dict[str, dict[str, float]] = {}
@@ -114,8 +123,8 @@ def lineage_report(
 
 
 def geometry_compare(
-    before: tuple[list[str], list[int], np.ndarray],
-    after: tuple[list[str], list[int], np.ndarray],
+    before: tuple[list[str], list[int], Float[np.ndarray, "emotions layers d_model"]],
+    after: tuple[list[str], list[int], Float[np.ndarray, "emotions layers d_model"]],
 ) -> dict[str, object]:
     """C1's read on both vector sets: PC1-valence |r| per layer, peak deltas."""
     vad = load_nrc_vad(LEXICON)
@@ -154,7 +163,9 @@ def neutral_compare(before_bundle: Path, after_dir: Path) -> dict[str, object]:
     pos33 = layers.index(33)
     story_cos = cosine_rows(vectors_before[:n, pos33], vectors_after[:n, pos33])
 
-    def basis(vectors: np.ndarray) -> np.ndarray:
+    def basis(
+        vectors: Float[np.ndarray, "emotions d_model"],
+    ) -> Float[np.ndarray, "components d_model"]:
         centered = vectors - vectors.mean(axis=0)
         pca = PCA(n_components=min(centered.shape)).fit(centered)
         k = int(np.searchsorted(np.cumsum(pca.explained_variance_ratio_), 0.5)) + 1

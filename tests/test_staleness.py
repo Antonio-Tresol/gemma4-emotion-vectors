@@ -19,6 +19,7 @@ from datetime import date, timedelta
 from pathlib import Path
 
 import pytest
+from _git_env import git_free_env
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -26,7 +27,8 @@ from lanorme_plugins.staleness import StalenessCheck  # noqa: E402
 
 
 def run_git(root: Path, *args: str) -> None:
-    subprocess.run(["git", *args], cwd=root, check=True, capture_output=True)
+    # env: see _git_env — without it these fixtures rewrite the real repo
+    subprocess.run(["git", *args], cwd=root, check=True, capture_output=True, env=git_free_env())
 
 
 def new_repo(root: Path) -> None:

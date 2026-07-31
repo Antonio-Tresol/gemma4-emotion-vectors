@@ -36,11 +36,27 @@ gpu = [
 packages = ["src/emotion_vectors"]
 
 [tool.ruff]
-# Report notebooks are promoted deliverables and get formatted like any code;
+# Report notebooks are promoted deliverables and get linted like any code;
 # only the bench history in archive/ keeps its explore-mode exemption.
 extend-exclude = ["notebooks/archive", ".claude/worktrees"]
 line-length = 100
+# Deliberately BELOW requires-python (>=3.14). This controls the syntax ruff
+# may EMIT, not what the project runs on. At py314 the formatter applies
+# PEP 758 and rewrites `except (A, B):` to `except A, B:` — valid on 3.14,
+# and a Python 2 error to every reader who has not read that PEP. It touched
+# extraction.py and three lanorme plugins for no benefit.
 target-version = "py311"
+
+[tool.ruff.format]
+# Notebooks are linted but NOT formatted. `ruff format` rewrites the entire
+# .ipynb JSON, and its float serialiser round-trips stored output values to a
+# different last digit: -0.013585043197963387 became ...389. The numbers are
+# unchanged to any precision that matters, but one formatting pass rewrote
+# 1,007 floats in a single plotly output and produced an 84,000-line diff on
+# notebook 09. That buries real changes and churns committed evidence, so the
+# formatter stays off the notebooks and the code cells keep whatever shape
+# their author gave them.
+exclude = ["*.ipynb"]
 
 [tool.ruff.lint]
 # I: import sorting. PLC0415: imports belong at module top — the only sanctioned

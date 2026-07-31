@@ -27,6 +27,7 @@ import random
 from pathlib import Path
 
 import numpy as np
+from jaxtyping import Float
 
 from emotion_vectors.probe_prompts import HELDOUT_SCENARIOS, SCENARIOS
 
@@ -35,7 +36,7 @@ BATTERY = (
 )
 
 
-def r4_diversity_exploratory(corpora: dict[str, Path | None], seed: int = 0) -> dict:
+def r4_diversity_exploratory(corpora: dict[str, Path | None], seed: int = 0) -> dict[str, object]:
     """EXPLORATORY (registered as such, fenced from R1-R3): within-corpus mean
     pairwise lexical similarity — 5-gram Jaccard over a seeded sample of up to
     30 stories per battery emotion. Separates 'distribution match' from
@@ -78,7 +79,7 @@ def r4_diversity_exploratory(corpora: dict[str, Path | None], seed: int = 0) -> 
     return out
 
 
-def load_battery_means(path: Path) -> np.ndarray:
+def load_battery_means(path: Path) -> Float[np.ndarray, "emotions layers d_model"]:
     """[12, 20, 5376] float32 means for the battery emotions, any bundle shape."""
     bundle = np.load(path, allow_pickle=True)
     means = bundle["means"].astype(np.float32)
@@ -89,13 +90,19 @@ def load_battery_means(path: Path) -> np.ndarray:
     return means[battery_rows]
 
 
-def contrast_probes_12pool(means: np.ndarray) -> np.ndarray:
+def contrast_probes_12pool(
+    means: Float[np.ndarray, "emotions d_model"],
+) -> Float[np.ndarray, "emotions d_model"]:
     """Center on the 12-emotion pool (E10's matched convention), unit-normalize."""
     contrast = means - means.mean(axis=0, keepdims=True)
     return contrast / np.clip(np.linalg.norm(contrast, axis=-1, keepdims=True), 1e-8, None)
 
 
-def battery_counts(acts: np.ndarray, probes: np.ndarray, targets: list[str]) -> int:
+def battery_counts(
+    acts: Float[np.ndarray, "scenarios d_model"],
+    probes: Float[np.ndarray, "emotions d_model"],
+    targets: list[str],
+) -> int:
     """Target-in-top-3 count under the centered-cosine readout (E9 convention:
     activations centered on the scenario set's own mean)."""
     centered = acts - acts.mean(axis=0, keepdims=True)
@@ -109,7 +116,9 @@ def battery_counts(acts: np.ndarray, probes: np.ndarray, targets: list[str]) -> 
     return count
 
 
-def r1_grid(bundles: dict[str, np.ndarray], sweep: dict) -> dict:
+def r1_grid(
+    bundles: dict[str, Float[np.ndarray, "emotions layers d_model"]], sweep: dict[str, object]
+) -> dict[str, object]:
     # The sweep's activation rows are ordered: all paper-battery scenarios,
     # then all held-out scenarios. Rebuild that order with each row's target.
     order: list[tuple[str, str, str]] = []
@@ -144,7 +153,9 @@ def r1_grid(bundles: dict[str, np.ndarray], sweep: dict) -> dict:
     return out
 
 
-def r2_cross(bundles: dict[str, np.ndarray], layer_pos: int) -> dict:
+def r2_cross(
+    bundles: dict[str, Float[np.ndarray, "emotions layers d_model"]], layer_pos: int
+) -> dict[str, object]:
     names = list(bundles)
     probes = {name: contrast_probes_12pool(bundles[name][:, layer_pos]) for name in names}
     out = {}
@@ -169,7 +180,9 @@ def r2_cross(bundles: dict[str, np.ndarray], layer_pos: int) -> dict:
     return out
 
 
-def r3_preferences(bundles: dict[str, np.ndarray], sweep_layers: list[int]) -> dict:
+def r3_preferences(
+    bundles: dict[str, Float[np.ndarray, "emotions layers d_model"]], sweep_layers: list[int]
+) -> dict[str, object]:
     pref = np.load(PREF_DIR / "preferences.npz", allow_pickle=True)
     scores = json.loads((PREF_DIR / "scores.json").read_text())
     # rows ordered like activities.py, the same order feel_feats rows use

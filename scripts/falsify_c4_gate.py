@@ -57,6 +57,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+from jaxtyping import Bool, Float, Int
 from scipy.stats import binom
 
 from emotion_vectors.probe_prompts import HELDOUT_SCENARIOS, SCENARIOS
@@ -78,7 +79,7 @@ PASS_BAR = 8
 
 # --- identical to scripts/score_e11_lineage.py (kept in lockstep; the grid
 # equality assertion below catches drift) ---------------------------------
-def load_battery_means(path: Path) -> np.ndarray:
+def load_battery_means(path: Path) -> Float[np.ndarray, "emotions layers d_model"]:
     z = np.load(path, allow_pickle=True)
     means = z["means"].astype(np.float32)
     if means.ndim == 4:
@@ -87,12 +88,16 @@ def load_battery_means(path: Path) -> np.ndarray:
     return means[[emotions.index(e) for e in BATTERY]]
 
 
-def contrast_probes_12pool(means: np.ndarray) -> np.ndarray:
+def contrast_probes_12pool(
+    means: Float[np.ndarray, "emotions d_model"],
+) -> Float[np.ndarray, "emotions d_model"]:
     contrast = means - means.mean(axis=0, keepdims=True)
     return contrast / np.clip(np.linalg.norm(contrast, axis=-1, keepdims=True), 1e-8, None)
 
 
-def centered_cos(acts: np.ndarray, probes: np.ndarray) -> np.ndarray:
+def centered_cos(
+    acts: Float[np.ndarray, "scenarios d_model"], probes: Float[np.ndarray, "emotions d_model"]
+) -> Float[np.ndarray, "scenarios emotions"]:
     centered = acts - acts.mean(axis=0, keepdims=True)
     cos = centered @ probes.T
     return cos / np.clip(np.linalg.norm(centered, axis=1, keepdims=True), 1e-8, None)
@@ -101,7 +106,9 @@ def centered_cos(acts: np.ndarray, probes: np.ndarray) -> np.ndarray:
 # --------------------------------------------------------------------------
 
 
-def top3_membership(cos: np.ndarray) -> np.ndarray:
+def top3_membership(
+    cos: Float[np.ndarray, "scenarios emotions"],
+) -> Bool[np.ndarray, "scenarios emotions"]:
     """[scenarios, emotions] bool: emotion j in scenario i's top 3."""
     rank = np.argsort(cos, axis=1)[:, ::-1][:, :3]
     member = np.zeros(cos.shape, dtype=bool)
@@ -111,8 +118,11 @@ def top3_membership(cos: np.ndarray) -> np.ndarray:
 
 
 def counts_all_layers(
-    acts: np.ndarray, means: np.ndarray, target_idx: np.ndarray, rows: list[int]
-) -> tuple[np.ndarray, list[np.ndarray]]:
+    acts: Float[np.ndarray, "scenarios layers d_model"],
+    means: Float[np.ndarray, "emotions layers d_model"],
+    target_idx: Int[np.ndarray, "scenarios"],
+    rows: list[int],
+) -> tuple[Int[np.ndarray, "layers"], list[Bool[np.ndarray, "scenarios emotions"]]]:
     """(counts[layer], membership matrices per layer) for one battery."""
     n_layers = acts.shape[1]
     counts, members = np.zeros(n_layers, dtype=int), []
@@ -125,13 +135,13 @@ def counts_all_layers(
 
 
 def perm_null_max(
-    members_paper: list[np.ndarray],
-    members_held: list[np.ndarray],
-    t_paper: np.ndarray,
-    t_held: np.ndarray,
+    members_paper: list[Bool[np.ndarray, "scenarios emotions"]],
+    members_held: list[Bool[np.ndarray, "scenarios emotions"]],
+    t_paper: Int[np.ndarray, "scenarios"],
+    t_held: Int[np.ndarray, "scenarios"],
     n_perm: int,
     rng: np.random.Generator,
-) -> tuple[np.ndarray, np.ndarray]:
+) -> tuple[Float[np.ndarray, "draws"], Int[np.ndarray, "draws"]]:
     """Null distribution of max-over-layers min(paper, held) under independent
     within-battery target permutation, plus per-draw passing-layer counts."""
     n_layers = len(members_paper)
@@ -159,12 +169,12 @@ def perm_null_max(
 
 
 def bootstrap_stability(
-    acts: np.ndarray,
-    means: np.ndarray,
+    acts: Float[np.ndarray, "scenarios layers d_model"],
+    means: Float[np.ndarray, "emotions layers d_model"],
     rows_paper: list[int],
     rows_held: list[int],
-    t_paper: np.ndarray,
-    t_held: np.ndarray,
+    t_paper: Int[np.ndarray, "scenarios"],
+    t_held: Int[np.ndarray, "scenarios"],
     layer_positions: list[int],
     rng: np.random.Generator,
 ) -> dict[int, float]:
@@ -187,13 +197,13 @@ def bootstrap_stability(
 
 
 def random_probe_maxes(
-    acts: np.ndarray,
+    acts: Float[np.ndarray, "scenarios layers d_model"],
     rows_paper: list[int],
     rows_held: list[int],
-    t_paper: np.ndarray,
-    t_held: np.ndarray,
+    t_paper: Int[np.ndarray, "scenarios"],
+    t_held: Int[np.ndarray, "scenarios"],
     rng: np.random.Generator,
-) -> np.ndarray:
+) -> Float[np.ndarray, "draws"]:
     """T3: max-statistic for random 12-probe sets through the same pipeline."""
     n_layers, d_model = acts.shape[1], acts.shape[2]
     maxes = np.empty(N_RANDOM)
@@ -216,10 +226,10 @@ def random_probe_maxes(
 
 def gate_lineage(
     name: str,
-    means: np.ndarray,
-    acts: np.ndarray,
+    means: Float[np.ndarray, "emotions layers d_model"],
+    acts: Float[np.ndarray, "scenarios layers d_model"],
     rows: dict[str, list[int]],
-    targets: dict[str, np.ndarray],
+    targets: dict[str, Int[np.ndarray, "scenarios"]],
     layers: list[int],
 ) -> dict[str, object]:
     c_paper, m_paper = counts_all_layers(acts, means, targets["paper"], rows["paper"])

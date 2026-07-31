@@ -20,7 +20,7 @@ HERE = Path(__file__).parent
 # build runs on any clone; set EMOTION_DECK_DATA to point elsewhere.
 SCRATCH = Path(os.environ.get("EMOTION_DECK_DATA", HERE / "data"))
 STORY_JSON = SCRATCH / "story_data.json"
-STORY_TEXT_JSON = SCRATCH / "story_text.json"   # the story itself, from results/combined_stories
+STORY_TEXT_JSON = SCRATCH / "story_text.json"  # the story itself, from results/combined_stories
 EMO_BY_LAYER_JSON = SCRATCH / "emo_by_layer.json"  # per-layer confusion, all six layers
 # three stories with the SAME three emotions but very different measured tracking
 # quality, chosen by mean gate rank at layer 33 (best / median / worst of the
@@ -41,18 +41,88 @@ LINEAGE_LAYERS_JSON = SCRATCH / "lineage_layers.json"
 # notebook 02, "PC1: evr ... |r| valence ... arousal ... dominance ... story-length"
 PCS = {
     "base": [
-        {"pc": 1, "evr": 0.151, "valence": 0.83, "arousal": 0.02, "dominance": 0.66, "length": 0.15},
-        {"pc": 2, "evr": 0.123, "valence": 0.09, "arousal": 0.55, "dominance": 0.08, "length": 0.41},
-        {"pc": 3, "evr": 0.061, "valence": 0.05, "arousal": 0.08, "dominance": 0.05, "length": 0.18},
-        {"pc": 4, "evr": 0.045, "valence": 0.09, "arousal": 0.44, "dominance": 0.22, "length": 0.14},
-        {"pc": 5, "evr": 0.042, "valence": 0.15, "arousal": 0.01, "dominance": 0.06, "length": 0.21},
+        {
+            "pc": 1,
+            "evr": 0.151,
+            "valence": 0.83,
+            "arousal": 0.02,
+            "dominance": 0.66,
+            "length": 0.15,
+        },
+        {
+            "pc": 2,
+            "evr": 0.123,
+            "valence": 0.09,
+            "arousal": 0.55,
+            "dominance": 0.08,
+            "length": 0.41,
+        },
+        {
+            "pc": 3,
+            "evr": 0.061,
+            "valence": 0.05,
+            "arousal": 0.08,
+            "dominance": 0.05,
+            "length": 0.18,
+        },
+        {
+            "pc": 4,
+            "evr": 0.045,
+            "valence": 0.09,
+            "arousal": 0.44,
+            "dominance": 0.22,
+            "length": 0.14,
+        },
+        {
+            "pc": 5,
+            "evr": 0.042,
+            "valence": 0.15,
+            "arousal": 0.01,
+            "dominance": 0.06,
+            "length": 0.21,
+        },
     ],
     "instruct": [
-        {"pc": 1, "evr": 0.279, "valence": 0.11, "arousal": 0.04, "dominance": 0.17, "length": 0.39},
-        {"pc": 2, "evr": 0.097, "valence": 0.13, "arousal": 0.35, "dominance": 0.23, "length": 0.66},
-        {"pc": 3, "evr": 0.063, "valence": 0.72, "arousal": 0.21, "dominance": 0.52, "length": 0.10},
-        {"pc": 4, "evr": 0.055, "valence": 0.36, "arousal": 0.06, "dominance": 0.25, "length": 0.16},
-        {"pc": 5, "evr": 0.027, "valence": 0.08, "arousal": 0.13, "dominance": 0.10, "length": 0.12},
+        {
+            "pc": 1,
+            "evr": 0.279,
+            "valence": 0.11,
+            "arousal": 0.04,
+            "dominance": 0.17,
+            "length": 0.39,
+        },
+        {
+            "pc": 2,
+            "evr": 0.097,
+            "valence": 0.13,
+            "arousal": 0.35,
+            "dominance": 0.23,
+            "length": 0.66,
+        },
+        {
+            "pc": 3,
+            "evr": 0.063,
+            "valence": 0.72,
+            "arousal": 0.21,
+            "dominance": 0.52,
+            "length": 0.10,
+        },
+        {
+            "pc": 4,
+            "evr": 0.055,
+            "valence": 0.36,
+            "arousal": 0.06,
+            "dominance": 0.25,
+            "length": 0.16,
+        },
+        {
+            "pc": 5,
+            "evr": 0.027,
+            "valence": 0.08,
+            "arousal": 0.13,
+            "dominance": 0.10,
+            "length": 0.12,
+        },
     ],
 }
 
@@ -67,8 +137,26 @@ SCORE_GRID = [
 PRINCIPAL_ANGLES = [86.1, 56.0, 46.1]  # notebook 02, top-3 subspaces
 
 # notebook 02, "it-PC1 extremes"
-IT_PC1_LOW = ["awestruck", "jubilant", "miserable", "skeptical", "hostile", "fulfilled", "smug", "lazy"]
-IT_PC1_HIGH = ["irritated", "on edge", "uneasy", "impatient", "frustrated", "bored", "disturbed", "scared"]
+IT_PC1_LOW = [
+    "awestruck",
+    "jubilant",
+    "miserable",
+    "skeptical",
+    "hostile",
+    "fulfilled",
+    "smug",
+    "lazy",
+]
+IT_PC1_HIGH = [
+    "irritated",
+    "on edge",
+    "uneasy",
+    "impatient",
+    "frustrated",
+    "bored",
+    "disturbed",
+    "scared",
+]
 
 # NOTE: this file once hardcoded a per-emotion table transcribed from the
 # notebook's printed TOP-3 confusion tables. That was wrong — an emotion missing
@@ -91,32 +179,76 @@ BY_LAYER = [
 # notebook 07 printed record: R1 passing layers per probe lineage (bar = 8 of 12
 # scenarios correct on BOTH batteries), phrase repetition, and the preference read.
 LINEAGE = [
-    {"key": "weak", "label": "gemma-4-4B", "sub": "a smaller external model",
-     "layers": 1, "pref": 0.593, "overlap": None, "n": 1539},
-    {"key": "self", "label": "the probed model itself", "sub": "self-generated stories",
-     "layers": 5, "pref": 0.616, "overlap": 0.0386, "n": 3072},
-    {"key": "diverse", "label": "deepseek-v4-pro, varied prompts", "sub": "persona x setting grid",
-     "layers": 7, "pref": 0.772, "overlap": None, "n": 12262},
-    {"key": "fixed", "label": "deepseek-v4-pro, one prompt", "sub": "a stronger external writer",
-     "layers": 9, "pref": 0.706, "overlap": 0.0007, "n": 3070},
+    {
+        "key": "weak",
+        "label": "gemma-4-4B",
+        "sub": "a smaller external model",
+        "layers": 1,
+        "pref": 0.593,
+        "overlap": None,
+        "n": 1539,
+    },
+    {
+        "key": "self",
+        "label": "the probed model itself",
+        "sub": "self-generated stories",
+        "layers": 5,
+        "pref": 0.616,
+        "overlap": 0.0386,
+        "n": 3072,
+    },
+    {
+        "key": "diverse",
+        "label": "deepseek-v4-pro, varied prompts",
+        "sub": "persona x setting grid",
+        "layers": 7,
+        "pref": 0.772,
+        "overlap": None,
+        "n": 12262,
+    },
+    {
+        "key": "fixed",
+        "label": "deepseek-v4-pro, one prompt",
+        "sub": "a stronger external writer",
+        "layers": 9,
+        "pref": 0.706,
+        "overlap": 0.0007,
+        "n": 3070,
+    },
 ]
 LINEAGE_DOSE = {  # stories per emotion -> mean passing layers, fixed-prompt DeepSeek arm
-    "8": 3.8, "16": 5.0, "32": 6.2, "64": 8.6, "128": 7.8, "255": 9.0,
+    "8": 3.8,
+    "16": 5.0,
+    "32": 6.2,
+    "64": 8.6,
+    "128": 7.8,
+    "255": 9.0,
 }
 ELIAS_SHARE = 0.982  # share of self-generated stories naming a character Elias
-LINEAGE_BAR = 8      # registered pass bar, of 12 scenarios, on both batteries
+LINEAGE_BAR = 8  # registered pass bar, of 12 scenarios, on both batteries
 
 FACTS = {
     # notebook 02
-    "base_pc1_valence": 0.828, "it_pc1_valence": 0.113, "it_pc3_valence": 0.718,
-    "base_pc1_evr": 0.151, "it_pc1_evr": 0.279,
-    "rsa_it_late": 0.793, "rsa_base_late": 0.941,
-    "cross_model_unablated": 0.286, "cross_model_top1_removed": 0.604,
-    "logit_lens_base": "5 of 12", "ari_at_33": 0.06,
+    "base_pc1_valence": 0.828,
+    "it_pc1_valence": 0.113,
+    "it_pc3_valence": 0.718,
+    "base_pc1_evr": 0.151,
+    "it_pc1_evr": 0.279,
+    "rsa_it_late": 0.793,
+    "rsa_base_late": 0.941,
+    "cross_model_unablated": 0.286,
+    "cross_model_top1_removed": 0.604,
+    "logit_lens_base": "5 of 12",
+    "ari_at_33": 0.06,
     # notebook 11 / 08
-    "gate_rank_it": 3.0, "gate_rank_deepseek": 5.0, "gate_rank_control": 4.5,
-    "r1_lead_it": 0.0117, "selfgen_rank_range": "1 to 3", "corpus_rank_range": "38 to 76",
-    "n_phases": 8938, "n_transitions": 5934,
+    "gate_rank_it": 3.0,
+    "gate_rank_deepseek": 5.0,
+    "gate_rank_control": 4.5,
+    "r1_lead_it": 0.0117,
+    "selfgen_rank_range": "1 to 3",
+    "corpus_rank_range": "38 to 76",
+    "n_phases": 8938,
+    "n_transitions": 5934,
 }
 
 CSS = """
@@ -2287,15 +2419,13 @@ SMOTHERED_VERB = re.compile(
 # checked, or the longest sentences on the page hide from their own gate.
 JS_PROSE_SPAN = re.compile(r'<span class="(?:gl|where|t-sub|note)"[^>]*>(.*?)</span>', re.S)
 
-BLOCK_TAG = re.compile(
-    r"</?(?:p|h1|h2|h3|div|li|details|summary|section|br|td|th)\b[^>]*>", re.I
-)
+BLOCK_TAG = re.compile(r"</?(?:p|h1|h2|h3|div|li|details|summary|section|br|td|th)\b[^>]*>", re.I)
 # Label spans (a callout's heading, a takeaway's tag) sit inline but read as
 # their own line. Without a break here a label glues onto the sentence after it.
 LABEL_SPAN = re.compile(
-    r'</span>\s*<span\b'                              # adjacent spans: legend entries
-    r'|</span>(?=\s*<b|\s*[A-Z])'                     # a label running into its sentence
-    r'|<span class="(?:k|lbl|kicker|secno)"[^>]*>'    # callout and takeaway labels
+    r"</span>\s*<span\b"  # adjacent spans: legend entries
+    r"|</span>(?=\s*<b|\s*[A-Z])"  # a label running into its sentence
+    r'|<span class="(?:k|lbl|kicker|secno)"[^>]*>'  # callout and takeaway labels
 )
 
 
@@ -2340,9 +2470,18 @@ def prose_sentences(html: str) -> list[str]:
 
     body = BLOCK_TAG.sub("\x00", body)
     text = re.sub(r"<[^>]+>", " ", body)
-    for entity, plain in (("&mdash;", "-"), ("&times;", "x"), ("&amp;", "&"),
-                          ("&nbsp;", " "), ("&middot;", "-"), ("&quot;", '"'),
-                          ("&mu;", "u"), ("&phi;", "p"), ("&ell;", "l"), ("&rarr;", "->")):
+    for entity, plain in (
+        ("&mdash;", "-"),
+        ("&times;", "x"),
+        ("&amp;", "&"),
+        ("&nbsp;", " "),
+        ("&middot;", "-"),
+        ("&quot;", '"'),
+        ("&mu;", "u"),
+        ("&phi;", "p"),
+        ("&ell;", "l"),
+        ("&rarr;", "->"),
+    ):
         text = text.replace(entity, plain)
     text = re.sub(r"&[a-zA-Z]+;|&#\d+;", " ", text)
 
@@ -2366,7 +2505,7 @@ def check_prose(html: str) -> None:
     if problems:
         raise SystemExit("prose check failed\n" + "\n".join(problems))
     print(
-        f"prose: {len(sentences)} sentences, mean {sum(counts)/len(counts):.1f} words, "
+        f"prose: {len(sentences)} sentences, mean {sum(counts) / len(counts):.1f} words, "
         f"longest {max(counts)} (limit {MAX_SENTENCE_WORDS})"
     )
 
@@ -2403,8 +2542,7 @@ def check_jargon(html: str) -> None:
     ]
     if hits:
         raise SystemExit(
-            "jargon check failed; these were each queried by a reader before:\n"
-            + "\n".join(hits)
+            "jargon check failed; these were each queried by a reader before:\n" + "\n".join(hits)
         )
     print(f"jargon: none of the {len(BANNED_WORDS)} flagged terms present")
 

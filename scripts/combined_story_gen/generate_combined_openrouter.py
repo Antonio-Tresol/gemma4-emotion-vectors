@@ -54,7 +54,7 @@ from generate_combined_stories import (
 API = "https://openrouter.ai/api/v1/chat/completions"
 
 
-def one_request(job: dict, args: argparse.Namespace, key: str) -> dict:
+def one_request(job: dict[str, object], args: argparse.Namespace, key: str) -> dict[str, object]:
     body = json.dumps(
         {
             "model": args.model,
@@ -94,7 +94,7 @@ def one_request(job: dict, args: argparse.Namespace, key: str) -> dict:
     return {**job, "raw_text": None, "model": args.model, "error": last_error}
 
 
-def qc_row(res: dict) -> tuple[dict | None, str]:
+def qc_row(res: dict[str, object]) -> tuple[dict | None, str]:
     """QC gates in the parent script's order; returns (row-or-None, verdict)."""
     text, had_think = strip_thinking(res["raw_text"])
     emotions = res["triple"]["emotions"]

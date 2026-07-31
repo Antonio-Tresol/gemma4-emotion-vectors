@@ -27,7 +27,6 @@ scoring entry point below therefore takes ``center_pool`` explicitly.
 from __future__ import annotations
 
 import json
-import textwrap
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -35,16 +34,17 @@ import numpy as np
 from jaxtyping import Float
 
 from emotion_vectors.artifacts import fetch  # local results/ first, HF otherwise
+
+# figure_title and its two wrapping constants live in emotion_vectors.figure_text.
+# Three byte-identical copies used to sit in the three report packages; they are
+# re-exported here so this package's own modules keep importing them from _data.
+from emotion_vectors.figure_text import (
+    HEADLINE_CHARS_PER_PIXEL,
+    SUBTITLE_CHARS_PER_PIXEL,
+    figure_title,
+)
 from emotion_vectors.probe_prompts import SCENARIOS
 from emotion_vectors.scoring import score_battery
-
-# Plotly never wraps a title, it just runs off the canvas, so every title in
-# this package is wrapped by ``figure_title`` before it is set. These are
-# characters that fit per pixel of figure width, measured from rendered PNGs
-# at title_font_size 13: the headline renders at full size, the subtitle
-# lines inside <sup> render smaller and fit more.
-HEADLINE_CHARS_PER_PIXEL = 0.125
-SUBTITLE_CHARS_PER_PIXEL = 0.17
 
 # Constants of the registered detection read (TREE.md Q1.H2.E2/E4, registered
 # before any scoring).
@@ -85,24 +85,6 @@ MODEL_SOURCES = {
     IT_LABEL: ("emotion_vectors_it_means.npz", "probe_sweep_it", "chat"),
     BASE_LABEL: ("emotion_vectors/emotion_means.npz", "probe_sweep", "plain"),
 }
-
-
-def figure_title(headline: str, subtitles: list[str], width_px: int) -> str:
-    """Wrap a question-form headline plus subtitle lines to the figure width.
-
-    Inputs: ``headline`` (the question and its answer, headline values already
-    formatted in), ``subtitles`` (each becomes one smaller line, in order:
-    what one mark is, then the anchors and the evidence file), and
-    ``width_px`` (the figure's ``width``, which decides how many characters
-    fit on a line). Returns the ``<br>``-joined title string.
-    """
-    if width_px <= 0:
-        raise ValueError(f"figure width must be positive, got {width_px}")
-    lines = textwrap.wrap(headline, width=int(width_px * HEADLINE_CHARS_PER_PIXEL))
-    for subtitle in subtitles:
-        wrapped = textwrap.wrap(subtitle, width=int(width_px * SUBTITLE_CHARS_PER_PIXEL))
-        lines += [f"<sup>{line}</sup>" for line in wrapped]
-    return "<br>".join(lines)
 
 
 @dataclass
