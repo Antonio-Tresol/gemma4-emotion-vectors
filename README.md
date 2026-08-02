@@ -3,10 +3,10 @@
 **Replicating Anthropic's emotion-vectors result on an open model, and asking what happens when the emotion changes partway through a story**
 
 <p align="center">
-  <img src="img/circumplex.png" width="900" alt="Two scatter plots of 171 emotion vectors projected onto their principal components, one panel per model. The base model's first two components separate the emotions into a smooth red-to-green valence gradient. The instruction-tuned model needs its third and ninth components to show the same structure, more weakly.">
+  <img src="img/hero.png" width="900" alt="Top: two scatter plots of 171 emotion vectors on their principal components, one per model; the base model sorts into a smooth red-to-green valence gradient, the instruction-tuned model needs later components to show the same structure. Bottom: bar charts of how often each of twelve emotions is identified correctly while a story is read, one panel per story source, against a chance line at one in twelve.">
 </p>
 
-<p align="center"><em>Each dot is one emotion, placed by the principal components of 171 emotion vectors and coloured by its published human valence rating. Neither the axes nor the positions ever see a human rating. (Right) In the base model the largest component is valence: the colours sort themselves left to right at an absolute correlation of 0.83, and the second component is arousal. That is the circumplex, recovered unprompted. (Left) After instruction tuning the same structure survives but is demoted, appearing at components 3 and 9 and correlating at 0.72. A different, larger component takes first place, and we could not work out what it encodes.</em></p>
+<p align="center"><em><b>(Top) The geometry.</b> Each dot is one emotion, placed by the principal components of 171 emotion vectors and coloured by its published human valence rating. Neither the axes nor the positions ever see a human rating. On the right, the base model's largest component is valence: the colours sort themselves left to right at an absolute correlation of 0.83, and the second component is arousal. That is the circumplex, recovered unprompted. On the left, after instruction tuning, the same structure survives but is demoted to components 3 and 9 and correlates at 0.72, while a different and larger component takes first place that we could not identify.<br><br><b>(Bottom) Tracking an emotion as a story moves through it,</b> at the same layer. Each bar is one emotion, and its height is how often that emotion's own vector ranks first out of twelve across the story phases written to express it. The dotted line at 1 in 12 is guessing. Nothing reaches half, the ranking changes with depth, and the two panels differ only in who wrote the stories the vectors were built from: the model's own writing on the left, a stronger external writer on the right.</em></p>
 
 ## Overview
 
@@ -104,11 +104,19 @@ before, after = transition_windows(
 
 The report, numbered in reading order, with an index in [`notebooks/README.md`](notebooks/README.md). Cells import, call and narrate; the analysis and figure code lives in `src/emotion_vectors/` so it can be tested without a kernel.
 
-- `02_circumplex_geometry` recovers the circumplex and correlates it against human ratings
-- `03_detection_probe_campaign` asks whether the vectors identify the emotion of a held-out scenario
-- `05`, `06` and `09` follow single stories token by token, one notebook per model
-- `07_generator_lineages` is the story-source comparison
-- `11_tracking_taxonomy` is the full emotion-tracking analysis
+| notebook | what it answers |
+|---|---|
+| [01 corpora and extraction](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/01_corpora_and_extraction.ipynb) | what the stories are, and how activations become vectors |
+| [02 circumplex geometry](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/02_circumplex_geometry.ipynb) | does the circumplex appear, and does it match human ratings |
+| [03 detection probes](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/03_detection_probe_campaign.ipynb) | do the vectors identify the emotion of a held-out scenario |
+| [04 paper plot parity](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/04_paper_plot_parity.ipynb) | do our figures match the ones we are replicating |
+| [05 trajectories, instruct](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/05_trajectory_explorer_instruct.ipynb) | one story, token by token, in the instruction-tuned model |
+| [06 trajectories, base](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/06_trajectory_explorer_base.ipynb) | the same story in the base model |
+| [07 story sources](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/07_generator_lineages.ipynb) | does who wrote the stories change the vectors |
+| [08 transition first reads](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/08_transition_tracking_first_reads.ipynb) | does the model track an emotion that changes |
+| [09 trajectories, DeepSeek](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/09_trajectory_explorer_deepseek.ipynb) | the same, on stories written by a stronger model |
+| [10 the sprint story](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/10_the_sprint_story.ipynb) | the whole project, start to finish |
+| [11 tracking taxonomy](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/11_tracking_taxonomy.ipynb) | which emotions are tracked, and where they are confused |
 
 Every figure carries the scale it should be judged on: a chance line, a noise floor, and the pass mark fixed before scoring.
 
@@ -138,15 +146,40 @@ Each script carries its own runnable command in its docstring.
 
 ## How the claims are checked
 
-The point of this repository is not the findings. It is that a reader can tell which of them to believe.
+Anthropic released no code, so every design decision here was open, and most of
+them could have been made wrong quietly. The verification layer was built before
+the science, and it lives in its own repository:
+**[research-engineering-harness](https://github.com/Antonio-Tresol/research-engineering-harness)**,
+a portable set of agent skills, process gates and mechanical validators. This
+project is the first thing built with it.
 
-- **[`TREE.md`](TREE.md)** holds every question, hypothesis, experiment and claim, each with a status and a link to the file its numbers come from. Predictions and their pass marks were written there *before* the data existed.
-- **[`RESEARCH_LOG.md`](RESEARCH_LOG.md)** is the append-only daily record, pivots included.
-- **`./check.sh`** runs the formatter, the linter, the tests and a research-integrity gate that checks every claim in `TREE.md` against the files it cites.
+What that buys, concretely:
 
-A claim only graduates after a falsification pass: permutation nulls, bootstrap intervals, random-direction controls. Claims that failed are marked `failed` and stay in the tree.
+| file | what it holds |
+|---|---|
+| [`TREE.md`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/TREE.md) | every question, hypothesis, experiment and claim, each with a status and a link to the file its numbers come from. Predictions and pass marks were written here **before** the data existed. |
+| [`RESEARCH_LOG.md`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/RESEARCH_LOG.md) | the append-only daily record, pivots and dead ends included |
+| [`check.sh`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/check.sh) | one command: formatter, linter, tests, and a gate that checks every claim in `TREE.md` against the files it cites |
+| [`AGENTS.md`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/AGENTS.md) | the working agreement every coding agent on this repository follows |
 
-Two things this caught that would otherwise have been published as findings. A left-padding default meant 4,032 A/B logits were read mid-prompt, turning two real effects into false nulls, and correcting it reversed both. The near miss is instructive: the emotion vectors before and after that fix agree to a cosine of 0.9999, while the contrast directions built from them fall to 0.62 on the instruction-tuned model. Separately, the detection bar registered in advance was written for the 171-emotion vector set, which failed it at every layer. What passes is the twelve-emotion sets, a substitution made after seeing the results, and the write-up says so where the result appears.
+A claim only graduates after a falsification pass: permutation nulls, bootstrap
+intervals, random-direction controls. Claims that failed those tests are marked
+`failed` and stay in the tree rather than disappearing.
+
+Two things this caught that would otherwise have been published as findings.
+
+A left-padding default meant 4,032 A/B logits were read mid-prompt, turning two
+real effects into false nulls; correcting it reversed both. The near miss is the
+instructive part: the emotion vectors before and after that fix agree to a
+cosine of 0.9999, while the contrast directions built from them fall to 0.62 on
+the instruction-tuned model. A change too small to see in the activations can
+still invert what you conclude from them.
+
+Separately, the detection bar registered in advance was written for the
+171-emotion vector set, and that set failed it at every layer. What passes is
+the twelve-emotion sets, a substitution made after seeing the results. It is not
+what was pre-registered, and the write-up says so at the point where the result
+appears rather than in a footnote.
 
 ## Citation
 
