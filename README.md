@@ -102,7 +102,7 @@ before, after = transition_windows(
 
 ## Notebooks
 
-The report, numbered in reading order, with an index in [`notebooks/README.md`](notebooks/README.md). Cells import, call and narrate; the analysis and figure code lives in `src/emotion_vectors/` so it can be tested without a kernel.
+The report, numbered in reading order, with an index in [`notebooks/README.md`](notebooks/README.md). Cells import, call and narrate; the analysis and figure code lives in [`src/emotion_vectors/`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/tree/main/src/emotion_vectors) so it can be tested without a kernel.
 
 | notebook | what it answers |
 |---|---|
@@ -124,11 +124,11 @@ Every figure carries the scale it should be judged on: a chance line, a noise fl
 
 Generating stories and extracting activations needs a GPU. Everything after that runs on a laptop from the published data.
 
-1. **Generate** the story corpora (`scripts/generate_openrouter_stories.py`, `scripts/combined_story_gen/`)
-2. **Extract** per-story activations (`scripts/extract_emotion_vectors.py`, GPU)
-3. **Score** the detection sweep and the emotion-tracking reads (`scripts/score_*.py`)
-4. **Falsify** each claim against permutation nulls and random-direction controls (`scripts/falsify_*.py`)
-5. **Validate** that every claim still resolves to a file that exists (`scripts/validate_research.py`)
+1. **Generate** the story corpora ([`generate_openrouter_stories.py`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/scripts/generate_openrouter_stories.py), [`combined_story_gen/`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/tree/main/scripts/combined_story_gen))
+2. **Extract** per-story activations ([`extract_emotion_vectors.py`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/scripts/extract_emotion_vectors.py), GPU)
+3. **Score** the detection sweep and the emotion-tracking reads ([`scripts/score_*.py`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/tree/main/scripts))
+4. **Falsify** each claim against permutation nulls and random-direction controls ([`scripts/falsify_*.py`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/tree/main/scripts))
+5. **Validate** that every claim still resolves to a file that exists ([`validate_research.py`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/scripts/validate_research.py))
 
 Each script carries its own runnable command in its docstring.
 
@@ -142,7 +142,7 @@ Each script carries its own runnable command in its docstring.
 | [`emotion-combined-trajectories-gemma-4-31b-it-v2`](https://huggingface.co/datasets/abotresol/emotion-combined-trajectories-gemma-4-31b-it-v2) | per-token activations over three-emotion stories |
 | [`emotion-vectors-experiment-artifacts`](https://huggingface.co/datasets/abotresol/emotion-vectors-experiment-artifacts) | every scored output and falsification scorecard the notebooks cite |
 
-[`DATA.md`](DATA.md) is the full index. The `-postfix` sets supersede their unsuffixed predecessors, which were extracted before a padding bug was found; each carries a `LINEAGE.md` recording what changed and by how much.
+[`DATA.md`](DATA.md) is the full index. The `-postfix` sets supersede their unsuffixed predecessors, which were extracted before a padding bug was found; each carries a [`LINEAGE.md`](https://huggingface.co/datasets/abotresol/emotion-vectors-gemma-4-31b-it-postfix/blob/main/LINEAGE.md) recording what changed and by how much.
 
 ## How the claims are checked
 
@@ -180,7 +180,7 @@ appears rather than in a footnote.
 
 ## Citation
 
-`CITATION.cff` carries the machine-readable citation, including a reference to the work being replicated.
+[`CITATION.cff`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/CITATION.cff) carries the machine-readable citation, including a reference to the work being replicated.
 
 ## Licence
 
