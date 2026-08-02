@@ -6,16 +6,16 @@
   <img src="img/hero.png" width="900" alt="Top: two scatter plots of 171 emotion vectors on their principal components, one per model; the base model sorts into a smooth red-to-green valence gradient, the instruction-tuned model needs later components to show the same structure. Bottom: bar charts of how often each of twelve emotions is identified correctly while a story is read, one panel per story source, against a chance line at one in twelve.">
 </p>
 
-<p align="center"><em><b>(Top) The geometry.</b> Each dot is one emotion, placed by the principal components of 171 emotion vectors and coloured by its published human valence rating. Neither the axes nor the positions ever see a human rating. On the right, the base model's largest component is valence: the colours sort themselves left to right at an absolute correlation of 0.83, and the second component is arousal. That is the circumplex, recovered unprompted. On the left, after instruction tuning, the same structure survives but is demoted to components 3 and 9 and correlates at 0.72, while a different and larger component takes first place that we could not identify.<br><br><b>(Bottom) Tracking an emotion as a story moves through it,</b> at the same layer. Each bar is one emotion, and its height is how often that emotion's own vector ranks first out of twelve across the story phases written to express it. The dotted line at 1 in 12 is guessing. Nothing reaches half, the ranking changes with depth, and the two panels differ only in who wrote the stories the vectors were built from: the model's own writing on the left, a stronger external writer on the right.</em></p>
+<p align="center"><em><b>(Top) The geometry.</b> Each dot is one emotion, placed by the principal components of 171 emotion vectors and coloured by its published human valence rating. Neither the axes nor the positions ever see a human rating. On the right, the base model's largest component is valence: the colours sort themselves left to right at an absolute correlation of 0.83, and the second component is arousal. That is the circumplex, recovered unprompted. On the left, after instruction tuning, the same structure survives but is demoted. It appears at components 3 and 9 and correlates at 0.72. A different and larger component takes first place, and we could not identify it.<br><br><b>(Bottom) Tracking an emotion as a story moves through it,</b> at the same layer. Each bar is one emotion, and its height is how often that emotion's own vector ranks first out of twelve across the story phases written to express it. The dotted line at 1 in 12 is guessing. Nothing reaches half, and the ranking changes with depth. The two panels differ only in who wrote the stories the vectors were built from: the model's own writing on the left, a stronger external writer on the right.</em></p>
 
 ## Overview
 
-An **emotion vector** is the average internal state a language model enters while reading stories written to evoke one emotion. Anthropic reported that a model keeps a separate direction for each emotion, and that those directions arrange themselves the way psychologists arrange emotions, on a circumplex whose axes are valence (how pleasant) and arousal (how worked-up). They released no code.
+An **emotion vector** is the average internal state a language model enters while reading stories written to evoke one emotion. Anthropic reported that a model keeps a separate direction for each emotion. Those directions arrange themselves the way psychologists arrange emotions, on a circumplex. Its axes are valence (how pleasant the emotion is) and arousal (how worked-up it is). They released no code.
 
 This repository rebuilds that result on [Gemma 4 31B](https://huggingface.co/google/gemma-4-31b), in both its base and instruction-tuned form, and then asks two questions the paper did not. Three findings:
 
 - **The base model reproduces the published result.** Sort 171 emotion vectors by what separates them most and the largest axis is valence, correlating with human ratings at 0.83. Nothing in that calculation sees a human rating. The claim went through a falsification pass and survived.
-- **Instruction tuning demotes it.** Valence falls from first place to third, still present at 0.72. A new largest axis takes over, carrying 28% of the variance against 15% for the base model's top axis, and correlating at most 0.14 with any of the base model's top five. It is not valence, arousal, dominance or story length, and we checked all four.
+- **Instruction tuning demotes it.** Valence falls from first place to third, still present at 0.72. A new largest axis takes over. It carries 28% of the variance against 15% for the base model's top axis, and correlates at most 0.14 with any of the base model's top five. It is not valence, arousal, dominance or story length, and we checked all four.
 - **Who writes the stories decides whether any of this works.** Nobody reports which model generated the corpus a set of emotion vectors is built from. Holding everything else fixed, story source moves the number of usable layers from 1 to 9 out of 20.
 
 Read the [full write-up here](https://antonio-tresol.github.io/gemma4-emotion-vectors/). Every figure in it states what a failure would have looked like beside what was observed.
@@ -169,10 +169,7 @@ intervals, random-direction controls. Claims that failed those tests are marked
 Two things this caught that would otherwise have been published as findings.
 
 A left-padding default meant 4,032 A/B logits were read mid-prompt, turning two
-real effects into false nulls; correcting it reversed both. The near miss is the
-instructive part: the emotion vectors before and after that fix agree to a
-cosine of 0.9999, while the contrast directions built from them fall to 0.62 on
-the instruction-tuned model. A change too small to see in the activations can
+real effects into false nulls; correcting it reversed both. The near miss is the instructive part. The emotion vectors before and after that fix agree to a cosine of 0.9999. The contrast directions built from them fall to 0.62 on the instruction-tuned model. A change too small to see in the activations can
 still invert what you conclude from them.
 
 Separately, the detection bar registered in advance was written for the
