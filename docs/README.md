@@ -6,11 +6,12 @@ the notebooks and `results/`; nothing is typed by hand.
 **This directory is what GitHub Pages serves** (Settings → Pages → Deploy from a
 branch, `main`, folder `/docs`). So `index.html` must stay committed, and it must
 stay here. It is the published page, not a build artifact you can gitignore.
-It is self-contained: no build step, no server, opens from the filesystem.
+A reader needs no build step and no server: it opens from the filesystem.
+Its only external requests are three Google Fonts resources.
 
 | File | What it is |
 |---|---|
-| `index.html` | the talk, self-contained (no build step, no server) |
+| `index.html` | the talk; opens from the filesystem, no build step, no server |
 | `build.py` | rebuilds `index.html`; every figure names the notebook it came from |
 | `data/` | the extracted figure inputs, so the build runs on any clone |
 
@@ -34,7 +35,7 @@ the commit.
 ## Rebuilding
 
 ```
-python build.py                    # -> index.html  (reads data/)
+uv run python build.py             # -> index.html  (reads data/)
 ```
 
 ## Status

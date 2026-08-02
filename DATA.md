@@ -16,9 +16,10 @@ path = fetch("combined_trajectories/manifest.jsonl")  # routed subtree
 
 `fetch()` resolves a `results/`-relative path: the local `results/` tree
 first, then the HF dataset that owns that subtree (`ROUTES`), and for any
-path with no route, the catch-all artifacts repo. Private repos need an
-`HF_TOKEN=` line in the repo-root `.env` (gitignored; each machine keeps its
-own). Publishing goes through the `scripts/publish_*.py` scripts, each of
+path with no route, the catch-all artifacts repo. **Every dataset listed on
+this page is public**: reading needs no Hugging Face account and no token.
+An `HF_TOKEN=` line in the repo-root `.env` (gitignored; each machine keeps
+its own) is needed only to publish. Publishing goes through the `scripts/publish_*.py` scripts, each of
 which writes its dataset card; new evidence files are added to
 `scripts/publish_experiment_artifacts.py`'s `ARTIFACTS` list.
 
@@ -26,48 +27,48 @@ which writes its dataset card; new evidence files are added to
 
 | dataset | contents |
 |---|---|
-| [`abotresol/emotion-vectors-experiment-artifacts`](https://huggingface.co/datasets/abotresol/emotion-vectors-experiment-artifacts) | Every scored output, scorecard, calibration, and per-record substrate the report notebooks cite: detection sweeps, preference/steering runs (pre- and post-fix), falsify scorecards, geometry diagnostics (`it_pc_structure.json`, `rsa_fragmentation.json`), Q3 gate/anticipation scores (`q3_gate_r1_*.json`), and the five per-record dumps `q3_records_{it,it_v2,deepseek,deepseek_constant,base}.npz` + `_meta.json`. Its README lists a one-line schema per file. |
+| [`abotresol/emotion-vectors-experiment-artifacts`](https://huggingface.co/datasets/abotresol/emotion-vectors-experiment-artifacts) | Every scored output, scorecard, calibration, and per-record data the report notebooks cite: detection sweeps, preference/steering runs (pre- and post-fix), falsify scorecards, geometry diagnostics (`it_pc_structure.json`, `rsa_fragmentation.json`), Q3 gate/anticipation scores (`q3_gate_r1_*.json`), and the five per-record dumps `q3_records_{it,it_v2,deepseek,deepseek_constant,base}.npz` + `_meta.json`. Its README lists a one-line schema per file. |
 
 ## Story corpora (text the models read or wrote)
 
 | dataset | contents |
 |---|---|
-| external corpus `snae/emotion_stories_gemma_4_4B` | The open replication's 171-emotion story corpus written by gemma-4-4B; extraction source for all corpus-lineage vectors. Not ours. |
-| `abotresol/emotion-stories-gemma-4-31b-it` | Self-generated stories (the probed instruct model writing about each battery emotion). |
+| external corpus `snae/emotion_stories_gemma_4_4B` | The open replication's 171-emotion story corpus written by gemma-4-4B; extraction source for every vector set built from this corpus. Not ours. |
+| `abotresol/emotion-stories-gemma-4-31b-it` | Self-generated stories (the probed instruct model writing about each of the twelve emotions). |
 | `abotresol/emotion-dialogues-gemma-4-31b` / `-it` | Dialogue-format probe corpora, base and instruct generators. |
 | `abotresol/neutral-transcripts-gemma-4-31b-it` | Neutral (no-emotion) transcripts, the neutral-projection control. |
-| `abotresol/emotion-stories-deepseek-v4-pro` | Fixed-prompt DeepSeek-written battery stories (strong-generator arm). |
-| `abotresol/emotion-stories-deepseek-v4-pro-diverse` | Prompt-diversified DeepSeek corpus (the scale-and-diversity dose-response arm). |
-| `abotresol/emotion-combined-stories-gemma-4-31b-it` | The Q3 three-emotion transition stories, Gemma-written (primary substrate text). |
+| `abotresol/emotion-stories-deepseek-v4-pro` | Fixed-prompt DeepSeek-written stories for the twelve emotions (the strong-writer condition). |
+| `abotresol/emotion-stories-deepseek-v4-pro-diverse` | Prompt-diversified DeepSeek corpus (the scale-and-diversity dose-response condition). |
+| `abotresol/emotion-combined-stories-gemma-4-31b-it` | The Q3 three-emotion transition stories, Gemma-written (the primary story set). |
 | `abotresol/emotion-combined-stories-deepseek-v4-pro` | Same 173-triple recipe, DeepSeek-written. |
 | `abotresol/emotion-combined-stories-deepseek-v4-pro-constant-control` | Constant-emotion control stories (scene changes, no emotion change). |
 
 ## Vector / activation sets (extraction outputs)
 
 Pre-fix sets are kept for the padding-bug before/after audit; the `-postfix`
-sets are the blessed instrument for all work from 2026-07-22 on.
+sets are the ones every result from 2026-07-22 on is built from.
 
 | dataset | contents | public? |
 |---|---|---|
-| `abotresol/emotion-vectors-gemma-4-31b` / `-it` | Corpus-lineage emotion means, pre-fix, base/instruct | yes |
-| `abotresol/emotion-vectors-gemma-4-31b-postfix` / `-it-postfix` | Post-fix re-extractions (the blessed sets) | yes |
-| `abotresol/emotion-selfstory-vectors-gemma-4-31b-it` (+ `-postfix`) | Self-generated-lineage vectors | yes |
-| `abotresol/emotion-dialogue-vectors-gemma-4-31b` / `-it` | Dialogue-lineage vectors | yes |
+| `abotresol/emotion-vectors-gemma-4-31b` / `-it` | Emotion means from the external corpus, pre-fix, base/instruct | yes |
+| `abotresol/emotion-vectors-gemma-4-31b-postfix` / `-it-postfix` | Post-fix re-extractions (the ones the published results use) | yes |
+| `abotresol/emotion-selfstory-vectors-gemma-4-31b-it` (+ `-postfix`) | Vectors from the model's own stories | yes |
+| `abotresol/emotion-dialogue-vectors-gemma-4-31b` / `-it` | Vectors from the dialogue corpora | yes |
 | `abotresol/neutral-vectors-gemma-4-31b-it` (+ `-postfix`) | Neutral-transcript activation vectors | yes |
-| `abotresol/emotion-deepseek-vectors-gemma-4-31b-it` | Fixed-DeepSeek battery contrasts (best detection probes; also the Q3 "deepseek" probe bank) | yes |
+| `abotresol/emotion-deepseek-vectors-gemma-4-31b-it` | Twelve-emotion contrasts from the fixed-prompt DeepSeek stories (the best detection probes, and the "deepseek" vector set in the Q3 work) | yes |
 | `abotresol/emotion-deepseek-diverse-vectors-gemma-4-31b-it` | Diverse-DeepSeek per-story vectors (dose-response subsampling needs no GPU) | yes |
 | `abotresol/emotion-vectors-gemma-4-31b-smoke` | Smoke-test artifact, ignore | yes |
 
-## Per-token trajectory substrates (the Q3 shards)
+## Per-token trajectories (the Q3 shards)
 
 Each holds `manifest.jsonl`, `probe_labels.json`, `run_config.json`, and
 `shards/<story_id>.npz` with per-token probe dots and norms.
 
 | dataset | reader model | stories |
 |---|---|---|
-| `abotresol/emotion-combined-trajectories-gemma-4-31b-it` | instruct | Gemma-written (v1 probe bank) |
-| `abotresol/emotion-combined-trajectories-gemma-4-31b-it-v2` | instruct | Gemma-written (post-fix corpus + selfgen + deepseek banks; primary) |
-| `abotresol/emotion-combined-trajectories-gemma-4-31b` | base | Gemma-written (corpus base-lineage bank) |
+| `abotresol/emotion-combined-trajectories-gemma-4-31b-it` | instruct | Gemma-written (first vector set) |
+| `abotresol/emotion-combined-trajectories-gemma-4-31b-it-v2` | instruct | Gemma-written (post-fix corpus, self-generated and DeepSeek vector sets; primary) |
+| `abotresol/emotion-combined-trajectories-gemma-4-31b` | base | Gemma-written (base-model vectors from the external corpus) |
 | `abotresol/emotion-combined-trajectories-deepseek-stories-gemma-4-31b-it` | instruct | DeepSeek-written |
 | `abotresol/emotion-combined-trajectories-constant-control-gemma-4-31b-it` | instruct | constant-emotion control |
 

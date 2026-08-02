@@ -92,13 +92,14 @@ uv sync --extra gpu
 Rebuild the write-up (reads `docs/data/`, writes `docs/index.html`):
 
 ```bash
-cd docs && python build.py
+cd docs && uv run python build.py
 ```
 
 `docs/` is also the GitHub Pages source (Settings → Pages → Deploy from a branch,
-`main`, folder `/docs`), so committing a rebuilt `index.html` publishes it. The
-page is self-contained: no build step, no server, and it opens from the
-filesystem.
+`main`, folder `/docs`), so committing a rebuilt `index.html` publishes it. A
+reader needs no build step and no server: the file opens straight from the
+filesystem. Its only external requests are for three Google Fonts resources,
+so offline it renders in fallback typefaces.
 
 One command runs the formatter, the linter, the tests, and the research-integrity
 validator, which checks TREE.md and RESEARCH_LOG.md against the files they cite:

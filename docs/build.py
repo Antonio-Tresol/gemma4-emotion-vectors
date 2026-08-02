@@ -1,4 +1,7 @@
-"""Build the CAMBRIA capstone presentation as one self-contained HTML file.
+"""Build the CAMBRIA capstone write-up as one HTML file: docs/index.html.
+
+Run it as `uv run python build.py` from this directory. It is stdlib-only, so
+any interpreter works, but a stock macOS has no bare `python`.
 
 Every number rendered in the deck is passed in from DATA below, and every entry
 in DATA was copied from a notebook's printed record or an evidence file in the
@@ -513,11 +516,21 @@ TEMPLATE = r"""<!DOCTYPE html>
 <header><div class="wrap">
   <div class="kicker">CAMBRIA capstone &middot; Hannah Kim &middot; Peyton Li &middot; Antonio Badilla-Olivas</div>
   <h1>How are emotions represented in<br>large language models?</h1>
-  <p class="lede narrow">Anthropic found that a language model keeps a separate internal direction for
-  each emotion, and that those directions arrange themselves the way psychologists arrange emotions.
-  We rebuilt that result on Gemma&nbsp;4&nbsp;31B (a 31-billion-parameter model), in two versions of
-  it. Then we asked a question the paper did not: can the model follow an emotion that
-  <em>changes</em> partway through a story? Three findings, below.</p>
+  <p class="lede narrow">Anthropic found that a language model keeps a separate internal direction
+  for each emotion. Those directions arrange themselves the way psychologists arrange emotions
+  (Sofroniew et al.,
+  <a href="https://transformer-circuits.pub/2026/emotions/index.html">Emotion Concepts and their
+  Function in a Large Language Model</a>, 2026). We rebuilt that result on
+  <a href="https://huggingface.co/google/gemma-4-31b">Gemma&nbsp;4&nbsp;31B</a> (a
+  31-billion-parameter model), in two versions of it. Then we asked a question the paper did not: can
+  the model follow an emotion that <em>changes</em> partway through a story? Three findings, below.</p>
+  <p class="lede narrow" style="font-size:16px">Everything here is checkable:
+  <a href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors">the code and the research
+  record</a> are on GitHub, and
+  <a href="https://huggingface.co/abotresol">every story corpus, activation and scored output</a>
+  is on Hugging Face, public and needing no account. Found a mistake?
+  <a href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/issues">Open an issue</a>.
+  Corrections on claims that outrun their evidence are the ones we want most.</p>
   <div class="grid3" style="margin-top:34px;gap:16px">
     <div class="card"><h3>The base model reproduces the result</h3>
     <p style="font-size:15px">Sort 171 emotion vectors by what separates them most and the top principal component
@@ -696,6 +709,12 @@ TEMPLATE = r"""<!DOCTYPE html>
       ratings at 0.83, and its second matches energy at 0.55. Those are the two axes of the circumplex,
       in order, found by a method that never saw a human rating. That is the published result,
       reproduced.</p>
+      <p><b>One honest complication.</b> That biggest axis also matches a third human rating,
+      dominance (how much control the emotion implies), at <b>0.66</b>, higher than the second
+      axis matches energy. Valence and dominance are themselves correlated in the human
+      ratings, so this figure alone cannot say whether the axis is valence, or valence and
+      dominance together. We rule out story length as a confound below. We have not separated
+      these two, and the result we are reproducing carries the same ambiguity.</p>
       <p><b>What a failure looks like:</b> the instruction-tuned model. Its biggest axis matches valence
       at 0.11, near zero. The 171 emotions differ from one another in many ways at once. This
       single axis accounts for 28% of all that variation, against 15% for the base model's
@@ -892,8 +911,8 @@ TEMPLATE = r"""<!DOCTYPE html>
   and the base model is absent here rather than losing.</p>
   <div class="card" style="margin-top:22px">
     <div class="controls">
-      <button class="seg on" data-bank="selfgen">vectors from Gemma's own stories</button>
-      <button class="seg" data-bank="deepseek">vectors from DeepSeek's stories</button>
+      <button class="seg on" data-vectors="selfgen">vectors from Gemma's own stories</button>
+      <button class="seg" data-vectors="deepseek">vectors from DeepSeek's stories</button>
       <span style="margin-left:auto;display:flex;align-items:center;gap:8px">
         <span class="muted" style="font-size:13px">layer</span><span id="emoLayerBtns"></span>
       </span>
@@ -943,9 +962,11 @@ TEMPLATE = r"""<!DOCTYPE html>
     </div>
     <div class="card">
       <h3>Two different skills, in two different places</h3>
-      <p style="font-size:15px">Naming peaks early and falls: averaged over all twelve emotions, layer 6
-      gets the current emotion right <b>58%</b> of the time, and by layer 33 that is down to
-      <b>27%</b>. This curve is the average of section 6's twelve bars, on
+      <p style="font-size:15px">Naming does not rise or fall with depth. It zigzags. Averaged over all twelve
+      emotions, layer 6 gets the current emotion right <b>58%</b> and layer 15 drops to
+      <b>33%</b>. Layer 24 climbs back to <b>57%</b>, layer 33 falls to <b>27%</b>, and layer
+      42 recovers to <b>41%</b>. Quoting the 58% peak and the 27% trough as a decline would
+      be picking two points off a sawtooth, which is the mistake this section warns about. This curve is the average of section 6's twelve bars, on
       the Gemma-written vectors. At layer 33 the best single emotion reaches 49%; the worst
       sits at 6%, below chance. The other measure runs the other way,
       climbing from <b>+0.03</b> at layer 6 to <b>+0.26</b> at layer 51. It does not climb smoothly:
@@ -1162,9 +1183,23 @@ TEMPLATE = r"""<!DOCTYPE html>
 </div></section>
 
 <footer><div class="wrap">
-  <div>CAMBRIA capstone &middot; Gemma 4 31B, base and instruction-tuned &middot; every figure regenerated
-  from the notebooks in the project repository.</div>
-  <div class="src">A short sprint, not a peer-reviewed paper: no external review, and the null results are included and labelled as such. Every number here is transcribed from the printed output of notebooks 02, 05, 08 and 11.</div>
+  <div><b>Everything behind this page.</b> Each figure names the notebook it came from; these are
+  those notebooks, and the data they read.</div>
+  <ul style="margin:10px 0 0;padding-left:20px;line-height:1.9">
+    <li><a href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors">Code and research record</a>
+    : the notebooks that made every figure, the scoring code, and <code>TREE.md</code>, which
+    records what we predicted before the data existed and what each claim survived.</li>
+    <li><a href="https://huggingface.co/abotresol">Data</a>: the story corpora, the emotion
+    vectors, the per-token activations and every scored output. Public, no account, no token.</li>
+    <li><a href="https://transformer-circuits.pub/2026/emotions/index.html">The paper we replicated</a>
+    : Sofroniew et al., <i>Emotion Concepts and their Function in a Large Language Model</i>,
+    Anthropic, 2026.</li>
+    <li><a href="http://saifmohammad.com/WebPages/nrc-vad.html">The NRC VAD lexicon</a>: the
+    published human ratings we correlate against. Third-party, its own licence.</li>
+    <li><a href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/issues">Report an error</a>
+    : particularly on claims that outrun their evidence, citations, or methodology.</li>
+  </ul>
+  <div class="src" style="margin-top:14px">CAMBRIA capstone &middot; Hannah Kim, Peyton Li, Antonio Badilla-Olivas &middot; Gemma 4 31B, base and instruction-tuned. A short sprint, not a peer-reviewed paper: no external review, and the null results are included and labelled as such. Every number here is transcribed from the printed output of notebooks 02, 05, 07 and 11. Code and text are MIT-licensed; the model weights, the lexicon and the external corpora carry their own licences.</div>
 </div></footer>
 
 <script>
@@ -1622,7 +1657,7 @@ function drawEmo(){
       transform:`rotate(-40 ${x+bw/2} ${T+ih+16})`}); t.textContent=r.e; svg.appendChild(t);
   });
   host.appendChild(svg);
-  // the standing note restates the verdict for whichever layer and bank is showing
+  // the standing note restates the verdict for whichever layer and vector set is showing
   const best=rows[0], nWin=rows.filter(r=>r.rate>=chance).length, nNever=rows.filter(r=>r.rate===0).length;
   document.getElementById("emoNote").innerHTML =
     `<b>layer ${emoLayer}, vectors from ${emoBank==="selfgen"?"Gemma's own":"DeepSeek's"} stories:</b> `+
@@ -1641,9 +1676,9 @@ function drawEmo(){
     host.appendChild(b);
   });
 })();
-document.querySelectorAll("[data-bank]").forEach(b=>b.onclick=()=>{
-  document.querySelectorAll("[data-bank]").forEach(x=>x.classList.remove("on"));
-  b.classList.add("on"); emoBank=b.dataset.bank; drawEmo();
+document.querySelectorAll("[data-vectors]").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("[data-vectors]").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on"); emoBank=b.dataset.vectors; drawEmo();
 });
 
 /* ---------- naming vs anticipating, by layer ---------- */
@@ -2083,8 +2118,8 @@ def centered_cos(shard, story_set_mean):
     # story_set_mean is token-weighted over the whole corpus, not per story
     return (shard["dots"] - story_set_mean) / shard["norms_centered"][:, :, None]
 
-def gate_rank(cos, phase, tagged_probe, bank):
-    phase_mean = cos[phase.start:phase.end, :, bank].mean(axis=0)
+def rank_of_tagged_emotion(cos, phase, tagged_probe, emotion_set):
+    phase_mean = cos[phase.start:phase.end, :, emotion_set].mean(axis=0)
     beaten_by = (phase_mean > phase_mean[tagged_probe]).sum()
     return beaten_by + 1          # 1 = the tagged probe wins outright
 
@@ -2102,7 +2137,7 @@ def anticipation_lead(cos, boundary, incoming_probe):
   ["|<i>&phi;</i>|","how many tokens that phase has (fewer than 4 and we skip it)"],
   ["<i>e</i>(<i>&phi;</i>)","the emotion phase <i>&phi;</i> was written to express"],
   ["<span class='bar'><i>c</i></span><sub><i>&phi;</i>,<i>p</i></sub>","probe <i>p</i>'s average cosine over that phase's tokens"],
-  ["rank<sub><i>&phi;</i></sub>","where the tagged emotion's probe places among the bank; 1 is best"],
+  ["rank<sub><i>&phi;</i></sub>","where the tagged emotion places among the twelve; 1 is best"],
   ["<i>b</i>","the token index where the story is written to turn"],
   ["<i>W</i>","the window length, fixed at 16 tokens before scoring"],
   ["<i>q</i>","the probe for the <b>incoming</b> emotion, the one after the turn"],
@@ -2143,7 +2178,7 @@ codeTabs("m4","score_q3_gate_r1.py (N1, N2)",
   only when <b>both</b> conditions hold.</span>`,
 `B = 10_000                    # shuffles, count fixed in advance
 
-def wrong_emotion_null(cos, phases, bank, rng):
+def wrong_emotion_null(cos, phases, emotion_set, rng):
     # rank EVERY probe once, then index the shuffled picks: 10k shuffles
     # without 10k re-sorts
     order = argsort(-phase_means, axis=1)
@@ -2151,7 +2186,7 @@ def wrong_emotion_null(cos, phases, bank, rng):
 
     null_medians = []
     for _ in range(B):
-        wrong = rng.choice([p for p in bank if p != tagged], size=len(phases))
+        wrong = rng.choice([p for p in emotion_set if p != tagged], size=len(phases))
         null_medians.append(median(take_along(rank_of_probe, wrong)))
     return mean(null_medians <= observed_median)      # the p-value
 
@@ -2518,7 +2553,11 @@ BANNED_WORDS = {
     "batteries": "say \u201cboth sets of scenarios\u201d",
     "arm": "say \u201cmodel\u201d, \u201cversion\u201d or \u201ccondition\u201d",
     "arms": "say \u201cthe two models we compare\u201d",
+    # "probe bank" alone was the hole: the page carried the bare noun ten times,
+    # in pseudo-code and a glossary, while this check reported it clean.
     "probe bank": "say \u201cthe twelve emotion vectors\u201d",
+    "bank": "say \u201cthe twelve emotion vectors\u201d, or name the source",
+    "banks": "say \u201cthe vector sets\u201d",
     "readout": "say what the code actually does",
     "unablated": "say \u201cas measured\u201d",
     "attractor": "say \u201cthe wrong answers pile onto X\u201d",

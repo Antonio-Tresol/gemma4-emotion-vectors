@@ -138,13 +138,46 @@ def check_status(node: Node, report: Report) -> None:
         )
 
 
+def is_published_artifact(relpath: str) -> bool:
+    """True when an absent path is one the project publishes rather than commits.
+
+    The bulky evidence (activation arrays, per-story shards, scored .npz dumps)
+    is deliberately gitignored and lives on Hugging Face, resolved at read time
+    by ``emotion_vectors.artifacts.fetch``. So a path can be both perfectly
+    valid and absent from every clone, which is the normal case for a
+    replicator: this gate used to report 11 violations on any fresh checkout
+    while passing only on a machine that happened to hold the arrays.
+
+    Matching is done against .gitignore by hand rather than by importing the
+    package or calling git, because this script is deliberately standalone: a
+    project that never installs the package must still get every integrity
+    guarantee. Being gitignored under results/ is the project's own statement
+    that a file is published, so that is what we check.
+    """
+    if not relpath.startswith("results/"):
+        return False
+    ignore_file = ROOT / ".gitignore"
+    if not ignore_file.exists():
+        return False
+    for line in ignore_file.read_text(encoding="utf-8").splitlines():
+        pattern = line.strip()
+        if not pattern or pattern.startswith("#") or not pattern.startswith("results"):
+            continue
+        # git's `**` spans directories; fnmatch's `*` does not, so translate.
+        regex = re.escape(pattern).replace(r"\*\*/", "(?:.*/)?").replace(r"\*", "[^/]*")
+        if re.fullmatch(regex.rstrip("/") + "(?:/.*)?", relpath):
+            return True
+    return False
+
+
 def check_evidence(node: Node, report: Report) -> None:
-    """Evidence must be present where required, exist on disk, and — for a
+    """Evidence must be present where required, exist on disk (or be a
+    published artifact this clone simply has not downloaded), and — for a
     graduated claim — include a falsification/validation scorecard."""
     if node.needs_evidence and not node.evidence:
         report.add_tree(node.lineno, f"{node.node_id} [{node.status}] requires evidence: <path>")
     for ev in node.evidence:
-        if not (ROOT / ev).exists():
+        if not (ROOT / ev).exists() and not is_published_artifact(ev):
             report.add_tree(node.lineno, f"{node.node_id} evidence path does not exist: {ev}")
     if node.needs_scorecard and not any(SCORECARD_RE.search(Path(ev).name) for ev in node.evidence):
         report.add_tree(

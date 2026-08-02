@@ -13,13 +13,19 @@ obtain it from saifmohammad.com and place it under data/lexicons/.
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
+import numpy as np
 from dotenv import load_dotenv
-from huggingface_hub import hf_hub_download, snapshot_download
+from huggingface_hub import hf_hub_download, list_repo_files, snapshot_download
+from huggingface_hub.errors import EntryNotFoundError
 
-# Notebook kernels don't inherit a sourced .env; the datasets are private
-# until sprint end, so resolve the project .env (repo root) for HF_TOKEN.
+# Every dataset this resolves is PUBLIC and needs no credential. The .env is
+# loaded only so a maintainer pushing new artifacts has HF_TOKEN available;
+# nothing a reader fetches requires it. Keep it that way: a token silently
+# present is how the anonymous path stops being exercised, and how a private
+# repo goes unnoticed.
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 HF_USER = "abotresol"
@@ -96,12 +102,59 @@ def fetch(relpath: str) -> Path:
             local_dir=str(base),
         )
     else:
-        downloaded = hf_hub_download(repo, sub or relpath, repo_type="dataset")
+        try:
+            downloaded = hf_hub_download(repo, sub or relpath, repo_type="dataset")
+        except EntryNotFoundError:
+            # The vector repos publish one .npy per (emotion, layer) but not
+            # always the stacked bundle the analysis code asks for. Every number
+            # in that bundle is public either way, so rebuild it rather than
+            # dead-end a reader on a 404. See _rebuild_emotion_means.
+            if Path(relpath).name != "emotion_means.npz":
+                raise
+            _rebuild_emotion_means(repo=repo, out_path=local)
+            return local
         local.parent.mkdir(parents=True, exist_ok=True)
         local.write_bytes(Path(downloaded).read_bytes())
     if not local.exists():
-        raise FileNotFoundError(
-            f"{relpath}: not local and not found in {repo} (private until sprint end — "
-            "authenticate with HF_TOKEN, or check the dataset card)"
-        )
+        raise FileNotFoundError(f"{relpath}: not in local results/ and not found in {repo}")
     return local
+
+
+def _rebuild_emotion_means(*, repo: str, out_path: Path) -> None:
+    """Assemble a stacked emotion_means.npz from a repo's per-emotion shards.
+
+    The vector datasets publish `<emotion>/layer_<N>_resid.npy`, one mean
+    residual vector per (emotion, layer). The stacked `emotion_means.npz` that
+    the analysis code loads is a repackaging of exactly those numbers, and some
+    repos carry the shards without it. Rebuilding is therefore lossless, and it
+    was verified bit-identical against a locally held bundle before this path
+    was written.
+
+    Emotion order is the sorted directory names and the layer order comes from
+    the repo's own run_config.json, which is how the original bundle was built.
+    """
+    files = list_repo_files(repo, repo_type="dataset")
+    emotions = sorted({name.split("/")[0] for name in files if "/layer_" in name})
+    if not emotions:
+        raise FileNotFoundError(f"{repo}: no per-emotion shards to rebuild emotion_means.npz from")
+    config = json.loads(
+        Path(hf_hub_download(repo, "run_config.json", repo_type="dataset")).read_text()
+    )
+    layers = [int(layer) for layer in config["layers"]]
+
+    print(f"{repo}: emotion_means.npz is not published; rebuilding it from the per-emotion shards")
+    print(f"  {len(emotions)} emotions x {len(layers)} layers, downloaded once and cached locally")
+    snapshot_root = Path(
+        snapshot_download(repo, repo_type="dataset", allow_patterns=["*/layer_*_resid.npy"])
+    )
+    stacked = np.stack(
+        [
+            np.stack(
+                [np.load(snapshot_root / emotion / f"layer_{layer}_resid.npy") for layer in layers]
+            )
+            for emotion in emotions
+        ]
+    )
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    np.savez(out_path, emotions=np.array(emotions), layers=np.array(layers), means=stacked)
+    print(f"  wrote {out_path} {stacked.shape}")
