@@ -29,6 +29,7 @@ import json
 import os
 import sys
 import tarfile
+import time
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -39,6 +40,37 @@ BUILD_ROOT = Path("results/trajectory_webdataset")
 # ~1 GB per tar: big enough that the file count collapses, small enough that a
 # failed download does not cost the whole set.
 SHARDS_PER_TAR = 1500
+
+
+def _download_with_backoff(repo_id: str, *, attempts: int = 8) -> str:
+    """Pull the shards, waiting out Hugging Face's rate limiter.
+
+    `snapshot_download` has no retry of its own, so a single HTTP 429 anywhere
+    in a 5,888-file pull aborts the lot. The limiter applies to bulk fetching
+    whether or not a token is present: an authenticated run failed here exactly
+    as the anonymous one did, and the run that appeared to succeed had simply
+    been served from cache. So the fix is patience and fewer workers, not
+    credentials.
+
+    Already-downloaded files are skipped on each retry, so progress accumulates
+    across attempts rather than restarting.
+    """
+    delay = 30
+    for attempt in range(1, attempts + 1):
+        try:
+            return snapshot_download(
+                repo_id,
+                repo_type="dataset",
+                allow_patterns=["shards/*.npz"],
+                max_workers=2,
+            )
+        except Exception as exc:  # noqa: BLE001 — any transport failure is retryable here
+            if attempt == attempts:
+                raise
+            print(f"    attempt {attempt} stopped ({type(exc).__name__}); waiting {delay}s")
+            time.sleep(delay)
+            delay = min(delay * 2, 600)
+    raise RuntimeError("unreachable")
 
 
 def build(repo_name: str, *, limit: int | None) -> tuple[Path, dict[str, object]]:
@@ -54,19 +86,7 @@ def build(repo_name: str, *, limit: int | None) -> tuple[Path, dict[str, object]
         story_ids = story_ids[:limit]
 
     print(f"  fetching {len(story_ids):,} shards (one snapshot, not one request each)")
-    snapshot_root = Path(
-        snapshot_download(
-            repo_id,
-            repo_type="dataset",
-            allow_patterns=["shards/*.npz"],
-            max_workers=8,
-            # Authenticated. These are our own datasets, and reading them
-            # anonymously bought nothing except HTTP 429: two 5,888-shard pulls
-            # died on the rate limit before this was changed. Anonymous access
-            # is a property worth PROVING (see the audit note) but not a way to
-            # move 15 GB of your own data.
-        )
-    )
+    snapshot_root = Path(_download_with_backoff(repo_id))
 
     present = [sid for sid in story_ids if (snapshot_root / "shards" / f"{sid}.npz").exists()]
     missing = len(story_ids) - len(present)

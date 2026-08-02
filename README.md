@@ -1,160 +1,161 @@
 # Emotion vectors in Gemma 4 31B
 
-**[Read the interactive write-up →](https://antonio-tresol.github.io/gemma4-emotion-vectors/)**
+**Replicating Anthropic's emotion-vectors result on an open model, and asking what happens when the emotion changes partway through a story**
 
-Anthropic reported that a language model keeps a separate internal direction for
-each emotion. Those directions arrange themselves the way psychologists arrange
-emotions, on a *circumplex*. Its two axes are valence (how pleasant the emotion
-is) and arousal (how worked-up it is). We rebuilt that result on an open-weights
-model, in two versions of it. We then asked something the paper did not: can the
-model follow an emotion that *changes* partway through a story?
+<p align="center">
+  <img src="img/circumplex.png" width="900" alt="Two scatter plots of 171 emotion vectors projected onto their principal components, one panel per model. The base model's first two components separate the emotions into a smooth red-to-green valence gradient. The instruction-tuned model needs its third and ninth components to show the same structure, more weakly.">
+</p>
 
-A 2–3 day research sprint. Not a paper, not peer reviewed. We report null and
-failed results as such, and the write-up grades each finding by how far it was
-tested.
+<p align="center"><em>Each dot is one emotion, placed by the principal components of 171 emotion vectors and coloured by its published human valence rating. Neither the axes nor the positions ever see a human rating. (Right) In the base model the largest component is valence: the colours sort themselves left to right at an absolute correlation of 0.83, and the second component is arousal. That is the circumplex, recovered unprompted. (Left) After instruction tuning the same structure survives but is demoted, appearing at components 3 and 9 and correlating at 0.72. A different, larger component takes first place, and we could not work out what it encodes.</em></p>
 
-## What we found
+## Overview
 
-**The base model reproduces the published result.** An emotion vector averages the
-model's internal state over stories written to evoke one emotion. Sort 171 of
-them by what separates them most, a calculation that never sees a human rating.
-Scores on the biggest axis correlate with published human valence ratings at an
-absolute Pearson correlation of 0.83. The circumplex falls out unprompted.
-*(Tested and survived a falsification pass: a deliberate attempt to destroy the
-result. We shuffled the emotion labels, put bootstrap error bars on the
-correlation, and dropped the five most extreme emotions on valence.)*
+An **emotion vector** is the average internal state a language model enters while reading stories written to evoke one emotion. Anthropic reported that a model keeps a separate direction for each emotion, and that those directions arrange themselves the way psychologists arrange emotions, on a circumplex whose axes are valence (how pleasant) and arousal (how worked-up). They released no code.
 
-**The instruction-tuned model buries it.** Take the same model after instruction
-tuning and valence drops from first place to third. A larger axis takes over. It
-matches nothing in the base model's top five: its largest absolute correlation
-against any of those five axes is 0.14. It is not valence, arousal, dominance, or
-story length, and we checked all four. We can measure it and cannot say what it
-encodes. *(Measured; its falsification pass is still owed.)*
+This repository rebuilds that result on [Gemma 4 31B](https://huggingface.co/google/gemma-4-31b), in both its base and instruction-tuned form, and then asks two questions the paper did not. Three findings:
 
-**Who writes the stories decides whether any of this works.** We build each emotion
-vector by averaging the model's internal state over stories written to evoke that
-emotion, and nobody reports who writes them. A working layer is one where the
-vectors clear a detection bar we fixed before scoring. Holding everything else
-fixed, story source moves the number of working layers from 1 to 9 out of 20.
-Asked for 3,072 emotional stories, the model named its character Elias in 98.2%
-of them.
+- **The base model reproduces the published result.** Sort 171 emotion vectors by what separates them most and the largest axis is valence, correlating with human ratings at 0.83. Nothing in that calculation sees a human rating. The claim went through a falsification pass and survived.
+- **Instruction tuning demotes it.** Valence falls from first place to third, still present at 0.72. A new largest axis takes over, carrying 28% of the variance against 15% for the base model's top axis, and correlating at most 0.14 with any of the base model's top five. It is not valence, arousal, dominance or story length, and we checked all four.
+- **Who writes the stories decides whether any of this works.** Nobody reports which model generated the corpus a set of emotion vectors is built from. Holding everything else fixed, story source moves the number of usable layers from 1 to 9 out of 20.
 
-**Emotion tracking through a story is real, uneven, and small.** In stories written
-to move through three emotions, the model's internal state hands over from one to
-the next, often *before* the written turn. But nothing reaches 50%, the share of
-story phases where the correct emotion's own vector ranks first out of twelve.
-Chance is 1 in 12, about 8%. The ranking changes with depth, and a large share of
-the unevenness belongs to the vectors rather than the model. *(Exploratory:
-registered as hypothesis-generating work. The detection bar we pre-registered was
-written for the 171-emotion vector set, which failed it at every layer. What
-passes is the 12-emotion sets, and we substituted those after seeing the results.
-The write-up says so on the page.)*
+Read the [full write-up here](https://antonio-tresol.github.io/gemma4-emotion-vectors/). Every figure in it states what a failure would have looked like beside what was observed.
 
-## How the project is organised
+Replicating: Sofroniew et al., [*Emotion Concepts and their Function in a Large Language Model*](https://transformer-circuits.pub/2026/emotions/index.html), Anthropic, 2026.
 
-| Path | What it holds |
-|---|---|
-| `TREE.md` | the research tree: questions → hypotheses → experiments → claims, with status and evidence links. The current state of belief. |
-| `RESEARCH_LOG.md` | the daily log, newest first. The append-only history. |
-| `DATA.md` | the data index: every Hugging Face dataset and how `fetch()` routes to it. |
-| `src/emotion_vectors/` | the installed package: scoring conventions, data resolution, analysis and figure code. |
-| `scripts/` | runnable pipelines and scorers, one file per job. |
-| `results/` | the evidence tree. Small JSON is tracked; bulky arrays live on Hugging Face and `fetch()` bridges both. |
-| `notebooks/` | the report, numbered in reading order, with an index in `notebooks/README.md`. |
-| `docs/` | the interactive write-up (`index.html`) and the `build.py` that generates it. |
-| `check.sh` | the repo gate: format, lint, tests, research-integrity validator. |
+Every corpus, vector set and per-token activation is published on [Hugging Face](https://huggingface.co/abotresol), public and needing no account. The story corpora are browsable in one place: [`abotresol/emotion-story-corpora`](https://huggingface.co/datasets/abotresol/emotion-story-corpora).
 
-Two conventions worth knowing before editing anything:
+This was a three-day sprint, not a paper. It has had no external review, and the null and failed results are included and labelled as such.
 
-- **`docs/index.html` is generated.** Edit `docs/build.py`; the HTML is a build
-  artifact. `build.py` is a transcription layer, not a computation. A number
-  changes in the notebook first and here second.
-- **Notebooks are hand-maintained**, then re-executed in place. There is no
-  generator script that emits a notebook, deliberately. Four such builders
-  existed, and we deleted them once the notebooks carried hand-written narrative,
-  because every one was silently stale.
-
-## Reproducing
-
-Requires Python 3.14 and [uv](https://docs.astral.sh/uv/).
+## Installation
 
 ```bash
+git clone https://github.com/Antonio-Tresol/gemma4-emotion-vectors.git
+cd gemma4-emotion-vectors
+
 uv sync
 ```
 
-The analysis and figures run from committed evidence files; the heavy extraction
-does not, and needs a GPU box:
+That is enough for the analysis and every figure. Only generating stories and extracting activations needs a GPU:
 
 ```bash
 uv sync --extra gpu
 ```
 
-Rebuild the write-up (reads `docs/data/`, writes `docs/index.html`):
+## How an emotion vector is built
 
-```bash
-cd docs && uv run python build.py
+For one emotion, take the stories written to evoke it, run each through the model, and average the residual stream over the story's tokens. Then subtract the average over all emotions:
+
+```
+vector(e) = mean(activations for emotion e) - mean(activations over every emotion)
 ```
 
-`docs/` is also the GitHub Pages source (Settings → Pages → Deploy from a branch,
-`main`, folder `/docs`), so committing a rebuilt `index.html` publishes it. A
-reader needs no build step and no server: the file opens straight from the
-filesystem. Its only external requests are for three Google Fonts resources,
-so offline it renders in fallback typefaces.
+That subtraction is what makes the vector specific. Without it every emotion vector points mostly at "this is emotional writing", and they all look alike.
 
-One command runs the formatter, the linter, the tests, and the research-integrity
-validator, which checks TREE.md and RESEARCH_LOG.md against the files they cite:
+Two details decide whether the result means anything:
 
-```bash
-./check.sh
+- **The first 50 tokens of each story are skipped.** They carry the prompt's framing rather than the story's emotion.
+- **Scoring uses a centered cosine, not a raw dot product.** The token-weighted mean over the whole story set is subtracted first. Skip that and a vector that is simply large everywhere wins by default.
+
+## Quick start
+
+### Load a set of emotion vectors
+
+```python
+import numpy as np
+from emotion_vectors.artifacts import fetch
+
+bundle = np.load(fetch("emotion_vectors_it_postfix/emotion_means.npz"), allow_pickle=True)
+print(bundle["means"].shape)  # (171, 20, 5376) = emotions x layers x model width
+print(list(bundle["layers"]))  # [0, 3, 6, ... 57], every third layer
+print(bundle["emotions"][:4])  # ['afraid' 'alarmed' 'alert' 'amazed']
 ```
 
-Datasets and the bulky activation arrays are published on Hugging Face and
-resolved automatically by `emotion_vectors.artifacts.fetch`, which tries local
-`results/` first. `DATA.md` is the human-readable index; `ROUTES` in
-`src/emotion_vectors/artifacts.py` is its machine-readable twin.
+`fetch()` looks in the local `results/` tree first and downloads from Hugging Face otherwise, so a notebook runs unchanged on a fresh clone. No account or token is needed.
 
-## AI research automation
+### Score a story token by token
 
-We built this project with heavy use of Claude Code, and we checked in the
-working agreements that made that safe rather than leaving them implicit.
-`AGENTS.md` is the single source of truth for any coding agent, and `CLAUDE.md`
-imports it. `.claude/skills/` holds the workflow skills the sprint used:
-literature search, eval design, falsification, claim validation, and research
-logging.
+```python
+import numpy as np
+from emotion_vectors.artifacts import fetch
+from emotion_vectors.q3_conventions import centered_cos, manifest_rows, story_set_mean
 
-The discipline that mattered most is mechanical, not cultural. We write
-predictions and their pass marks into `TREE.md` *before* the data exists, and a
-claim only graduates after a falsification pass. `scripts/validate_research.py`
-then checks that every claim resolves to a file that exists. We record failed
-results as failed.
+trajectories = fetch("combined_trajectories_deepseek_constant")
+rows, orphans = manifest_rows(trajectories)
+mean_dots = story_set_mean(trajectories, rows)  # the story-set mean, per layer
+
+shard = np.load(trajectories / "shards" / f"{rows[0]['story_id']}.npz")
+scores = centered_cos(shard, mean_dots)  # (tokens, layers, emotions)
+```
+
+### Look at what happens around a written turn
+
+```python
+from emotion_vectors.trajectories import transition_windows
+
+layer = 3  # index into bundle["layers"]
+before, after = transition_windows(
+    scores[:, layer, :3],  # this story's three emotions
+    rows[0]["phase_token_starts"],
+    window=16,  # tokens either side of the turn
+)
+```
+
+## Notebooks
+
+The report, numbered in reading order, with an index in [`notebooks/README.md`](notebooks/README.md). Cells import, call and narrate; the analysis and figure code lives in `src/emotion_vectors/` so it can be tested without a kernel.
+
+- `02_circumplex_geometry` recovers the circumplex and correlates it against human ratings
+- `03_detection_probe_campaign` asks whether the vectors identify the emotion of a held-out scenario
+- `05`, `06` and `09` follow single stories token by token, one notebook per model
+- `07_generator_lineages` is the story-source comparison
+- `11_tracking_taxonomy` is the full emotion-tracking analysis
+
+Every figure carries the scale it should be judged on: a chance line, a noise floor, and the pass mark fixed before scoring.
+
+## Reproducing from scratch
+
+Generating stories and extracting activations needs a GPU. Everything after that runs on a laptop from the published data.
+
+1. **Generate** the story corpora (`scripts/generate_openrouter_stories.py`, `scripts/combined_story_gen/`)
+2. **Extract** per-story activations (`scripts/extract_emotion_vectors.py`, GPU)
+3. **Score** the detection sweep and the emotion-tracking reads (`scripts/score_*.py`)
+4. **Falsify** each claim against permutation nulls and random-direction controls (`scripts/falsify_*.py`)
+5. **Validate** that every claim still resolves to a file that exists (`scripts/validate_research.py`)
+
+Each script carries its own runnable command in its docstring.
+
+## Data
+
+| dataset | what it holds |
+|---|---|
+| [`emotion-story-corpora`](https://huggingface.co/datasets/abotresol/emotion-story-corpora) | every story corpus, two browsable subsets, filterable by `source` |
+| [`emotion-vectors-gemma-4-31b-postfix`](https://huggingface.co/datasets/abotresol/emotion-vectors-gemma-4-31b-postfix) | base-model emotion vectors, 171 emotions x 20 layers |
+| [`emotion-vectors-gemma-4-31b-it-postfix`](https://huggingface.co/datasets/abotresol/emotion-vectors-gemma-4-31b-it-postfix) | the same for the instruction-tuned model |
+| [`emotion-combined-trajectories-gemma-4-31b-it-v2`](https://huggingface.co/datasets/abotresol/emotion-combined-trajectories-gemma-4-31b-it-v2) | per-token activations over three-emotion stories |
+| [`emotion-vectors-experiment-artifacts`](https://huggingface.co/datasets/abotresol/emotion-vectors-experiment-artifacts) | every scored output and falsification scorecard the notebooks cite |
+
+[`DATA.md`](DATA.md) is the full index. The `-postfix` sets supersede their unsuffixed predecessors, which were extracted before a padding bug was found; each carries a `LINEAGE.md` recording what changed and by how much.
+
+## How the claims are checked
+
+The point of this repository is not the findings. It is that a reader can tell which of them to believe.
+
+- **[`TREE.md`](TREE.md)** holds every question, hypothesis, experiment and claim, each with a status and a link to the file its numbers come from. Predictions and their pass marks were written there *before* the data existed.
+- **[`RESEARCH_LOG.md`](RESEARCH_LOG.md)** is the append-only daily record, pivots included.
+- **`./check.sh`** runs the formatter, the linter, the tests and a research-integrity gate that checks every claim in `TREE.md` against the files it cites.
+
+A claim only graduates after a falsification pass: permutation nulls, bootstrap intervals, random-direction controls. Claims that failed are marked `failed` and stay in the tree.
+
+Two things this caught that would otherwise have been published as findings. A left-padding default meant 4,032 A/B logits were read mid-prompt, turning two real effects into false nulls, and correcting it reversed both. The near miss is instructive: the emotion vectors before and after that fix agree to a cosine of 0.9999, while the contrast directions built from them fall to 0.62 on the instruction-tuned model. Separately, the detection bar registered in advance was written for the 171-emotion vector set, which failed it at every layer. What passes is the twelve-emotion sets, a substitution made after seeing the results, and the write-up says so where the result appears.
 
 ## Citation
 
-`CITATION.cff` carries the machine-readable citation, including a reference to
-the work being replicated.
+`CITATION.cff` carries the machine-readable citation, including a reference to the work being replicated.
 
 ## Licence
 
-MIT, for the code and the write-up in this repository. See `LICENSE`.
-
-This does not extend to third parties' work. We do not redistribute the papers
-this project reads. The model weights, the NRC VAD lexicon, and any external
-corpora carry their own licences. Whoever uses them must follow those licences.
-
-## Disclaimer
-
-A short sprint by a small team, written up honestly rather than confidently. No
-external review. Effect sizes on the story-tracking results are above chance and
-below anywhere you would want to be before relying on them. We cannot yet
-separate "a weak measurement of a real thing" from "an accurate measurement of a
-weak thing". One caveat we take seriously and repeat on the page: we measured the
-model *reading* emotions in a story, not having them. Those are different claims.
-
-We used Claude Code throughout, including in writing this README. Numbers are
-traced to evidence files, but treat the prose with the scepticism you would apply
-to any unreviewed work.
+MIT, for the code and the write-up here. The model weights, the [NRC VAD lexicon](http://saifmohammad.com/WebPages/nrc-vad.html) and the external corpora carry their own licences.
 
 ## Feedback
 
-Corrections are welcome, particularly on claims that outrun their evidence,
-citations, and methodology. Open an issue.
+Corrections are welcome, particularly on claims that outrun their evidence. [Open an issue](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/issues).
