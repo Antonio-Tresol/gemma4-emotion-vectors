@@ -18,6 +18,63 @@ one lives in the harness repo's own tree and log.
 
 Newest entry first. Every entry answers the same four questions.
 
+### 2026-08-01
+
+* What I did: Publication. No experiment ran and no number changed; the work was making the
+repository usable by someone who is not us, and the interesting part is what that exposed. Four
+cold-visitor audits were run as subagents with no context: two readers (repository, write-up) and
+two that executed things (anonymous data access, a fresh clone following the README literally).
+Their findings are in `notes/public_readiness_audit.md`, each re-checked against the files before
+being recorded. Four defects mattered. (1) `check.sh` could not fail on formatting or lint: line 20
+read `ruff format --check . && ruff check ...`, and `set -e` ignores a failure in any element of an
+AND-list except the last, so the formatter's verdict was discarded. `set -e` then aborted at the
+first failing stage, so pytest and the research-integrity gate never ran at all while the README
+advertised that this one command runs them. Both were green and had been all along. (2) Running the
+gate CORRUPTED the repository: `tests/test_hooks.py` and `tests/test_staleness.py` pass `cwd=tmp_path`
+but did not scrub the environment, and git exports `GIT_DIR`/`GIT_INDEX_FILE` to the processes it
+spawns, which beat `cwd`. Because the pre-commit hook runs `check.sh`, which runs the tests that test
+the hook, `git init` and `git config` in those fixtures retargeted the real repository: `core.bare`
+was set true and `user.name`/`user.email` overwritten, after which `git status` failed. Observed
+twice, repaired by hand both times. `lanorme_plugins/staleness.py` had the same bug, not destructive
+but answering STALE-001/002 about the wrong repository. (3) The post-fix vector bundles 404'd on
+Hugging Face: a stranger could download the padding-bug vectors and not the corrected ones, so
+notebooks 02 and 11 could not run from a clone, and every published geometry number rests on those
+files. (4) `scripts/validate_research.py` reported 11 violations on any fresh checkout, every one a
+gitignored path that lives on HF by design, so the gate AGENTS.md calls mandatory only ever passed on
+a machine holding the arrays. All four are fixed. The polish that surrounded them (README, dataset
+consolidation, jargon, tar repacking) is in the commit history and not itemised here.
+
+* What I expected vs what happened: I expected the audit to find prose problems and instead it found
+that the enforcement layer had not been enforcing. Bisecting `check.sh` on lanorme's exit code puts
+the first red commit at `cda28fc`, 2026-07-21. From that date the pre-commit hook blocked every
+commit, and 248 commits happened anyway, so all of them used `--no-verify`. The violations grew from
+4 to 112 unseen. lanorme 0.14.2, 0.15.0 and 0.16.0 report them identically, so this was never a
+version drift. The uncomfortable reading is that the discipline this project advertises held for two
+days and then lapsed for nine, and no mechanism noticed, because the mechanism was the thing that
+broke. Two dead ends worth recording: I diagnosed the Hugging Face rate limit as fixable by
+authenticating, which was wrong (the run that appeared to succeed was served from cache, and an
+authenticated run failed identically); and I reported "the repository is public now" on the strength
+of an anonymous `git clone` that was in fact authenticated by the macOS keychain.
+
+* What this changes about my thinking: a gate that cannot report its own state is worse than no gate,
+because it converts absence of evidence into evidence of absence. The `&&` and the `set -e` abort
+were each one line, and between them they hid four categories of violation, two green stages, and a
+destructive test suite for nine days. The related lesson is about verification asymmetry: `fetch()`
+loads `.env` at import, so every run we ever made was authenticated, and the anonymous path, which is
+the only path a replicator has, was never once exercised. That is why the 404 and the stale
+"authenticate with HF_TOKEN" error message survived. Where a property matters (a stranger can read
+this), it has to be tested in the stranger's configuration, not asserted from ours. Nothing here
+changes a claim in TREE.md; it changes how much weight the repository's own gates can carry as
+evidence that those claims were checked.
+
+* What I will do next: the write-up is live and the repository is public, so the remaining work is
+research, not publication. Q1.H1.C2 (instruction tuning demotes valence) is still `unvalidated` and
+owes a falsification pass. The base PC1 correlates 0.66 with dominance, higher than PC2 correlates
+with arousal, which is now stated on the page but not separated: valence and dominance are correlated
+in NRC VAD, and no experiment here distinguishes them. Section 6 of the write-up scores 630 of 8,938
+phases, because only phases tagged with one of the twelve scorable emotions count, and that selection
+should be stated where the number appears.
+
 ### 2026-07-26
 
 * What I did: A communication pass over `docs/index.html` (the interactive talk), prompted by the
