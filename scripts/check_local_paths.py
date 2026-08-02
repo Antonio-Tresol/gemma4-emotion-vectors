@@ -11,8 +11,14 @@ baked in. An absolute path there is meaningless on anyone else's machine, and
 publishes a home directory. The writers now call
 `emotion_vectors.artifacts.repo_relative`; this fixes what they wrote before.
 
-    uv run python scripts/normalise_evidence_paths.py            # report
-    uv run python scripts/normalise_evidence_paths.py --apply    # rewrite
+This is a check.sh stage, not a lanorme plugin. lanorme's config excludes
+`results/**`, `notebooks/**` and `**/*.ipynb` globally, deliberately, so that
+exploratory code is exempt from style rules. That exclusion also filters a
+plugin's findings, so a plugin structurally cannot see the files where this
+problem lives. Running it directly sidesteps that.
+
+    uv run python scripts/check_local_paths.py           # report, exit 1 if any
+    uv run python scripts/check_local_paths.py --fix     # repair what it can
 """
 
 from __future__ import annotations
@@ -26,7 +32,9 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 # any absolute path belonging to a person's checkout, this one or another
-LOCAL_PATH = re.compile(r"^(/Users/[^/]+|/home/[^/]+|[A-Za-z]:\\\\Users\\\\[^\\\\]+)/")
+LOCAL_PATH = re.compile(
+    r"(?:/Users/|/home/)[A-Za-z0-9._-]+/|[A-Za-z]:\\\\Users\\\\[A-Za-z0-9._-]+\\\\"
+)
 
 
 def shorten(value: str) -> str:
@@ -116,10 +124,36 @@ def scrub_notebooks(*, apply: bool) -> int:
     return changed
 
 
+def scan_code() -> int:
+    """Machine-local paths in committed Python. Reported, never auto-edited.
+
+    A hardcoded path in code is a logic error with a judgement behind it: what
+    the author meant is usually `Path(__file__).resolve()...`, but only they
+    know. `scripts/publish_e12_datasets.py` held one for ten days.
+    """
+    hits = 0
+    for directory in ("scripts", "src"):
+        base = ROOT / directory
+        if not base.exists():
+            continue
+        for path in sorted(base.rglob("*.py")):
+            if path.name == Path(__file__).name:
+                continue
+            for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+                if LOCAL_PATH.search(line):
+                    hits += 1
+                    print(f"  {path.relative_to(ROOT)}:{lineno}: {line.strip()[:90]}")
+    if hits:
+        print(f"  ^ {hits} machine-local path(s) in committed code. Resolve from __file__,")
+        print("    or record provenance with emotion_vectors.artifacts.repo_relative.")
+    return hits
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--apply", action="store_true", help="write the files")
+    parser.add_argument("--fix", action="store_true", help="repair what can be repaired")
     args = parser.parse_args()
+    args.apply = args.fix
 
     changed_files = 0
     for path in sorted((ROOT / "results").rglob("*.json")):
@@ -145,8 +179,16 @@ def main() -> int:
             path.write_text(json.dumps(rewritten, indent=2) + trailing, encoding="utf-8")
 
     changed_files += scrub_notebooks(apply=args.apply)
-    verb = "rewritten" if args.apply else "would change"
-    print(f"\n{changed_files} file(s) {verb}")
+    code_hits = scan_code()
+
+    if args.apply:
+        print(f"\n{changed_files} file(s) rewritten")
+        return 1 if code_hits else 0
+    if changed_files or code_hits:
+        print(f"\n{changed_files} file(s) carry a machine-local path; {code_hits} in code.")
+        print("Run with --fix to repair the data files; code needs a human.")
+        return 1
+    print("\nNo machine-local paths in code, evidence or notebooks.")
     return 0
 
 

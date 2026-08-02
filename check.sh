@@ -9,6 +9,10 @@
 #   pytest   — the checks' own tests, including a false-positive suite. A checker
 #              that cries wolf gets bypassed, so quiet-on-clean-input is tested
 #              as carefully as fires-on-bad-input.
+#   check_local_paths.py — no machine-local absolute path in committed code,
+#              evidence or notebooks. A direct stage rather than a lanorme
+#              plugin: lanorme's config excludes results/ and notebooks/
+#              globally, which would filter the findings away.
 #   validate_research.py — the research-integrity gate. Deliberately standalone
 #              and dependency-free: a project that never installs lanorme must
 #              still have every integrity guarantee. Skipped in the harness repo
@@ -61,6 +65,8 @@ run_stage "lanorme" env PYTHONPATH=. uvx "$LANORME" check "${1:-.}"
 if [[ -d tests ]]; then
     run_stage "pytest" uv run --with pytest --with "$LANORME_REQ" pytest tests -q
 fi
+
+run_stage "local paths" uv run scripts/check_local_paths.py
 
 if [[ -f TREE.md ]]; then
     run_stage "research integrity" uv run scripts/validate_research.py
