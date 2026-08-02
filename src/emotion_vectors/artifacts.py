@@ -74,6 +74,25 @@ ROUTES: dict[str, str] = {
 }
 
 
+def repo_relative(path: Path | str) -> str:
+    """A path as it should be RECORDED, not as it happened to be typed.
+
+    Provenance fields in `results/` are read by other people on other machines.
+    Writing `str(path)` there records whatever was passed on the command line,
+    which for an absolute path bakes in one person's home directory: it is
+    meaningless to a replicator, it breaks if the checkout moves, and it leaks
+    a filesystem layout into a public repository. This returns the path
+    relative to the repository root when it lies inside it, and leaves anything
+    outside untouched, since that genuinely is external.
+    """
+    resolved = Path(path).expanduser()
+    root = RESULTS.parent
+    try:
+        return str(resolved.resolve().relative_to(root.resolve()))
+    except ValueError:
+        return str(path)
+
+
 def _route(relpath: str) -> tuple[str, str]:
     """(repo_id, path inside repo) for a results-relative path."""
     head = relpath.split("/", 1)[0]

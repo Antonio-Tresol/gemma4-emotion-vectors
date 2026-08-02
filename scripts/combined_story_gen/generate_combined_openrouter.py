@@ -34,6 +34,8 @@ from urllib.request import Request, urlopen
 
 from dotenv import load_dotenv
 
+from emotion_vectors.artifacts import repo_relative
+
 sys.path.insert(0, str(Path(__file__).parent))
 from generate_combined_stories import (
     N_COMBOS,
@@ -202,7 +204,7 @@ def main() -> int:
     jobs = pending_jobs(triples, counts, samples_per_combo, args.seed)
     # CLI args verbatim, with Path values stringified for JSON
     args_jsonable = {
-        name: (str(value) if isinstance(value, Path) else value)
+        name: (repo_relative(value) if isinstance(value, Path) else value)
         for name, value in vars(args).items()
     }
     config = {

@@ -1,6 +1,6 @@
 {
   "model": "deepseek/deepseek-v4-pro",
-  "triples_file": "/Users/abo-tresol/Documents/ai-safety/cbai_project/.claude/worktrees/e11/scripts/combined_story_gen/emotions_triples_v1.json",
+  "triples_file": "scripts/combined_story_gen/emotions_triples_v1.json",
   "per_triple": 24,
   "temperature": 1.3,
   "top_p": 0.97,

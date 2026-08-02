@@ -15,8 +15,12 @@ from pathlib import Path
 from dotenv import load_dotenv
 from huggingface_hub import HfApi
 
-MAIN_RES = Path("/Users/abo-tresol/Documents/ai-safety/cbai_project/results")
-WT_RES = Path(__file__).resolve().parents[1] / "results"
+# One results tree, resolved from this file. There used to be two, because the
+# vectors sat in the main clone while the corpora sat in a worktree, and the
+# main clone's path was hardcoded. That is a machine-local absolute path in
+# committed code: it breaks for every other person and leaks a home directory
+# into a public repository.
+RESULTS = Path(__file__).resolve().parents[1] / "results"
 
 
 def main() -> int:
@@ -29,26 +33,26 @@ def main() -> int:
         (
             f"{user}/emotion-stories-deepseek-v4-pro-diverse",
             [
-                (WT_RES / "openrouter_stories_diverse/stories_raw.jsonl", "stories_raw.jsonl"),
+                (RESULTS / "openrouter_stories_diverse/stories_raw.jsonl", "stories_raw.jsonl"),
                 (
-                    WT_RES / "openrouter_stories_diverse/stories_grouped.jsonl",
+                    RESULTS / "openrouter_stories_diverse/stories_grouped.jsonl",
                     "stories_grouped.jsonl",
                 ),
-                (WT_RES / "openrouter_stories_diverse/run_config.json", "run_config.json"),
+                (RESULTS / "openrouter_stories_diverse/run_config.json", "run_config.json"),
             ],
         ),
         (
             f"{user}/emotion-deepseek-vectors-gemma-4-31b-it",
             [
-                (MAIN_RES / "openrouter_vectors_it_means.npz", "emotion_means.npz"),
-                (MAIN_RES / "openrouter_vectors_it_shards", "shards"),
+                (RESULTS / "openrouter_vectors_it_means.npz", "emotion_means.npz"),
+                (RESULTS / "openrouter_vectors_it_shards", "shards"),
             ],
         ),
         (
             f"{user}/emotion-deepseek-diverse-vectors-gemma-4-31b-it",
             [
-                (MAIN_RES / "openrouter_vectors_diverse_it_means.npz", "emotion_means.npz"),
-                (MAIN_RES / "openrouter_vectors_diverse_it_shards", "shards"),
+                (RESULTS / "openrouter_vectors_diverse_it_means.npz", "emotion_means.npz"),
+                (RESULTS / "openrouter_vectors_diverse_it_shards", "shards"),
             ],
         ),
     ]

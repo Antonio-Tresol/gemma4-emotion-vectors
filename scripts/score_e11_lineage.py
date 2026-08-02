@@ -239,7 +239,7 @@ def main() -> int:
     probe_files = {"selfgen": args.selfgen, "weak": args.weak, "strong": args.strong}
     result = {
         "experiment": "Q1.H2.E11",
-        "probe_files": {name: str(path) for name, path in probe_files.items()},
+        "probe_files": {name: repo_relative(path) for name, path in probe_files.items()},
         "convention": "post-fix bundles on all arms; 12-pool probe centering; "
         "scenario-set activation centering; chat_last readout",
         "r1_dual_battery": r1_grid(bundles, sweep),

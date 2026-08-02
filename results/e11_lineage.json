@@ -1,9 +1,9 @@
 {
   "experiment": "Q1.H2.E11",
   "probe_files": {
-    "selfgen": "/Users/abo-tresol/Documents/ai-safety/cbai_project/results/self_story_vectors_it_postfix/emotion_means.npz",
-    "weak": "/Users/abo-tresol/Documents/ai-safety/cbai_project/results/emotion_vectors_it_postfix/emotion_means.npz",
-    "strong": "/Users/abo-tresol/Documents/ai-safety/cbai_project/results/openrouter_vectors_it_means.npz"
+    "selfgen": "results/self_story_vectors_it_postfix/emotion_means.npz",
+    "weak": "results/emotion_vectors_it_postfix/emotion_means.npz",
+    "strong": "results/openrouter_vectors_it_means.npz"
   },
   "convention": "post-fix bundles on all arms; 12-pool probe centering; scenario-set activation centering; chat_last readout",
   "r1_dual_battery": {
