@@ -14,6 +14,7 @@ obtain it from saifmohammad.com and place it under data/lexicons/.
 from __future__ import annotations
 
 import json
+import tarfile
 from pathlib import Path
 
 import numpy as np
@@ -92,6 +93,8 @@ def fetch(relpath: str) -> Path:
     repo, sub = _route(relpath)
     looks_like_dir = "." not in Path(relpath).name
     if looks_like_dir:
+        if _materialize_from_webdataset(repo=repo, target=local):
+            return local
         pattern = f"{sub}/**" if sub else "**"
         # place the snapshot so repo-relative sub lands exactly at results/relpath
         base = RESULTS / relpath[: len(relpath) - len(sub)].rstrip("/") if sub else local
@@ -118,6 +121,51 @@ def fetch(relpath: str) -> Path:
     if not local.exists():
         raise FileNotFoundError(f"{relpath}: not in local results/ and not found in {repo}")
     return local
+
+
+def _materialize_from_webdataset(*, repo: str, target: Path) -> bool:
+    """Fill `target` from the repo's WebDataset tars. True if it did.
+
+    The trajectory datasets hold 5,888 per-story `.npz` files. Downloading them
+    one request each is what a replicator without a token cannot do: Hugging
+    Face returns HTTP 429 partway through, so the reproduction simply fails.
+    The same data is also published as `<repo>-webdataset`, a handful of tars,
+    which arrives in a handful of requests.
+
+    Unpacking reproduces the original `shards/<story_id>.npz` layout exactly, so
+    everything downstream, including `q3_conventions.manifest_rows`, is unaware
+    that anything changed. Falls back by returning False whenever the tars are
+    absent or unreadable, because a faster path is not worth a new failure mode.
+    """
+    tar_repo = f"{repo}-webdataset"
+    try:
+        names = list_repo_files(tar_repo, repo_type="dataset")
+    except Exception:  # noqa: BLE001 — no tars published for this set yet
+        return False
+    tar_names = sorted(name for name in names if name.endswith(".tar"))
+    if not tar_names:
+        return False
+
+    shard_dir = target / "shards"
+    shard_dir.mkdir(parents=True, exist_ok=True)
+    print(f"{tar_repo}: fetching {len(tar_names)} tar(s) instead of thousands of single files")
+    for tar_name in tar_names:
+        path = hf_hub_download(tar_repo, tar_name, repo_type="dataset")
+        with tarfile.open(path) as tar:
+            for member in tar.getmembers():
+                if not member.isfile():
+                    continue
+                payload = tar.extractfile(member)
+                if payload is not None:
+                    (shard_dir / Path(member.name).name).write_bytes(payload.read())
+
+    # the manifest and run config live beside the tars and are needed with them
+    for name in ("manifest.jsonl", "run_config.json"):
+        if name in names:
+            source = hf_hub_download(tar_repo, name, repo_type="dataset")
+            (target / name).write_bytes(Path(source).read_bytes())
+    print(f"  unpacked {len(list(shard_dir.glob('*.npz'))):,} shards into {target}")
+    return True
 
 
 def _rebuild_emotion_means(*, repo: str, out_path: Path) -> None:

@@ -48,3 +48,4 @@ papers/
 
 # consolidated corpora build output (regenerate: scripts/build_story_corpora_dataset.py)
 results/story_corpora_dataset/
+results/trajectory_webdataset/
