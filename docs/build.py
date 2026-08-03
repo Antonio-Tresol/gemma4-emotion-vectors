@@ -458,6 +458,19 @@ max-height:94vh;overflow:auto;width:1180px}
 border-radius:6px;padding:5px 12px;background:var(--surface);cursor:pointer;color:var(--muted)}
 footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
 .src{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:10px}
+/* Links that leave the page, styled as on the agentic-SE course site: body-dark
+   and semibold rather than browser blue, underline only on hover, and a small
+   arrow in the accent colour so a reader can tell before clicking. The anchor
+   stays a plain inline box (NOT inline-flex, which would stop a long link text
+   wrapping mid-paragraph); only the trailing word and its arrow are held
+   together, by .nw. */
+.link-plain{color:var(--text);font-weight:600;text-decoration:none;transition:color .15s}
+.link-plain svg{width:10px;height:10px;margin-left:4px;vertical-align:baseline;fill:none;
+stroke:var(--orange);stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;
+transition:transform .18s}
+.link-plain:hover{text-decoration:underline;text-underline-offset:3px}
+.link-plain:hover svg{transform:translate(2px,-2px)}
+.nw{white-space:nowrap}
 """
 
 
@@ -482,7 +495,47 @@ def build() -> str:
         "facts": FACTS,
     }
     html = TEMPLATE.replace("__CSS__", CSS).replace("__DATA__", json.dumps(payload))
-    return html
+    return mark_external_links(html)
+
+
+# The arrow the course site uses: a diagonal stroke with a corner, drawn in the
+# accent colour by the .link-plain rule above. Sized and stroked in CSS, not
+# here, because a presentation attribute cannot read a CSS custom property.
+EXTERNAL_ARROW = (
+    '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg>'
+)
+
+# Only absolute http(s) anchors that carry no attributes beyond href. In-page
+# anchors (href="#...") and the script-built navigation links are left alone,
+# which is what keeps this from touching the tick bar and the section index.
+_BARE_EXTERNAL_ANCHOR = re.compile(r'<a href="(https?://[^"]+)">(.*?)</a>', re.DOTALL)
+
+
+def mark_external_links(html: str) -> str:
+    """Give every outbound link the course site's treatment.
+
+    Three things happen to each one: the .link-plain class, a new-tab target
+    with `rel="noopener noreferrer"`, and a trailing arrow. Done here rather
+    than by hand at each of the eleven call sites so a link added later cannot
+    forget, and so the rule lives in one readable place.
+
+    The arrow is glued to the final word inside a `.nw` span. Without that it
+    can wrap onto a line of its own and read as a stray mark. The link text is
+    also whitespace-collapsed, since these anchors span source lines and the
+    split would otherwise treat a newline as part of the last word.
+    """
+
+    def rewrite(match: re.Match[str]) -> str:
+        href, text = match.group(1), " ".join(match.group(2).split())
+        head, _, last_word = text.rpartition(" ")
+        tail = f'<span class="nw">{last_word}{EXTERNAL_ARROW}</span>'
+        label = f"{head} {tail}" if head else tail
+        return (
+            f'<a class="link-plain" href="{href}" '
+            f'target="_blank" rel="noopener noreferrer">{label}</a>'
+        )
+
+    return _BARE_EXTERNAL_ANCHOR.sub(rewrite, html)
 
 
 TEMPLATE = r"""<!DOCTYPE html>
