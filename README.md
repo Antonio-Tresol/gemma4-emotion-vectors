@@ -146,30 +146,29 @@ Each script carries its own runnable command in its docstring.
 
 ## How the claims are checked
 
-Anthropic released no code, so every design decision here was open, and most of
-them could have been made wrong quietly. The verification layer was built before
-the science, and it lives in its own repository:
-**[research-engineering-harness](https://github.com/Antonio-Tresol/research-engineering-harness)**,
-a portable set of agent skills, process gates and mechanical validators. This
-project is the first thing built with it.
+Every claim in the write-up is a node in
+[`TREE.md`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/TREE.md),
+carrying its status, the pass mark written before the data existed, and a link
+to the file its numbers come from.
+[`check.sh`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/check.sh)
+fails if any of those links resolves to nothing. A claim only graduates after a
+falsification pass: permutation nulls, bootstrap intervals, random-direction
+controls. Claims that failed stay in the tree marked `failed` rather than
+disappearing. The daily record, dead ends included, is
+[`RESEARCH_LOG.md`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/RESEARCH_LOG.md);
+the working agreement every coding agent here follows is
+[`AGENTS.md`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/AGENTS.md).
+None of it is specific to emotion vectors, so the reusable part lives in its own
+repository:
+[research-engineering-harness](https://github.com/Antonio-Tresol/research-engineering-harness).
 
-What that buys, concretely:
-
-| file | what it holds |
-|---|---|
-| [`TREE.md`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/TREE.md) | every question, hypothesis, experiment and claim, each with a status and a link to the file its numbers come from. Predictions and pass marks were written here **before** the data existed. |
-| [`RESEARCH_LOG.md`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/RESEARCH_LOG.md) | the append-only daily record, pivots and dead ends included |
-| [`check.sh`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/check.sh) | one command: formatter, linter, tests, and a gate that checks every claim in `TREE.md` against the files it cites |
-| [`AGENTS.md`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/AGENTS.md) | the working agreement every coding agent on this repository follows |
-
-A claim only graduates after a falsification pass: permutation nulls, bootstrap
-intervals, random-direction controls. Claims that failed those tests are marked
-`failed` and stay in the tree rather than disappearing.
-
-Two things this caught that would otherwise have been published as findings.
+Two things it caught that would otherwise have been published as findings.
 
 A left-padding default meant 4,032 A/B logits were read mid-prompt, turning two
-real effects into false nulls; correcting it reversed both. The near miss is the instructive part. The emotion vectors before and after that fix agree to a cosine of 0.9999. The contrast directions built from them fall to 0.62 on the instruction-tuned model. A change too small to see in the activations can
+real effects into false nulls; correcting it reversed both. The near miss is the
+instructive part. The emotion vectors before and after that fix agree to a
+cosine of 0.9999, while the contrast directions built from them fall to 0.62 on
+the instruction-tuned model. A change too small to see in the activations can
 still invert what you conclude from them.
 
 Separately, the detection bar registered in advance was written for the
