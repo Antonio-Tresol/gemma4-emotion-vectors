@@ -130,7 +130,7 @@ Generating stories and extracting activations needs a GPU. Everything after that
 4. **Falsify** each claim against permutation nulls and random-direction controls ([`scripts/falsify_*.py`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/tree/main/scripts))
 5. **Validate** that every claim still resolves to a file that exists ([`validate_research.py`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/scripts/validate_research.py))
 
-Each script carries its own runnable command in its docstring.
+Each script carries its own runnable command in its docstring. `./check.sh` runs the formatter, the linter, the tests, and a gate that fails if any claim in [`TREE.md`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/TREE.md) cites a file that does not exist; [`RESEARCH_LOG.md`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/RESEARCH_LOG.md) is the daily record, dead ends included. That scaffolding is not specific to emotion vectors, and the reusable part of it is [research-engineering-harness](https://github.com/Antonio-Tresol/research-engineering-harness).
 
 ## Data
 
@@ -144,38 +144,7 @@ Each script carries its own runnable command in its docstring.
 
 [`DATA.md`](DATA.md) is the full index. The `-postfix` sets supersede their unsuffixed predecessors, which were extracted before a padding bug was found; each carries a [`LINEAGE.md`](https://huggingface.co/datasets/abotresol/emotion-vectors-gemma-4-31b-it-postfix/blob/main/LINEAGE.md) recording what changed and by how much.
 
-## How the claims are checked
-
-Every claim in the write-up is a node in
-[`TREE.md`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/TREE.md),
-carrying its status, the pass mark written before the data existed, and a link
-to the file its numbers come from.
-[`check.sh`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/check.sh)
-fails if any of those links resolves to nothing. A claim only graduates after a
-falsification pass: permutation nulls, bootstrap intervals, random-direction
-controls. Claims that failed stay in the tree marked `failed` rather than
-disappearing. The daily record, dead ends included, is
-[`RESEARCH_LOG.md`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/RESEARCH_LOG.md);
-the working agreement every coding agent here follows is
-[`AGENTS.md`](https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/AGENTS.md).
-None of it is specific to emotion vectors, so the reusable part lives in its own
-repository:
-[research-engineering-harness](https://github.com/Antonio-Tresol/research-engineering-harness).
-
-Two things it caught that would otherwise have been published as findings.
-
-A left-padding default meant 4,032 A/B logits were read mid-prompt, turning two
-real effects into false nulls; correcting it reversed both. The near miss is the
-instructive part. The emotion vectors before and after that fix agree to a
-cosine of 0.9999, while the contrast directions built from them fall to 0.62 on
-the instruction-tuned model. A change too small to see in the activations can
-still invert what you conclude from them.
-
-Separately, the detection bar registered in advance was written for the
-171-emotion vector set, and that set failed it at every layer. What passes is
-the twelve-emotion sets, a substitution made after seeing the results. It is not
-what was pre-registered, and the write-up says so at the point where the result
-appears rather than in a footnote.
+Worth knowing the size of that bug before building on any of this. A left-padding default had 4,032 A/B logits read mid-prompt, which turned two real effects into false nulls. The vectors before and after the fix agree to a cosine of 0.9999, while the contrast directions built from them fall to 0.62 on the instruction-tuned model. A change too small to see in the activations can still invert what you conclude from them.
 
 ## Citation
 
