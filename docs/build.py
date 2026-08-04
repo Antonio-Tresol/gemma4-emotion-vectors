@@ -334,7 +334,7 @@ EXTERNAL_ARROW = (
 # Only absolute http(s) anchors that carry no attributes beyond href. In-page
 # anchors (href="#...") and the script-built navigation links are left alone,
 # which is what keeps this from touching the tick bar and the section index.
-_BARE_EXTERNAL_ANCHOR = re.compile(r'<a href="(https?://[^"]+)">(.*?)</a>', re.DOTALL)
+_BARE_EXTERNAL_ANCHOR = re.compile(r'<a href="((?:https?://|mailto:)[^"]+)">(.*?)</a>', re.DOTALL)
 
 
 def mark_external_links(html: str) -> str:
@@ -353,6 +353,13 @@ def mark_external_links(html: str) -> str:
 
     def rewrite(match: re.Match[str]) -> str:
         href, text = match.group(1), " ".join(match.group(2).split())
+        # An address is not a page: no arrow, because the arrow means "this
+        # opens somewhere else on the web", and no new tab, because a mail
+        # client is not a tab. It still needs the class, or it falls through to
+        # browser-default blue, which is how the correspondence line ended up
+        # the only 1994-looking link on the page.
+        if href.startswith("mailto:"):
+            return f'<a class="link-plain" href="{href}">{text}</a>'
         head, _, last_word = text.rpartition(" ")
         tail = f'<span class="nw">{last_word}{EXTERNAL_ARROW}</span>'
         label = f"{head} {tail}" if head else tail
