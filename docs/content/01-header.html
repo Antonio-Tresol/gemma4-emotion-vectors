@@ -42,14 +42,15 @@
     state hands over from one emotion to the next, better than chance and often before the
     written turn. It is never reliable, and it works far better for some emotions than others.</p></div>
   </div>
-  <p class="lede narrow" style="margin-top:30px">Anthropic found that a language model keeps a separate internal direction
-  for each emotion. Those directions arrange themselves the way psychologists arrange emotions
-  (Sofroniew et al.,
-  <a href="https://transformer-circuits.pub/2026/emotions/index.html">Emotion Concepts and their
-  Function in a Large Language Model</a>, 2026). We rebuilt that result on
-  <a href="https://huggingface.co/google/gemma-4-31b">Gemma&nbsp;4&nbsp;31B</a> (a
-  31-billion-parameter model), in two versions of it. Then we asked a question the paper did not: can
-  the model follow an emotion that <em>changes</em> partway through a story? Three findings, below.</p>
+  <p class="lede narrow" style="margin-top:30px">In
+  <a href="https://transformer-circuits.pub/2026/emotions/index.html"><em>Emotion Concepts and their
+  Function in a Large Language Model</em></a> (Sofroniew et al., 2026), Anthropic reported that
+  Claude&nbsp;Sonnet&nbsp;4.5 keeps a separate internal direction for each emotion. Those
+  directions arrange themselves the way psychologists arrange them. We rebuilt that result on
+  <a href="https://huggingface.co/google/gemma-4-31b">Gemma&nbsp;4&nbsp;31B</a>, an open
+  31-billion-parameter model. After that, we expanded the work in three directions. Does
+  instruction tuning change the picture? Does it matter whose stories the vectors are built from?
+  And can a model follow an emotion that <em>changes</em> partway through a story?</p>
   <p class="lede narrow" style="font-size:16px">Everything here is checkable:
   <a href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors">the code and the research
   record</a> are on GitHub, and
