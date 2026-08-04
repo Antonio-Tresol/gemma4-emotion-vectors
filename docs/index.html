@@ -391,7 +391,7 @@ border-bottom:1px solid var(--border)}</style></head>
   <!-- A short form of the page title, not a second title. The full one runs to
        nine words and would leave no room for the section numbers, the section
        name and the two outbound links in a 52px row. -->
-  <a class="brand" href="#top">How are emotions represented?</a>
+  <a class="brand" href="#top">How are emotions represented in LLMs?</a>
   <span class="ticks" id="navTicks"></span>
   <span class="here" id="navHere"></span>
   <!-- Written out with class, target and rel rather than left to
@@ -746,14 +746,15 @@ border-bottom:1px solid var(--border)}</style></head>
 
 <section id="preferences"><div class="wrap">
   <h2><span class="secno">5</span>Can you steer the model with them?</h2>
-  <p class="narrow">Show the model two activities and ask which it would rather do. Repeat over
-  every ordered pair and the answers settle into a ranking of what this model prefers. The paper
-  checks its emotion vectors against that ranking twice: once by reading them, once by adding
-  them back in. We did the same.</p>
+  <p class="narrow">We showed the model two activities at a time and asked which it would rather
+  do, over every ordered pair. Fitting those answers together gives one ranking of what the model
+  prefers. The paper tests its emotion vectors against such a ranking in two ways: by reading the
+  vectors, and by adding them back into the model. We ran both tests on Gemma&nbsp;4&nbsp;31B.</p>
 
   <h3 style="margin-top:34px">Reading: does an emotion vector predict what the model prefers?</h3>
-  <p class="narrow">For each emotion, take how strongly its vector is active while the model
-  considers an activity, and correlate that with where the activity landed in the ranking.</p>
+  <p class="narrow">For each emotion, we measured how strongly its vector was active while the
+  model considered an activity, then correlated that with where the activity landed in the
+  ranking.</p>
   <div class="card" style="margin-top:20px">
     <div id="prefLayerChart" data-figtitle="How well an emotion vector predicts the model's preferences"></div>
     <div class="legend">
@@ -766,8 +767,8 @@ border-bottom:1px solid var(--border)}</style></head>
       vectors reaches against the preference ranking. A bad result would be bars near 0, meaning
       the vectors carry nothing about what the model chooses. We fixed the pass mark at 0.5 before
       scoring anything.</p>
-      <p>All four layers clear it, and layer 33 reaches 0.64. That is a pass, and it is below the
-      paper's 0.71 to 0.74 on a much larger model. Both statements are the result.</p>
+      <p>All four layers clear it, and layer 33 reaches 0.64. That number clears our mark and sits
+      below the paper's 0.71 to 0.74, which was measured on a much larger model.</p>
       <p>An earlier version of this measurement read 0.70, which sits inside the paper's range. It
       was computed with <span data-term="probe">probes</span> built before we found an extraction bug. The corrected probes give
       0.64, and that is the number here.</p>
@@ -776,10 +777,11 @@ border-bottom:1px solid var(--border)}</style></head>
   </div>
 
   <h3 style="margin-top:40px">Pushing: does adding the vector move what the model prefers?</h3>
-  <p class="narrow">Now the causal half. Add an emotion's own direction into the residual stream
-  while the model makes its choices, and see which way the ranking moves. If these vectors are
-  really the model's emotion machinery, adding a pleasant one should push it towards pleasant
-  activities, and an unpleasant one away.</p>
+  <p class="narrow">Reading a vector shows only that it carries information about the ranking, not
+  that the model uses it. So we added each emotion's own direction into the residual stream while
+  the model made its choices, and measured which way the ranking moved. If these vectors are the
+  machinery the model runs on, a pleasant emotion should move it towards pleasant activities and an
+  unpleasant one away.</p>
   <div class="card" style="margin-top:20px">
     <div id="steerChart" data-figtitle="Which way preferences move when an emotion vector is added"></div>
     <div class="legend">
@@ -806,11 +808,11 @@ border-bottom:1px solid var(--border)}</style></head>
   </div>
 
   <div class="takeaway"><span class="lbl">Takeaway</span>The vectors both predict and move the
-  model's preferences, which is the paper's result reproduced on an open model. One registered
-  read failed. How much a vector predicts does not track how much steering with it moves things:
-  0.40 and 0.30, against a bar of 0.5 and the paper's 0.85. So the vectors act on preferences in
-  the right direction, and we cannot yet say that the strength of the reading tells you the
-  strength of the push.</div>
+  model's preferences, which reproduces the paper's result on an open model. One check we had
+  fixed in advance failed. How much a vector predicts does not track how much steering with it
+  moves things: 0.40 and 0.30, against our mark of 0.5 and the paper's 0.85. The vectors act on
+  preferences in the right direction, and we cannot yet say that the strength of the reading tells
+  you the strength of the push.</div>
 </div></section>
 
 <section id="story"><div class="wrap">
