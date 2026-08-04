@@ -1144,7 +1144,12 @@ paintProgress();
 /* ---------- expand any figure ---------- */
 const MODAL=document.getElementById("modal"), MODAL_BODY=document.getElementById("modalBody");
 function closeModal(){MODAL.classList.remove("on");MODAL_BODY.innerHTML="";}
-document.getElementById("modalClose").onclick=closeModal;
+const MODAL_CLOSE=document.getElementById("modalClose");
+MODAL_CLOSE.onclick=closeModal;
+// the same treatment as the expand control it mirrors; a bare glyph with no
+// hover text is a guess for the reader
+tipOn(MODAL_CLOSE,"Close this figure");
+MODAL_CLOSE.style.cursor="pointer";
 MODAL.onclick=e=>{if(e.target===MODAL) closeModal();};
 addEventListener("keydown",e=>{if(e.key==="Escape") closeModal();});
 // the element holding each chart's live state, to carry into the expanded view
@@ -1171,8 +1176,7 @@ function addModalLine(text,cls,style){
   // every other hover here, where title= waits a second and looks foreign
   tipOn(b,"Expand this figure");
   b.style.cursor="pointer";
-  b.innerHTML='<svg viewBox="0 0 16 16" aria-hidden="true">'+
-    '<path d="M2 6V2h4M14 6V2h-4M2 10v4h4M14 10v4h-4"/></svg>';
+  b.innerHTML='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M9 3H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V7"/><path d="M10.5 2h3.5v3.5"/><path d="M14 2l-5.5 5.5"/></svg>';
   b.onclick=()=>{
     const svg=host.querySelector("svg"); if(!svg) return;
     MODAL_BODY.innerHTML="";
