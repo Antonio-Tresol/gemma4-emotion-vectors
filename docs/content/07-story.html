@@ -1,9 +1,9 @@
 <section id="story"><div class="wrap">
-  <h2><span class="secno">6</span>Watch it follow one story, word by word</h2>
+  <h2><span class="secno">6</span>Watch it follow one story, token by token</h2>
   <p class="narrow">Everything so far has been about static text: one story, one emotion, one reading.
   Here the story <em>moves</em>. Each of these four was written to pass through three emotions in turn,
-  with the turns marked. We feed one to the model and, at every single word, measure how close its
-  internal state sits to each of the three emotion vectors. Press play, or drag the word slider, and both panels
+  with the turns marked. We feed one to the model and, at every <span data-term="token">token</span>, measure how close its
+  internal state sits to each of the three emotion vectors. Press play, or drag the slider, and both panels
   advance together.</p>
   <p class="narrow">Three of the four stories use the <b>same three emotions</b> and differ only in how
   they are written, and the model follows them very differently. That is the point of this
@@ -13,27 +13,29 @@
       <span class="muted" style="font-size:13px">story</span><span id="storyBtns"></span>
       <span class="muted" id="storyQual" style="margin-left:auto;font-size:12.5px"></span>
     </div>
-    <div class="controls">
-      <span class="muted" style="font-size:13px">layer</span>
-      <span id="layerBtns"></span>
-      <span class="slidergrp">
-        <span class="muted" style="font-size:13px">word</span>
-        <button id="tokPlay" class="playbtn" aria-label="Play the story"></button>
-        <input type="range" id="tokSlider" min="0" max="235" value="0">
-        <span class="mono" id="tokLabel" style="min-width:78px;display:inline-block"></span>
-      </span>
+    <!-- Stacked rather than side by side. Each figure gets the full column, which
+         matters most for the line chart: 236 tokens across half a column is a
+         smear. The shared control sits between them, next to what it drives,
+         and the readout that doubles as the colour legend sits with it. -->
+    <div><div class="figcap muted" style="font-size:12.5px;margin-bottom:6px">
+      one line per emotion, over the length of the story</div>
+      <div id="lineChart" data-figtitle="Three emotion vectors over one story"></div></div>
+    <div class="storyctl">
+      <div class="controls">
+        <span class="muted" style="font-size:13px">layer</span>
+        <span id="layerBtns"></span>
+        <span class="slidergrp">
+          <span class="muted" style="font-size:13px"><span data-term="token">token</span></span>
+          <button id="tokPlay" class="playbtn" aria-label="Play the story"></button>
+          <input type="range" id="tokSlider" min="0" max="235" value="0">
+          <span class="mono" id="tokLabel" style="min-width:78px;display:inline-block"></span>
+        </span>
+      </div>
+      <div id="storyReadout" class="legend" style="margin:8px 0 0"></div>
     </div>
-    <!-- the live readout doubles as the colour legend: it is the only thing on the
-         figure that says which line is which emotion, so it sits above the panels
-         rather than inside the plot where the lines used to run through it -->
-    <div id="storyReadout" class="legend" style="margin:10px 0 2px"></div>
-    <div class="grid2" style="gap:24px">
-      <div><div class="figcap muted" style="font-size:12.5px;margin-bottom:6px">
-        one line per emotion, over the length of the story</div><div id="lineChart" data-figtitle="Three emotion vectors over one story"></div></div>
-      <div><div class="figcap muted" style="font-size:12.5px;margin-bottom:6px">
-        the same three numbers, as a position between the three emotions</div>
-        <div id="ternChart" data-figtitle="The same three readings, as a position between the emotions"></div></div>
-    </div>
+    <div style="margin-top:18px"><div class="figcap muted" style="font-size:12.5px;margin-bottom:6px">
+      the same three numbers, as a position between the three emotions</div>
+      <div id="ternChart" data-figtitle="The same three readings, as a position between the emotions"></div></div>
     <div style="margin-top:20px">
       <div class="figcap muted" style="font-size:12.5px;margin-bottom:6px">
         the story the model is reading. The part you are currently on is highlighted</div>

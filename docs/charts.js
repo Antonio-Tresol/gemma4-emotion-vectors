@@ -8,6 +8,31 @@ const P = {text:"#0A0A0A", body:"#262626", muted:"#737373", border:"#E5E5E5",
   orange:"#CC785C", greySoft:"#D4D4D4", greyMid:"#BDBDBD", alert:"#b3202c"};
 const C = {valence:P.navy, arousal:P.teal, dominance:P.green, length:P.amber, evr:P.greySoft};
 
+/* Inline glossary, the same idea as the <Term> component in the refusal
+   write-up: a dotted underline on a technical word, and one sentence of plain
+   English on hover. A reader meets the term and its meaning in the same breath
+   rather than leaving the page or hunting a methods block.
+
+   Definitions are one sentence and lead with the plain word, not the formal
+   one. Anything longer belongs in section 10, where there is room for it. */
+const GLOSSARY = {
+  "token": "The word-fragments a model actually reads, roughly three-quarters of a word each.",
+  "layer": "One step of the model's computation. This one has 58 of them, stacked from input to output.",
+  "residual stream": "The running vector each layer reads from and writes back to, carrying everything the model has worked out so far about a token.",
+  "circumplex": "The arrangement psychologists use for emotions: a circle whose two axes are how pleasant the feeling is and how worked up.",
+  "valence": "How pleasant or unpleasant an emotion is, on the scale people rate words with.",
+  "elo": "A ranking fitted from many head-to-head choices, borrowed from chess, where a higher number means preferred more often."
+};
+function wireGlossary(){
+  document.querySelectorAll("[data-term]").forEach(node=>{
+    const key=node.dataset.term, def=GLOSSARY[key];
+    if(!def){ console.warn("no glossary entry for", key); return; }  // fail loudly
+    node.classList.add("term");
+    tipOn(node, `<b>${key}</b><span class="t-sub">${def}</span>`);
+    node.style.cursor="help";
+  });
+}
+
 /* one floating tooltip shared by every chart on the page */
 const TIP=document.getElementById("tip");
 function tipOn(node, html){
@@ -363,7 +388,7 @@ function drawStory(){
     let d="";serie.forEach((v,i)=>{d+=(i?"L":"M")+X(i).toFixed(1)+","+Y(v).toFixed(1);});
     svg.appendChild(el("path",{d,fill:"none",stroke:EC[k],"stroke-width":1.9,opacity:.9}));
     const hit=el("path",{d,fill:"none",stroke:"transparent","stroke-width":11});
-    tipOn(hit,()=>`<b>${S.emotions[k]}</b> at word ${curTok}: ${serie[curTok].toFixed(3)}`+
+    tipOn(hit,()=>`<b>${S.emotions[k]}</b> at token ${curTok}: ${serie[curTok].toFixed(3)}`+
       `<span class="t-sub">how close the model's state sits to the ${S.emotions[k]} vector. `+
       `Higher means closer. Read at layer ${curLayer}.</span>`);
     svg.appendChild(hit);
@@ -375,7 +400,7 @@ function drawStory(){
   if(readout) readout.innerHTML = S.emotions.map((nm,k)=>
     `<span><i style="background:${EC[k]}"></i>${nm} <b style="color:${EC[k]}">`+
     `${ys[k][curTok].toFixed(3)}</b></span>`).join("")+
-    `<span style="margin-left:auto">reading at word ${curTok}, layer ${curLayer}</span>`;
+    `<span style="margin-left:auto">reading at token ${curTok}, layer ${curLayer}</span>`;
   [[0,"0"],[S.boundaries[0],"turn 1 · "+S.boundaries[0]],
    [S.boundaries[1],"turn 2 · "+S.boundaries[1]],[n-1,String(n-1)]].forEach(([i,lab],k)=>{
     const t=el("text",{x:X(i),y:T+ih+13,"text-anchor":k===0?"start":(k===3?"end":"middle"),
@@ -383,7 +408,7 @@ function drawStory(){
     t.textContent=lab; svg.appendChild(t);
   });
   const xl=el("text",{x:L+iw/2,y:H-6,"text-anchor":"middle","font-size":10.5,fill:P.muted});
-  xl.textContent="word in the story";
+  xl.textContent="token in the story";
   svg.appendChild(xl);
   const yl=el("text",{x:12,y:T+ih/2,"font-size":10.5,fill:P.muted,
     transform:`rotate(-90 12 ${T+ih/2})`,"text-anchor":"middle"});
@@ -541,7 +566,7 @@ function playStory(){
   // taking the slider means taking control: playback stops rather than fighting the drag
   sl.oninput=()=>{stopStory(); curTok=+sl.value; drawStory();};
   const pb=document.getElementById("tokPlay");
-  if(pb){ pb.onclick=()=>storyTimer?stopStory():playStory(); tipOn(pb,"Play the story from the first word"); pb.style.cursor="pointer"; }
+  if(pb){ pb.onclick=()=>storyTimer?stopStory():playStory(); tipOn(pb,"Play the story from the first token"); pb.style.cursor="pointer"; }
   paintPlayButton();
 })();
 
@@ -1376,6 +1401,7 @@ function numberFigures(){
 /* plain-HTML sibling of el(), which builds SVG-namespaced nodes */
 function el2(t,a={}){const e=document.createElement(t);for(const k in a)e.setAttribute(k,a[k]);return e;}
 
+wireGlossary();
 numberFigures();
 drawPCs("base","coverPcBase",null);
 drawPCs("instruct","coverPcIt",null);

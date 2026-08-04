@@ -18,8 +18,7 @@
     a story is hundreds of words, and we combine them into one recording. We ignore the padding,
     drop the first 50 words as scene-setting, and average the rest, up to 512. Dropping the first
     50 is the convention the original paper used.
-    (Strictly these are <em>tokens</em>, the word-fragments the model actually reads, roughly
-    three-quarters of a word each. We say "word" elsewhere on this page for readability.) We fixed both choices before any scoring. Note this is the opposite of what block 3 does,
+    (A <span data-term="token">token</span> is a word-fragment, roughly three-quarters of a word; the model reads those rather than words, and this page counts them.) We fixed both choices before any scoring. Note this is the opposite of what block 3 does,
     where we deliberately keep every word separate instead of averaging.</p>
   </details>
 

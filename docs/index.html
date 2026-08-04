@@ -311,7 +311,16 @@ cursor:pointer;transition:color .12s,border-color .12s,background .12s}
 .playbtn.on{color:#fff;background:var(--orange);border-color:var(--orange)}
 .playbtn svg{width:11px;height:11px;display:block;fill:currentColor;stroke:currentColor;
 stroke-width:1.6;stroke-linecap:round}
-.playbtn svg path[d^="M5.5"]{fill:none}</style></head>
+.playbtn svg path[d^="M5.5"]{fill:none}
+/* Inline glossary terms. Dotted rule rather than a link's solid one, so a
+   reader can tell at a glance that hovering explains rather than navigates. */
+.term{border-bottom:1px dotted var(--muted)}
+.term:hover{border-bottom-color:var(--text)}
+/* The shared control for the two story figures, sitting between them so it is
+   adjacent to both rather than above your line of sight. Ruled top and bottom
+   so it reads as a control strip and not as part of either chart. */
+.storyctl{margin:14px 0 0;padding:12px 0;border-top:1px solid var(--border);
+border-bottom:1px solid var(--border)}</style></head>
 <body>
 <div id="tip"></div><div id="bar"></div>
 <div id="modal"><div id="modalInner"><button id="modalClose" aria-label="Close the expanded figure" title="Close">
@@ -740,11 +749,11 @@ stroke-width:1.6;stroke-linecap:round}
 </div></section>
 
 <section id="story"><div class="wrap">
-  <h2><span class="secno">6</span>Watch it follow one story, word by word</h2>
+  <h2><span class="secno">6</span>Watch it follow one story, token by token</h2>
   <p class="narrow">Everything so far has been about static text: one story, one emotion, one reading.
   Here the story <em>moves</em>. Each of these four was written to pass through three emotions in turn,
-  with the turns marked. We feed one to the model and, at every single word, measure how close its
-  internal state sits to each of the three emotion vectors. Press play, or drag the word slider, and both panels
+  with the turns marked. We feed one to the model and, at every <span data-term="token">token</span>, measure how close its
+  internal state sits to each of the three emotion vectors. Press play, or drag the slider, and both panels
   advance together.</p>
   <p class="narrow">Three of the four stories use the <b>same three emotions</b> and differ only in how
   they are written, and the model follows them very differently. That is the point of this
@@ -754,27 +763,29 @@ stroke-width:1.6;stroke-linecap:round}
       <span class="muted" style="font-size:13px">story</span><span id="storyBtns"></span>
       <span class="muted" id="storyQual" style="margin-left:auto;font-size:12.5px"></span>
     </div>
-    <div class="controls">
-      <span class="muted" style="font-size:13px">layer</span>
-      <span id="layerBtns"></span>
-      <span class="slidergrp">
-        <span class="muted" style="font-size:13px">word</span>
-        <button id="tokPlay" class="playbtn" aria-label="Play the story"></button>
-        <input type="range" id="tokSlider" min="0" max="235" value="0">
-        <span class="mono" id="tokLabel" style="min-width:78px;display:inline-block"></span>
-      </span>
+    <!-- Stacked rather than side by side. Each figure gets the full column, which
+         matters most for the line chart: 236 tokens across half a column is a
+         smear. The shared control sits between them, next to what it drives,
+         and the readout that doubles as the colour legend sits with it. -->
+    <div><div class="figcap muted" style="font-size:12.5px;margin-bottom:6px">
+      one line per emotion, over the length of the story</div>
+      <div id="lineChart" data-figtitle="Three emotion vectors over one story"></div></div>
+    <div class="storyctl">
+      <div class="controls">
+        <span class="muted" style="font-size:13px">layer</span>
+        <span id="layerBtns"></span>
+        <span class="slidergrp">
+          <span class="muted" style="font-size:13px"><span data-term="token">token</span></span>
+          <button id="tokPlay" class="playbtn" aria-label="Play the story"></button>
+          <input type="range" id="tokSlider" min="0" max="235" value="0">
+          <span class="mono" id="tokLabel" style="min-width:78px;display:inline-block"></span>
+        </span>
+      </div>
+      <div id="storyReadout" class="legend" style="margin:8px 0 0"></div>
     </div>
-    <!-- the live readout doubles as the colour legend: it is the only thing on the
-         figure that says which line is which emotion, so it sits above the panels
-         rather than inside the plot where the lines used to run through it -->
-    <div id="storyReadout" class="legend" style="margin:10px 0 2px"></div>
-    <div class="grid2" style="gap:24px">
-      <div><div class="figcap muted" style="font-size:12.5px;margin-bottom:6px">
-        one line per emotion, over the length of the story</div><div id="lineChart" data-figtitle="Three emotion vectors over one story"></div></div>
-      <div><div class="figcap muted" style="font-size:12.5px;margin-bottom:6px">
-        the same three numbers, as a position between the three emotions</div>
-        <div id="ternChart" data-figtitle="The same three readings, as a position between the emotions"></div></div>
-    </div>
+    <div style="margin-top:18px"><div class="figcap muted" style="font-size:12.5px;margin-bottom:6px">
+      the same three numbers, as a position between the three emotions</div>
+      <div id="ternChart" data-figtitle="The same three readings, as a position between the emotions"></div></div>
     <div style="margin-top:20px">
       <div class="figcap muted" style="font-size:12.5px;margin-bottom:6px">
         the story the model is reading. The part you are currently on is highlighted</div>
@@ -986,8 +997,7 @@ stroke-width:1.6;stroke-linecap:round}
     a story is hundreds of words, and we combine them into one recording. We ignore the padding,
     drop the first 50 words as scene-setting, and average the rest, up to 512. Dropping the first
     50 is the convention the original paper used.
-    (Strictly these are <em>tokens</em>, the word-fragments the model actually reads, roughly
-    three-quarters of a word each. We say "word" elsewhere on this page for readability.) We fixed both choices before any scoring. Note this is the opposite of what block 3 does,
+    (A <span data-term="token">token</span> is a word-fragment, roughly three-quarters of a word; the model reads those rather than words, and this page counts them.) We fixed both choices before any scoring. Note this is the opposite of what block 3 does,
     where we deliberately keep every word separate instead of averaging.</p>
   </details>
 
@@ -1069,6 +1079,31 @@ const P = {text:"#0A0A0A", body:"#262626", muted:"#737373", border:"#E5E5E5",
   navy:"#1d3557", teal:"#457b9d", green:"#009E73", amber:"#E69F00", red:"#e63946",
   orange:"#CC785C", greySoft:"#D4D4D4", greyMid:"#BDBDBD", alert:"#b3202c"};
 const C = {valence:P.navy, arousal:P.teal, dominance:P.green, length:P.amber, evr:P.greySoft};
+
+/* Inline glossary, the same idea as the <Term> component in the refusal
+   write-up: a dotted underline on a technical word, and one sentence of plain
+   English on hover. A reader meets the term and its meaning in the same breath
+   rather than leaving the page or hunting a methods block.
+
+   Definitions are one sentence and lead with the plain word, not the formal
+   one. Anything longer belongs in section 10, where there is room for it. */
+const GLOSSARY = {
+  "token": "The word-fragments a model actually reads, roughly three-quarters of a word each.",
+  "layer": "One step of the model's computation. This one has 58 of them, stacked from input to output.",
+  "residual stream": "The running vector each layer reads from and writes back to, carrying everything the model has worked out so far about a token.",
+  "circumplex": "The arrangement psychologists use for emotions: a circle whose two axes are how pleasant the feeling is and how worked up.",
+  "valence": "How pleasant or unpleasant an emotion is, on the scale people rate words with.",
+  "elo": "A ranking fitted from many head-to-head choices, borrowed from chess, where a higher number means preferred more often."
+};
+function wireGlossary(){
+  document.querySelectorAll("[data-term]").forEach(node=>{
+    const key=node.dataset.term, def=GLOSSARY[key];
+    if(!def){ console.warn("no glossary entry for", key); return; }  // fail loudly
+    node.classList.add("term");
+    tipOn(node, `<b>${key}</b><span class="t-sub">${def}</span>`);
+    node.style.cursor="help";
+  });
+}
 
 /* one floating tooltip shared by every chart on the page */
 const TIP=document.getElementById("tip");
@@ -1425,7 +1460,7 @@ function drawStory(){
     let d="";serie.forEach((v,i)=>{d+=(i?"L":"M")+X(i).toFixed(1)+","+Y(v).toFixed(1);});
     svg.appendChild(el("path",{d,fill:"none",stroke:EC[k],"stroke-width":1.9,opacity:.9}));
     const hit=el("path",{d,fill:"none",stroke:"transparent","stroke-width":11});
-    tipOn(hit,()=>`<b>${S.emotions[k]}</b> at word ${curTok}: ${serie[curTok].toFixed(3)}`+
+    tipOn(hit,()=>`<b>${S.emotions[k]}</b> at token ${curTok}: ${serie[curTok].toFixed(3)}`+
       `<span class="t-sub">how close the model's state sits to the ${S.emotions[k]} vector. `+
       `Higher means closer. Read at layer ${curLayer}.</span>`);
     svg.appendChild(hit);
@@ -1437,7 +1472,7 @@ function drawStory(){
   if(readout) readout.innerHTML = S.emotions.map((nm,k)=>
     `<span><i style="background:${EC[k]}"></i>${nm} <b style="color:${EC[k]}">`+
     `${ys[k][curTok].toFixed(3)}</b></span>`).join("")+
-    `<span style="margin-left:auto">reading at word ${curTok}, layer ${curLayer}</span>`;
+    `<span style="margin-left:auto">reading at token ${curTok}, layer ${curLayer}</span>`;
   [[0,"0"],[S.boundaries[0],"turn 1 · "+S.boundaries[0]],
    [S.boundaries[1],"turn 2 · "+S.boundaries[1]],[n-1,String(n-1)]].forEach(([i,lab],k)=>{
     const t=el("text",{x:X(i),y:T+ih+13,"text-anchor":k===0?"start":(k===3?"end":"middle"),
@@ -1445,7 +1480,7 @@ function drawStory(){
     t.textContent=lab; svg.appendChild(t);
   });
   const xl=el("text",{x:L+iw/2,y:H-6,"text-anchor":"middle","font-size":10.5,fill:P.muted});
-  xl.textContent="word in the story";
+  xl.textContent="token in the story";
   svg.appendChild(xl);
   const yl=el("text",{x:12,y:T+ih/2,"font-size":10.5,fill:P.muted,
     transform:`rotate(-90 12 ${T+ih/2})`,"text-anchor":"middle"});
@@ -1603,7 +1638,7 @@ function playStory(){
   // taking the slider means taking control: playback stops rather than fighting the drag
   sl.oninput=()=>{stopStory(); curTok=+sl.value; drawStory();};
   const pb=document.getElementById("tokPlay");
-  if(pb){ pb.onclick=()=>storyTimer?stopStory():playStory(); tipOn(pb,"Play the story from the first word"); pb.style.cursor="pointer"; }
+  if(pb){ pb.onclick=()=>storyTimer?stopStory():playStory(); tipOn(pb,"Play the story from the first token"); pb.style.cursor="pointer"; }
   paintPlayButton();
 })();
 
@@ -2438,6 +2473,7 @@ function numberFigures(){
 /* plain-HTML sibling of el(), which builds SVG-namespaced nodes */
 function el2(t,a={}){const e=document.createElement(t);for(const k in a)e.setAttribute(k,a[k]);return e;}
 
+wireGlossary();
 numberFigures();
 drawPCs("base","coverPcBase",null);
 drawPCs("instruct","coverPcIt",null);

@@ -295,3 +295,12 @@ cursor:pointer;transition:color .12s,border-color .12s,background .12s}
 .playbtn svg{width:11px;height:11px;display:block;fill:currentColor;stroke:currentColor;
 stroke-width:1.6;stroke-linecap:round}
 .playbtn svg path[d^="M5.5"]{fill:none}
+/* Inline glossary terms. Dotted rule rather than a link's solid one, so a
+   reader can tell at a glance that hovering explains rather than navigates. */
+.term{border-bottom:1px dotted var(--muted)}
+.term:hover{border-bottom-color:var(--text)}
+/* The shared control for the two story figures, sitting between them so it is
+   adjacent to both rather than above your line of sight. Ruled top and bottom
+   so it reads as a control strip and not as part of either chart. */
+.storyctl{margin:14px 0 0;padding:12px 0;border-top:1px solid var(--border);
+border-bottom:1px solid var(--border)}
