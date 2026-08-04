@@ -13,14 +13,13 @@
       three average 256. Vector quality tracks that count, and section 2 is about how much.</span>
     </div>
   </div>
-  <p class="narrow" style="margin-top:20px"><b>The two models we compare.</b>
-  Gemma&nbsp;4&nbsp;31B <b>base</b> and <b>instruction-tuned</b>: the same weights before and after
-  post-training. Running both is a comparison the original paper did not report, and it is where the
+  <p class="narrow" style="margin-top:20px">We compare Gemma&nbsp;4&nbsp;31B in two forms,
+  <b>base</b> and <b>instruction-tuned</b>: the same weights before and after post-training. Running both is a comparison the original paper did not report, and it is where the
   interesting result came from. <span data-term="layer">Layers</span> are sampled, not swept: twenty
   across the stack (0 to 57, every third) for the geometry and detection work, six for the
   trajectories.</p>
-  <p class="narrow"><b>The result being replicated.</b> Anthropic reports that emotion vectors
-  arrange on the <b><span data-term="circumplex">circumplex</span></b>. Principal component analysis
+  <p class="narrow">The result being replicated is that emotion vectors arrange on the
+  <b><span data-term="circumplex">circumplex</span></b>. Principal component analysis
   (PCA) finds the directions along which they differ most, and the top two recover valence and
   arousal. That matches how humans rate the same words in the
   <a href="http://saifmohammad.com/WebPages/nrc-vad.html">NRC VAD lexicon</a> (VAD is valence,

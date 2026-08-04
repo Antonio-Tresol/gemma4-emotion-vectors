@@ -370,11 +370,15 @@ cursor:pointer;list-style:none}
 .gterm p{font-family:var(--display);font-size:14.5px;color:var(--body);line-height:1.65;
 margin:12px 0 0 220px;max-width:60ch}
 .gterm .gsrc{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:10px}
-/* These point down the page rather than out of it, so they take the quiet
-   in-caption treatment rather than .link-plain, and above all not the browser
-   default: an unstyled in-page anchor renders blue and underlined. */
-.gterm .gsrc a{color:inherit;text-decoration:none;border-bottom:1px dotted var(--grey-mid)}
-.gterm .gsrc a:hover{color:var(--text);border-bottom-color:var(--text)}
+/* EVERY in-page anchor that carries no class of its own. These point down the
+   page rather than out of it, so they take the quiet dotted treatment rather
+   than .link-plain's weight and arrow. Written as a blanket rule because the
+   per-component version was not one: the glossary source lines were styled, the
+   citation in the lede was added later without a class, and it rendered in
+   browser-default blue on a page where nothing else is blue. */
+a[href^="#"]:not([class]){color:inherit;text-decoration:none;
+border-bottom:1px dotted var(--grey-mid)}
+a[href^="#"]:not([class]):hover{color:var(--text);border-bottom-color:var(--text)}
 /* Landing here from a term in the prose: mark where the reader arrived, or a
    jump into the middle of a list of ten looks like nothing happened. */
 .gterm:target{background:var(--surface-alt);border-left-color:var(--orange)}
@@ -506,14 +510,13 @@ border-bottom:1px solid var(--border)}</style></head>
       three average 256. Vector quality tracks that count, and section 2 is about how much.</span>
     </div>
   </div>
-  <p class="narrow" style="margin-top:20px"><b>The two models we compare.</b>
-  Gemma&nbsp;4&nbsp;31B <b>base</b> and <b>instruction-tuned</b>: the same weights before and after
-  post-training. Running both is a comparison the original paper did not report, and it is where the
+  <p class="narrow" style="margin-top:20px">We compare Gemma&nbsp;4&nbsp;31B in two forms,
+  <b>base</b> and <b>instruction-tuned</b>: the same weights before and after post-training. Running both is a comparison the original paper did not report, and it is where the
   interesting result came from. <span data-term="layer">Layers</span> are sampled, not swept: twenty
   across the stack (0 to 57, every third) for the geometry and detection work, six for the
   trajectories.</p>
-  <p class="narrow"><b>The result being replicated.</b> Anthropic reports that emotion vectors
-  arrange on the <b><span data-term="circumplex">circumplex</span></b>. Principal component analysis
+  <p class="narrow">The result being replicated is that emotion vectors arrange on the
+  <b><span data-term="circumplex">circumplex</span></b>. Principal component analysis
   (PCA) finds the directions along which they differ most, and the top two recover valence and
   arousal. That matches how humans rate the same words in the
   <a class="link-plain" href="http://saifmohammad.com/WebPages/nrc-vad.html" target="_blank" rel="noopener noreferrer">NRC VAD <span class="nw">lexicon<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a> (VAD is valence,
@@ -545,8 +548,7 @@ border-bottom:1px solid var(--border)}</style></head>
   <h2><span class="secno">2</span>Who writes the stories changes the answer</h2>
   <p class="narrow">The corpus of stories behind an emotion vector is a choice, and we made it four
   different ways. The four sets went through the same test.</p>
-  <p class="narrow"><b>The test.</b> We took short messages of the kind a person actually sends a
-  chatbot. One reads <em>"My daughter just took her first steps today! What are some ways to capture
+  <p class="narrow">The test uses short messages of the kind a person actually sends a chatbot. One reads <em>"My daughter just took her first steps today! What are some ways to capture
   more of these precious moments?"</em>, and implies an emotion without ever naming it. We ran each
   message as a chat turn and read the <span data-term="residual stream">residual stream</span> at
   the last token before the reply would start. Then we ranked all twelve emotion vectors by cosine
@@ -585,8 +587,9 @@ border-bottom:1px solid var(--border)}</style></head>
     </details>
     <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/07_generator_lineages.ipynb" target="_blank" rel="noopener noreferrer">notebooks/07_generator_lineages.ipynb</a> (experiments E11 and E12)</div>
   </div>
-  <p class="narrow" style="margin-top:22px"><b>Why its own stories are worse.</b> Asked for 3,072
-  stories about emotions, the model named its character <b>Elias</b> in <b>98.2%</b> of them. Its own
+  <p class="narrow" style="margin-top:22px">Its own stories are worse because they repeat
+  themselves. Asked for 3,072 stories about emotions, the model named its character <b>Elias</b> in
+  <b>98.2%</b> of them. Its own
   writing reuses five-word phrases <b>53&times;</b> as often as DeepSeek's does. That matters because
   narrow, repetitive stories make a narrow vector. Whatever the stories have in common gets averaged
   in, so the vector stands for the model's writing habits as much as for the emotion. It is also the
@@ -915,11 +918,10 @@ border-bottom:1px solid var(--border)}</style></head>
   <p class="narrow">The two buttons swap in a different set of emotion vectors, built from a different
   writer's stories, the same swap as section 2. The layer buttons read the same measurement at a
   different depth of the model. Hover any bar to see where its wrong answers went.</p>
-  <p class="narrow"><b>Why the instruction-tuned model, when parts one and two just showed its emotion
-  structure is the messier of the two?</b> Because the twelve-emotion vector sets only exist for it: an
-  emotion vector has to be built from stories, and these were built from stories the instruction-tuned model
-  wrote about itself. Running the same test on the base model would mean rebuilding all twelve vectors
-  from base-model stories, which we did not do. So this section reads the model people actually talk to,
+  <p class="narrow">The twelve-emotion vector sets exist only for the instruction-tuned model. An
+  emotion vector has to be built from stories, and these were built from stories that model wrote
+  about itself. Running the same test on the base model would mean rebuilding all twelve vectors from
+  base-model stories, which we did not do. So this section reads the model people actually talk to,
   and the base model is absent here rather than losing.</p>
   <div class="card" style="margin-top:22px">
     <div class="controls">

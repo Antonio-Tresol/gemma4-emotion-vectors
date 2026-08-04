@@ -353,11 +353,15 @@ cursor:pointer;list-style:none}
 .gterm p{font-family:var(--display);font-size:14.5px;color:var(--body);line-height:1.65;
 margin:12px 0 0 220px;max-width:60ch}
 .gterm .gsrc{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:10px}
-/* These point down the page rather than out of it, so they take the quiet
-   in-caption treatment rather than .link-plain, and above all not the browser
-   default: an unstyled in-page anchor renders blue and underlined. */
-.gterm .gsrc a{color:inherit;text-decoration:none;border-bottom:1px dotted var(--grey-mid)}
-.gterm .gsrc a:hover{color:var(--text);border-bottom-color:var(--text)}
+/* EVERY in-page anchor that carries no class of its own. These point down the
+   page rather than out of it, so they take the quiet dotted treatment rather
+   than .link-plain's weight and arrow. Written as a blanket rule because the
+   per-component version was not one: the glossary source lines were styled, the
+   citation in the lede was added later without a class, and it rendered in
+   browser-default blue on a page where nothing else is blue. */
+a[href^="#"]:not([class]){color:inherit;text-decoration:none;
+border-bottom:1px dotted var(--grey-mid)}
+a[href^="#"]:not([class]):hover{color:var(--text);border-bottom-color:var(--text)}
 /* Landing here from a term in the prose: mark where the reader arrived, or a
    jump into the middle of a list of ten looks like nothing happened. */
 .gterm:target{background:var(--surface-alt);border-left-color:var(--orange)}

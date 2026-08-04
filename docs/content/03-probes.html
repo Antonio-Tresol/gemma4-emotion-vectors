@@ -2,8 +2,7 @@
   <h2><span class="secno">2</span>Who writes the stories changes the answer</h2>
   <p class="narrow">The corpus of stories behind an emotion vector is a choice, and we made it four
   different ways. The four sets went through the same test.</p>
-  <p class="narrow"><b>The test.</b> We took short messages of the kind a person actually sends a
-  chatbot. One reads <em>"My daughter just took her first steps today! What are some ways to capture
+  <p class="narrow">The test uses short messages of the kind a person actually sends a chatbot. One reads <em>"My daughter just took her first steps today! What are some ways to capture
   more of these precious moments?"</em>, and implies an emotion without ever naming it. We ran each
   message as a chat turn and read the <span data-term="residual stream">residual stream</span> at
   the last token before the reply would start. Then we ranked all twelve emotion vectors by cosine
@@ -42,8 +41,9 @@
     </details>
     <div class="src">source: notebooks/07_generator_lineages.ipynb (experiments E11 and E12)</div>
   </div>
-  <p class="narrow" style="margin-top:22px"><b>Why its own stories are worse.</b> Asked for 3,072
-  stories about emotions, the model named its character <b>Elias</b> in <b>98.2%</b> of them. Its own
+  <p class="narrow" style="margin-top:22px">Its own stories are worse because they repeat
+  themselves. Asked for 3,072 stories about emotions, the model named its character <b>Elias</b> in
+  <b>98.2%</b> of them. Its own
   writing reuses five-word phrases <b>53&times;</b> as often as DeepSeek's does. That matters because
   narrow, repetitive stories make a narrow vector. Whatever the stories have in common gets averaged
   in, so the vector stands for the model's writing habits as much as for the emotion. It is also the
