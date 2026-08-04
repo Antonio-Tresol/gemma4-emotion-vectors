@@ -39,6 +39,13 @@ the parts of this that a script can judge; the rest is on whoever edits.
 Everything else is prose. Parallel items are a list: `<ul class="reasons">` when
 the order does not matter, `<ol class="steps">` when the text claims one.
 
+Every chart is an SVG with a fixed `viewBox` scaled to the width of its card,
+so **its aspect ratio alone decides its height**. One CSS rule caps that height
+at `min(72vh, 620px)`: a 1:1 chart at full width would otherwise be as tall as
+the column is wide, and a figure a reader cannot see all of has lost the
+comparison it exists to make. Nothing is sized in pixels per chart, and nothing
+needs a media query: the ratio and the cap do it.
+
 Three rules that are easy to get wrong:
 
 - **The legend is not the how-to.** A legend is needed to see the figure at all,

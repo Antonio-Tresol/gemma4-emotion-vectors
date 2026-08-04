@@ -156,6 +156,15 @@ border-radius:12px;padding:18px 20px}
 .partbar .pblurb{max-width:62ch;margin-top:12px;color:var(--muted);font-size:16px}
 @media(max-width:700px){.partbar .ptitle{font-size:15px}}
 .callout .k{font-family:var(--display);font-weight:650;color:var(--text);display:block;margin-bottom:4px}
+/* FIGURE SIZING, the standard. Every chart is an SVG with a fixed viewBox
+   scaled to the width of its card, so its aspect ratio alone decides its
+   height. Those ratios run from 4.6:1 to 1:1 across the fourteen figures, and
+   at 1:1 a full-width chart is as tall as the column is wide, which is taller
+   than the screen it is read on. The cap stops that: the drawing shrinks and
+   centres instead of running off the bottom. A figure a reader cannot see all
+   of has lost the comparison it exists to make. */
+[data-figtitle] svg{display:block;width:100%;height:auto;max-height:min(72vh,620px);
+margin:0 auto}
 /* Chart text is set in the UI sans, not the mono. Monospace advance widths are
    built for aligning columns of code; at 10px they make axis titles sprawl and
    wrap, which is most of why these figures read as unlabelled. */
@@ -511,7 +520,7 @@ border-bottom:1px solid var(--border)}</style></head>
     </div>
   </div>
   <p class="narrow" style="margin-top:20px">We compare Gemma&nbsp;4&nbsp;31B in two forms,
-  <b>base</b> and <b>instruction-tuned</b>: the same weights before and after post-training. Running both is a comparison the original paper did not report, and it is where the
+  <b>base</b> and <b>instruction-tuned</b>: the same weights before and after post-training. Running both extends the original paper, and it is where the
   interesting result came from. <span data-term="layer">Layers</span> are sampled, not swept: twenty
   across the stack (0 to 57, every third) for the geometry and detection work, six for the
   trajectories.</p>
@@ -554,8 +563,8 @@ border-bottom:1px solid var(--border)}</style></head>
   the last token before the reply would start. Then we ranked all twelve emotion vectors by cosine
   and asked whether the right one landed in the top three.</p>
   <p class="narrow">The vectors were built from <em>stories</em> and tested on
-  <em>messages</em>, so nothing guarantees transfer. The emotion is never stated either, so
-  matching on the words cannot work. A layer counts as <b>working</b> when
+  <em>messages</em>, a transfer the training never asked for. The emotion is implied rather than
+  named, so matching on the words cannot work. A layer counts as <b>working</b> when
   it gets at least 8 of 12 right on the paper's twelve scenarios <em>and</em> on a second twelve we
   wrote ourselves before scoring anything. Both marks were fixed in advance.</p>  <div class="card" style="margin-top:22px">
     <div id="lineageChart" data-figtitle="Detection by story source and layer"></div>
