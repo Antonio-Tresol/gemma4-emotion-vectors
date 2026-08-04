@@ -7,7 +7,7 @@
      <head> belongs HERE, in the template — a hand-edit to index.html survives
      exactly until the next `python build.py`, which is how the original meta tag
      was lost once already. -->
-<title>How are emotions represented in large language models?</title>
+<title>How are emotions represented in large language models? A study with Gemma 4 31B</title>
 <meta name="description" content="Replicating Anthropic's emotion-vector result on Gemma 4 31B: the base model reproduces the circumplex, the instruction-tuned model buries it under an axis we cannot explain, and emotion tracking through a story is real but small.">
 <meta property="og:title" content="How are emotions represented in large language models?">
 <meta property="og:description" content="A short research sprint on emotion vectors in Gemma 4 31B: replication, what instruction tuning displaces, and reading emotion token by token through a story.">
@@ -64,6 +64,10 @@ nav .out a span{display:none}
 nav .out a svg{width:13px;height:13px}}
 nav .brand{font-weight:700;color:var(--text);margin-right:6px;letter-spacing:-.01em;white-space:nowrap}
 header{padding:78px 0 54px;border-bottom:1px solid var(--border);background:var(--surface)}
+/* The scope line under the title. Sized between the title and the lede so it
+   reads as part of the title rather than as the first sentence of the page. */
+.subtitle{font-family:var(--display);font-size:clamp(17px,2vw,22px);font-weight:500;
+color:var(--body);margin-top:6px;letter-spacing:-.01em}
 h1{font-family:var(--display);font-size:clamp(34px,5vw,52px);font-weight:700;color:var(--text);
 letter-spacing:-.025em;line-height:1.08;margin-bottom:18px}
 h2{font-family:var(--display);font-size:30px;font-weight:650;color:var(--text);letter-spacing:-.02em;
@@ -225,7 +229,18 @@ font-family:var(--display);font-size:15px;line-height:1.55;color:var(--text)}
 @media(max-width:760px){.index{grid-template-columns:1fr}}
 .index a{display:flex;gap:12px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--border);
 text-decoration:none;color:var(--body);font-family:var(--display);font-size:14.5px}
-.index a:hover{color:var(--text)}
+/* The contents rows only changed from --body to --text on hover, two shades of
+   near-black, which reads as no feedback at all. They now use the page's own
+   vocabulary for an active row: the surface colour lifting off the grey
+   background, as the nav pills do, and the orange left rule that marks a
+   callout or a takeaway. The rule is an inset shadow rather than a border so
+   nothing reflows, and the negative margin keeps it clear of the number.
+   :focus-visible matches, because a keyboard reader needs the same signal. */
+.index a{border-radius:6px;padding-left:10px;margin-left:-10px;
+transition:background .12s,color .12s,box-shadow .12s}
+.index a:hover,.index a:focus-visible{color:var(--text);background:var(--surface);
+box-shadow:inset 2px 0 0 var(--orange)}
+.index a:focus-visible{outline:none}
 .index a .n{font-family:var(--mono);font-size:12px;color:var(--orange);font-weight:600;min-width:20px}
 .index a .t{flex:1}
 .kbd{display:inline-block;font-family:var(--mono);font-size:11px;border:1px solid var(--border);
@@ -345,6 +360,7 @@ border-bottom:1px solid var(--border)}</style></head>
 
 <header><div class="wrap">
   <h1>How are emotions represented in<br>large language models?</h1>
+  <p class="subtitle">A study with Gemma&nbsp;4&nbsp;31B</p>
   <div class="coverfig">
     <div id="coverPcBase" data-figtitle="Principal components of the 171 emotion vectors, base model, layer 33"></div>
     <div id="coverPcIt" data-figtitle="Principal components of the 171 emotion vectors, instruction-tuned model, layer 33"></div>
@@ -386,12 +402,7 @@ border-bottom:1px solid var(--border)}</style></head>
     <div class="mhnote"><sup>&dagger;</sup>&nbsp;Correspondence to
       <a class="link-plain" href="mailto:antonio1dbo@gmail.com">antonio1dbo@gmail.com</a></div>
   </div>
-  <div class="callout" style="margin-top:26px">
-    <span class="k">Not peer reviewed</span>
-    A short sprint, and no external review. The reads that failed are in the page rather than
-    left out of it. Corrections are welcome, particularly on claims that outrun their evidence:
-    <a class="link-plain" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/issues" target="_blank" rel="noopener noreferrer">report an <span class="nw">error<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a>.
-  </div>
+  <div class="mhnote" style="margin-top:18px">Not peer reviewed: a short sprint with no external review, and the reads that failed are in the page rather than left out. Corrections welcome, particularly on claims that outrun their evidence: <a class="link-plain" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/issues" target="_blank" rel="noopener noreferrer">report an <span class="nw">error<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a>.</div>
   <h2>Key results</h2>
   <div class="grid3" style="margin-top:20px;gap:16px">
     <div class="card"><h3>The base model reproduces the result</h3>

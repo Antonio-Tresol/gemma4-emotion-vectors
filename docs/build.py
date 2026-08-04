@@ -274,7 +274,7 @@ SKELETON = r"""<!DOCTYPE html>
      <head> belongs HERE, in the template — a hand-edit to index.html survives
      exactly until the next `python build.py`, which is how the original meta tag
      was lost once already. -->
-<title>How are emotions represented in large language models?</title>
+<title>How are emotions represented in large language models? A study with Gemma 4 31B</title>
 <meta name="description" content="Replicating Anthropic's emotion-vector result on Gemma 4 31B: the base model reproduces the circumplex, the instruction-tuned model buries it under an axis we cannot explain, and emotion tracking through a story is real but small.">
 <meta property="og:title" content="How are emotions represented in large language models?">
 <meta property="og:description" content="A short research sprint on emotion vectors in Gemma 4 31B: replication, what instruction tuning displaces, and reading emotion token by token through a story.">
