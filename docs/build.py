@@ -629,7 +629,7 @@ TEMPLATE = r"""<!DOCTYPE html>
 
 <section id="question"><div class="wrap">
   <div class="kicker">What we were trying to find out</div>
-  <h2><span class="secno">1</span>Why does this matter?</h2>
+  <h2><span class="secno">1</span>What we measured, and why it matters</h2>
   <h3 style="margin-top:26px">The setup, in one picture</h3>
   <p class="narrow" style="margin-bottom:14px">We build an emotion vector by averaging the model's internal state across one emotion's
   stories, then subtracting the average over all the emotions. To read it back we measure the
