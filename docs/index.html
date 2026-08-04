@@ -371,10 +371,9 @@ margin:12px 0 0 220px;max-width:60ch}
   .gterm p{margin-left:0}}
 /* References. Quiet links (.link-src) rather than .link-plain: twelve bold
    arrowed titles in a row would read as twelve recommendations. */
-.refs{max-width:820px;margin-top:16px;padding-left:26px}
+.refs{max-width:820px;margin-top:16px;padding-left:0;list-style:none}
 .refs li{font-family:var(--display);font-size:14px;color:var(--body);line-height:1.6;
-margin-bottom:11px;padding-left:6px}
-.refs li::marker{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+margin-bottom:11px;padding-left:22px;text-indent:-22px}
 .refs li:target{background:var(--surface-alt);box-shadow:0 0 0 6px var(--surface-alt)}
 /* The shared control for the two story figures, sitting between them so it is
    adjacent to both rather than above your line of sight. Ruled top and bottom
@@ -470,7 +469,7 @@ border-bottom:1px solid var(--border)}</style></head>
     written turn. It is never reliable, and it works far better for some emotions than others.</p></div>
   </div>
   <p class="lede narrow" style="margin-top:30px">In
-  <a class="link-plain" href="https://transformer-circuits.pub/2026/emotions/index.html" target="_blank" rel="noopener noreferrer"><em>Emotion Concepts and their Function in a Large Language <span class="nw">Model<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></em></a> (Sofroniew et al., 2026), Anthropic reported that
+  <a class="link-plain" href="https://transformer-circuits.pub/2026/emotions/index.html" target="_blank" rel="noopener noreferrer"><em>Emotion Concepts and their Function in a Large Language <span class="nw">Model<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></em></a> (<a href="#r-sofroniew2026">Sofroniew et al., 2026</a>), Anthropic reported that
   Claude&nbsp;Sonnet&nbsp;4.5 keeps a separate internal direction for each emotion. Those
   directions arrange themselves the way psychologists arrange them. We rebuilt that result on
   <a class="link-plain" href="https://huggingface.co/google/gemma-4-31b" target="_blank" rel="noopener noreferrer"><span class="nw">Gemma&nbsp;4&nbsp;31B<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a>, an open
@@ -1141,8 +1140,8 @@ border-bottom:1px solid var(--border)}</style></head>
       principal component analysis sorts the model's 171 emotion vectors with no human input, and
       each resulting axis is then correlated against them. Figure 1 draws all three, plus a
       story-length control, against every axis of both models.</p>
-      <p class="gsrc">Sources: <a href="#r-mohammad2018">Mohammad (2018)</a>,
-      <a href="#r-nrcvad">NRC VAD Lexicon v2.1</a></p>
+      <p class="gsrc">Sources: <a href="#r-mohammad2025">Mohammad (2025)</a>,
+      <a href="#r-mohammad2018">Mohammad (2018)</a></p>
     </details>
 
     <details class="gterm" id="g-circumplex" data-slug="circumplex">
@@ -1166,8 +1165,8 @@ border-bottom:1px solid var(--border)}</style></head>
       independent of one another in practice. The base model's largest axis matches valence at 0.83
       and dominance at 0.66. One axis can score well against two ratings at once, so quoting only
       the best of them would overstate how cleanly that axis is valence.</p>
-      <p class="gsrc">Sources: <a href="#r-mohammad2018">Mohammad (2018)</a>,
-      <a href="#r-nrcvad">NRC VAD Lexicon v2.1</a></p>
+      <p class="gsrc">Sources: <a href="#r-mohammad2025">Mohammad (2025)</a>, and section 3,
+      which owns the 0.83 and the 0.66</p>
     </details>
 
     <details class="gterm" id="g-elo" data-slug="elo">
@@ -1179,7 +1178,9 @@ border-bottom:1px solid var(--border)}</style></head>
       activity, and we report the strengths on the scale chess uses. Ours is anchored so the mean
       activity sits at 1000. The anchor in the paper we replicate is unpublished, so absolute values
       do not compare across the two; differences within one ranking do.</p>
-      <p class="gsrc">Sources: <a href="#r-bradley1952">Bradley and Terry (1952)</a>, and the
+      <p class="gsrc">Sources: <a href="#r-bradley1952">Bradley and Terry (1952)</a> for the
+      strengths, <a href="#r-elo1978">Elo (1978)</a> for the scale,
+      <a href="#r-sofroniew2026">Sofroniew et al. (2026)</a> for the anchor, and the
       implementation in <a class="link-src"
       href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/src/emotion_vectors/preferences.py"
       target="_blank" rel="noopener noreferrer">src/emotion_vectors/preferences.py</a></p>
@@ -1192,8 +1193,9 @@ border-bottom:1px solid var(--border)}</style></head>
       followed by a small feed-forward network, each writing back into the residual stream. Gemma 4
       31B stacks 60 of them, numbered 0 to 59. Where a vector is read changes what it shows, so the
       per-layer figures here carry a layer control.</p>
-      <p class="gsrc">Sources: <a href="#r-vaswani2017">Vaswani et al. (2017)</a>,
-      <a href="#r-gemma4">Gemma 4 31B model card</a></p>
+      <p class="gsrc">Sources: <a href="#r-vaswani2017">Vaswani et al. (2017)</a>, and the model
+      cards for both models, <a href="#r-gemma4">pretrained</a> and
+      <a href="#r-gemma4it">instruction-tuned</a></p>
     </details>
 
     <details class="gterm" id="g-principal-component" data-slug="principal component">
@@ -1213,16 +1215,18 @@ border-bottom:1px solid var(--border)}</style></head>
       <summary><span class="gt">Probe</span><span class="gs">A direction used as a detector: take
       the angle between it and the model's state, and read off how strongly that concept is
       present.</span></summary>
-      <p>The emotion vectors on this page are used in that second role. We build a direction by
+      <p>A direction can be read or added back in, and the emotion vectors here are used both ways.
+      We build a direction by
       averaging the model's state over one emotion's stories, then subtracting the average over all
       of them. Reading it back means measuring the cosine between that direction and the state we
-      are testing. Reading and
-      steering with such mean-difference directions is the recipe of representation engineering (Zou
-      and colleagues) and of contrastive activation addition (Panickssery and colleagues).</p>
+      are testing. Building a steering direction as a difference of means is the recipe of
+      contrastive activation addition (Panickssery and colleagues) and of activation engineering
+      (Turner and colleagues). Zou and colleagues set out the wider programme of reading and
+      steering these directions, using a different construction.</p>
       <p>The same word also names a small classifier trained on activations, in the sense of Alain
       and Bengio. Nothing here is trained: our directions are averages.</p>
-      <p class="gsrc">Sources: <a href="#r-zou2023">Zou et al. (2023)</a>,
-      <a href="#r-panickssery2023">Panickssery et al. (2023)</a>,
+      <p class="gsrc">Sources: <a href="#r-panickssery2024">Panickssery et al. (2024)</a>,
+      <a href="#r-turner2023">Turner et al. (2023)</a>, <a href="#r-zou2023">Zou et al. (2023)</a>,
       <a href="#r-alain2016">Alain and Bengio (2016)</a></p>
     </details>
 
@@ -1231,7 +1235,7 @@ border-bottom:1px solid var(--border)}</style></head>
       layer reads from and writes back to, carrying everything the model has worked out so far about
       a token.</span></summary>
       <p>Each layer adds its output into one running vector per token rather than replacing it,
-      which is what the residual connection of Vaswani and colleagues does. Elhage and colleagues
+      which is what the residual connections in the transformer of Vaswani and colleagues do. Elhage and colleagues
       describe the consequence. The stream is a shared channel that successive layers write into and
       read from, so a direction in it can be measured at any depth. Every number on this page is
       taken from that vector, at a chosen layer and token.</p>
@@ -1245,75 +1249,61 @@ border-bottom:1px solid var(--border)}</style></head>
       <p>A model does not read words. Text is cut into pieces drawn from a fixed inventory, so a
       common word is usually one piece and a rare one is several. Figures 11 and 12 step through a
       story one piece at a time, and the counts on this page count pieces rather than words. The
-      inventory is part of the model, and Gemma 4 31B's is described on its model card.</p>
-      <p class="gsrc">Source: <a href="#r-gemma4">Gemma 4 31B model card</a></p>
+      three-quarters figure is a rough average for English prose, not a property of this
+      tokenizer.</p>
+      <p class="gsrc">Source: <a href="#r-gemma4">Gemma 4 31B, pretrained</a></p>
     </details>
 
     <details class="gterm" id="g-valence" data-slug="valence">
       <summary><span class="gt">Valence</span><span class="gs">How pleasant or unpleasant an emotion
       is, on the scale people rate words with.</span></summary>
       <p>The first NRC VAD dimension, and the one the replication turns on. The human ratings come
-      from Mohammad's 2018 study; we use version 2.1 of the lexicon it produced, and 164 of our 171
-      emotion words appear in it. On the base model, the axis of largest spread correlates 0.83 with
+      from the NRC VAD lexicon; we use version 2.1, documented in Mohammad (2025), and 164 of our
+      171 emotion words appear in it. On the base model, the axis of largest spread correlates 0.83 with
       those ratings. On the instruction-tuned model, valence falls to third place and something we
       cannot name takes over.</p>
-      <p class="gsrc">Sources: <a href="#r-mohammad2018">Mohammad (2018)</a>,
-      <a href="#r-nrcvad">NRC VAD Lexicon v2.1</a></p>
+      <p class="gsrc">Sources: <a href="#r-mohammad2025">Mohammad (2025)</a>,
+      <a href="#r-mohammad2018">Mohammad (2018)</a>, and section 3, which owns the 0.83</p>
     </details>
   </div>
 
   <h3 id="references" style="margin-top:44px">References</h3>
-  <ol class="refs">
-    <li id="r-alain2016">Alain, G., and Bengio, Y. (2016). Understanding intermediate layers using
-      linear classifier probes. <a class="link-src" href="https://arxiv.org/abs/1610.01644"
-      target="_blank" rel="noopener noreferrer">arXiv:1610.01644</a></li>
-    <li id="r-bradley1952">Bradley, R. A., and Terry, M. E. (1952). Rank analysis of incomplete
-      block designs: I. The method of paired comparisons. <em>Biometrika</em> 39(3/4), 324&ndash;345.
-      <a class="link-src" href="https://doi.org/10.2307/2334029" target="_blank"
+  <!-- The rule this list follows, for whoever edits it, not for the reader:
+       author and date, up to six authors then et al., the published version
+       wherever one exists, and one identifier per entry (a DOI where the work
+       has one, an arXiv number where it does not, the address otherwise). -->
+  <ul class="refs">
+    <li id="r-alain2016">Alain, G., and Bengio, Y. (2016). Understanding intermediate layers using linear classifier probes. <a class="link-src" href="https://arxiv.org/abs/1610.01644" target="_blank"
+      rel="noopener noreferrer">arXiv:1610.01644</a></li>
+    <li id="r-bradley1952">Bradley, R. A., and Terry, M. E. (1952). Rank analysis of incomplete block designs: I. The method of paired comparisons. <em>Biometrika</em> 39(3/4), 324. <a class="link-src" href="https://doi.org/10.2307/2334029" target="_blank"
       rel="noopener noreferrer">doi:10.2307/2334029</a></li>
-    <li id="r-elhage2021">Elhage, N., Nanda, N., Olsson, C., et al. (2021). A mathematical framework
-      for transformer circuits. <em>Transformer Circuits Thread</em>.
-      <a class="link-src" href="https://transformer-circuits.pub/2021/framework/index.html"
-      target="_blank" rel="noopener noreferrer">transformer-circuits.pub</a></li>
-    <li id="r-gemma4">Google. Gemma 4 31B model card. <em>Hugging Face</em>.
-      <a class="link-src" href="https://huggingface.co/google/gemma-4-31b" target="_blank"
-      rel="noopener noreferrer">huggingface.co/google/gemma-4-31b</a></li>
-    <li id="r-mohammad2018">Mohammad, S. (2018). Obtaining reliable human ratings of valence,
-      arousal, and dominance for 20,000 English words. <em>Proceedings of the 56th Annual Meeting of
-      the Association for Computational Linguistics</em>, 174&ndash;184.
-      <a class="link-src" href="https://aclanthology.org/P18-1017/" target="_blank"
-      rel="noopener noreferrer">aclanthology.org/P18-1017</a></li>
-    <li id="r-nrcvad">Mohammad, S. NRC Valence, Arousal, and Dominance Lexicon, version 2.1. The
-      version this project scores against.
-      <a class="link-src" href="http://saifmohammad.com/WebPages/nrc-vad.html" target="_blank"
-      rel="noopener noreferrer">saifmohammad.com</a></li>
-    <li id="r-panickssery2023">Panickssery, N., Gabrieli, N., Schulz, J., Tong, M., Hubinger, E.,
-      and Turner, A. M. (2023). Steering Llama 2 via contrastive activation addition.
-      <a class="link-src" href="https://arxiv.org/abs/2312.06681" target="_blank"
-      rel="noopener noreferrer">arXiv:2312.06681</a></li>
-    <li id="r-pearson1901">Pearson, K. (1901). On lines and planes of closest fit to systems of
-      points in space. <em>The London, Edinburgh, and Dublin Philosophical Magazine and Journal of
-      Science</em> 2(11), 559&ndash;572. <a class="link-src"
-      href="https://doi.org/10.1080/14786440109462720" target="_blank"
+    <li id="r-elhage2021">Elhage, N., Nanda, N., Olsson, C., Henighan, T., Joseph, N., Mann, B., et al. (2021). A mathematical framework for transformer circuits. <em>Transformer Circuits Thread</em>. <a class="link-src" href="https://transformer-circuits.pub/2021/framework/index.html" target="_blank"
+      rel="noopener noreferrer">transformer-circuits.pub/2021/framework</a></li>
+    <li id="r-elo1978">Elo, A. E. (1978). <em>The Rating of Chessplayers, Past and Present</em>. Arco.</li>
+    <li id="r-gemma4">Google DeepMind (2026). Gemma 4 31B, pretrained. <em>Hugging Face</em>. <a class="link-src" href="https://huggingface.co/google/gemma-4-31B" target="_blank"
+      rel="noopener noreferrer">huggingface.co/google/gemma-4-31B</a></li>
+    <li id="r-gemma4it">Google DeepMind (2026). Gemma 4 31B, instruction-tuned. <em>Hugging Face</em>. <a class="link-src" href="https://huggingface.co/google/gemma-4-31B-it" target="_blank"
+      rel="noopener noreferrer">huggingface.co/google/gemma-4-31B-it</a></li>
+    <li id="r-mohammad2018">Mohammad, S. (2018). Obtaining reliable human ratings of valence, arousal, and dominance for 20,000 English words. <em>Proceedings of the 56th Annual Meeting of the Association for Computational Linguistics</em>, 174&ndash;184. <a class="link-src" href="https://doi.org/10.18653/v1/P18-1017" target="_blank"
+      rel="noopener noreferrer">doi:10.18653/v1/P18-1017</a></li>
+    <li id="r-mohammad2025">Mohammad, S. (2025). NRC VAD Lexicon v2: norms for valence, arousal, and dominance for over 55k English terms. <a class="link-src" href="https://arxiv.org/abs/2503.23547" target="_blank"
+      rel="noopener noreferrer">arXiv:2503.23547</a>. Version 2.1 is the release this project scores against, downloaded from <a class="link-src" href="http://saifmohammad.com/WebPages/nrc-vad.html" target="_blank"
+      rel="noopener noreferrer">saifmohammad.com/WebPages/nrc-vad.html</a></li>
+    <li id="r-panickssery2024">Panickssery, N. (published as Rimsky, N.), Gabrieli, N., Schulz, J., Tong, M., Hubinger, E., and Turner, A. M. (2024). Steering Llama 2 via contrastive activation addition. <em>Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics</em>, 15504&ndash;15522. <a class="link-src" href="https://doi.org/10.18653/v1/2024.acl-long.828" target="_blank"
+      rel="noopener noreferrer">doi:10.18653/v1/2024.acl-long.828</a></li>
+    <li id="r-pearson1901">Pearson, K. (1901). On lines and planes of closest fit to systems of points in space. <em>The London, Edinburgh, and Dublin Philosophical Magazine and Journal of Science</em>, Series 6, 2(11), 559&ndash;572. <a class="link-src" href="https://doi.org/10.1080/14786440109462720" target="_blank"
       rel="noopener noreferrer">doi:10.1080/14786440109462720</a></li>
-    <li id="r-russell1980">Russell, J. A. (1980). A circumplex model of affect. <em>Journal of
-      Personality and Social Psychology</em> 39(6), 1161&ndash;1178. <a class="link-src"
-      href="https://doi.org/10.1037/h0077714" target="_blank"
+    <li id="r-russell1980">Russell, J. A. (1980). A circumplex model of affect. <em>Journal of Personality and Social Psychology</em> 39(6), 1161&ndash;1178. <a class="link-src" href="https://doi.org/10.1037/h0077714" target="_blank"
       rel="noopener noreferrer">doi:10.1037/h0077714</a></li>
-    <li id="r-sofroniew2026">Sofroniew, N., et al. (2026). Emotion concepts and their function in a
-      large language model. <em>Transformer Circuits Thread</em>. The paper this page replicates and
-      extends. <a class="link-src"
-      href="https://transformer-circuits.pub/2026/emotions/index.html" target="_blank"
-      rel="noopener noreferrer">transformer-circuits.pub</a></li>
-    <li id="r-vaswani2017">Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez,
-      A. N., Kaiser, L., and Polosukhin, I. (2017). Attention is all you need.
-      <a class="link-src" href="https://arxiv.org/abs/1706.03762" target="_blank"
+    <li id="r-sofroniew2026">Sofroniew, N., Kauvar, I., Saunders, W., Chen, R., Henighan, T., Hydrie, S., et al. (2026). Emotion concepts and their function in a large language model. <em>Transformer Circuits Thread</em>. <a class="link-src" href="https://transformer-circuits.pub/2026/emotions/index.html" target="_blank"
+      rel="noopener noreferrer">transformer-circuits.pub/2026/emotions</a></li>
+    <li id="r-turner2023">Turner, A. M., Thiergart, L., Leech, G., Udell, D., Vazquez, J. J., Mini, U., et al. (2023). Steering language models with activation engineering. <a class="link-src" href="https://arxiv.org/abs/2308.10248" target="_blank"
+      rel="noopener noreferrer">arXiv:2308.10248</a></li>
+    <li id="r-vaswani2017">Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., et al. (2017). Attention is all you need. <em>Advances in Neural Information Processing Systems 30</em>. <a class="link-src" href="https://arxiv.org/abs/1706.03762" target="_blank"
       rel="noopener noreferrer">arXiv:1706.03762</a></li>
-    <li id="r-zou2023">Zou, A., Phan, L., Chen, S., et al. (2023). Representation engineering: a
-      top-down approach to AI transparency. <a class="link-src"
-      href="https://arxiv.org/abs/2310.01405" target="_blank"
+    <li id="r-zou2023">Zou, A., Phan, L., Chen, S., Campbell, J., Guo, P., Ren, R., et al. (2023). Representation engineering: a top-down approach to AI transparency. <a class="link-src" href="https://arxiv.org/abs/2310.01405" target="_blank"
       rel="noopener noreferrer">arXiv:2310.01405</a></li>
-  </ol>
+  </ul>
 </div></section>
 
 <footer><div class="wrap">
