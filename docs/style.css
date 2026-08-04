@@ -45,7 +45,9 @@ nav .out a:hover{color:var(--text);border-color:var(--muted);background:var(--su
 nav .out a{padding:4px 6px;font-size:10.5px}
 nav .out a span{display:none}
 nav .out a svg{width:13px;height:13px}}
-nav .brand{font-weight:700;color:var(--text);margin-right:6px;letter-spacing:-.01em;white-space:nowrap}
+nav .brand{font-weight:700;color:var(--text);margin-right:6px;letter-spacing:-.01em;white-space:nowrap;
+text-decoration:none}
+nav .brand:hover{color:var(--orange)}
 header{padding:78px 0 54px;border-bottom:1px solid var(--border);background:var(--surface)}
 /* The scope line under the title. Sized between the title and the lede so it
    reads as part of the title rather than as the first sentence of the page. */
@@ -311,9 +313,52 @@ cursor:pointer;transition:color .12s,border-color .12s,background .12s}
 stroke-width:1.6;stroke-linecap:round}
 .playbtn svg path[d^="M5.5"]{fill:none}
 /* Inline glossary terms. Dotted rule rather than a link's solid one, so a
-   reader can tell at a glance that hovering explains rather than navigates. */
+   reader can tell at a glance that hovering explains rather than navigates.
+   Each one is an anchor into section 11, and inherits body colour rather than
+   taking .link-plain's weight and arrow: a term is a footnote, not a
+   destination the page is recommending. */
 .term{border-bottom:1px dotted var(--muted)}
 .term:hover{border-bottom-color:var(--text)}
+a.term{color:inherit;text-decoration:none}
+#tip .t-go{display:block;margin-top:6px;font-family:var(--display);font-size:11.5px;
+font-weight:600;color:var(--orange)}
+/* The glossary itself. One <details> per term, with the name and the same
+   one-line definition the tooltip shows kept visible while collapsed, so the
+   list reads as a glossary before anything is opened. Behind the fold: the
+   longer version and the reference it comes from. */
+.gloss{max-width:820px;margin-top:26px;border-top:1px solid var(--border)}
+.gterm{border-bottom:1px solid var(--border);padding:13px 0 13px 14px;
+border-left:2px solid transparent;transition:background .2s,border-left-color .2s}
+/* Exactly two children in the summary row, the name and the definition, for the
+   reason the masthead has .mhv: every element child of a grid is a grid item. */
+.gterm>summary{display:grid;grid-template-columns:200px 1fr;gap:0 20px;align-items:baseline;
+cursor:pointer;list-style:none}
+.gterm>summary::-webkit-details-marker{display:none}
+.gterm .gt{font-family:var(--display);font-size:16px;font-weight:600;color:var(--text)}
+.gterm .gt:before{content:"\25B8\00a0";color:var(--orange)}
+.gterm[open] .gt:before{content:"\25BE\00a0"}
+.gterm .gs{font-family:var(--display);font-size:14.5px;color:var(--muted);line-height:1.55}
+.gterm[open] .gs{color:var(--body)}
+.gterm p{font-family:var(--display);font-size:14.5px;color:var(--body);line-height:1.65;
+margin:12px 0 0 220px;max-width:60ch}
+.gterm .gsrc{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:10px}
+/* These point down the page rather than out of it, so they take the quiet
+   in-caption treatment rather than .link-plain, and above all not the browser
+   default: an unstyled in-page anchor renders blue and underlined. */
+.gterm .gsrc a{color:inherit;text-decoration:none;border-bottom:1px dotted var(--grey-mid)}
+.gterm .gsrc a:hover{color:var(--text);border-bottom-color:var(--text)}
+/* Landing here from a term in the prose: mark where the reader arrived, or a
+   jump into the middle of a list of ten looks like nothing happened. */
+.gterm:target{background:var(--surface-alt);border-left-color:var(--orange)}
+@media(max-width:700px){.gterm>summary{grid-template-columns:1fr;gap:4px}
+  .gterm p{margin-left:0}}
+/* References. Quiet links (.link-src) rather than .link-plain: twelve bold
+   arrowed titles in a row would read as twelve recommendations. */
+.refs{max-width:820px;margin-top:16px;padding-left:26px}
+.refs li{font-family:var(--display);font-size:14px;color:var(--body);line-height:1.6;
+margin-bottom:11px;padding-left:6px}
+.refs li::marker{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.refs li:target{background:var(--surface-alt);box-shadow:0 0 0 6px var(--surface-alt)}
 /* The shared control for the two story figures, sitting between them so it is
    adjacent to both rather than above your line of sight. Ruled top and bottom
    so it reads as a control strip and not as part of either chart. */

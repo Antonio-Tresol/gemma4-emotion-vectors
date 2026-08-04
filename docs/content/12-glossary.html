@@ -1,0 +1,188 @@
+<section id="glossary"><div class="wrap">
+  <h2><span class="secno">11</span>Glossary and references</h2>
+  <p class="narrow">Every dotted word on this page has an entry here, with the source its
+  definition rests on.</p>
+
+  <div class="gloss">
+    <details class="gterm" id="g-arousal" data-slug="arousal">
+      <summary><span class="gt">Arousal</span><span class="gs">How worked up an emotion is, from
+      calm to agitated, on the scale people rate words with.</span></summary>
+      <p>One of the three dimensions in the NRC VAD lexicon, alongside valence and dominance.
+      Thousands of English words carry a human rating on each. Those ratings are the yardstick here:
+      principal component analysis sorts the model's 171 emotion vectors with no human input, and
+      each resulting axis is then correlated against them. Figure 1 draws all three, plus a
+      story-length control, against every axis of both models.</p>
+      <p class="gsrc">Sources: <a href="#r-mohammad2018">Mohammad (2018)</a>,
+      <a href="#r-nrcvad">NRC VAD Lexicon v2.1</a></p>
+    </details>
+
+    <details class="gterm" id="g-circumplex" data-slug="circumplex">
+      <summary><span class="gt">Circumplex</span><span class="gs">The arrangement psychologists use
+      for emotions: a circle whose two axes are how pleasant the feeling is and how worked
+      up.</span></summary>
+      <p>Russell proposed in 1980 that words for feelings sit around a circle rather than in a list
+      of separate categories. The circle is spanned by pleasantness and activation: <em>elated</em>
+      at the pleasant and active side, <em>miserable</em> opposite it. The published result we rebuild
+      is that a model's emotion vectors, sorted by what separates them most, recover those same two
+      axes without being told about either. Section 3 tests that on both models, and section 4 asks
+      what happened in the instruction-tuned one.</p>
+      <p class="gsrc">Sources: <a href="#r-russell1980">Russell (1980)</a>,
+      <a href="#r-sofroniew2026">Sofroniew et al. (2026)</a></p>
+    </details>
+
+    <details class="gterm" id="g-dominance" data-slug="dominance">
+      <summary><span class="gt">Dominance</span><span class="gs">How much control an emotion
+      implies, from helpless to in charge, on the scale people rate words with.</span></summary>
+      <p>The third NRC VAD dimension. It earns its place in Figure 1 because these ratings are not
+      independent of one another in practice. The base model's largest axis matches valence at 0.83
+      and dominance at 0.66. One axis can score well against two ratings at once, so quoting only
+      the best of them would overstate how cleanly that axis is valence.</p>
+      <p class="gsrc">Sources: <a href="#r-mohammad2018">Mohammad (2018)</a>,
+      <a href="#r-nrcvad">NRC VAD Lexicon v2.1</a></p>
+    </details>
+
+    <details class="gterm" id="g-elo" data-slug="elo">
+      <summary><span class="gt">Elo</span><span class="gs">A ranking fitted from many head-to-head
+      choices, borrowed from chess, where a higher number means preferred more
+      often.</span></summary>
+      <p>Section 5 shows the model two activities and asks which it would rather do, over every
+      ordered pair. Bradley and Terry's 1952 method turns those pairwise wins into one strength per
+      activity, and we report the strengths on the scale chess uses. Ours is anchored so the mean
+      activity sits at 1000. The anchor in the paper we replicate is unpublished, so absolute values
+      do not compare across the two; differences within one ranking do.</p>
+      <p class="gsrc">Sources: <a href="#r-bradley1952">Bradley and Terry (1952)</a>, and the
+      implementation in <a class="link-src"
+      href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/src/emotion_vectors/preferences.py"
+      target="_blank" rel="noopener noreferrer">src/emotion_vectors/preferences.py</a></p>
+    </details>
+
+    <details class="gterm" id="g-layer" data-slug="layer">
+      <summary><span class="gt">Layer</span><span class="gs">One step of the model's computation.
+      This one has 58 of them, stacked from input to output.</span></summary>
+      <p>A transformer layer is the unit Vaswani and colleagues introduced in 2017: attention
+      followed by a small feed-forward network, each writing back into the residual stream. Gemma 4
+      31B stacks 58 of them, numbered 0 to 57. Where you read a vector changes what you see, which
+      is why every per-layer figure here carries a slider instead of quoting a single depth.</p>
+      <p class="gsrc">Sources: <a href="#r-vaswani2017">Vaswani et al. (2017)</a>,
+      <a href="#r-gemma4">Gemma 4 31B model card</a></p>
+    </details>
+
+    <details class="gterm" id="g-principal-component" data-slug="principal component">
+      <summary><span class="gt">Principal component</span><span class="gs">The directions along
+      which a set of vectors differ most, found by a standard method that is told nothing about what
+      the vectors mean.</span></summary>
+      <p>Principal component analysis, set out by Pearson in 1901, returns the directions of largest
+      spread in a set of points. They come in order: the first captures the most, the second the
+      most of what is left. We run it on the 171 emotion vectors. No human rating enters that fit, so a match
+      against human ratings afterwards is the finding rather than the setup. A component points
+      along an axis without a preferred end, so we report the size of a correlation and not its
+      sign.</p>
+      <p class="gsrc">Source: <a href="#r-pearson1901">Pearson (1901)</a></p>
+    </details>
+
+    <details class="gterm" id="g-probe" data-slug="probe">
+      <summary><span class="gt">Probe</span><span class="gs">A direction used as a detector: take
+      the angle between it and the model's state, and read off how strongly that concept is
+      present.</span></summary>
+      <p>The emotion vectors on this page are used in that second role. We build a direction by
+      averaging the model's state over one emotion's stories, then subtracting the average over all
+      of them. Reading it back means measuring the cosine between that direction and the state we
+      are testing. Reading and
+      steering with such mean-difference directions is the recipe of representation engineering (Zou
+      and colleagues) and of contrastive activation addition (Panickssery and colleagues).</p>
+      <p>The same word also names a small classifier trained on activations, in the sense of Alain
+      and Bengio. Nothing here is trained: our directions are averages.</p>
+      <p class="gsrc">Sources: <a href="#r-zou2023">Zou et al. (2023)</a>,
+      <a href="#r-panickssery2023">Panickssery et al. (2023)</a>,
+      <a href="#r-alain2016">Alain and Bengio (2016)</a></p>
+    </details>
+
+    <details class="gterm" id="g-residual-stream" data-slug="residual stream">
+      <summary><span class="gt">Residual stream</span><span class="gs">The running vector each
+      layer reads from and writes back to, carrying everything the model has worked out so far about
+      a token.</span></summary>
+      <p>Each layer adds its output into one running vector per token rather than replacing it,
+      which is what the residual connection of Vaswani and colleagues does. Elhage and colleagues
+      describe the consequence. The stream is a shared channel that successive layers write into and
+      read from, so a direction in it can be measured at any depth. Every number on this page is
+      taken from that vector, at a chosen layer and token.</p>
+      <p class="gsrc">Sources: <a href="#r-vaswani2017">Vaswani et al. (2017)</a>,
+      <a href="#r-elhage2021">Elhage et al. (2021)</a></p>
+    </details>
+
+    <details class="gterm" id="g-token" data-slug="token">
+      <summary><span class="gt">Token</span><span class="gs">The word-fragments a model actually
+      reads, roughly three-quarters of a word each.</span></summary>
+      <p>A model does not read words. Text is cut into pieces drawn from a fixed inventory, so a
+      common word is usually one piece and a rare one is several. Figures 11 and 12 step through a
+      story one piece at a time, and the counts on this page count pieces rather than words. The
+      inventory is part of the model, and Gemma 4 31B's is described on its model card.</p>
+      <p class="gsrc">Source: <a href="#r-gemma4">Gemma 4 31B model card</a></p>
+    </details>
+
+    <details class="gterm" id="g-valence" data-slug="valence">
+      <summary><span class="gt">Valence</span><span class="gs">How pleasant or unpleasant an emotion
+      is, on the scale people rate words with.</span></summary>
+      <p>The first NRC VAD dimension, and the one the replication turns on. The human ratings come
+      from Mohammad's 2018 study; we use version 2.1 of the lexicon it produced, and 164 of our 171
+      emotion words appear in it. On the base model, the axis of largest spread correlates 0.83 with
+      those ratings. On the instruction-tuned model, valence falls to third place and something we
+      cannot name takes over.</p>
+      <p class="gsrc">Sources: <a href="#r-mohammad2018">Mohammad (2018)</a>,
+      <a href="#r-nrcvad">NRC VAD Lexicon v2.1</a></p>
+    </details>
+  </div>
+
+  <h3 id="references" style="margin-top:44px">References</h3>
+  <ol class="refs">
+    <li id="r-alain2016">Alain, G., and Bengio, Y. (2016). Understanding intermediate layers using
+      linear classifier probes. <a class="link-src" href="https://arxiv.org/abs/1610.01644"
+      target="_blank" rel="noopener noreferrer">arXiv:1610.01644</a></li>
+    <li id="r-bradley1952">Bradley, R. A., and Terry, M. E. (1952). Rank analysis of incomplete
+      block designs: I. The method of paired comparisons. <em>Biometrika</em> 39(3/4), 324&ndash;345.
+      <a class="link-src" href="https://doi.org/10.2307/2334029" target="_blank"
+      rel="noopener noreferrer">doi:10.2307/2334029</a></li>
+    <li id="r-elhage2021">Elhage, N., Nanda, N., Olsson, C., et al. (2021). A mathematical framework
+      for transformer circuits. <em>Transformer Circuits Thread</em>.
+      <a class="link-src" href="https://transformer-circuits.pub/2021/framework/index.html"
+      target="_blank" rel="noopener noreferrer">transformer-circuits.pub</a></li>
+    <li id="r-gemma4">Google. Gemma 4 31B model card. <em>Hugging Face</em>.
+      <a class="link-src" href="https://huggingface.co/google/gemma-4-31b" target="_blank"
+      rel="noopener noreferrer">huggingface.co/google/gemma-4-31b</a></li>
+    <li id="r-mohammad2018">Mohammad, S. (2018). Obtaining reliable human ratings of valence,
+      arousal, and dominance for 20,000 English words. <em>Proceedings of the 56th Annual Meeting of
+      the Association for Computational Linguistics</em>, 174&ndash;184.
+      <a class="link-src" href="https://aclanthology.org/P18-1017/" target="_blank"
+      rel="noopener noreferrer">aclanthology.org/P18-1017</a></li>
+    <li id="r-nrcvad">Mohammad, S. NRC Valence, Arousal, and Dominance Lexicon, version 2.1. The
+      version this project scores against.
+      <a class="link-src" href="http://saifmohammad.com/WebPages/nrc-vad.html" target="_blank"
+      rel="noopener noreferrer">saifmohammad.com</a></li>
+    <li id="r-panickssery2023">Panickssery, N., Gabrieli, N., Schulz, J., Tong, M., Hubinger, E.,
+      and Turner, A. M. (2023). Steering Llama 2 via contrastive activation addition.
+      <a class="link-src" href="https://arxiv.org/abs/2312.06681" target="_blank"
+      rel="noopener noreferrer">arXiv:2312.06681</a></li>
+    <li id="r-pearson1901">Pearson, K. (1901). On lines and planes of closest fit to systems of
+      points in space. <em>The London, Edinburgh, and Dublin Philosophical Magazine and Journal of
+      Science</em> 2(11), 559&ndash;572. <a class="link-src"
+      href="https://doi.org/10.1080/14786440109462720" target="_blank"
+      rel="noopener noreferrer">doi:10.1080/14786440109462720</a></li>
+    <li id="r-russell1980">Russell, J. A. (1980). A circumplex model of affect. <em>Journal of
+      Personality and Social Psychology</em> 39(6), 1161&ndash;1178. <a class="link-src"
+      href="https://doi.org/10.1037/h0077714" target="_blank"
+      rel="noopener noreferrer">doi:10.1037/h0077714</a></li>
+    <li id="r-sofroniew2026">Sofroniew, N., et al. (2026). Emotion concepts and their function in a
+      large language model. <em>Transformer Circuits Thread</em>. The paper this page replicates and
+      extends. <a class="link-src"
+      href="https://transformer-circuits.pub/2026/emotions/index.html" target="_blank"
+      rel="noopener noreferrer">transformer-circuits.pub</a></li>
+    <li id="r-vaswani2017">Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez,
+      A. N., Kaiser, L., and Polosukhin, I. (2017). Attention is all you need.
+      <a class="link-src" href="https://arxiv.org/abs/1706.03762" target="_blank"
+      rel="noopener noreferrer">arXiv:1706.03762</a></li>
+    <li id="r-zou2023">Zou, A., Phan, L., Chen, S., et al. (2023). Representation engineering: a
+      top-down approach to AI transparency. <a class="link-src"
+      href="https://arxiv.org/abs/2310.01405" target="_blank"
+      rel="noopener noreferrer">arXiv:2310.01405</a></li>
+  </ol>
+</div></section>

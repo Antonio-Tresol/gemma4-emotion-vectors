@@ -9,33 +9,62 @@ const P = {text:"#0A0A0A", body:"#262626", muted:"#737373", border:"#E5E5E5",
 const C = {valence:P.navy, arousal:P.teal, dominance:P.green, length:P.amber, evr:P.greySoft};
 
 /* Inline glossary, the same idea as the <Term> component in the refusal
-   write-up: a dotted underline on a technical word, and one sentence of plain
-   English on hover. A reader meets the term and its meaning in the same breath
-   rather than leaving the page or hunting a methods block.
+   write-up: a dotted underline on a technical word, one sentence of plain
+   English on hover, and a click that lands on the full entry.
 
-   Definitions are one sentence and lead with the plain word, not the formal
-   one. Anything longer belongs in section 10, where there is room for it. */
-const GLOSSARY = {
-  "token": "The word-fragments a model actually reads, roughly three-quarters of a word each.",
-  "layer": "One step of the model's computation. This one has 58 of them, stacked from input to output.",
-  "residual stream": "The running vector each layer reads from and writes back to, carrying everything the model has worked out so far about a token.",
-  "circumplex": "The arrangement psychologists use for emotions: a circle whose two axes are how pleasant the feeling is and how worked up.",
-  "valence": "How pleasant or unpleasant an emotion is, on the scale people rate words with.",
-  "elo": "A ranking fitted from many head-to-head choices, borrowed from chess, where a higher number means preferred more often.",
-  "arousal": "How worked up an emotion is, from calm to agitated, on the scale people rate words with.",
-  "dominance": "How much control an emotion implies, from helpless to in charge, on the scale people rate words with.",
-  "principal component": "The directions along which a set of vectors differ most, found by a standard method that is told nothing about what the vectors mean.",
-  "probe": "A direction used as a detector: take the angle between it and the model's state, and read off how strongly that concept is present."
-};
+   The definitions are NOT held here. Each one lives in its <details> in
+   section 11 (content/12-glossary.html), and the hover reads the short line
+   back out of that markup, so the page holds one copy of every definition and
+   editing the glossary section edits the tooltips with it. The entry carries
+   the longer version and the reference the definition comes from. */
 function wireGlossary(){
+  const entries = {};
+  document.querySelectorAll(".gterm[data-slug]").forEach(entry=>{
+    entries[entry.dataset.slug] = {
+      id: entry.id,
+      term: entry.querySelector(".gt").textContent.trim(),
+      // the markup hard-wraps, so collapse before the sentence reaches a tooltip
+      short: entry.querySelector(".gs").textContent.replace(/\s+/g," ").trim()};
+  });
   document.querySelectorAll("[data-term]").forEach(node=>{
-    const key=node.dataset.term, def=GLOSSARY[key];
-    if(!def){ console.warn("no glossary entry for", key); return; }  // fail loudly
-    node.classList.add("term");
-    tipOn(node, `<b>${key}</b><span class="t-sub">${def}</span>`);
-    node.style.cursor="help";
+    const key=node.dataset.term, entry=entries[key];
+    if(!entry){ console.warn("no glossary entry for", key); return; }  // fail loudly
+    // The word becomes a link to its entry. Built here rather than written into
+    // the content files, so a term stays a plain <span data-term="..."> to
+    // whoever edits the prose and no href can drift from the entry it names.
+    const link=document.createElement("a");
+    link.className="term"; link.href="#"+entry.id;
+    while(node.firstChild) link.appendChild(node.firstChild);
+    node.appendChild(link);
+    // Open on click too, not only on hashchange. A reader who shut the entry by
+    // hand and then clicked the same term again would otherwise get nothing: the
+    // hash has not changed, so no hashchange fires. This also covers the copies
+    // of these terms that the expand-figure view clones out of a how-to block.
+    link.addEventListener("click",()=>{
+      const opened=document.getElementById(entry.id);
+      if(opened) opened.open=true;
+    });
+    tipOn(link, `<b>${entry.term}</b><span class="t-sub">${entry.short}</span>`
+      + `<span class="t-go">See the full entry and its source &rarr;</span>`);
+    link.style.cursor="help";
   });
 }
+
+/* A link into the glossary has to arrive with the entry already open, whether
+   it was clicked on this page or pasted cold into the address bar. CSS :target
+   can style a <details> but cannot open one, so the opening happens here.
+
+   Read from location.hash rather than matching :target, and listen for load as
+   well as hashchange. A fragment applied after this script runs left the entry
+   shut when only :target was consulted, which is a page that looks like the
+   link did nothing. */
+function openTargetedEntry(){
+  const id=decodeURIComponent(location.hash.slice(1));
+  const entry=id && document.getElementById(id);
+  if(entry && entry.classList.contains("gterm")) entry.open=true;
+}
+addEventListener("hashchange",openTargetedEntry);
+addEventListener("load",openTargetedEntry);
 
 /* one floating tooltip shared by every chart on the page */
 const TIP=document.getElementById("tip");
@@ -1406,6 +1435,7 @@ function numberFigures(){
 function el2(t,a={}){const e=document.createElement(t);for(const k in a)e.setAttribute(k,a[k]);return e;}
 
 wireGlossary();
+openTargetedEntry();   // a cold load of #g-elo lands on an open entry, not a shut one
 numberFigures();
 drawPCs("base","coverPcBase",null);
 drawPCs("instruct","coverPcIt",null);
