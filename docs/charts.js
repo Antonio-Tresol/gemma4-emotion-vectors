@@ -337,7 +337,7 @@ function drawGrid(){
       fill:`rgba(29,53,87,${(v*0.95).toFixed(3)})`,style:"cursor:pointer"});
     tipOn(g,`<b>instruction-tuned axis ${i+1} vs base axis ${j+1}</b>: ${v.toFixed(2)}`+
       `<span class="t-sub">`+
-      (i===0 ? "This row is the finding. The instruction-tuned model's biggest axis scores at most 0.14 against any of the base model's five biggest axes, so it is new structure rather than a rearrangement of them." :
+      (i===0 ? "This row is the test. The instruction-tuned model's biggest axis scores at most 0.14 against any of the base model's five biggest axes, so it is new structure rather than a rearrangement of them." :
        i===2&&j===0 ? "This is valence: the base model's top axis, still intact, but demoted to third place by instruction tuning." :
        "1 would mean the two axes carry the same information; 0 that they have nothing in common.")+
       `</span>`);
@@ -1158,7 +1158,7 @@ codeTabs("m4","score_q3_gate_r1.py (N1, N2)",
   <span class="where">over <i>B</i> = 10,000 shuffles in which every phase is re-scored against a
   randomly assigned <b>wrong</b> emotion.</span>
   <span class="gl"><b>N2, the wrong-emotion shuffle.</b> How often does chance beat what we observed?
-  This shuffle is the floor, not our intuition about what a good rank looks like.</span>
+  This shuffle sets the floor the real result has to beat.</span>
   <span class="eq">
     <i>&#7805;</i><sub>rand</sub>
     <span class="op">&sim;</span> span

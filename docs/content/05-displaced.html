@@ -19,7 +19,7 @@
     </details>
     <div class="src">source: notebooks/02_circumplex_geometry.ipynb, layer 33</div>
   </div>
-  <p class="narrow" style="margin-top:20px"><b>The top row is the finding: nothing matches.</b> The
+  <p class="narrow" style="margin-top:20px"><b>Nothing in the top row matches.</b> The
   instruction-tuned model's biggest axis scores <b>0.14</b> against its closest relative among the
   base model's five biggest axes, near the bottom of the scale. It is not a renaming or a reshuffle
   of anything the base model had, and it is now the largest single thing separating the model's
@@ -64,7 +64,7 @@
       blotchy.</p>
       <p>Now switch to <b>instruction-tuned, top PC removed</b>. We remove just the biggest axis at each
       layer, and the blocks largely merge back together. That is the evidence that the one dominant
-      axis <em>caused</em> the fragmentation, rather than the emotion structure having gone missing.</p>
+      axis <em>caused</em> the fragmentation.</p>
       <p><b>base vs. instruction-tuned</b> is the odd one out. It is the only view with a different model on
       each axis, and so the only one that is not a mirror image about its diagonal. Rows are
       instruction-tuned layers, columns are base layers, and the diagonal answers "how much did instruction tuning
@@ -86,4 +86,4 @@
   <div class="takeaway"><span class="lbl">Takeaway</span>The biggest thing separating emotions in the instruction-tuned model is not a rearrangement of anything the base model had. It is new, instruction tuning put it there, and it breaks the model's layers into disagreeing blocks. We can show all of that. We still cannot say what it encodes.</div>
 </div></section>
 
-<div class="partbar" data-part-no="III" data-part="What the vectors can do"><div class="wrap"><span class="kicker">Part III</span><h2 class="ptitle">What the vectors can do</h2><p class="pblurb">The vectors read and move the model's preferences, and they follow a story's emotion better than chance without ever becoming reliable.</p></div></div>
+<div class="partbar" data-part-no="III" data-part="What the vectors can do"><div class="wrap"><span class="kicker">Part III</span><h2 class="ptitle">What the vectors can do</h2><p class="pblurb">Sections 5 to 8 ask what the vectors are good for. Section 5 reads them against the model's own preferences and then adds them back in to see whether the preferences move. Sections 6 to 8 follow a story that changes emotion partway through, one token at a time.</p></div></div>

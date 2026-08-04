@@ -1,19 +1,21 @@
 <section id="probes"><div class="wrap">
   <h2><span class="secno">2</span>Who writes the stories changes the answer</h2>
-  <p class="narrow">The corpus of stories behind an emotion vector is a choice, and we made it four
-  different ways. The four sets went through the same test.</p>
+  <p class="narrow">We built four sets of emotion vectors, each from a different corpus of stories,
+  and scored all four with the same detection test.</p>
   <p class="narrow">The test uses short messages of the kind a person actually sends a chatbot. One reads <em>"My daughter just took her first steps today! What are some ways to capture
   more of these precious moments?"</em>, and implies an emotion without ever naming it. We ran each
   message as a chat turn and read the <span data-term="residual stream">residual stream</span> at
   the last token before the reply would start. Then we ranked all twelve emotion vectors by cosine
   and asked whether the right one landed in the top three.</p>
-  <p class="narrow">The vectors were built from <em>stories</em> and tested on
-  <em>messages</em>, a transfer the training never asked for. The emotion is implied rather than
-  named, so matching on the words cannot work. A layer counts as <b>working</b> when
-  it gets at least 8 of 12 right on the paper's twelve scenarios <em>and</em> on a second twelve we
-  wrote ourselves before scoring anything. Both marks were fixed in advance.</p>  <div class="card" style="margin-top:22px">
+  <p class="narrow">The vectors were built from <em>stories</em> and tested on <em>messages</em>,
+  so the test measures transfer between two kinds of text. Each message implies an emotion without
+  naming it, so a vector that keyed on the emotion word would score at chance. A layer counts as
+  <b>working</b> when it gets at least 8 of 12 right on the paper's twelve scenarios <em>and</em> on
+  a second twelve we wrote ourselves. We fixed both marks before scoring.</p>  <div class="card" style="margin-top:22px">
     <div id="lineageChart" data-figtitle="Detection by story source and layer"></div>
-    <div class="legend"><span>Darker is more scenarios correct. A row's number is its ringed cells: the layers where these vectors detect the emotion behind a message. 0 of 20 would mean they never work at all.</span></div>
+    <div class="legend"><span>Each cell is how many of the twelve scenarios that layer got right,
+      taking the worse of the two sets. A ring marks a layer that clears the mark on both. The
+      number at the right of a row counts its rings, out of the 20 layers we sampled.</span></div>
     <details class="howto"><summary>How to read this</summary>
       <p>One row per story source, one column per sampled layer. The cell is how many of the twelve
       scenarios that layer got right, taking the worse of the two sets of twelve. A layer has to
@@ -22,7 +24,7 @@
       <p><b>The grading scale.</b> 0 of 20 layers would mean these vectors never detect anything.
       20 of 20 would mean every depth works. Nothing we built came close to the top: the best story
       source reaches 9, and the worst reaches 1.</p>
-      <p><b>The ordering is the finding.</b> A stronger outside writer (DeepSeek) gives vectors that
+      <p><b>What the ordering shows.</b> A stronger outside writer (DeepSeek) gives vectors that
       work at nine layers; the model's own writing gives five; a smaller model's writing gives one. So
       the intuitive guess, that a model reads its own emotional writing best, is wrong here. It is
       out-written.</p>
@@ -41,14 +43,12 @@
     </details>
     <div class="src">source: notebooks/07_generator_lineages.ipynb (experiments E11 and E12)</div>
   </div>
-  <p class="narrow" style="margin-top:22px">Its own stories are worse because they repeat
-  themselves. Asked for 3,072 stories about emotions, the model named its character <b>Elias</b> in
-  <b>98.2%</b> of them. Its own
-  writing reuses five-word phrases <b>53&times;</b> as often as DeepSeek's does. That matters because
-  narrow, repetitive stories make a narrow vector. Whatever the stories have in common gets averaged
-  in, so the vector stands for the model's writing habits as much as for the emotion. It is also the
-  sharpest thing we saw about what is peculiar to this particular model. Ask it for variety and it
-  gives you Elias, 3,000 times.</p>
+  <p class="narrow" style="margin-top:22px">Gemma's own stories repeat themselves. Across 3,072
+  stories written to a request for varied emotional scenes, Gemma named the central character
+  <b>Elias</b> in <b>98.2%</b> of them. Its five-word phrases recur <b>53&times;</b> as often as
+  DeepSeek's do. An emotion vector is the average of the activations a corpus produces, so whatever
+  those stories share is averaged into the vector alongside the emotion. A corpus this repetitive
+  therefore yields a vector that partly encodes Gemma's writing habits.</p>
   <h3 style="margin-top:30px">Does the number of stories change the answer?</h3>
   <div class="card" style="margin-top:14px">
     <div id="doseChart" data-figtitle="Detection against corpus size"></div>
