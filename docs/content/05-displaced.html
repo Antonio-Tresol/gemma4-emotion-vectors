@@ -1,0 +1,86 @@
+<section id="displaced"><div class="wrap">
+  <h2><span class="secno">4</span>What took valence's place?</h2>
+  <p class="narrow">Suppose instruction tuning had simply shuffled the same information around. Then every axis
+  in the instruction-tuned model would have a partner somewhere in the base model: the same emotions
+  separated the same way, just renumbered. So we checked all 25 pairings. Each of the instruction-tuned
+  model's top five axes went against each of the base model's top five. <b>1.0 means the two axes carry the
+  same information; 0 means they have nothing in common.</b> Hover any square.</p>
+  <div class="grid2" style="margin-top:22px">
+    <div class="card">
+      <div id="gridChart" data-figtitle="Instruction-tuned axes against base axes, top five of each"></div>
+      <div id="gridNote" class="muted" style="margin-top:10px;min-height:34px;font-size:13.5px"></div>
+      <div class="src">source: notebooks/02_circumplex_geometry.ipynb, layer 33</div>
+    </div>
+    <div class="card">
+      <h3>The top row is the finding: nothing matches</h3>
+      <p style="font-size:15px">Read the top row of the grid. The instruction-tuned model's biggest axis
+      scores <b>0.14</b> against its closest relative among the base model's five biggest axes,
+      near the bottom of the scale. It is not a renaming or a reshuffle of anything the base model had. It is
+      new, instruction tuning put it there, and it is now the largest single thing separating the model's
+      emotions.</p>
+      <p style="font-size:15px">Now read down the first column. Valence is still in there, intact,
+      one floor down: the instruction-tuned model's third axis scores <b>0.83</b> against the base model's
+      first. Instruction tuning did not delete the circumplex. It demoted it.</p>
+      <div style="margin-top:16px">
+        <div class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.07em;
+          font-family:var(--display);font-weight:600">
+          the emotions at each end of that new axis</div>
+        <div style="margin-top:8px;font-size:14.5px"><b>one end:</b> <span id="pc1low"></span></div>
+        <div style="margin-top:6px;font-size:14.5px"><b>the other:</b> <span id="pc1high"></span></div>
+        <p class="muted" style="font-size:14px;margin-top:10px">Reading the two lists is the honest way
+        to guess what an axis means, and here the guess fails. It is clearly not pleasant-versus-
+        unpleasant, because <em>miserable</em> and <em>jubilant</em> sit at the same end. If anything
+        it looks like low-grade irritation. But we do not know, and naming it without evidence is
+        exactly the mistake we are trying to avoid. It stays an open question.</p>
+      </div>
+    </div>
+  </div>
+  <h3 style="margin-top:38px">The same question, asked without any of that machinery</h3>
+  <p class="narrow" style="margin-bottom:14px">Principal components are one way to look, and a reader
+  is right to wonder whether the finding is a by-product of that particular method. So here is a second look that
+  uses no components at all. A model has many layers, stacked from input to output. At each layer, ask
+  which emotions it treats as similar to which; that gives one emotion-by-emotion similarity table per
+  layer. Every square below compares two of those tables, for every possible pairing of layers. <b>Dark means the two layers sort the
+  171 emotions the same way; pale means they disagree.</b></p>
+  <div class="card">
+    <div class="controls">
+      <span class="muted" style="font-size:13px">showing</span><span id="rsaBtns"></span>
+      <span class="muted" id="rsaNote" style="margin-left:auto;font-size:12.5px"></span>
+    </div>
+    <div id="rsaChart" data-figtitle="Do the model's layers agree on how emotions are organised?"></div>
+    <details class="howto"><summary>How to read this</summary>
+      <p><b>What a good result looks like:</b> dark everywhere. That is a model whose layers all agree
+      on what emotions are, one stable picture from bottom to top. <b>What a bad result looks like:</b>
+      pale patches and visible blocks. Groups of layers agree with each other but not with
+      the rest, so the model has no single account of emotion.</p>
+      <p>Every square is scored from 0 to 1: 1 means the two layers sort the 171 emotions identically,
+      0 means they share nothing. Start on <b>base model</b> and you get close to the good case: its
+      late layers agree with each other at <b>0.94</b> out of 1. Now switch to <b>instruction-tuned
+      model</b>. The same measure drops to <b>0.79</b> and the grid visibly breaks into blocks. The base view matters here as the control:
+      without it, you could not tell a genuinely broken-up model from a measure that just always looks
+      blotchy.</p>
+      <p>Now switch to <b>instruction-tuned, top PC removed</b>. We remove just the biggest axis at each
+      layer, and the blocks largely merge back together. That is the evidence that the one dominant
+      axis <em>caused</em> the fragmentation, rather than the emotion structure having gone missing.</p>
+      <p><b>base vs. instruction-tuned</b> is the odd one out. It is the only view with a different model on
+      each axis, and so the only one that is not a mirror image about its diagonal. Rows are
+      instruction-tuned layers, columns are base layers, and the diagonal answers "how much did instruction tuning
+      change this particular depth?". If instruction tuning changed nothing the diagonal would read 1.0
+      throughout. It reads 0.97 at layer 3 and 0.21 at layer 57: the early layers came through intact,
+      the late half was rebuilt.</p>
+    </details>
+    <div class="src">source: notebooks/02_circumplex_geometry.ipynb, section 9</div>
+  </div>
+
+  <div class="callout"><span class="k">The caveat that cuts the other way</span>
+  Taken at face value, the two models look largely unrelated. Comparing each model's top three axes
+  as a set gives three angles, <b>86.1&deg;</b>, 56.0&deg; and 46.1&deg;, where 90&deg;
+  means two directions share nothing and 0&deg; that they coincide. The widest is almost a right
+  angle; even the closest pair is only partly aligned.
+  But subtract that one mystery axis and the late layers of the two models jump from <b>0.29</b>
+  agreement to <b>0.60</b>, on the same 0-to-1 scale as the grid above. So the shared emotion structure is not gone. It is sitting underneath one
+  large direction that has nothing to do with emotion.</div>
+  <div class="takeaway"><span class="lbl">Takeaway</span>The biggest thing separating emotions in the instruction-tuned model is not a rearrangement of anything the base model had. It is new, instruction tuning put it there, and it breaks the model's layers into disagreeing blocks. We can show all of that. We still cannot say what it encodes.</div>
+</div></section>
+
+<div class="partbar"><div class="wrap"><span class="ptitle">Part three &middot; Following an emotion as it changes</span><p class="pblurb">The step past the published work. We wrote stories that move through three emotions, then read them one word at a time, to see whether the model changes its mind when the story does.</p></div></div>

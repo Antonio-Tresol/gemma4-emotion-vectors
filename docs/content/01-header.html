@@ -1,0 +1,70 @@
+<header><div class="wrap">
+  <div class="kicker">CAMBRIA capstone &middot; Hannah Kim &middot; Peyton Li &middot; Antonio Badilla-Olivas</div>
+  <h1>How are emotions represented in<br>large language models?</h1>
+  <div class="coverfig">
+    <div class="figlabel">Gemma&nbsp;4&nbsp;31B <b>base</b> &middot; layer&nbsp;33
+      <span class="muted" id="coverVerdictBase"></span></div>
+    <div id="coverPcBase" data-figtitle="Principal components of the 171 emotion vectors, base model, layer 33"></div>
+    <div class="figlabel" style="margin-top:18px">the same model after <b>instruction tuning</b> &middot; layer&nbsp;33
+      <span class="muted" id="coverVerdictIt"></span></div>
+    <div id="coverPcIt" data-figtitle="Principal components of the 171 emotion vectors, instruction-tuned model, layer 33"></div>
+    <div class="legend">
+      <span><i style="background:var(--navy)"></i>valence</span>
+      <span><i style="background:var(--teal)"></i>arousal</span>
+      <span><i style="background:var(--green)"></i>dominance</span>
+      <span><i style="background:var(--amber)"></i>story length, the confound we had to rule out</span>
+      <span><i style="background:#D4D4D4"></i>grey backdrop: how much of the total spread this axis
+      accounts for</span>
+    </div>
+    <details class="howto"><summary>How to read this</summary>
+      <p>Each group of bars is one axis found by sorting the 171 emotion vectors by what separates
+      them most. The grey backdrop is how much of that separation the axis accounts for. The four
+      coloured bars are how closely the axis matches four published human ratings of the same
+      emotion words: valence, arousal, dominance, and the story's length as a control. No human
+      rating enters the sorting, so any match is the finding rather than the setup.</p>
+      <p>A bad result would be every coloured bar near 0, meaning the model's own axes have nothing
+      to do with how people rate emotions. A strong one is a tall bar on the biggest axis. The base
+      model shows the strong version, valence at 0.83 on PC1. After instruction tuning the biggest
+      axis matches nothing we tested, and valence does not reappear until PC3.</p>
+      <p>Read the whole row, not one bar. PC1 in the base model also matches dominance at 0.66.
+      PC2 in the instruction-tuned model matches story length at 0.66. That is why the length
+      control is drawn beside the three ratings rather than left out.</p>
+    </details>
+  </div>
+  <div class="grid3" style="margin-top:34px;gap:16px">
+    <div class="card"><h3>The base model reproduces the result</h3>
+    <p style="font-size:15px">Sort 171 emotion vectors by what separates them most and the top principal component
+    is pleasant-versus-unpleasant, the same axis people use. Nobody asked for that. It is the
+    published result, reproduced on a new model.</p></div>
+    <div class="card"><h3>The instruction-tuned version buries it</h3>
+    <p style="font-size:15px">Train that same model to follow instructions and valence drops
+    from first place to third. It is still present, just no longer how the model mainly sorts
+    emotions. A larger axis takes over, and it matches nothing in the base model. We can measure
+    it; we cannot yet say what it means.</p></div>
+    <div class="card"><h3>It follows a story's emotion, roughly</h3>
+    <p style="font-size:15px">In stories written to move through three emotions, the model's internal
+    state hands over from one emotion to the next, better than chance and often before the
+    written turn. It is never reliable, and it works far better for some emotions than others.</p></div>
+  </div>
+  <p class="lede narrow" style="margin-top:30px">Anthropic found that a language model keeps a separate internal direction
+  for each emotion. Those directions arrange themselves the way psychologists arrange emotions
+  (Sofroniew et al.,
+  <a href="https://transformer-circuits.pub/2026/emotions/index.html">Emotion Concepts and their
+  Function in a Large Language Model</a>, 2026). We rebuilt that result on
+  <a href="https://huggingface.co/google/gemma-4-31b">Gemma&nbsp;4&nbsp;31B</a> (a
+  31-billion-parameter model), in two versions of it. Then we asked a question the paper did not: can
+  the model follow an emotion that <em>changes</em> partway through a story? Three findings, below.</p>
+  <p class="lede narrow" style="font-size:16px">Everything here is checkable:
+  <a href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors">the code and the research
+  record</a> are on GitHub, and
+  <a href="https://huggingface.co/abotresol">every story corpus, activation and scored output</a>
+  is on Hugging Face, public and needing no account. Found a mistake?
+  <a href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/issues">Open an issue</a>.
+  Corrections on claims that outrun their evidence are the ones we want most.</p>
+  <div class="index" id="coverIndex"></div>
+  <div class="muted" style="font-family:var(--display);font-size:13px;margin-top:18px">
+    Press <span class="kbd">&rarr;</span> or <span class="kbd">space</span> for the next section,
+    <span class="kbd">&larr;</span> to go back, <span class="kbd">1</span>&ndash;<span class="kbd">9</span>
+    or <span class="kbd">0</span> to jump straight to a numbered section.
+  </div>
+</div></header>

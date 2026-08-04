@@ -1,0 +1,58 @@
+<section id="question"><div class="wrap">
+  <div class="kicker">What we were trying to find out</div>
+  <h2><span class="secno">1</span>What we measured, and why it matters</h2>
+  <h3 style="margin-top:26px">The setup, in one picture</h3>
+  <p class="narrow" style="margin-bottom:14px">We build an emotion vector by averaging the model's internal state across one emotion's
+  stories, then subtracting the average over all the emotions. To read it back we measure the
+  <b>angle between that vector and the model's state at a given word</b>, which is what a
+  <em>cosine</em> is here. Centered, meaning the mean over the story
+  set is subtracted first, so 0 is the corpus average rather than no emotion. Nothing on this
+  page comes from prompting the model or reading its output.</p>
+  <div class="card"><div id="methodDiagram"></div>
+    <div class="legend">
+      <span>171 emotions in parts one and two, ~9 stories each; the 12-emotion sets used from part
+      three average 256. Vector quality tracks that count, and section 2 is about how much.</span>
+    </div>
+  </div>
+  <div class="grid2" style="margin-top:18px">
+    <div class="card"><h3>The two models we compare</h3><p style="font-size:15px">Gemma&nbsp;4&nbsp;31B <b>base</b>
+    and <b>instruction-tuned</b>: the same weights before and after post-training. Running both is a comparison the
+    original paper did not report, and it is where the interesting result came from.
+    Layers are sampled, not swept: twenty across the stack (0 to 57, every third) for the geometry and
+    detection work, six for the trajectories.</p></div>
+    <div class="card"><h3>The result being replicated</h3><p style="font-size:15px">Anthropic reports
+    that emotion vectors arrange on the <b>circumplex</b>. Principal component analysis (PCA)
+    finds the directions along which they differ most, and the top two recover valence and arousal.
+    That matches how humans rate the same words in the
+    <a href="http://saifmohammad.com/WebPages/nrc-vad.html">NRC VAD lexicon</a> (VAD is valence, arousal, dominance). No human labels enter
+    the fit, so the alignment is the finding.</p></div>
+  </div>
+  <h3 style="margin-top:38px">Why should anyone care whether this works?</h3>
+  <p class="narrow" style="margin-bottom:20px">Five reasons, and they pull in different directions.
+  Four of them want the emotion signal to be strong. The last one is interesting precisely if it
+  turns out to be weak.</p>
+  <div class="grid3" style="gap:16px">
+    <div class="card"><h3>Readable and steerable in one object</h3><p style="font-size:15px">A direction you can read off
+    mid-forward-pass is also a direction you can add back in. That makes emotion vectors an
+    interpretability object and an intervention in the same breath.</p></div>
+    <div class="card"><h3>Models as listeners</h3><p style="font-size:15px">People already bring models
+    their worst days, and companies are selling them as companions and therapists. Doing that well is
+    not a matter of labelling one message as positive or negative. It means following how someone's
+    state <em>moves</em> across a long conversation. Precisely what we tested, and precisely where it gets shaky.</p></div>
+    <div class="card"><h3>Internal evidence, for the welfare question</h3><p style="font-size:15px">
+    Welfare arguments lean heavily on model self-report. Reading internal state instead sidesteps the
+    obvious objection to that, which is why we think this line is worth pursuing at all. The caveat is
+    load-bearing and we would rather state it twice than once: what we measured is the model
+    representing the emotions <em>of a story it is reading</em>. That is not evidence about what the
+    model feels.</p></div>
+    <div class="card"><h3>Where its ontology differs from ours</h3><p style="font-size:15px">The geometry we recover is the
+    model's, not ours. Where it departs from human VAD ratings, the residual is a map of what is
+    idiosyncratic to the model, and instruction tuning visibly redraws it.</p></div>
+    <div class="card" style="border-color:var(--orange)"><h3>Or: emotion may just not be load-bearing here</h3>
+    <p style="font-size:15px">The reading we cannot rule out, and the one we find most interesting. If
+    emotion is not a major axis of this model's representation, a weak signal is the correct answer
+    rather than a measurement failure. That is a real result about what these systems represent.</p></div>
+  </div>
+</div></section>
+
+<div class="partbar"><div class="wrap"><span class="ptitle">Part one &middot; Rebuilding the emotion vectors</span><p class="pblurb">Does the published result hold up on a different model? A prior question comes first. An emotion vector is only as good as the stories used to build it, and that turns out to matter a great deal.</p></div></div>

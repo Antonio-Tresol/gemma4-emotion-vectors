@@ -1,0 +1,71 @@
+<section id="story"><div class="wrap">
+  <h2><span class="secno">5</span>Watch it follow one story, word by word</h2>
+  <p class="narrow">Everything so far has been about static text: one story, one emotion, one reading.
+  Here the story <em>moves</em>. Each of these four was written to pass through three emotions in turn,
+  with the turns marked. We feed one to the model and, at every single word, measure how close its
+  internal state sits to each of the three emotion vectors. Drag the word slider and both panels
+  advance together.</p>
+  <p class="narrow">Three of the four stories use the <b>same three emotions</b> and differ only in how
+  they are written, and the model follows them very differently. That is the point of this
+  section: how well the model follows an emotion is not a property of the emotion alone.</p>
+  <div class="card" style="margin-top:22px">
+    <div class="controls" style="margin-bottom:6px">
+      <span class="muted" style="font-size:13px">story</span><span id="storyBtns"></span>
+      <span class="muted" id="storyQual" style="margin-left:auto;font-size:12.5px"></span>
+    </div>
+    <div class="controls">
+      <span class="muted" style="font-size:13px">layer</span>
+      <span id="layerBtns"></span>
+      <span class="slidergrp">
+        <span class="muted" style="font-size:13px">word</span>
+        <input type="range" id="tokSlider" min="0" max="235" value="0">
+        <span class="mono" id="tokLabel" style="min-width:78px;display:inline-block"></span>
+      </span>
+    </div>
+    <!-- the live readout doubles as the colour legend: it is the only thing on the
+         figure that says which line is which emotion, so it sits above the panels
+         rather than inside the plot where the lines used to run through it -->
+    <div id="storyReadout" class="legend" style="margin:10px 0 2px"></div>
+    <div class="grid2" style="gap:24px">
+      <div><div class="figcap muted" style="font-size:12.5px;margin-bottom:6px">
+        one line per emotion, over the length of the story</div><div id="lineChart" data-figtitle="Three emotion vectors over one story"></div></div>
+      <div><div class="figcap muted" style="font-size:12.5px;margin-bottom:6px">
+        the same three numbers, as a position between the three emotions</div>
+        <div id="ternChart" data-figtitle="The same three readings, as a position between the emotions"></div></div>
+    </div>
+    <div style="margin-top:20px">
+      <div class="figcap muted" style="font-size:12.5px;margin-bottom:6px">
+        the story the model is reading. The part you are currently on is highlighted</div>
+      <div class="storybox" id="storyBox"></div>
+    </div>
+    <details class="howto"><summary>How to read this</summary>
+      <p><b>Left panel.</b> One line per emotion. Higher means the model's internal state is closer to
+      that emotion right now. The two vertical marks are where the story was written to turn.
+      <b>A good result</b> is the lead passing cleanly from the red line to the blue to the green, at
+      those marks. <b>A bad result</b> is three flat lines that never change order: a model
+      reading the same emotion all the way through.</p>
+      <p><b>Right panel.</b> The same three numbers, drawn as a position inside a triangle. Each corner
+      is one emotion, and the dot sits nearest whichever it currently resembles most. <b>A good
+      result</b> is a walk from corner to corner. <b>A bad result</b> is a dot that never leaves the
+      middle, which is what a model ignoring the story would give you.</p>
+      <p><b>What actually happens.</b> The handover is real, and it is messy. It also tends to arrive
+      <em>early</em>. The lead changes before the written turn, so the model is picking up the
+      shift while still reading the previous part. Change the layer and the character of the picture
+      changes, which is what section 7 is about.</p>
+      <p><b>Why these four stories, and what "followed well" means here.</b> The last three come out of a
+      random sample of 24: the best, the middle and the worst. We scored them on exactly what this
+      figure draws: in each of the three parts, is the part's own emotion the highest line, and by
+      how much?
+      Leading in all three parts is the best possible; leading in one is what luck alone gives, since
+      there are three lines.</p>
+      <p><b>This is an easier test than the next section's, deliberately.</b> Here the model only has
+      to pick the right emotion out of the story's own three. In section 6 it has to pick out of
+      twelve. A story can lead all three lines here and still do poorly out of twelve, so this panel
+      illustrates the mechanism rather than carrying the headline number.</p>
+    </details>
+    <div class="src">story <span id="storyId"></span>, from notebooks/05_trajectory_explorer_instruct.ipynb. Centered cosine against the twelve emotion vectors built from the model's own stories. The average across the whole story corpus is
+    subtracted first, so 0 means "typical for these stories" rather than "no emotion". A line
+    above 0 is leaning towards that emotion more than the corpus does on average.</div>
+  </div>
+  <div class="takeaway"><span class="lbl">Takeaway</span>The model really does hand over from one emotion to the next as the story turns, and it tends to do so <em>early</em>, before the written turn arrives. The signal is real and it is noisy, and it looks different depending which layer you read.</div>
+</div></section>

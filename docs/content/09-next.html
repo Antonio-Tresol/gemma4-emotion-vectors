@@ -1,0 +1,56 @@
+<section id="next"><div class="wrap">
+  <div class="kicker">Where this leaves us</div>
+  <h2><span class="secno">8</span>What we would do next</h2>
+  <p class="narrow" style="margin-bottom:4px">Three experiments, in the order we would run them. Each
+  one attacks a specific thing we could not settle.</p>
+  <div class="grid3" style="margin-top:24px">
+    <div class="card"><h3>Find out what the mystery axis is</h3><p style="font-size:15px">We can
+    measure the instruction-tuned model's biggest emotion axis and we cannot say what it encodes. It is not
+    valence, arousal, dominance, or story length; we checked all four. The next test is to
+    stop looking and start pushing: add that direction into the model while it writes, and see what
+    changes in the output. Whatever changes is what the axis was for.</p></div>
+    <div class="card"><h3>Find out why the layers divide the work</h3><p style="font-size:15px">Naming
+    the emotion in front of it is an early-layer skill; registering the size of the change about
+    to arrive is a late-layer one. We can show the split exists and we have no account of why. One guess worth
+    testing: early layers may be reading the emotion words on the page rather than the situation. If
+    so, a story that implies an emotion without naming it should break them.</p></div>
+    <div class="card"><h3>Separate the vectors from the model</h3><p style="font-size:15px">Our
+    stories switch emotions by label. A sharper test varies the <em>intensity</em> of one emotion
+    instead, which is a harder thing to fake. That pile-up onto two emotions appeared with one writer's vectors and vanished with
+    another's. Telling "the model cannot do this" apart from "these vectors cannot do this"
+    deserves an experiment of its own.</p></div>
+  </div>
+  <div class="callout"><span class="k">Three results, three different grades of evidence</span>
+  We track claims in a research tree that records how far each one has been tested, and the three
+  results on this page are not equally settled. <b>Only the first has finished the process.</b>
+  <br><br>
+  <b>1. The base model reproduces the circumplex: tested and survived.</b> It has been through
+  the full falsification pass and came out the other side, including a re-run after we corrected an
+  extraction bug.
+  <br><br>
+  <b>2. Instruction tuning demotes it and puts a large non-emotional axis on top: measured, not yet
+  formally tested.</b> Every number behind it is real and reproducible, but the claim is still marked
+  unvalidated in our tree: its falsification pass is owed. Read it as a strong observation, not a
+  settled result.
+  <br><br>
+  <b>3. Emotion vectors follow a story better than chance: exploratory.</b> Part three's
+  measurements are registered as hypothesis-generating work with no pass bar attached, and one thing
+  should be said plainly. The detection bar we <em>did</em> register in advance was written for the
+  171-emotion vector set, and that set failed it at every layer. What passes is the twelve-emotion
+  sets, which is a substitution we made after seeing the results. It may well be the right call. It is
+  not the thing we pre-registered, and we are not going to describe it as though it were.
+  <br><br>
+  <b>Not confident about, in any of the three:</b> what the new axis is. Nor how much of the
+  story-following quality belongs to the model rather than to the stories behind the vectors.
+  Every number on
+  this page, including the ones that came out null, is registered in the project's research tree with
+  the evidence file behind it.</div>
+  <div class="callout" style="border-color:var(--navy)"><span class="k">The explanation we cannot rule
+  out</span>
+  Every positive result here is real and small: better than chance, worse than anything you would
+  want to rely on. There are two readings and we cannot yet separate them. The comfortable one is that
+  emotion is genuinely represented and our instruments are blunt. The other is that emotion is simply
+  not one of the big organising ideas in this model, and a weak signal is the correct answer rather
+  than a measurement failure. Telling those apart is the experiment we would most like to run, and
+  either outcome is worth having.</div>
+</div></section>

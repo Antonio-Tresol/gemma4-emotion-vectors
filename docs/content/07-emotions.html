@@ -1,0 +1,47 @@
+<section id="emotions"><div class="wrap">
+  <div class="kicker">Part three &middot; Following an emotion as it changes</div>
+  <h2><span class="secno">6</span>Some emotions are followed well, others not at all</h2>
+  <p class="narrow">The same read over the whole corpus rather than one story. For every phase, take
+  the centered cosine against all twelve emotion vectors and ask how often the winner is the emotion
+  that phase was written to convey. Chance is 1 in 12.</p>
+  <p class="narrow">Note the shift from 171 emotions to <b>twelve</b>. The stories were written to
+  move between these twelve, so twelve is what there is to choose from, and picking one of
+  twelve is a test we can actually score. Picking at random would be right 1 time in 12, or 8%.
+  Each bar is one emotion's score.</p>
+  <p class="narrow">The two buttons swap in a different set of emotion vectors, built from a different
+  writer's stories, the same swap as section 2. The layer buttons read the same measurement at a
+  different depth of the model. Hover any bar to see where its wrong answers went.</p>
+  <p class="narrow"><b>Why the instruction-tuned model, when parts one and two just showed its emotion
+  structure is the messier of the two?</b> Because the twelve-emotion vector sets only exist for it: an
+  emotion vector has to be built from stories, and these were built from stories the instruction-tuned model
+  wrote about itself. Running the same test on the base model would mean rebuilding all twelve vectors
+  from base-model stories, which we did not do. So this section reads the model people actually talk to,
+  and the base model is absent here rather than losing.</p>
+  <div class="card" style="margin-top:22px">
+    <div class="controls">
+      <button class="seg on" data-vectors="selfgen">vectors from Gemma's own stories</button>
+      <button class="seg" data-vectors="deepseek">vectors from DeepSeek's stories</button>
+      <span style="margin-left:auto;display:flex;align-items:center;gap:8px">
+        <span class="muted" style="font-size:13px">layer</span><span id="emoLayerBtns"></span>
+      </span>
+    </div>
+    <div id="emoChart" data-figtitle="How often each emotion's own vector wins"></div>
+    <div id="emoNote" style="margin-top:12px;min-height:36px;color:var(--body);font-size:14px"></div>
+    <details class="howto"><summary>How to read this</summary>
+      <p><b>The grading scale.</b> The dashed line at 8% is chance: a bar at or below it means
+      that emotion is not being followed at all. 100% would mean perfect. Neither extreme happens.</p>
+      <p><b>What we see.</b> At layer 33 with Gemma's own vectors, 11 of the 12 emotions beat chance,
+      so we are measuring something real. But nothing reaches even 50%, and the spread is enormous:
+      <em>loving</em> and <em>guilty</em> win about half the time while <em>nervous</em> (5.8%) sits
+      below chance. Change the layer and the order shuffles, which is exactly why nobody should
+      quote a single layer as "how well the model follows emotion".</p>
+      <p><b>The part we did not expect.</b> The wrong answers are not spread evenly. With Gemma's own
+      vectors, the wrong answers pile onto two emotions: whatever the true answer was, the model
+      keeps replying <b>guilty</b> or <b>happy</b>. Switch to DeepSeek's vectors and that pile-up
+      disappears, and overall accuracy rises. So a real share of what looks like "the model cannot
+      follow emotions" is a property of the vectors we handed it, not of the model.</p>
+    </details>
+    <div class="src">source: notebooks/11_tracking_taxonomy.ipynb, layer 33, instruction-tuned model reading</div>
+  </div>
+  <div class="takeaway"><span class="lbl">Takeaway</span>The model follows emotion better than chance, but unevenly and never reliably, and a large part of that unevenness comes from the emotion vectors rather than the model. Swap in a different writer's vectors and both the accuracy and the pattern of mistakes change.</div>
+</div></section>
