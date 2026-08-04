@@ -342,6 +342,15 @@ background:var(--orange);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 3
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--display);font-size:12.5px;color:var(--muted);
 margin-top:10px}
 .legend i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+/* The cover figure. Not a separate chart: drawPCs renders here and again in
+   section 3, so the picture a visitor lands on is the analysis itself rather
+   than a summary of it that could drift. Full width and stacked, because side
+   by side would shrink a 780-unit viewBox into half a column and take the axis
+   labels down with it. */
+.coverfig{margin:30px 0 0;background:var(--surface);border:1px solid var(--border);
+border-radius:12px;padding:18px 20px}
+.figlabel{font-family:var(--display);font-size:13px;color:var(--text);margin-bottom:2px}
+.figlabel .muted{color:var(--muted);font-weight:400;margin-left:8px}
 .howto{margin-top:14px;border-top:1px dashed var(--border);padding-top:12px}
 .howto summary{font-family:var(--display);font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
 .howto[open] summary{color:var(--text);margin-bottom:8px}
@@ -589,6 +598,36 @@ TEMPLATE = r"""<!DOCTYPE html>
 <header><div class="wrap">
   <div class="kicker">CAMBRIA capstone &middot; Hannah Kim &middot; Peyton Li &middot; Antonio Badilla-Olivas</div>
   <h1>How are emotions represented in<br>large language models?</h1>
+  <div class="coverfig">
+    <div class="figlabel">Gemma&nbsp;4&nbsp;31B <b>base</b> &middot; layer&nbsp;33
+      <span class="muted" id="coverVerdictBase"></span></div>
+    <div id="coverPcBase" data-figtitle="Principal components of the 171 emotion vectors, base model, layer 33"></div>
+    <div class="figlabel" style="margin-top:18px">the same model after <b>instruction tuning</b> &middot; layer&nbsp;33
+      <span class="muted" id="coverVerdictIt"></span></div>
+    <div id="coverPcIt" data-figtitle="Principal components of the 171 emotion vectors, instruction-tuned model, layer 33"></div>
+    <div class="legend">
+      <span><i style="background:var(--navy)"></i>valence</span>
+      <span><i style="background:var(--teal)"></i>arousal</span>
+      <span><i style="background:var(--green)"></i>dominance</span>
+      <span><i style="background:var(--amber)"></i>story length, the confound we had to rule out</span>
+      <span><i style="background:#D4D4D4"></i>grey backdrop: how much of the total spread this axis
+      accounts for</span>
+    </div>
+    <details class="howto"><summary>How to read this</summary>
+      <p>Each group of bars is one axis found by sorting the 171 emotion vectors by what separates
+      them most. The grey backdrop is how much of that separation the axis accounts for. The four
+      coloured bars are how closely the axis matches four published human ratings of the same
+      emotion words: valence, arousal, dominance, and the story's length as a control. No human
+      rating enters the sorting, so any match is the finding rather than the setup.</p>
+      <p>A bad result would be every coloured bar near 0, meaning the model's own axes have nothing
+      to do with how people rate emotions. A strong one is a tall bar on the biggest axis. The base
+      model shows the strong version, valence at 0.83 on PC1. After instruction tuning the biggest
+      axis matches nothing we tested, and valence does not reappear until PC3.</p>
+      <p>Read the whole row, not one bar. PC1 in the base model also matches dominance at 0.66.
+      PC2 in the instruction-tuned model matches story length at 0.66. That is why the length
+      control is drawn beside the three ratings rather than left out.</p>
+    </details>
+  </div>
   <div class="grid3" style="margin-top:34px;gap:16px">
     <div class="card"><h3>The base model reproduces the result</h3>
     <p style="font-size:15px">Sort 171 emotion vectors by what separates them most and the top principal component
@@ -1370,8 +1409,14 @@ function drawMethod(){
 drawMethod();
 
 /* ---------- circumplex: principal-component bars ---------- */
-function drawPCs(model){
-  const host=document.getElementById("pcChart"); host.innerHTML="";
+/* hostId/verdictId are parameters so the cover can render this exact figure
+   rather than a smaller lookalike. A cover chart drawn by separate code is a
+   chart that can disagree with the analysis; this one cannot, because it is
+   the same function reading the same data. */
+function drawPCs(model, hostId="pcChart", verdictId="pcVerdict"){
+  const host=document.getElementById(hostId);
+  if(!host) return;                        // no silent half-draw
+  host.innerHTML="";
   // R is wide on purpose: the three scale labels live in the right margin,
   // outside the plot. Inside it, the 1.0 label crossed the tallest bars and the
   // 0 label sat on top of the PC5 category tick, whichever side of the line it
@@ -1430,7 +1475,8 @@ function drawPCs(model){
     transform:`rotate(-90 14 ${T+ih/2})`,"text-anchor":"middle"});
   yl.textContent="|r| with the human rating"; svg.appendChild(yl);
   host.appendChild(svg);
-  document.getElementById("pcVerdict").textContent = model==="base"
+  const verdict=document.getElementById(verdictId);
+  if(verdict) verdict.textContent = model==="base"
     ? "biggest axis = valence, 0.83. the circumplex, recovered."
     : "biggest axis = unknown. valence scores 0.11 here, and leads PC3 instead.";
 }
@@ -2477,6 +2523,8 @@ function addModalLine(text,cls,style){
   parent.appendChild(b);
 });
 
+drawPCs("base","coverPcBase","coverVerdictBase");
+drawPCs("instruct","coverPcIt","coverVerdictIt");
 drawPCs("base"); drawGrid(); drawStory(); drawEmo(); drawLayers(); drawLineage(); drawDose(); drawRsa();
 </script>
 </body></html>"""
