@@ -12,7 +12,7 @@
       system has the properties that make it a welfare subject: the kind of entity that can be
       benefited or harmed at all. Candidate grounds are consciousness, sentience and levels of
       agency. The welfare interests question asks what benefits or harms it if it is one.</p>
-      <p>Both are open empirical questions rather than positions. Their report is explicit that the
+      <p>Both are open empirical questions. Their report is explicit that the
       error runs in two directions: neglecting the interests of systems that can genuinely be
       harmed, or directing moral concern where it does not belong. They sort the available evidence
       into behavioural, internal and developmental. Reading a model's internal state is internal
@@ -26,8 +26,8 @@
       <p>One of the three dimensions in the NRC VAD lexicon, alongside valence and dominance.
       Thousands of English words carry a human rating on each. Those ratings are the yardstick here:
       principal component analysis sorts the model's 171 emotion vectors with no human input, and
-      each resulting axis is then correlated against them. Figure 1 draws all three, plus a
-      story-length control, against every axis of both models.</p>
+      each resulting axis is then correlated against them. Figure 6<!-- fig:pcChart --> draws all
+      three, plus a story-length control, against every axis of both models.</p>
       <p class="gsrc">Sources: <a href="#r-mohammad2025">Mohammad (2025)</a>,
       <a href="#r-mohammad2018">Mohammad (2018)</a></p>
     </details>
@@ -49,7 +49,8 @@
     <details class="gterm" id="g-dominance" data-slug="dominance">
       <summary><span class="gt">Dominance</span><span class="gs">How much control an emotion
       implies, from helpless to in charge, on the scale people rate words with.</span></summary>
-      <p>The third NRC VAD dimension. It earns its place in Figure 1 because these ratings are not
+      <p>The third NRC VAD dimension. It earns its place in Figure 6<!-- fig:pcChart --> because
+      these ratings are not
       independent of one another in practice. The base model's largest axis matches valence at 0.83
       and dominance at 0.66. One axis can score well against two ratings at once, so quoting only
       the best of them would overstate how cleanly that axis is valence.</p>
@@ -92,7 +93,7 @@
       the vectors mean.</span></summary>
       <p>Principal component analysis, set out by Pearson in 1901, returns the directions of largest
       spread in a set of points. They come in order: the first captures the most, the second the
-      most of what is left. We run it on the 171 emotion vectors. No human rating enters that fit, so a match found afterwards comes from the vectors. A component points
+      most of what is left. We run it on the 171 emotion vectors; the fit uses the vectors alone, and the human ratings are brought in afterwards to test the match. A component points
       along an axis without a preferred end, so we report the size of a correlation and not its
       sign.</p>
       <p class="gsrc">Source: <a href="#r-pearson1901">Pearson (1901)</a></p>
@@ -133,8 +134,9 @@
     <details class="gterm" id="g-token" data-slug="token">
       <summary><span class="gt">Token</span><span class="gs">The word-fragments a model actually
       reads, roughly three-quarters of a word each.</span></summary>
-      <p>A model does not read words. Text is cut into pieces drawn from a fixed inventory, so a
-      common word is usually one piece and a rare one is several. Figures 11 and 12 step through a
+      <p>Text reaches the model cut into pieces drawn from a fixed inventory: a
+      common word is usually one piece and a rare one is several. Figures 11<!-- fig:lineChart -->
+      and 12<!-- fig:ternChart --> step through a
       story one piece at a time, and the counts on this page count pieces rather than words. The three-quarters figure is a rough average for English prose and varies with the text.</p>
       <p class="gsrc">Source: <a href="#r-gemma4">Gemma 4 31B, pretrained</a></p>
     </details>

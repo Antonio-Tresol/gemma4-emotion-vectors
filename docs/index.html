@@ -460,7 +460,7 @@ border-bottom:1px solid var(--border)}</style></head>
       accounts for</span>
     </div>
     <div id="coverPcIt" data-figtitle="Principal components of the 171 emotion vectors, instruction-tuned model, layer 33"></div>
-    <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/02_circumplex_geometry.ipynb" target="_blank" rel="noopener noreferrer">notebooks/02_circumplex_geometry.ipynb</a>, layer 33. Figure 6 redraws
+    <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/02_circumplex_geometry.ipynb" target="_blank" rel="noopener noreferrer">notebooks/02_circumplex_geometry.ipynb</a>, layer 33. Figure 6<!-- fig:pcChart --> redraws
       these two, with a control to switch between them.</div>
     <details class="howto"><summary>How to read this</summary>
       <p>Each group of bars is one axis found by sorting the 171 emotion vectors by what separates
@@ -641,16 +641,16 @@ border-bottom:1px solid var(--border)}</style></head>
 
 <section id="replication"><div class="wrap">
   <h2><span class="secno">3</span>Valence leads the base model and loses first place in the instruction-tuned one</h2>
-  <p class="narrow">PCA over the 171 emotion vectors at layer 33. Each bar is one principal component:
-  grey is the variance it explains, and the coloured bars are how strongly its scores correlate with
-  human ratings of the same 171 words. The components come from the activations alone, with no human
-  labels anywhere in the fit.</p>
-  <p class="narrow">The question is then whether those model-found axes mean anything to us. So we take each axis
-  and correlate it against published human ratings of the same 171 words. Those ratings cover three
-  things: how <b>pleasant</b> the emotion is (psychologists call this <em>valence</em>), how
-  <b>worked-up</b> (<em>arousal</em>), and how <b>in control</b> the person feels (<em>dominance</em>). We also check it
-  against one thing that has nothing to do with emotion but could fake the whole result: <b>how long the
-  stories were</b>. A perfect match scores 1.0; no relationship scores 0.</p>
+  <p class="narrow">We performed principal component analysis on the 171 emotion vectors at layer 33.
+  Each bar below is one component: grey is the variance it explains. The coloured bars are how
+  strongly its scores correlate with published human ratings of the same 171 words. The components are
+  computed from the activations alone; the human ratings are brought in afterwards to test whether the
+  axes line up.</p>
+  <p class="narrow">The ratings cover three things: how <b>pleasant</b> the emotion is (psychologists
+  call this <em>valence</em>), how <b>worked-up</b> (<em>arousal</em>), and how <b>in control</b> the
+  person feels (<em>dominance</em>). We also correlated each component against one thing that has
+  nothing to do with emotion but could fake the whole result: <b>how long the stories were</b>. A
+  perfect match scores 1.0; no relationship scores 0.</p>
   <div class="card" style="margin-top:22px">
     <div class="controls">
       <button class="seg on" data-model="base">base model</button>
@@ -668,39 +668,37 @@ border-bottom:1px solid var(--border)}</style></head>
     </div>
     <details class="howto"><summary>How to read this</summary>
       <p><b>What a success looks like:</b> the base model. Its biggest axis matches human valence
-      ratings at 0.83, and its second matches energy at 0.55. Those are the two axes of the circumplex,
-      in order, found by a method that never saw a human rating. That is the published result,
+      ratings at 0.83, and its second matches arousal at 0.55. Those are the two axes of the
+      circumplex, in order, recovered from the activations alone. That is the published result,
       reproduced.</p>
-      <p><b>One honest complication.</b> That biggest axis also matches a third human rating,
-      dominance (how much control the emotion implies), at <b>0.66</b>, higher than the second
-      axis matches energy. Valence and dominance are themselves correlated in the human
-      ratings, so this figure alone cannot say whether the axis is valence, or valence and
-      dominance together. Story length is ruled out: it matches this axis at 0.15. We have not separated
-      these two, and the result we are reproducing carries the same ambiguity.</p>
+      <p><b>The same axis also matches dominance.</b> Dominance (how much control the emotion
+      implies) correlates with the biggest axis at <b>0.66</b>, higher than the second axis matches
+      arousal. Valence and dominance are themselves correlated in the human ratings, so this figure
+      alone cannot say whether the axis is valence, or valence and dominance together. Story length
+      is ruled out: it matches this axis at 0.15. We have not separated these two, and the result we
+      are reproducing carries the same ambiguity.</p>
       <p><b>What a failure looks like:</b> the instruction-tuned model. Its biggest axis matches valence
       at 0.11, near zero. The 171 emotions differ from one another in many ways at once. This
-      single axis accounts for 28% of all that variation, against 15% for the base model's
-      top axis. So it is not merely a big axis, it is nearly twice as dominant, and it is not
-      valence.</p>
-      <p>Valence has not vanished, it has moved down: the instruction-tuned model's <em>third</em> axis
-      matches it at 0.72. And watch the amber bar. The instruction-tuned model's second axis matches story
-      length at 0.66, harder than it matches any emotion rating. A big
-      axis is not automatically an emotional one.</p>
+      single axis explains 28% of all that variation, compared with 15% for the base model's
+      top axis.</p>
+      <p>Valence remains represented: the instruction-tuned model's <em>third</em> axis
+      matches it at 0.72. The amber bar matters here: the instruction-tuned model's second axis
+      matches story length at 0.66, higher than it matches any emotion rating.</p>
     </details>
     <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/02_circumplex_geometry.ipynb" target="_blank" rel="noopener noreferrer">notebooks/02_circumplex_geometry.ipynb</a>, layer 33, measured after the centring
     correction described in Method block 4</div>
   </div>
-  <div class="takeaway"><span class="lbl">Takeaway</span>The base model's emotions separate first by valence: the human circumplex, recovered without being asked for. In the instruction-tuned model the top axis is something else entirely, with valence pushed down to third.</div>
+  <div class="takeaway"><span class="lbl">Takeaway</span>The base model's emotions separate first by valence and then by arousal, which recovers the human circumplex from the activations alone. In the instruction-tuned model the top axis matches none of the human ratings, and valence falls to third.</div>
 </div></section>
 
-<div class="partbar" data-part-no="II" data-part="What instruction tuning changed"><div class="wrap"><span class="kicker">Part II</span><h2 class="ptitle">What instruction tuning changed</h2><p class="pblurb">The base model and the instruction-tuned model organise emotions differently, and section 4 asks what changed. Valence falls from first place to third, and a larger axis takes its place. We can measure that axis at every layer and we could not identify what it encodes.</p></div></div>
+<div class="partbar" data-part-no="II" data-part="What instruction tuning changed"><div class="wrap"><span class="kicker">Part II</span><h2 class="ptitle">What instruction tuning changed</h2><p class="pblurb">The base model and the instruction-tuned model organise emotions differently, and section 4 asks what changed. Valence falls from first place to third, and a new, larger axis takes its place.</p></div></div>
 
 <section id="displaced"><div class="wrap">
   <h2><span class="secno">4</span>What took valence's place?</h2>
-  <p class="narrow">Suppose instruction tuning had simply shuffled the same information around. Then every axis
-  in the instruction-tuned model would have a partner somewhere in the base model: the same emotions
-  separated the same way, just renumbered. So we checked all 25 pairings. Each of the instruction-tuned
-  model's top five axes went against each of the base model's top five. <b>1.0 means the two axes carry the
+  <p class="narrow">If instruction tuning had simply shuffled the same information around, every axis
+  in the instruction-tuned model would have a partner somewhere in the base model. The same emotions
+  would separate the same way, just renumbered. We checked all 25 pairings, each of the instruction-tuned
+  model's top five axes against each of the base model's top five. <b>1.0 means the two axes carry the
   same information; 0 means they have nothing in common.</b> Hover any square.</p>
   <div class="card" style="margin-top:22px">
     <div id="gridChart" data-figtitle="Instruction-tuned axes against base axes, top five of each"></div>
@@ -718,23 +716,23 @@ border-bottom:1px solid var(--border)}</style></head>
   </div>
   <p class="narrow" style="margin-top:20px"><b>Nothing in the top row matches.</b> The
   instruction-tuned model's biggest axis scores <b>0.14</b> against its closest relative among the
-  base model's five biggest axes, near the bottom of the scale. It is not a renaming or a reshuffle
-  of anything the base model had, and it is now the largest single thing separating the model's
+  base model's five biggest axes, near the bottom of the scale. This axis has no counterpart in the
+  base model, and it is now the largest single thing separating the model's
   emotions.</p>
-  <p class="narrow">Now read down the first column. Valence is still in there, intact, one floor
-  down: the instruction-tuned model's third axis scores <b>0.83</b> against the base model's first.
-  Instruction tuning did not delete the circumplex. It demoted it.</p>
+  <p class="narrow">Now read down the first column: the instruction-tuned model's third axis scores
+  <b>0.83</b> against the base model's first. The circumplex survives instruction tuning; it has
+  moved from the first axis to the third.</p>
   <div class="narrow" style="margin-top:18px">
     <div class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.07em;
       font-family:var(--display);font-weight:600">
       the emotions at each end of that new axis</div>
     <div style="margin-top:8px;font-size:14.5px"><b>one end:</b> <span id="pc1low"></span></div>
     <div style="margin-top:6px;font-size:14.5px"><b>the other:</b> <span id="pc1high"></span></div>
-    <p class="muted" style="font-size:14px;margin-top:10px">Reading the two lists is the honest way
-    to guess what an axis means, and here the guess fails. It is clearly not pleasant-versus-
-    unpleasant, because <em>miserable</em> and <em>jubilant</em> sit at the same end. If anything
-    it looks like low-grade irritation. But we do not know, and naming it without evidence is
-    exactly the mistake we are trying to avoid. It stays an open question.</p>
+    <p class="muted" style="font-size:14px;margin-top:10px">Reading the two lists is the standard
+    way to guess what an axis means, and here it does not produce one. <em>Miserable</em> and
+    <em>jubilant</em> sit at the same end, so the axis does not separate pleasant from unpleasant
+    emotions. If anything the shared quality reads as low-grade irritation. We could not identify
+    what this axis represents.</p>
   </div>
   <h3 style="margin-top:38px">The same question, without principal components</h3>
   <p class="narrow" style="margin-bottom:14px">This second measurement uses no principal components,
@@ -772,15 +770,16 @@ border-bottom:1px solid var(--border)}</style></head>
     <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/02_circumplex_geometry.ipynb" target="_blank" rel="noopener noreferrer">notebooks/02_circumplex_geometry.ipynb</a>, section 10</div>
   </div>
 
-  <h3 style="margin-top:30px">The caveat that cuts the other way</h3>
+  <h3 style="margin-top:30px">The shared structure survives beneath the new axis</h3>
   <p class="narrow">  Taken at face value, the two models look largely unrelated. Comparing each model's top three axes
   as a set gives three angles, <b>86.1&deg;</b>, 56.0&deg; and 46.1&deg;, where 90&deg;
   means two directions share nothing and 0&deg; that they coincide. The widest is almost a right
   angle; even the closest pair is only partly aligned.
-  But subtract that one unidentified axis and the late layers of the two models jump from <b>0.29</b>
-  agreement to <b>0.60</b>, on the same 0-to-1 scale as the grid above. So the shared emotion structure is not gone. It is sitting underneath one
-  large direction that has nothing to do with emotion.</p>
-  <div class="takeaway"><span class="lbl">Takeaway</span>The biggest thing separating emotions in the instruction-tuned model is not a rearrangement of anything the base model had. It is new, instruction tuning put it there, and it breaks the model's layers into disagreeing blocks. We can show all of that. We still cannot say what it encodes.</div>
+  Subtracting that one unidentified axis raises the late-layer agreement between the two models from
+  <b>0.29</b> to <b>0.60</b>, on the same 0-to-1 scale as the grid above. So the shared emotion
+  structure survives; it sits underneath one large direction that matches none of the emotion
+  ratings.</p>
+  <div class="takeaway"><span class="lbl">Takeaway</span>The biggest axis separating emotions in the instruction-tuned model is new: its closest match among the base model's axes is 0.14. Instruction tuning introduced it, and it breaks the model's layers into disagreeing blocks. We could not identify what it encodes.</div>
 </div></section>
 
 <div class="partbar" data-part-no="III" data-part="What the vectors can do"><div class="wrap"><span class="kicker">Part III</span><h2 class="ptitle">What the vectors can do</h2><p class="pblurb">Sections 5 to 8 ask what the vectors are good for. Section 5 reads them against the model's own preferences and then adds them back in to see whether the preferences move. Sections 6 to 8 follow a story that changes emotion partway through, one token at a time.</p></div></div>
@@ -849,11 +848,11 @@ border-bottom:1px solid var(--border)}</style></head>
   </div>
 
   <div class="takeaway"><span class="lbl">Takeaway</span>The vectors both predict and move the
-  model's preferences, which reproduces the paper's result on an open model. One check we had
-  fixed in advance failed. How much a vector predicts does not track how much steering with it
-  moves things: 0.40 and 0.30, against our mark of 0.5 and the paper's 0.85. The vectors act on
-  preferences in the right direction, and we cannot yet say that the strength of the reading tells
-  you the strength of the push.</div>
+  model's preferences, which reproduces the paper's result on an open model. One registered check
+  failed. We correlated each vector's prediction strength with the <span data-term="elo">Elo</span>
+  shift its steering produced. The correlation is 0.32 at the gentle dose and 0.23 at the four-times
+  dose, against our mark of 0.5 and the paper's 0.85. So the vectors move preferences in the right direction, and we
+  cannot yet show that a vector which predicts strongly also steers strongly.</div>
 </div></section>
 
 <section id="story"><div class="wrap">
@@ -864,7 +863,7 @@ border-bottom:1px solid var(--border)}</style></head>
   advance together.</p>
   <p class="narrow">Three of the four stories use the <b>same three emotions</b> and differ only in how
   they are written, and the model follows them very differently. How well the model follows an
-  emotion is not a property of the emotion alone.</p>
+  emotion depends on how the story is written, as much as on the emotion itself.</p>
   <div class="card" style="margin-top:22px">
     <div class="controls" style="margin-bottom:6px">
       <span class="muted" style="font-size:13px">story</span><span id="storyBtns"></span>
@@ -896,7 +895,7 @@ border-bottom:1px solid var(--border)}</style></head>
       <div id="ternChart" data-figtitle="The same three readings, as a position between the emotions"></div></div>
     <div style="margin-top:20px">
       <div class="figcap muted" style="font-size:12.5px;margin-bottom:6px">
-        the story the model is reading. The part you are currently on is highlighted</div>
+        the story the model is reading. The phase you are currently on is highlighted</div>
       <div class="storybox" id="storyBox"></div>
     </div>
     <details class="howto"><summary>How to read this</summary>
@@ -911,13 +910,13 @@ border-bottom:1px solid var(--border)}</style></head>
       middle, which is what a model ignoring the story would give you.</p>
       <p><b>What actually happens.</b> The handover is real, and it is messy. It also tends to arrive
       <em>early</em>. The lead changes before the written turn, so the model is picking up the
-      shift while still reading the previous part. Change the layer and the character of the picture
+      shift while still reading the previous phase. Change the layer and the character of the picture
       changes, which is what section 8 is about.</p>
       <p><b>Why these four stories, and what "followed well" means here.</b> The last three come out of a
       random sample of 24: the best, the middle and the worst. We scored them on exactly what this
-      figure draws: in each of the three parts, is the part's own emotion the highest line, and by
+      figure draws: in each of the three phases, is the phase's own emotion the highest line, and by
       how much?
-      Leading in all three parts is the best possible; leading in one is what luck alone gives, since
+      Leading in all three phases is the best possible; leading in one is what luck alone gives, since
       there are three lines.</p>
       <p>Here the model picks the right emotion out of the story's own three; in section 7 it picks
       out of twelve. A story can lead all three lines here and still do poorly out of twelve, so this
@@ -927,17 +926,16 @@ border-bottom:1px solid var(--border)}</style></head>
     subtracted first, so 0 means "typical for these stories" rather than "no emotion". A line
     above 0 is leaning towards that emotion more than the corpus does on average.</div>
   </div>
-  <div class="takeaway"><span class="lbl">Takeaway</span>The model really does hand over from one emotion to the next as the story turns, and it tends to do so <em>early</em>, before the written turn arrives. The signal is real and it is noisy, and it looks different depending which layer you read.</div>
+  <div class="takeaway"><span class="lbl">Takeaway</span>The model really does hand over from one emotion to the next as the story turns, and it tends to do so <em>early</em>, before the written turn arrives. The signal is real and it is noisy, and it looks different depending on which layer we read.</div>
 </div></section>
 
 <section id="emotions"><div class="wrap">
   <h2><span class="secno">7</span>Some emotions are followed well, others not at all</h2>
   <p class="narrow">For every phase of every story, we measured the centred cosine against all
   twelve emotion vectors. The question is how often the winner is the emotion that phase was
-  written to convey. Chance is 1 in 12.</p>
-  <p class="narrow">The set shifts here from 171 emotions to <b>twelve</b>. The stories were written to
-  move between these twelve, so twelve is what there is to choose from, and picking one of
-  twelve is a test we can actually score. Picking at random would be right 1 time in 12, or 8%.
+  written to convey.</p>
+  <p class="narrow">The set shifts here from 171 emotions to <b>twelve</b>, because the stories were
+  written to move between these twelve. Picking at random would be right 1 time in 12, or 8%.
   Each bar is one emotion's score.</p>
   <p class="narrow">The two buttons swap in a different set of emotion vectors, built from a different
   writer's stories, the same swap as section 2. The layer buttons read the same measurement at a
@@ -945,8 +943,8 @@ border-bottom:1px solid var(--border)}</style></head>
   <p class="narrow">The twelve-emotion vector sets exist only for the instruction-tuned model. An
   emotion vector has to be built from stories, and these were built from stories that model wrote
   about itself. Running the same test on the base model would mean rebuilding all twelve vectors from
-  base-model stories, which we did not do. So this section reads the model people actually talk to,
-  and the base model is absent here rather than losing.</p>
+  base-model stories, which we did not do. This section therefore covers the instruction-tuned model
+  only.</p>
   <div class="card" style="margin-top:22px">
     <div class="controls">
       <button class="seg on" data-vectors="selfgen">vectors from Gemma's own stories</button>
@@ -970,23 +968,23 @@ border-bottom:1px solid var(--border)}</style></head>
       <em>loving</em> and <em>guilty</em> win about half the time while <em>nervous</em> (5.8%) sits
       below chance. Change the layer and the order shuffles, so a single layer does not stand for
       how well the model follows emotion.</p>
-      <p><b>The part we did not expect.</b> The wrong answers are not spread evenly. With Gemma's own
-      vectors, the wrong answers pile onto two emotions: whatever the true answer was, the model
+      <p><b>The part we did not expect.</b> The wrong answers pile onto two emotions. With Gemma's own
+      vectors, whatever the true answer was, the model
       keeps replying <b>guilty</b> or <b>happy</b>. With DeepSeek's vectors that pile-up
       disappears and overall accuracy rises. So the vectors we handed the model account for a real share of what looks like a failure to
       follow emotions.</p>
     </details>
     <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/11_tracking_taxonomy.ipynb" target="_blank" rel="noopener noreferrer">notebooks/11_tracking_taxonomy.ipynb</a>, layer 33, instruction-tuned model reading</div>
   </div>
-  <div class="takeaway"><span class="lbl">Takeaway</span>The model follows emotion better than chance, but unevenly and never reliably, and a large part of that unevenness comes from the emotion vectors rather than the model. Swap in a different writer's vectors and both the accuracy and the pattern of mistakes change.</div>
+  <div class="takeaway"><span class="lbl">Takeaway</span>The model follows emotion better than chance, but unevenly and never reliably. A large part of that unevenness comes from the emotion vectors themselves: swap in a different writer's vectors and both the accuracy and the pattern of mistakes change.</div>
 </div></section>
 
 <section id="layers"><div class="wrap">
   <h2><span class="secno">8</span>Naming and anticipation peak at different depths</h2>
   <p class="narrow">We measured two different skills at six depths of the model, and they peak in
   different places. The first is the one from section 7:
-  <b>does it name the emotion right now?</b> The second asks something subtler.
-  Before each turn the model leans slightly towards the emotion about to arrive; this measures
+  <b>does the model name the emotion in front of it?</b> The second is anticipation:
+  before each turn the model leans slightly towards the emotion about to arrive. We measured
   whether the <em>size</em> of that lean tracks the <em>size</em> of the coming emotional change.
   A big swing from cheerful to devastated should produce a bigger lean than a small shift from
   content to calm. The two lines are on different scales, so each has its own axis and its own
@@ -1011,17 +1009,16 @@ border-bottom:1px solid var(--border)}</style></head>
     <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/11_tracking_taxonomy.ipynb" target="_blank" rel="noopener noreferrer">notebooks/11_tracking_taxonomy.ipynb</a> (measurements repeated at each
     layer)</div>
   </div>
-  <p class="narrow">Naming does not rise or fall with depth. It zigzags. Averaged over all twelve
-  emotions, layer 6 gets the current emotion right <b>58%</b> and layer 15 drops to
+  <p class="narrow">Naming accuracy rises and falls repeatedly with depth. Averaged over all twelve
+  emotions, layer 6 gets the current emotion right <b>58%</b> of the time and layer 15 drops to
   <b>33%</b>. Layer 24 climbs back to <b>57%</b>, layer 33 falls to <b>27%</b>, and layer
   42 recovers to <b>41%</b>. The 58% peak and the 27% trough are two points on a sawtooth. This curve is the average of section 7's twelve bars, on
   the Gemma-written vectors. At layer 33 the best single emotion reaches 49%; the worst
   sits at 6%, below chance. The other measure runs the other way,
-  climbing from <b>+0.03</b> at layer 6 to <b>+0.26</b> at layer 51. It does not climb smoothly:
-  it reaches +0.143 by layer 24, collapses to +0.001 at layer 33, then climbs again.
-  Whatever the model is doing, it is not doing it all in one place, and the middle of the stack
-  behaves differently from either end.</p>
-  <p class="narrow">One consolation in the errors: when the model names the wrong emotion,
+  climbing from <b>+0.03</b> at layer 6 to <b>+0.26</b> at layer 51. The climb is uneven:
+  it reaches +0.143 by layer 24, collapses to +0.001 at layer 33, then resumes.
+  The middle of the stack behaves differently from either end.</p>
+  <p class="narrow">The errors have structure: when the model names the wrong emotion,
   it names a <em>near</em> one. The emotion it picks instead sits closer to the true one in the
   VAD space than a randomly chosen emotion would, and that holds
   at every layer we looked at.</p>
@@ -1029,19 +1026,18 @@ border-bottom:1px solid var(--border)}</style></head>
   <p class="narrow">  The model's own emotion layout explains its mistakes better at layer 33; human ratings explain
   them better at layer 51. So the answer to "does it confuse emotions the way people do?" depends
   on where you look.</p>
-  <div class="takeaway"><span class="lbl">Takeaway</span>There is no single "emotion layer". Naming the emotion in front of it is an early-layer skill. Registering <em>how big</em> the coming emotional change is grows with depth and peaks at the deepest layer we read, unevenly, with a collapse at layer 33 we cannot explain. Any result quoted at one depth is a result about that depth.</div>
+  <div class="takeaway"><span class="lbl">Takeaway</span>There is no single "emotion layer". Naming the emotion in front of it is an early-layer skill. Registering <em>how big</em> the coming emotional change is grows with depth and peaks at the deepest layer we read, unevenly, with a collapse at layer 33 we could not explain.</div>
 </div></section>
 
 <section id="next" data-endparts><div class="wrap">
   <h2><span class="secno">9</span>What we would do next</h2>
-  <p class="narrow">Each of these attacks something we could not settle, and we would run them in
-  the order shown.</p>
+  <p class="narrow">Each experiment below addresses something we could not settle, and we would run
+  them in the order shown.</p>
   <ol class="steps">
-    <li><b>Find out what the instruction-tuned model's largest axis encodes.</b> We can measure that
-    axis and we cannot say what it encodes. It is not valence, arousal, dominance, or story length;
-    we checked all four. The next test is to stop looking and start pushing: add that direction into
-    the model while it writes, and see what changes in the output. Whatever changes is what the axis
-    was for.</li>
+    <li><b>Find out what the instruction-tuned model's largest axis encodes.</b> It matches none of
+    valence, arousal, dominance, or story length; we checked all four. The next test is causal: we
+    would add that direction into the model while it writes, and read what changes in the
+    output.</li>
     <li><b>Find out why the layers divide the work.</b> Naming the emotion in front of it is an
     early-layer skill; registering the size of the change about to arrive is a late-layer one. We can
     show the split exists and we have no account of why. One guess worth testing: early layers may be
@@ -1054,8 +1050,8 @@ border-bottom:1px solid var(--border)}</style></head>
     its own.</li>
   </ol>
   <h3 style="margin-top:34px">Three results, three different grades of evidence</h3>
-  <p class="narrow">The three results on this page are not equally settled. Only the first has
-  finished the process.</p>
+  <p class="narrow">Only the first of the three results has been through the full falsification
+  pass.</p>
   <ol class="steps">
     <li><b>The base model reproduces the circumplex: tested and survived.</b> It has been through
     the full falsification pass and came out the other side, including a re-run after we corrected
@@ -1064,23 +1060,20 @@ border-bottom:1px solid var(--border)}</style></head>
     yet formally tested.</b> Every number behind it is real and reproducible, but the claim is still
     marked unvalidated in our tree and its falsification pass is owed. Treat it as a strong observation with its falsification pass still owed.</li>
     <li><b>Emotion vectors follow a story better than chance: exploratory.</b> These measurements
-    are registered as hypothesis-generating work with no pass bar attached, and one thing should be
-    said plainly. The detection bar we <em>did</em> register in advance was written for the
-    171-emotion vector set, and that set failed it at every layer. What passes is the twelve-emotion
-    sets, which is a substitution we made after seeing the results. It may well be the right call.
-    It is not the thing we pre-registered, and we are not going to describe it as though it
-    were.</li>
+    are registered as hypothesis-generating work with no pass mark attached. The detection mark we
+    <em>did</em> fix in advance was written for the 171-emotion vector set, and that set failed it
+    at every layer. What passes is the twelve-emotion sets, a substitution we made after seeing the
+    results; the grade stays exploratory for that reason.</li>
   </ol>
   <p class="narrow">What the new axis encodes is unsettled across all three results. So is how much
   of the story-following belongs to the model, and how much to the stories its vectors were built
   from.</p>
-  <h3 style="margin-top:30px">The explanation we cannot rule out</h3>
-  <p class="narrow">  Every positive result here is real and small: better than chance, worse than anything you would
-  want to rely on. There are two readings and we cannot yet separate them. The comfortable one is that
+  <h3 style="margin-top:30px">A weak signal has two explanations</h3>
+  <p class="narrow">  Every positive result here is real and small: better than chance, too weak to
+  rely on. There are two readings and we cannot yet separate them. One is that
   emotion is genuinely represented and our instruments are blunt. The other is that emotion is
-  not one of the big organising ideas in this model, and a weak signal is the correct answer rather
-  than a measurement failure. Telling those apart is the experiment we would most like to run, and
-  either outcome is worth having.</p>
+  not one of the big organising ideas in this model, and a weak signal is the correct answer.
+  Telling those apart is the experiment we would most like to run.</p>
 </div></section>
 
 <section id="methods"><div class="wrap">
@@ -1097,14 +1090,15 @@ border-bottom:1px solid var(--border)}</style></head>
     <div id="m1"></div>
     <p><b>Subtracting the average (centring):</b> we subtract the
     mean across all the emotions in the set. What remains is what makes <em>this</em> emotion
-    different, rather than what all English prose has in common. Which pool we average over,
-    the 12 or the 171, changes the answer. Skip this step and you get a number produced by the method rather than
-    by the model. We know, because we skipped it once (block 4). <b>Which words count:</b>
+    different from the others. Which pool we average over,
+    the 12 or the 171, changes the answer. Without centring, the number reflects features common to
+    all English prose instead of the emotion. An early version of our pipeline omitted this step
+    and reported no detections anywhere (block 4). <b>Which words count:</b>
     a story is hundreds of words, and we combine them into one recording. We ignore the padding,
     drop the first 50 words as scene-setting, and average the rest, up to 512. Dropping the first
     50 is the convention the original paper used.
-    (A <span data-term="token">token</span> is a word-fragment, roughly three-quarters of a word; the model reads those rather than words, and this page counts them.) We fixed both choices before any scoring. This is the opposite of what block 3 does,
-    where we deliberately keep every word separate instead of averaging.</p>
+    (A <span data-term="token">token</span> is a word-fragment, roughly three-quarters of a word; the model reads those rather than words, and this page counts them.) We fixed both choices before any scoring. Block 3 does the opposite:
+    there we keep every word separate instead of averaging.</p>
   </details>
 
   <details class="howto" style="border-top:none">
@@ -1134,12 +1128,12 @@ border-bottom:1px solid var(--border)}</style></head>
   <details class="howto" style="border-top:none">
     <summary style="font-size:15px">3. How "does it follow the story?" was scored</summary>
     <p>We wrote 173 three-emotion recipes and generated stories from each, giving a corpus of
-    8,938 labelled phases and 5,934 transitions between them. Nothing is averaged away here. The
+    8,938 labelled phases and 5,934 transitions between them. The
     model reads the story once and we keep its state at <b>every single word</b>. At each position
-    we measure the angle between that state and each of the 12 emotion vectors. A part's score is the
-    average over the words inside it; we skip parts shorter than 4 words rather than averaging them in.
+    we measure the angle between that state and each of the 12 emotion vectors. A phase's score is the
+    average over the words inside it; we skip phases shorter than 4 words.
     Two questions follow, and we wrote down what would count as passing before running either.</p>
-    <p><b>Naming:</b> inside a part written as "afraid", where does the afraid vector place among the
+    <p><b>Naming:</b> inside a phase written as "afraid", where does the afraid vector place among the
     12? First place is perfect; 6.5th on average is what chance gives. <b>Anticipation:</b> in the
     words just before a written turn, has the <em>next</em> emotion's vector already begun to pull
     ahead? Zero would mean the model does not see the turn coming.</p>
@@ -1156,7 +1150,7 @@ border-bottom:1px solid var(--border)}</style></head>
     rather than each word, because words within a story are not independent. We checked whether a
     randomly chosen direction scores just as well, and whether a result is simply reproducing how
     common each answer already is. The notebooks re-run from those files on any machine.</p>
-    <p class="muted">One correction is worth flagging because it reversed a headline. Our first round of
+    <p class="muted">One correction reversed a headline. Our first round of
     detection tests found nothing passing anywhere. A later audit found that the extraction code had skipped
     the subtract-the-average step from block 1. With that step restored, the same data passes on both
     models. We report both, and the section-3 figure is the corrected one.</p>
@@ -1177,7 +1171,7 @@ border-bottom:1px solid var(--border)}</style></head>
       system has the properties that make it a welfare subject: the kind of entity that can be
       benefited or harmed at all. Candidate grounds are consciousness, sentience and levels of
       agency. The welfare interests question asks what benefits or harms it if it is one.</p>
-      <p>Both are open empirical questions rather than positions. Their report is explicit that the
+      <p>Both are open empirical questions. Their report is explicit that the
       error runs in two directions: neglecting the interests of systems that can genuinely be
       harmed, or directing moral concern where it does not belong. They sort the available evidence
       into behavioural, internal and developmental. Reading a model's internal state is internal
@@ -1191,8 +1185,8 @@ border-bottom:1px solid var(--border)}</style></head>
       <p>One of the three dimensions in the NRC VAD lexicon, alongside valence and dominance.
       Thousands of English words carry a human rating on each. Those ratings are the yardstick here:
       principal component analysis sorts the model's 171 emotion vectors with no human input, and
-      each resulting axis is then correlated against them. Figure 1 draws all three, plus a
-      story-length control, against every axis of both models.</p>
+      each resulting axis is then correlated against them. Figure 6<!-- fig:pcChart --> draws all
+      three, plus a story-length control, against every axis of both models.</p>
       <p class="gsrc">Sources: <a href="#r-mohammad2025">Mohammad (2025)</a>,
       <a href="#r-mohammad2018">Mohammad (2018)</a></p>
     </details>
@@ -1214,7 +1208,8 @@ border-bottom:1px solid var(--border)}</style></head>
     <details class="gterm" id="g-dominance" data-slug="dominance">
       <summary><span class="gt">Dominance</span><span class="gs">How much control an emotion
       implies, from helpless to in charge, on the scale people rate words with.</span></summary>
-      <p>The third NRC VAD dimension. It earns its place in Figure 1 because these ratings are not
+      <p>The third NRC VAD dimension. It earns its place in Figure 6<!-- fig:pcChart --> because
+      these ratings are not
       independent of one another in practice. The base model's largest axis matches valence at 0.83
       and dominance at 0.66. One axis can score well against two ratings at once, so quoting only
       the best of them would overstate how cleanly that axis is valence.</p>
@@ -1257,7 +1252,7 @@ border-bottom:1px solid var(--border)}</style></head>
       the vectors mean.</span></summary>
       <p>Principal component analysis, set out by Pearson in 1901, returns the directions of largest
       spread in a set of points. They come in order: the first captures the most, the second the
-      most of what is left. We run it on the 171 emotion vectors. No human rating enters that fit, so a match found afterwards comes from the vectors. A component points
+      most of what is left. We run it on the 171 emotion vectors; the fit uses the vectors alone, and the human ratings are brought in afterwards to test the match. A component points
       along an axis without a preferred end, so we report the size of a correlation and not its
       sign.</p>
       <p class="gsrc">Source: <a href="#r-pearson1901">Pearson (1901)</a></p>
@@ -1298,8 +1293,9 @@ border-bottom:1px solid var(--border)}</style></head>
     <details class="gterm" id="g-token" data-slug="token">
       <summary><span class="gt">Token</span><span class="gs">The word-fragments a model actually
       reads, roughly three-quarters of a word each.</span></summary>
-      <p>A model does not read words. Text is cut into pieces drawn from a fixed inventory, so a
-      common word is usually one piece and a rare one is several. Figures 11 and 12 step through a
+      <p>Text reaches the model cut into pieces drawn from a fixed inventory: a
+      common word is usually one piece and a rare one is several. Figures 11<!-- fig:lineChart -->
+      and 12<!-- fig:ternChart --> step through a
       story one piece at a time, and the counts on this page count pieces rather than words. The three-quarters figure is a rough average for English prose and varies with the text.</p>
       <p class="gsrc">Source: <a href="#r-gemma4">Gemma 4 31B, pretrained</a></p>
     </details>

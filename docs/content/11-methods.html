@@ -12,14 +12,15 @@
     <div id="m1"></div>
     <p><b>Subtracting the average (centring):</b> we subtract the
     mean across all the emotions in the set. What remains is what makes <em>this</em> emotion
-    different, rather than what all English prose has in common. Which pool we average over,
-    the 12 or the 171, changes the answer. Skip this step and you get a number produced by the method rather than
-    by the model. We know, because we skipped it once (block 4). <b>Which words count:</b>
+    different from the others. Which pool we average over,
+    the 12 or the 171, changes the answer. Without centring, the number reflects features common to
+    all English prose instead of the emotion. An early version of our pipeline omitted this step
+    and reported no detections anywhere (block 4). <b>Which words count:</b>
     a story is hundreds of words, and we combine them into one recording. We ignore the padding,
     drop the first 50 words as scene-setting, and average the rest, up to 512. Dropping the first
     50 is the convention the original paper used.
-    (A <span data-term="token">token</span> is a word-fragment, roughly three-quarters of a word; the model reads those rather than words, and this page counts them.) We fixed both choices before any scoring. This is the opposite of what block 3 does,
-    where we deliberately keep every word separate instead of averaging.</p>
+    (A <span data-term="token">token</span> is a word-fragment, roughly three-quarters of a word; the model reads those rather than words, and this page counts them.) We fixed both choices before any scoring. Block 3 does the opposite:
+    there we keep every word separate instead of averaging.</p>
   </details>
 
   <details class="howto" style="border-top:none">
@@ -49,12 +50,12 @@
   <details class="howto" style="border-top:none">
     <summary style="font-size:15px">3. How "does it follow the story?" was scored</summary>
     <p>We wrote 173 three-emotion recipes and generated stories from each, giving a corpus of
-    8,938 labelled phases and 5,934 transitions between them. Nothing is averaged away here. The
+    8,938 labelled phases and 5,934 transitions between them. The
     model reads the story once and we keep its state at <b>every single word</b>. At each position
-    we measure the angle between that state and each of the 12 emotion vectors. A part's score is the
-    average over the words inside it; we skip parts shorter than 4 words rather than averaging them in.
+    we measure the angle between that state and each of the 12 emotion vectors. A phase's score is the
+    average over the words inside it; we skip phases shorter than 4 words.
     Two questions follow, and we wrote down what would count as passing before running either.</p>
-    <p><b>Naming:</b> inside a part written as "afraid", where does the afraid vector place among the
+    <p><b>Naming:</b> inside a phase written as "afraid", where does the afraid vector place among the
     12? First place is perfect; 6.5th on average is what chance gives. <b>Anticipation:</b> in the
     words just before a written turn, has the <em>next</em> emotion's vector already begun to pull
     ahead? Zero would mean the model does not see the turn coming.</p>
@@ -71,7 +72,7 @@
     rather than each word, because words within a story are not independent. We checked whether a
     randomly chosen direction scores just as well, and whether a result is simply reproducing how
     common each answer already is. The notebooks re-run from those files on any machine.</p>
-    <p class="muted">One correction is worth flagging because it reversed a headline. Our first round of
+    <p class="muted">One correction reversed a headline. Our first round of
     detection tests found nothing passing anywhere. A later audit found that the extraction code had skipped
     the subtract-the-average step from block 1. With that step restored, the same data passes on both
     models. We report both, and the section-3 figure is the corrected one.</p>

@@ -609,6 +609,42 @@ def check_figures(html: str) -> None:
     print(f"figures: {total}, each with a how-to block and a source line")
 
 
+FIGURE_REF = re.compile(r"\bFigures?\s+(\d+)\s*(<!--\s*fig:([A-Za-z0-9_]+)\s*-->)?")
+MARKED_NUMBER = re.compile(r"(\d+)\s*<!--\s*fig:([A-Za-z0-9_]+)\s*-->")
+
+
+def check_figure_references(html: str) -> None:
+    """Every "Figure N" in prose must name its chart id in an adjacent comment,
+    and N must be that chart's position in document order.
+
+    Figure numbers are assigned at runtime by numberFigures(), in document
+    order, so inserting a chart renumbers everything after it. The glossary
+    once said "Figure 1" about a chart that had become Figure 6; this check
+    turns that silent drift into a build failure.
+    """
+    body = re.sub(r"(?is)<script\b.*?</script>", " ", html)
+    hosts = []
+    for match in FIGURE_HOST.finditer(body):
+        id_match = re.search(r'\bid="([A-Za-z0-9_-]+)"', match.group(0))
+        hosts.append(id_match.group(1) if id_match else None)
+    problems = []
+    for number, marker, _chart_id in FIGURE_REF.findall(body):
+        if not marker:
+            problems.append(f'  "Figure {number}" carries no <!-- fig:chartId --> marker')
+    for number, chart_id in MARKED_NUMBER.findall(body):
+        position = int(number)
+        if not (1 <= position <= len(hosts)) or hosts[position - 1] != chart_id:
+            actual = hosts.index(chart_id) + 1 if chart_id in hosts else "absent"
+            problems.append(
+                f"  a mention says figure {position} is {chart_id}, "
+                f"but that chart is figure {actual} in document order"
+            )
+    if problems:
+        raise SystemExit("figure reference check failed\n" + "\n".join(problems))
+    marked = len(MARKED_NUMBER.findall(body))
+    print(f"figure references: {marked} marked, each pointing at the chart it names")
+
+
 def check_jargon(html: str) -> None:
     """Fail the build on terms a reader has already had to ask about."""
     prose = " ".join(prose_sentences(html)).lower()
@@ -630,6 +666,7 @@ if __name__ == "__main__":
     check_em_dashes(html)
     check_prose(html)
     check_figures(html)
+    check_figure_references(html)
     check_jargon(html)
     out.write_text(html, encoding="utf-8")
     print(f"wrote {out} ({out.stat().st_size / 1024:.0f} KB)")
