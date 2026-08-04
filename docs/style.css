@@ -123,6 +123,11 @@ border-radius:12px;padding:18px 20px}
 .reasons{max-width:820px;margin:6px 0 20px;padding-left:20px}
 .reasons li{margin-bottom:12px;line-height:1.62;padding-left:6px}
 .reasons li::marker{color:var(--orange)}
+/* Proposed next experiments. Numbered rather than bulleted because the prose
+   claims an order and a bullet cannot carry one. */
+.steps{max-width:820px;margin:14px 0 20px;padding-left:24px}
+.steps li{margin-bottom:14px;line-height:1.62;padding-left:8px}
+.steps li::marker{color:var(--orange);font-family:var(--display);font-weight:650}
 .callout{border-left:3px solid var(--orange);padding:14px 0 14px 18px;background:transparent;margin:18px 0}
 /* the three parts of the talk, each announced by a full-width divider */
 .partbar{border-top:2px solid var(--navy);margin-top:64px;padding-top:20px}
