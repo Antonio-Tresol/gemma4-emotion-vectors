@@ -3,7 +3,7 @@
   <p class="narrow">Everything so far has been about static text: one story, one emotion, one reading.
   Here the story <em>moves</em>. Each of these four was written to pass through three emotions in turn,
   with the turns marked. We feed one to the model and, at every single word, measure how close its
-  internal state sits to each of the three emotion vectors. Drag the word slider and both panels
+  internal state sits to each of the three emotion vectors. Press play, or drag the word slider, and both panels
   advance together.</p>
   <p class="narrow">Three of the four stories use the <b>same three emotions</b> and differ only in how
   they are written, and the model follows them very differently. That is the point of this
@@ -18,6 +18,7 @@
       <span id="layerBtns"></span>
       <span class="slidergrp">
         <span class="muted" style="font-size:13px">word</span>
+        <button id="tokPlay" class="playbtn" aria-label="Play the story"></button>
         <input type="range" id="tokSlider" min="0" max="235" value="0">
         <span class="mono" id="tokLabel" style="min-width:78px;display:inline-block"></span>
       </span>

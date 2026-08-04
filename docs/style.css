@@ -284,3 +284,14 @@ color:var(--text)}
    "clickable" with a dotted rule rather than weight and an arrow. */
 .link-src{color:inherit;text-decoration:none;border-bottom:1px dotted var(--grey-mid)}
 .link-src:hover{color:var(--text);border-bottom-color:var(--text)}
+/* The story's play control, sized to sit inside the slider row. Same square
+   icon button as the expand control, with an on state so paused and playing
+   are distinguishable without reading the glyph. */
+.playbtn{display:grid;place-items:center;width:24px;height:24px;padding:0;flex-shrink:0;
+border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--muted);
+cursor:pointer;transition:color .12s,border-color .12s,background .12s}
+.playbtn:hover{color:var(--text);border-color:var(--muted)}
+.playbtn.on{color:#fff;background:var(--orange);border-color:var(--orange)}
+.playbtn svg{width:11px;height:11px;display:block;fill:currentColor;stroke:currentColor;
+stroke-width:1.6;stroke-linecap:round}
+.playbtn svg path[d^="M5.5"]{fill:none}

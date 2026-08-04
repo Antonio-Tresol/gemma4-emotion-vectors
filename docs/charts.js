@@ -496,6 +496,38 @@ function selectStory(i){
     sb.appendChild(b);
   });
 })();
+/* Play control for the word slider. Reading a 236-word story by dragging it is
+   work, and the thing worth seeing, the handover from one emotion to the next,
+   is a motion rather than a position. It loops instead of stopping at the end,
+   because you almost always want the handover twice. The slider stays: playback
+   is for watching, the slider is for going back to the word that surprised you.
+
+   Declared at top level, above the block that wires the button. An earlier
+   version sat inside that block, which put `storyTimer` in a scope the handlers
+   could not see and silently blanked every figure on the page. */
+const PLAY_MS = 80;
+const PLAY_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3l8 5-8 5z"/></svg>';
+const PAUSE_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3v10M10.5 3v10"/></svg>';
+let storyTimer = null;
+function paintPlayButton(){
+  const b=document.getElementById("tokPlay"); if(!b) return;
+  b.innerHTML = storyTimer ? PAUSE_ICON : PLAY_ICON;
+  b.setAttribute("aria-label", storyTimer ? "Pause" : "Play the story");
+  b.classList.toggle("on", !!storyTimer);
+}
+function stopStory(){
+  if(storyTimer){ clearInterval(storyTimer); storyTimer=null; }
+  paintPlayButton();
+}
+function playStory(){
+  const sl=document.getElementById("tokSlider"); if(!sl || storyTimer) return;
+  storyTimer=setInterval(()=>{
+    curTok = curTok >= +sl.max ? 0 : curTok+1;
+    sl.value=curTok; drawStory();
+  }, PLAY_MS);
+  paintPlayButton();
+}
+
 (function(){
   const lb=document.getElementById("layerBtns");
   Object.keys(STORIES[0].lines_by_layer).forEach(L=>{
@@ -506,7 +538,11 @@ function selectStory(i){
   });
   const sl=document.getElementById("tokSlider");
   sl.max=S.n_tokens-1;
-  sl.oninput=()=>{curTok=+sl.value; drawStory();};
+  // taking the slider means taking control: playback stops rather than fighting the drag
+  sl.oninput=()=>{stopStory(); curTok=+sl.value; drawStory();};
+  const pb=document.getElementById("tokPlay");
+  if(pb){ pb.onclick=()=>storyTimer?stopStory():playStory(); tipOn(pb,"Play the story from the first word"); pb.style.cursor="pointer"; }
+  paintPlayButton();
 })();
 
 /* ---------- per emotion, every layer ---------- */
