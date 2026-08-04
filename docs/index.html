@@ -295,7 +295,12 @@ color:var(--text)}
 .mh .kicker{margin-bottom:0}
 .mhnote{font-family:var(--display);font-size:12.5px;color:var(--muted);margin-top:8px}
 .mhnote+.mhnote{margin-top:3px}
-@media(max-width:560px){.mh{grid-template-columns:1fr;gap:2px}}</style></head>
+@media(max-width:560px){.mh{grid-template-columns:1fr;gap:2px}}
+/* Notebook links inside source lines. Deliberately quieter than
+   .link-plain: they inherit the mono muted caption they sit in, and say
+   "clickable" with a dotted rule rather than weight and an arrow. */
+.link-src{color:inherit;text-decoration:none;border-bottom:1px dotted var(--grey-mid)}
+.link-src:hover{color:var(--text);border-bottom-color:var(--text)}</style></head>
 <body>
 <div id="tip"></div><div id="bar"></div>
 <div id="modal"><div id="modalInner"><button id="modalClose" aria-label="Close the expanded figure" title="Close">
@@ -489,7 +494,7 @@ color:var(--text)}
       <p><b>Where</b> matters as well as how many. No source works in the first third of the stack, and
       the passing layers cluster late, around 33 to 57. A single quoted layer would have hidden that.</p>
     </details>
-    <div class="src">source: notebooks/07_generator_lineages.ipynb (experiments E11 and E12)</div>
+    <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/07_generator_lineages.ipynb" target="_blank" rel="noopener noreferrer">notebooks/07_generator_lineages.ipynb</a> (experiments E11 and E12)</div>
   </div>
   <div class="grid2" style="margin-top:20px">
     <div class="card"><h3>Why its own stories are worse</h3>
@@ -500,13 +505,13 @@ color:var(--text)}
       the model's writing habits as much as for the emotion.</p>
       <p style="font-size:15px" class="muted">It is also the sharpest thing we saw about what is
       peculiar to this particular model. Ask it for variety and it gives you Elias, 3,000 times.</p></div>
-    <div class="card"><h3>How many stories do you actually need?</h3>
+    <div class="card"><h3>Does the number of stories change the answer?</h3>
       <div id="doseChart" data-figtitle="Detection against corpus size"></div>
       <p style="font-size:15px;margin-top:8px">About <b>64</b> per emotion. At that point the vectors
       already reach 8.6 working layers out of the 9 this writer ever achieves. (It is a
       fraction because it averages five random draws of that many stories.) Quadrupling the
       stories buys almost nothing.</p>
-      <div class="src">source: notebooks/07_generator_lineages.ipynb (experiment E12)</div></div>
+      <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/07_generator_lineages.ipynb" target="_blank" rel="noopener noreferrer">notebooks/07_generator_lineages.ipynb</a> (experiment E12)</div></div>
   </div>
   <div class="takeaway"><span class="lbl">Takeaway</span>An emotion vector is only as good as the corpus behind it. Same model, same test, and a nine-fold spread in how many layers work. A stronger outside writer beats the model's own stories, which are too repetitive to build a broad vector from.</div>
 </div></section>
@@ -560,7 +565,7 @@ color:var(--text)}
       length at 0.66, harder than it matches any emotion rating. A big
       axis is not automatically an emotional one.</p>
     </details>
-    <div class="src">source: notebooks/02_circumplex_geometry.ipynb, layer 33, measured after the centering
+    <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/02_circumplex_geometry.ipynb" target="_blank" rel="noopener noreferrer">notebooks/02_circumplex_geometry.ipynb</a>, layer 33, measured after the centering
     correction described in Method block 4</div>
   </div>
   <div class="takeaway"><span class="lbl">Takeaway</span>Sort the base model's emotions by what separates them most and the answer is valence: the human circumplex, recovered without being asked for. Do the same on the instruction-tuned model and the top axis is something else entirely, with valence pushed down to third.</div>
@@ -579,7 +584,7 @@ color:var(--text)}
     <div class="card">
       <div id="gridChart" data-figtitle="Instruction-tuned axes against base axes, top five of each"></div>
       <div id="gridNote" class="muted" style="margin-top:10px;min-height:34px;font-size:13.5px"></div>
-      <div class="src">source: notebooks/02_circumplex_geometry.ipynb, layer 33</div>
+      <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/02_circumplex_geometry.ipynb" target="_blank" rel="noopener noreferrer">notebooks/02_circumplex_geometry.ipynb</a>, layer 33</div>
     </div>
     <div class="card">
       <h3>The top row is the finding: nothing matches</h3>
@@ -639,7 +644,7 @@ color:var(--text)}
       throughout. It reads 0.97 at layer 3 and 0.21 at layer 57: the early layers came through intact,
       the late half was rebuilt.</p>
     </details>
-    <div class="src">source: notebooks/02_circumplex_geometry.ipynb, section 9</div>
+    <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/02_circumplex_geometry.ipynb" target="_blank" rel="noopener noreferrer">notebooks/02_circumplex_geometry.ipynb</a>, section 9</div>
   </div>
 
   <div class="callout"><span class="k">The caveat that cuts the other way</span>
@@ -720,7 +725,7 @@ color:var(--text)}
       twelve. A story can lead all three lines here and still do poorly out of twelve, so this panel
       illustrates the mechanism rather than carrying the headline number.</p>
     </details>
-    <div class="src">story <span id="storyId"></span>, from notebooks/05_trajectory_explorer_instruct.ipynb. Centered cosine against the twelve emotion vectors built from the model's own stories. The average across the whole story corpus is
+    <div class="src">story <span id="storyId"></span>, from <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/05_trajectory_explorer_instruct.ipynb" target="_blank" rel="noopener noreferrer">notebooks/05_trajectory_explorer_instruct.ipynb</a>. Centered cosine against the twelve emotion vectors built from the model's own stories. The average across the whole story corpus is
     subtracted first, so 0 means "typical for these stories" rather than "no emotion". A line
     above 0 is leaning towards that emotion more than the corpus does on average.</div>
   </div>
@@ -770,7 +775,7 @@ color:var(--text)}
       disappears, and overall accuracy rises. So a real share of what looks like "the model cannot
       follow emotions" is a property of the vectors we handed it, not of the model.</p>
     </details>
-    <div class="src">source: notebooks/11_tracking_taxonomy.ipynb, layer 33, instruction-tuned model reading</div>
+    <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/11_tracking_taxonomy.ipynb" target="_blank" rel="noopener noreferrer">notebooks/11_tracking_taxonomy.ipynb</a>, layer 33, instruction-tuned model reading</div>
   </div>
   <div class="takeaway"><span class="lbl">Takeaway</span>The model follows emotion better than chance, but unevenly and never reliably, and a large part of that unevenness comes from the emotion vectors rather than the model. Swap in a different writer's vectors and both the accuracy and the pattern of mistakes change.</div>
 </div></section>
@@ -794,7 +799,7 @@ color:var(--text)}
         <span><i style="background:var(--orange)"></i>the lean tracks how big the coming change is
         (right axis, 0 means the size of the lean says nothing about the size of the change)</span>
       </div>
-      <div class="src">source: notebooks/11_tracking_taxonomy.ipynb (measurements repeated at each
+      <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/11_tracking_taxonomy.ipynb" target="_blank" rel="noopener noreferrer">notebooks/11_tracking_taxonomy.ipynb</a> (measurements repeated at each
       layer)</div>
     </div>
     <div class="card">
@@ -821,7 +826,7 @@ color:var(--text)}
       its verdict per layer instead of quoting one.</div>
     </div>
   </div>
-  <div class="src">source: notebooks/11_tracking_taxonomy.ipynb (measurements repeated at each layer)</div>
+  <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/11_tracking_taxonomy.ipynb" target="_blank" rel="noopener noreferrer">notebooks/11_tracking_taxonomy.ipynb</a> (measurements repeated at each layer)</div>
   <div class="takeaway"><span class="lbl">Takeaway</span>There is no single "emotion layer". Naming the emotion in front of it is an early-layer skill. Registering <em>how big</em> the coming emotional change is grows with depth and peaks at the deepest layer we read, unevenly, with a collapse at layer 33 we cannot explain. Any result quoted at one depth is a result about that depth.</div>
 </div></section>
 

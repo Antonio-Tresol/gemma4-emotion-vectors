@@ -321,7 +321,7 @@ def build() -> str:
         .replace("__CSS__", (HERE / "style.css").read_text(encoding="utf-8").rstrip("\n"))
         .replace("__DATA__", json.dumps(payload))
     )
-    return mark_external_links(html)
+    return link_notebooks(mark_external_links(html))
 
 
 # The arrow the course site uses: a diagonal stroke with a corner, drawn in the
@@ -334,6 +334,38 @@ EXTERNAL_ARROW = (
 # Only absolute http(s) anchors that carry no attributes beyond href. In-page
 # anchors (href="#...") and the script-built navigation links are left alone,
 # which is what keeps this from touching the tick bar and the section index.
+REPO_BLOB = "https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/"
+_SRC_BLOCK = re.compile(r'(<div class="src"[^>]*>)(.*?)(</div>)', re.DOTALL)
+_NOTEBOOK = re.compile(r"(notebooks/\d\d_[A-Za-z0-9_]+\.ipynb)")
+
+
+def link_notebooks(html: str) -> str:
+    """Point every notebook named in a source line at the notebook itself.
+
+    A figure that names its notebook and then makes you go and find it is
+    only half a citation. Restricted to the source lines, which is where these
+    names appear, and skipped where one already carries a link. The anchors
+    get a class, which is also what keeps mark_external_links from giving them
+    the arrow treatment: these should stay quiet mono text, not become another
+    bold link in the middle of a caption.
+    """
+
+    def link_one(match: re.Match[str]) -> str:
+        name = match.group(1)
+        return (
+            f'<a class="link-src" href="{REPO_BLOB}{name}" '
+            f'target="_blank" rel="noopener noreferrer">{name}</a>'
+        )
+
+    def rewrite_block(match: re.Match[str]) -> str:
+        head, body, tail = match.groups()
+        if "<a " in body:
+            return match.group(0)
+        return head + _NOTEBOOK.sub(link_one, body) + tail
+
+    return _SRC_BLOCK.sub(rewrite_block, html)
+
+
 _BARE_EXTERNAL_ANCHOR = re.compile(r'<a href="((?:https?://|mailto:)[^"]+)">(.*?)</a>', re.DOTALL)
 
 

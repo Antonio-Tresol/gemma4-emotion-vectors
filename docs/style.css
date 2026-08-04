@@ -279,3 +279,8 @@ color:var(--text)}
 .mhnote{font-family:var(--display);font-size:12.5px;color:var(--muted);margin-top:8px}
 .mhnote+.mhnote{margin-top:3px}
 @media(max-width:560px){.mh{grid-template-columns:1fr;gap:2px}}
+/* Notebook links inside source lines. Deliberately quieter than
+   .link-plain: they inherit the mono muted caption they sit in, and say
+   "clickable" with a dotted rule rather than weight and an arrow. */
+.link-src{color:inherit;text-decoration:none;border-bottom:1px dotted var(--grey-mid)}
+.link-src:hover{color:var(--text);border-bottom-color:var(--text)}
