@@ -1234,6 +1234,6 @@ function numberFigures(){
 function el2(t,a={}){const e=document.createElement(t);for(const k in a)e.setAttribute(k,a[k]);return e;}
 
 numberFigures();
-drawPCs("base","coverPcBase","coverVerdictBase");
-drawPCs("instruct","coverPcIt","coverVerdictIt");
+drawPCs("base","coverPcBase",null);
+drawPCs("instruct","coverPcIt",null);
 drawPCs("base"); drawGrid(); drawStory(); drawEmo(); drawLayers(); drawLineage(); drawDose(); drawRsa();

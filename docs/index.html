@@ -109,8 +109,6 @@ margin-top:10px}
    labels down with it. */
 .coverfig{margin:30px 0 0;background:var(--surface);border:1px solid var(--border);
 border-radius:12px;padding:18px 20px}
-.figlabel{font-family:var(--display);font-size:13px;color:var(--text);margin-bottom:2px}
-.figlabel .muted{color:var(--muted);font-weight:400;margin-left:8px}
 .howto{margin-top:14px;border-top:1px dashed var(--border);padding-top:12px}
 .howto summary{font-family:var(--display);font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
 .howto[open] summary{color:var(--text);margin-bottom:8px}
@@ -284,11 +282,7 @@ color:var(--orange);letter-spacing:.09em;text-transform:uppercase;margin-bottom:
   <div class="kicker">CAMBRIA capstone &middot; Hannah Kim &middot; Peyton Li &middot; Antonio Badilla-Olivas</div>
   <h1>How are emotions represented in<br>large language models?</h1>
   <div class="coverfig">
-    <div class="figlabel">Gemma&nbsp;4&nbsp;31B <b>base</b> &middot; layer&nbsp;33
-      <span class="muted" id="coverVerdictBase"></span></div>
     <div id="coverPcBase" data-figtitle="Principal components of the 171 emotion vectors, base model, layer 33"></div>
-    <div class="figlabel" style="margin-top:18px">the same model after <b>instruction tuning</b> &middot; layer&nbsp;33
-      <span class="muted" id="coverVerdictIt"></span></div>
     <div id="coverPcIt" data-figtitle="Principal components of the 171 emotion vectors, instruction-tuned model, layer 33"></div>
     <div class="legend">
       <span><i style="background:var(--navy)"></i>valence</span>
@@ -2233,8 +2227,8 @@ function numberFigures(){
 function el2(t,a={}){const e=document.createElement(t);for(const k in a)e.setAttribute(k,a[k]);return e;}
 
 numberFigures();
-drawPCs("base","coverPcBase","coverVerdictBase");
-drawPCs("instruct","coverPcIt","coverVerdictIt");
+drawPCs("base","coverPcBase",null);
+drawPCs("instruct","coverPcIt",null);
 drawPCs("base"); drawGrid(); drawStory(); drawEmo(); drawLayers(); drawLineage(); drawDose(); drawRsa();
 </script>
 </body></html>
