@@ -280,16 +280,15 @@ transition:transform .18s}
    the title, which credited nobody properly and left no room for a date or a
    correspondence address. Labels reuse .kicker rather than inventing a third
    small-label style. */
-.masthead{margin:22px 0 0;max-width:820px}
+.masthead{margin:26px 0 0;max-width:820px}
 /* Exactly two grid items per row: the label and .mhv holding everything else.
    Without that wrapper every inline element in the value, each link and the
    dagger, becomes a grid item of its own and lands in the label column. */
 .mh{display:grid;grid-template-columns:112px 1fr;gap:0 16px;align-items:baseline;
-padding:5px 0;border-top:1px solid var(--border);font-family:var(--display);font-size:15px;
+padding:3px 0;font-family:var(--display);font-size:15px;
 color:var(--text)}
 .mhv{min-width:0}
 .mh .kicker{margin-bottom:0}
-.mh:first-child{border-top:0}
 .mhnote{font-family:var(--display);font-size:12.5px;color:var(--muted);margin-top:8px}
 @media(max-width:560px){.mh{grid-template-columns:1fr;gap:2px}}</style></head>
 <body>
@@ -314,16 +313,6 @@ color:var(--text)}
 
 <header><div class="wrap">
   <h1>How are emotions represented in<br>large language models?</h1>
-  <div class="masthead">
-    <div class="mh"><span class="kicker">Authors</span><div class="mhv">Hannah Kim, Peyton Li,
-      Antonio Badilla-Olivas<sup>&dagger;</sup></div></div>
-    <div class="mh"><span class="kicker">Affiliation</span><div class="mhv">Capstone project,
-      <a class="link-plain" href="https://www.cbai.ai/cambria" target="_blank" rel="noopener noreferrer"><span class="nw">CAMBRIA<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a>, a
-      <a class="link-plain" href="https://www.cbai.ai/" target="_blank" rel="noopener noreferrer">Cambridge Boston Alignment <span class="nw">Initiative<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a> programme</div></div>
-    <div class="mh"><span class="kicker">Published</span><div class="mhv">August 2026</div></div>
-    <div class="mhnote"><sup>&dagger;</sup> Correspondence to
-      <a href="mailto:antonio1dbo@gmail.com">antonio1dbo@gmail.com</a></div>
-  </div>
   <div class="coverfig">
     <div id="coverPcBase" data-figtitle="Principal components of the 171 emotion vectors, base model, layer 33"></div>
     <div id="coverPcIt" data-figtitle="Principal components of the 171 emotion vectors, instruction-tuned model, layer 33"></div>
@@ -349,6 +338,20 @@ color:var(--text)}
       PC2 in the instruction-tuned model matches story length at 0.66. That is why the length
       control is drawn beside the three ratings rather than left out.</p>
     </details>
+  </div>
+  <div class="masthead">
+    <div class="mh"><span class="kicker">Authors</span><div class="mhv">
+      <a class="link-plain" href="https://github.com/Antonio-Tresol" target="_blank" rel="noopener noreferrer">Antonio <span class="nw">Badilla-Olivas<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a><sup>&dagger;</sup>,
+      independent &middot;
+      <a class="link-plain" href="https://www.linkedin.com/in/hjkim015/" target="_blank" rel="noopener noreferrer">Hannah <span class="nw">Kim<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a>, Harvard University
+      &middot;
+      <a class="link-plain" href="https://www.linkedin.com/in/peytonli3/" target="_blank" rel="noopener noreferrer">Peyton <span class="nw">Li<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a>, MIT</div></div>
+    <div class="mh"><span class="kicker">Programme</span><div class="mhv">Capstone project,
+      <a class="link-plain" href="https://www.cbai.ai/cambria" target="_blank" rel="noopener noreferrer"><span class="nw">CAMBRIA<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a>, a
+      <a class="link-plain" href="https://www.cbai.ai/" target="_blank" rel="noopener noreferrer">Cambridge Boston Alignment <span class="nw">Initiative<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a> programme</div></div>
+    <div class="mh"><span class="kicker">Published</span><div class="mhv">August 2026</div></div>
+    <div class="mhnote"><sup>&dagger;</sup> Correspondence to
+      <a href="mailto:antonio1dbo@gmail.com">antonio1dbo@gmail.com</a></div>
   </div>
   <h2>Key results</h2>
   <div class="grid3" style="margin-top:20px;gap:16px">
