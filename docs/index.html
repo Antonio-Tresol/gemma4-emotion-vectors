@@ -234,9 +234,11 @@ margin:0 2px}
 #bar{position:fixed;top:55px;left:0;height:2px;background:var(--orange);z-index:60;width:0;
 opacity:.75;transition:width .12s}
 .figwrap{position:relative}
-.expand{position:absolute;top:6px;right:6px;z-index:2;font-family:var(--display);font-size:11.5px;
-padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface);
-color:var(--muted);cursor:pointer;opacity:.55;transition:opacity .15s}
+.expand{position:absolute;top:6px;right:6px;z-index:2;display:grid;place-items:center;
+width:26px;height:26px;padding:0;border:1px solid var(--border);border-radius:6px;
+background:var(--surface);color:var(--muted);cursor:pointer;opacity:.55;transition:opacity .15s}
+.expand svg,#modalClose svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.6;
+stroke-linecap:round;stroke-linejoin:round;display:block}
 .figwrap:hover .expand{opacity:1}
 .expand:hover{color:var(--text);border-color:var(--muted)}
 #modal{position:fixed;inset:0;z-index:100;background:rgba(10,10,10,.72);display:none;
@@ -245,8 +247,10 @@ align-items:center;justify-content:center;padding:26px}
 #modalInner{background:var(--surface);border-radius:12px;padding:20px 24px;max-width:96vw;
 max-height:94vh;overflow:auto;width:1180px}
 #modalInner svg{width:100%;height:auto}
-#modalClose{float:right;font-family:var(--display);font-size:13px;border:1px solid var(--border);
-border-radius:6px;padding:5px 12px;background:var(--surface);cursor:pointer;color:var(--muted)}
+#modalClose{float:right;display:grid;place-items:center;width:30px;height:30px;padding:0;
+border:1px solid var(--border);border-radius:6px;background:var(--surface);cursor:pointer;
+color:var(--muted)}
+#modalClose:hover{color:var(--text);border-color:var(--muted)}
 footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
 .src{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:10px}
 /* Links that leave the page, styled as on the agentic-SE course site: body-dark
@@ -267,7 +271,7 @@ transition:transform .18s}
    arrived unnamed. Sized to sit clearly above the chart without competing
    with the section heading. .figcap is a different, older thing: the small
    muted sub-labels inside section 6. */
-.figtitle{font-family:var(--display);margin:0 0 10px;line-height:1.35}
+.figtitle{font-family:var(--display);margin:0 0 10px;line-height:1.35;padding-right:36px}
 .figtitle .n{margin-bottom:3px}
 .figtitle .t{display:block;font-size:16px;font-weight:600;color:var(--text)}
 @media(max-width:560px){.figtitle .t{font-size:15px}}
@@ -294,7 +298,9 @@ color:var(--text)}
 @media(max-width:560px){.mh{grid-template-columns:1fr;gap:2px}}</style></head>
 <body>
 <div id="tip"></div><div id="bar"></div>
-<div id="modal"><div id="modalInner"><button id="modalClose">close &times;</button>
+<div id="modal"><div id="modalInner"><button id="modalClose" aria-label="Close the expanded figure" title="Close">
+<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 2v4H2M10 2v4h4M6 14v-4H2M10 14v-4h4"/></svg>
+</button>
 <div id="modalBody"></div></div></div>
 <nav><div class="wrap">
   <span class="brand">Emotion vectors in Gemma&nbsp;4</span>
@@ -2187,14 +2193,19 @@ function addModalLine(text,cls,style){
   d.textContent=text; MODAL_BODY.appendChild(d);
 }
 // wrap every chart host so it gets an expand button; the modal shows a live clone
-["pcChart","gridChart","lineChart","ternChart","emoChart","layerChart","lineageChart","doseChart",
- "rsaChart"].forEach(id=>{
-  const host=document.getElementById(id); if(!host) return;
+/* Driven off data-figtitle rather than a hand-kept list of ids, which had
+   drifted: the two cover charts and the method diagram carried no expand
+   control at all. Anything that declares itself a figure now gets one. */
+[...document.querySelectorAll("[data-figtitle]")].forEach(host=>{
+  const id=host.id;
   const parent=host.parentElement;
   if(!parent.classList.contains("figwrap")) parent.classList.add("figwrap");
   if(parent.querySelector(".expand")) return;
   const b=document.createElement("button");
-  b.className="expand"; b.textContent="expand";
+  b.className="expand"; b.setAttribute("aria-label","Expand this figure");
+  b.title="Expand";
+  b.innerHTML='<svg viewBox="0 0 16 16" aria-hidden="true">'+
+    '<path d="M2 6V2h4M14 6V2h-4M2 10v4h4M14 10v4h-4"/></svg>';
   b.onclick=()=>{
     const svg=host.querySelector("svg"); if(!svg) return;
     MODAL_BODY.innerHTML="";

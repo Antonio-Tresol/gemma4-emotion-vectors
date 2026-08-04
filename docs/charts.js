@@ -1157,14 +1157,19 @@ function addModalLine(text,cls,style){
   d.textContent=text; MODAL_BODY.appendChild(d);
 }
 // wrap every chart host so it gets an expand button; the modal shows a live clone
-["pcChart","gridChart","lineChart","ternChart","emoChart","layerChart","lineageChart","doseChart",
- "rsaChart"].forEach(id=>{
-  const host=document.getElementById(id); if(!host) return;
+/* Driven off data-figtitle rather than a hand-kept list of ids, which had
+   drifted: the two cover charts and the method diagram carried no expand
+   control at all. Anything that declares itself a figure now gets one. */
+[...document.querySelectorAll("[data-figtitle]")].forEach(host=>{
+  const id=host.id;
   const parent=host.parentElement;
   if(!parent.classList.contains("figwrap")) parent.classList.add("figwrap");
   if(parent.querySelector(".expand")) return;
   const b=document.createElement("button");
-  b.className="expand"; b.textContent="expand";
+  b.className="expand"; b.setAttribute("aria-label","Expand this figure");
+  b.title="Expand";
+  b.innerHTML='<svg viewBox="0 0 16 16" aria-hidden="true">'+
+    '<path d="M2 6V2h4M14 6V2h-4M2 10v4h4M14 10v4h-4"/></svg>';
   b.onclick=()=>{
     const svg=host.querySelector("svg"); if(!svg) return;
     MODAL_BODY.innerHTML="";
