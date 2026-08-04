@@ -28,10 +28,7 @@ from PIL import Image
 from emotion_vectors.geometry_report import load_geometry_context, s2_circumplex_figure
 from emotion_vectors.taxonomy_report import load_arms, s1_top1_figure
 
-# Under docs/ because GitHub Pages serves this site from that folder, so an
-# image anywhere else is a 404 on the live page. One copy feeds both the README
-# and the write-up rather than two that can drift.
-OUT = Path(__file__).resolve().parent.parent / "docs" / "img" / "hero.png"
+OUT = Path(__file__).resolve().parent.parent / "img" / "hero.png"
 PANEL_WIDTH = 1500
 PANEL_HEIGHT = 780
 SCALE = 2
