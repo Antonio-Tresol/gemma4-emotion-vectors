@@ -188,7 +188,7 @@ BY_LAYER = [
 LINEAGE = [
     {
         "key": "weak",
-        "label": "gemma-4-4B",
+        "label": "gemma-4-E4B",
         "sub": "a smaller external model",
         "layers": 1,
         "pref": 0.593,

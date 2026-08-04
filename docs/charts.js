@@ -125,7 +125,7 @@ function drawMethod(){
   svg.appendChild(txt(479,68,"mean over stories",{size:11}));
   svg.appendChild(txt(479,84,"\u2212 mean over emotions",{size:11,fill:P.orange,weight:600}));
   svg.appendChild(txt(479,116,"3. difference of means",{size:10.5,fill:P.muted,weight:600}));
-  svg.appendChild(txt(479,130,"centering is load-bearing",{size:9.5,fill:P.orange}));
+  svg.appendChild(txt(479,130,"centring is load-bearing",{size:9.5,fill:P.orange}));
   arrow(560,596,yMid);
   // 4. the vector, and what it is used for. Shifted left of where this used to
   // sit: the two branch labels on the right ran past the viewBox and were cut.
@@ -937,7 +937,7 @@ codeTabs("m1","emotion_vectors/extraction",
       <span class="below"><i>e</i>&prime;&thinsp;=&thinsp;1</span></span>
     <i>v</i><sub><i>e</i>&prime;</sub>
   </span>
-  <span class="gl">Then centered: subtract the mean over all <i>E</i> emotions, so what remains is what
+  <span class="gl">Then centred: subtract the mean over all <i>E</i> emotions, so what remains is what
   makes this emotion different rather than what all text shares. Every result in this deck uses
   <i>&#7805;</i>, never the raw <i>v</i>.</span>`,
 `TOKEN_OFFSET = 50            # the source paper's convention: skip narrative framing
@@ -970,8 +970,8 @@ def contrast_vectors(vectors):
   ["<i>n</i><sub>s</sub>","how many real (non-padding) tokens story <i>s</i> has"],
   ["<i>T</i><sub>s</sub>","how many of those survive the pooling mask, that is <i>n</i><sub>s</sub> &minus; 50"],
   ["<i>v</i><sub>e</sub>","the raw emotion vector: the token-weighted mean over the whole set"],
-  ["<i>&#7805;</i><sub>e</sub>","the <b>centered</b> vector, what we actually use everywhere"],
-  ["<i>E</i>","how many emotions are in the pool being centered over (12 or 171)"]]
+  ["<i>&#7805;</i><sub>e</sub>","the <b>centred</b> vector, what we actually use everywhere"],
+  ["<i>E</i>","how many emotions are in the pool being centred over (12 or 171)"]]
 );
 
 /* --- 2. PCA + the |r| = 0.83 claim --- */
@@ -981,7 +981,7 @@ codeTabs("m2","geometry_report/_context, _displacement",
     <span class="op">,</span> <i>X</i> <span class="op">=</span>
     <i>U</i>&thinsp;<i>&Sigma;</i>&thinsp;<i>W</i><sup>&#8868;</sup>
   </span>
-  <span class="gl">Stack the 171 centered emotion vectors as the rows of <i>X</i> and take its singular
+  <span class="gl">Stack the 171 centred emotion vectors as the rows of <i>X</i> and take its singular
   value decomposition. The principal components are the right singular vectors
   <i>w</i><sub>1</sub>&thinsp;&hellip;&thinsp;<i>w</i><sub><i>k</i></sub>, ordered by how much spread
   they explain. No human label enters this step.</span>
@@ -1038,7 +1038,7 @@ codeTabs("m2","geometry_report/_context, _displacement",
         # sign of a principal component is arbitrary -> absolute value
         out.append(abs(pearson_r(model_scores, human_valence)))
     return out, variance_ratio`,
- [["<i>X</i>","the 171 centered emotion vectors stacked as rows"],
+ [["<i>X</i>","the 171 centred emotion vectors stacked as rows"],
   ["<i>d</i>","the model's hidden width, 5,376 for Gemma 4 31B"],
   ["<i>U</i>, <i>&Sigma;</i>, <i>W</i>","the three factors of the singular value decomposition; the columns of <i>W</i> are the principal components"],
   ["<i>w</i><sub><i>k</i></sub>","the <i>k</i>-th principal component: a direction in activation space"],
@@ -1064,7 +1064,7 @@ codeTabs("m3","q3_conventions.py, score_q3_gate_r1.py",
   </span>
   <span class="where">with <i>&mu;</i><sub><i>p</i></sub> the token-weighted mean of probe <i>p</i>'s
   dot products over the whole story set.</span>
-  <span class="gl">The centered cosine between token <i>t</i> and probe <i>p</i>. Centering on the
+  <span class="gl">The centred cosine between token <i>t</i> and probe <i>p</i>. Centring on the
   <b>story-set</b> mean is what stops a probe that is simply large everywhere from winning by
   default.</span>
   <span class="eq">
@@ -1126,11 +1126,11 @@ def anticipation_lead(cos, boundary, incoming_probe):
     earlier = cos[boundary - 2*W:boundary - W, :, incoming_probe].mean(axis=0)
     return near - earlier          # > 0 = the next emotion is already rising`,
  [["<i>t</i>","a token position in the story"],
-  ["<i>p</i>","one probe, that is one emotion's centered vector"],
+  ["<i>p</i>","one probe, that is one emotion's centred vector"],
   ["<i>h</i><sub><i>t</i></sub>","the model's activation while reading token <i>t</i>"],
-  ["<i>&mu;</i><sub><i>p</i></sub>","probe <i>p</i>'s mean dot product across the whole story set (the centering term)"],
+  ["<i>&mu;</i><sub><i>p</i></sub>","probe <i>p</i>'s mean dot product across the whole story set (the centring term)"],
   ["&#8214;&thinsp;&middot;&thinsp;&#8214;","vector length, so dividing by it turns a dot product into a cosine"],
-  ["<i>c</i><sub><i>t</i>,<i>p</i></sub>","the centered cosine: how close token <i>t</i> reads to probe <i>p</i>"],
+  ["<i>c</i><sub><i>t</i>,<i>p</i></sub>","the centred cosine: how close token <i>t</i> reads to probe <i>p</i>"],
   ["<i>&phi;</i>","one phase of the story, that is one tagged emotion's stretch of tokens"],
   ["|<i>&phi;</i>|","how many tokens that phase has (fewer than 4 and we skip it)"],
   ["<i>e</i>(<i>&phi;</i>)","the emotion phase <i>&phi;</i> was written to express"],
