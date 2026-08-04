@@ -1,16 +1,16 @@
 <section id="methods"><div class="wrap">
-  <h2><span class="secno">10</span>How we measured it, in enough detail to argue with</h2>
-  <p class="narrow">Four blocks, all collapsed. Open whichever one you want to challenge; each carries
-  the formula, the pseudo-code and a glossary for every symbol in it.</p>
+  <h2><span class="secno">10</span>How we measured it</h2>
+  <p class="narrow">Each block below carries the formula, the pseudo-code and a glossary for every
+  symbol in it.</p>
 
   <details class="howto" style="border-top:none;margin-top:18px">
     <summary style="font-size:15px">1. How an emotion becomes a vector</summary>
-    <p>We start from a collection of stories, each labelled with the emotion it was written to evoke.
-    Each story goes through the model and we record the residual stream at a chosen layer. For one
-    emotion, we average those activations across all of its stories. That average is the emotion vector.
+    <p>We started from a collection of stories, each labelled with the emotion it was written to evoke.
+    Each story went through the model and we recorded the residual stream at a chosen layer. For one
+    emotion, we averaged those activations across all of its stories. That average is the emotion vector.
     We repeat that for every emotion word, which gives 171 of them.</p>
     <div id="m1"></div>
-    <p>Two details that change the numbers. <b>Subtracting the average (centering):</b> we subtract the
+    <p><b>Subtracting the average (centering):</b> we subtract the
     mean across all the emotions in the set. What remains is what makes <em>this</em> emotion
     different, rather than what all English prose has in common. Which pool we average over,
     the 12 or the 171, changes the answer. Skip this step and you get a number produced by the method rather than
@@ -24,7 +24,6 @@
 
   <details class="howto" style="border-top:none">
     <summary style="font-size:15px">2. What "the biggest axis is valence, 0.83" actually means</summary>
-    <p>This is the one worth spelling out, because the phrase hides four steps.</p>
     <p><b>Step one.</b> We have 171 emotion vectors, each thousands of numbers long. Principal component
     analysis finds the directions along which those 171 points differ most. The first component (PC1) is
     the single direction that captures the most spread. It comes only from the model: we use no human
@@ -66,14 +65,12 @@
   </details>
 
   <details class="howto" style="border-top:none">
-    <summary style="font-size:15px">4. What kept us honest</summary>
-    <p>We wrote down every prediction, and the mark it had to beat, before the data existed. Nothing
-    is called a finding until it has survived a round of deliberate attempts to destroy it. We re-run
-    every measurement with the emotion labels shuffled. We put error bars on it that treat each story as
-    one unit rather than each word, because words within a story are not independent. We check whether a
-    randomly chosen direction scores just as well. And we check that the result is not simply reproducing
-    how common each answer already is. We record what failed as failed. The notebooks re-run from those files on any
-    machine.</p>
+    <summary style="font-size:15px">4. The controls each result had to pass</summary>
+    <p>We wrote down every prediction, and the mark it had to beat, before the data existed. We re-ran
+    every measurement with the emotion labels shuffled. The error bars treat each story as one unit
+    rather than each word, because words within a story are not independent. We checked whether a
+    randomly chosen direction scores just as well, and whether a result is simply reproducing how
+    common each answer already is. The notebooks re-run from those files on any machine.</p>
     <p class="muted">One correction is worth flagging because it reversed a headline. Our first round of
     detection tests found nothing passing anywhere. A later audit found that the extraction code had skipped
     the subtract-the-average step from block 1. With that step restored, the same data passes on both

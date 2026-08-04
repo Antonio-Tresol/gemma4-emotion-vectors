@@ -15,9 +15,8 @@
       <h3>The top row is the finding: nothing matches</h3>
       <p style="font-size:15px">Read the top row of the grid. The instruction-tuned model's biggest axis
       scores <b>0.14</b> against its closest relative among the base model's five biggest axes,
-      near the bottom of the scale. It is not a renaming or a reshuffle of anything the base model had. It is
-      new, instruction tuning put it there, and it is now the largest single thing separating the model's
-      emotions.</p>
+      near the bottom of the scale. It is not a renaming or a reshuffle of anything the base model had, and it is now the largest
+      single thing separating the model's emotions.</p>
       <p style="font-size:15px">Now read down the first column. Valence is still in there, intact,
       one floor down: the instruction-tuned model's third axis scores <b>0.83</b> against the base model's
       first. Instruction tuning did not delete the circumplex. It demoted it.</p>
@@ -35,12 +34,11 @@
       </div>
     </div>
   </div>
-  <h3 style="margin-top:38px">The same question, asked without any of that machinery</h3>
-  <p class="narrow" style="margin-bottom:14px">Principal components are one way to look, and a reader
-  is right to wonder whether the finding is a by-product of that particular method. So here is a second look that
-  uses no components at all. A model has many layers, stacked from input to output. At each layer, ask
-  which emotions it treats as similar to which; that gives one emotion-by-emotion similarity table per
-  layer. Every square below compares two of those tables, for every possible pairing of layers. <b>Dark means the two layers sort the
+  <h3 style="margin-top:38px">The same question, without principal components</h3>
+  <p class="narrow" style="margin-bottom:14px">This second measurement uses no principal components,
+  so it cannot inherit an artefact of that decomposition. A model has many layers, stacked from input
+  to output. At each layer we recorded which emotions the model treats as similar to which, which
+  gives one emotion-by-emotion similarity table per layer. Every square below compares two of those tables, for every possible pairing of layers. <b>Dark means the two layers sort the
   171 emotions the same way; pale means they disagree.</b></p>
   <div class="card">
     <div class="controls">
@@ -77,7 +75,7 @@
   as a set gives three angles, <b>86.1&deg;</b>, 56.0&deg; and 46.1&deg;, where 90&deg;
   means two directions share nothing and 0&deg; that they coincide. The widest is almost a right
   angle; even the closest pair is only partly aligned.
-  But subtract that one mystery axis and the late layers of the two models jump from <b>0.29</b>
+  But subtract that one unidentified axis and the late layers of the two models jump from <b>0.29</b>
   agreement to <b>0.60</b>, on the same 0-to-1 scale as the grid above. So the shared emotion structure is not gone. It is sitting underneath one
   large direction that has nothing to do with emotion.</div>
   <div class="takeaway"><span class="lbl">Takeaway</span>The biggest thing separating emotions in the instruction-tuned model is not a rearrangement of anything the base model had. It is new, instruction tuning put it there, and it breaks the model's layers into disagreeing blocks. We can show all of that. We still cannot say what it encodes.</div>

@@ -1,13 +1,12 @@
 <section id="story"><div class="wrap">
   <h2><span class="secno">6</span>Watch it follow one story, token by token</h2>
-  <p class="narrow">Everything so far has been about static text: one story, one emotion, one reading.
-  Here the story <em>moves</em>. Each of these four was written to pass through three emotions in turn,
-  with the turns marked. We feed one to the model and, at every <span data-term="token">token</span>, measure how close its
-  internal state sits to each of the three emotion vectors. Press play, or drag the slider, and both panels
+  <p class="narrow">Each of these four stories was written to pass through three emotions in turn,
+  with the turns marked. We fed one to the model and, at every <span data-term="token">token</span>, measured how close its
+  internal state sat to each of the three emotion vectors. Press play, or drag the slider, and both panels
   advance together.</p>
   <p class="narrow">Three of the four stories use the <b>same three emotions</b> and differ only in how
-  they are written, and the model follows them very differently. That is the point of this
-  section: how well the model follows an emotion is not a property of the emotion alone.</p>
+  they are written, and the model follows them very differently. How well the model follows an
+  emotion is not a property of the emotion alone.</p>
   <div class="card" style="margin-top:22px">
     <div class="controls" style="margin-bottom:6px">
       <span class="muted" style="font-size:13px">story</span><span id="storyBtns"></span>
@@ -62,10 +61,9 @@
       how much?
       Leading in all three parts is the best possible; leading in one is what luck alone gives, since
       there are three lines.</p>
-      <p><b>This is an easier test than the next section's, deliberately.</b> Here the model only has
-      to pick the right emotion out of the story's own three. In section 7 it has to pick out of
-      twelve. A story can lead all three lines here and still do poorly out of twelve, so this panel
-      illustrates the mechanism rather than carrying the headline number.</p>
+      <p>Here the model picks the right emotion out of the story's own three; in section 7 it picks
+      out of twelve. A story can lead all three lines here and still do poorly out of twelve, so this
+      panel illustrates the mechanism rather than carrying the headline number.</p>
     </details>
     <div class="src">story <span id="storyId"></span>, from notebooks/05_trajectory_explorer_instruct.ipynb. Centered cosine against the twelve emotion vectors built from the model's own stories. The average across the whole story corpus is
     subtracted first, so 0 means "typical for these stories" rather than "no emotion". A line
