@@ -35,6 +35,10 @@ RSA_JSON = SCRATCH / "rsa_matrices.json"
 # per-layer detection scores behind the lineage figure, so the chart can show
 # the measurement instead of asserting a count derived from it
 LINEAGE_LAYERS_JSON = SCRATCH / "lineage_layers.json"
+# preference and steering evidence, written by scripts/export_deck_preferences.py;
+# extracted rather than transcribed because the arrays are per-emotion and the
+# source file has a near-twin whose numbers are the pre-fix ones
+PREFERENCES_JSON = SCRATCH / "preferences.json"
 
 # ---------------------------------------------------------------------------
 # All figures below come from notebooks/02 and notebooks/11 printed records and
@@ -304,6 +308,7 @@ def build() -> str:
         "three": json.loads(THREE_STORIES_JSON.read_text(encoding="utf-8")),
         "rsa": json.loads(RSA_JSON.read_text(encoding="utf-8")),
         "lineageLayers": json.loads(LINEAGE_LAYERS_JSON.read_text(encoding="utf-8")),
+        "prefs": json.loads(PREFERENCES_JSON.read_text(encoding="utf-8")),
         "pcs": PCS,
         "grid": SCORE_GRID,
         "angles": PRINCIPAL_ANGLES,

@@ -1,0 +1,200 @@
+{
+ "best_layer": 33,
+ "best_abs_r": 0.6448,
+ "registered_bar": 0.5,
+ "paper_range": [
+  0.71,
+  0.74
+ ],
+ "by_layer": [
+  {
+   "layer": 24,
+   "max_abs_r": 0.597,
+   "valence_r": 0.5544,
+   "perm_p": 0.0
+  },
+  {
+   "layer": 30,
+   "max_abs_r": 0.6223,
+   "valence_r": 0.411,
+   "perm_p": 0.0
+  },
+  {
+   "layer": 33,
+   "max_abs_r": 0.6448,
+   "valence_r": 0.4123,
+   "perm_p": 0.0
+  },
+  {
+   "layer": 36,
+   "max_abs_r": 0.5658,
+   "valence_r": 0.5289,
+   "perm_p": 0.0
+  }
+ ],
+ "sign_bar": 9,
+ "doses": {
+  "2": {
+   "layer": 33,
+   "coherence_ok": true,
+   "sign_agreements": 10,
+   "coupling_r": 0.399,
+   "coupling_bar": 0.5,
+   "emotions": [
+    {
+     "emotion": "afraid",
+     "valence": -0.977,
+     "delta": -24.82,
+     "probe_r": -0.4738
+    },
+    {
+     "emotion": "desperate",
+     "valence": -0.834,
+     "delta": -15.99,
+     "probe_r": 0.1889
+    },
+    {
+     "emotion": "angry",
+     "valence": -0.756,
+     "delta": 1.33,
+     "probe_r": 0.2909
+    },
+    {
+     "emotion": "guilty",
+     "valence": -0.73,
+     "delta": -12.68,
+     "probe_r": -0.5369
+    },
+    {
+     "emotion": "nervous",
+     "valence": -0.583,
+     "delta": -11.26,
+     "probe_r": 0.4033
+    },
+    {
+     "emotion": "sad",
+     "valence": -0.55,
+     "delta": -8.59,
+     "probe_r": -0.1018
+    },
+    {
+     "emotion": "surprised",
+     "valence": 0.568,
+     "delta": -9.87,
+     "probe_r": 0.009
+    },
+    {
+     "emotion": "loving",
+     "valence": 0.688,
+     "delta": 46.56,
+     "probe_r": 0.232
+    },
+    {
+     "emotion": "calm",
+     "valence": 0.75,
+     "delta": 22.59,
+     "probe_r": 0.5525
+    },
+    {
+     "emotion": "proud",
+     "valence": 0.812,
+     "delta": 18.42,
+     "probe_r": -0.329
+    },
+    {
+     "emotion": "inspired",
+     "valence": 0.934,
+     "delta": 16.37,
+     "probe_r": 0.0374
+    },
+    {
+     "emotion": "happy",
+     "valence": 0.985,
+     "delta": 9.78,
+     "probe_r": 0.4449
+    }
+   ]
+  },
+  "8": {
+   "layer": 33,
+   "coherence_ok": true,
+   "sign_agreements": 10,
+   "coupling_r": 0.2987,
+   "coupling_bar": 0.5,
+   "emotions": [
+    {
+     "emotion": "afraid",
+     "valence": -0.977,
+     "delta": -60.84,
+     "probe_r": -0.4738
+    },
+    {
+     "emotion": "desperate",
+     "valence": -0.834,
+     "delta": -102.09,
+     "probe_r": 0.1889
+    },
+    {
+     "emotion": "angry",
+     "valence": -0.756,
+     "delta": 21.25,
+     "probe_r": 0.2909
+    },
+    {
+     "emotion": "guilty",
+     "valence": -0.73,
+     "delta": -53.6,
+     "probe_r": -0.5369
+    },
+    {
+     "emotion": "nervous",
+     "valence": -0.583,
+     "delta": -29.0,
+     "probe_r": 0.4033
+    },
+    {
+     "emotion": "sad",
+     "valence": -0.55,
+     "delta": -26.8,
+     "probe_r": -0.1018
+    },
+    {
+     "emotion": "surprised",
+     "valence": 0.568,
+     "delta": -51.19,
+     "probe_r": 0.009
+    },
+    {
+     "emotion": "loving",
+     "valence": 0.688,
+     "delta": 323.32,
+     "probe_r": 0.232
+    },
+    {
+     "emotion": "calm",
+     "valence": 0.75,
+     "delta": 119.65,
+     "probe_r": 0.5525
+    },
+    {
+     "emotion": "proud",
+     "valence": 0.812,
+     "delta": 95.7,
+     "probe_r": -0.329
+    },
+    {
+     "emotion": "inspired",
+     "valence": 0.934,
+     "delta": 127.94,
+     "probe_r": 0.0374
+    },
+    {
+     "emotion": "happy",
+     "valence": 0.985,
+     "delta": 32.27,
+     "probe_r": 0.4449
+    }
+   ]
+  }
+ }
+}

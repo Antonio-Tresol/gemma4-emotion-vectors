@@ -1,0 +1,68 @@
+<section id="preferences"><div class="wrap">
+  <h2><span class="secno">5</span>Can you steer the model with them?</h2>
+  <p class="narrow">Everything so far reads the vectors. This asks whether they do anything. The
+  test comes from the paper: show the model two activities, ask which it would rather do, and
+  repeat over every ordered pair until the answers settle into a ranking. Then check the
+  emotion vectors against that ranking twice. Once by reading, and once by pushing.</p>
+
+  <h3 style="margin-top:34px">Reading: does an emotion vector predict what the model prefers?</h3>
+  <p class="narrow">For each emotion, take how strongly its vector is active while the model
+  considers an activity, and correlate that with where the activity landed in the ranking.</p>
+  <div class="card" style="margin-top:20px">
+    <div id="prefLayerChart" data-figtitle="How well an emotion vector predicts the model's preferences"></div>
+    <div class="legend">
+      <span><i style="background:var(--navy)"></i>the best layer we measured</span>
+      <span><i style="background:var(--grey-mid)"></i>the other three</span>
+      <span><i style="background:var(--green);opacity:.35"></i>the range the paper reported</span>
+    </div>
+    <details class="howto"><summary>How to read this</summary>
+      <p>Each bar is one layer, and its height is the strongest correlation any of the 171 emotion
+      vectors reaches against the preference ranking. A bad result would be bars near 0, meaning
+      the vectors carry nothing about what the model chooses. We fixed the pass mark at 0.5 before
+      scoring anything.</p>
+      <p>All four layers clear it, and layer 33 reaches 0.64. That is a pass, and it is below the
+      paper's 0.71 to 0.74 on a much larger model. Both statements are the result.</p>
+      <p>An earlier version of this measurement read 0.70, which sits inside the paper's range. It
+      was computed with probes built before we found an extraction bug. The corrected probes give
+      0.64, and that is the number here.</p>
+    </details>
+    <div class="src">source: notebooks/04_paper_plot_parity.ipynb, chat template, post-fix probes; scored by scripts/score_preferences.py</div>
+  </div>
+
+  <h3 style="margin-top:40px">Pushing: does adding the vector move what the model prefers?</h3>
+  <p class="narrow">Now the causal half. Add an emotion's own direction into the residual stream
+  while the model makes its choices, and see which way the ranking moves. If these vectors are
+  really the model's emotion machinery, adding a pleasant one should push it towards pleasant
+  activities, and an unpleasant one away.</p>
+  <div class="card" style="margin-top:20px">
+    <div id="steerChart" data-figtitle="Which way preferences move when an emotion vector is added"></div>
+    <div class="legend">
+      <span><i style="background:var(--green)"></i>pleasant emotion, gentle dose</span>
+      <span><i style="background:var(--red)"></i>unpleasant emotion, gentle dose</span>
+      <span><i style="background:var(--grey-soft)"></i>the same emotion at four times the dose</span>
+      <span>* marks the two that move against their own valence</span>
+    </div>
+    <details class="howto"><summary>How to read this</summary>
+      <p>Emotions run down the chart by their published human valence rating, unpleasant at the
+      top. Bars to the right mean the model shifted towards positive activities, to the left away
+      from them. The pattern the claim needs is bars pointing left at the top and right at the
+      bottom.</p>
+      <p>Ten of the twelve do that, at both doses. We fixed the bar at nine before scoring. The two
+      that do not, angry and surprised, fail at both doses rather than flipping about, which is
+      what you would expect from a real exception rather than noise.</p>
+      <p>The four-times dose is drawn behind each bar. Loving moves 47 Elo points at the gentle
+      dose and 323 at the strong one, and desperate moves 16 and 102. Effects that grow with dose
+      are harder to explain as an artefact than a single dose is. The model's answers stay
+      coherent throughout, which is checked separately: a model steered into incoherence would
+      produce a ranking that means nothing.</p>
+    </details>
+    <div class="src">source: notebooks/04_paper_plot_parity.ipynb, layer 33, post-fix directions, both doses; scored by scripts/score_steering.py</div>
+  </div>
+
+  <div class="takeaway"><span class="lbl">Takeaway</span>The vectors both predict and move the
+  model's preferences, which is the paper's result reproduced on an open model. One registered
+  read failed. How much a vector predicts does not track how much steering with it moves things:
+  0.40 and 0.30, against a bar of 0.5 and the paper's 0.85. So the vectors act on preferences in
+  the right direction, and we cannot yet say that the strength of the reading tells you the
+  strength of the push.</div>
+</div></section>

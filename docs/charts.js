@@ -96,6 +96,106 @@ drawMethod();
    rather than a smaller lookalike. A cover chart drawn by separate code is a
    chart that can disagree with the analysis; this one cannot, because it is
    the same function reading the same data. */
+
+/* --- section 5: do the vectors do anything? ---------------------------
+   Two reads of the same question, drawn the way the rest of the page draws
+   things: every anchor a reader needs to judge the result is in the figure,
+   not in the caption. */
+
+/* Read one, correlational. How well a probe's activation predicts which
+   activity the model prefers, at each layer it was measured. The registered
+   bar and the paper's own range are both drawn, because "0.64" means nothing
+   without knowing what was promised and what the paper got. */
+function drawPrefLayers(){
+  const P0=D.prefs, rows=P0.by_layer, W=780,H=250,L=52,R=176,T=16,B=46;
+  const host=document.getElementById("prefLayerChart"); if(!host) return;
+  host.innerHTML="";
+  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
+  const iw=W-L-R, ih=H-T-B, bw=iw/rows.length;
+  // the paper's range, as a band rather than a line: it is a range
+  const yOf=v=>T+ih-v*ih;
+  svg.appendChild(el("rect",{x:L,y:yOf(P0.paper_range[1]),width:iw,
+    height:yOf(P0.paper_range[0])-yOf(P0.paper_range[1]),fill:P.green,opacity:.10}));
+  [0,.25,.5,.75,1].forEach(v=>{
+    svg.appendChild(el("line",{x1:L,x2:W-R,y1:yOf(v),y2:yOf(v),stroke:P.border}));
+    const t=el("text",{x:L-8,y:yOf(v)+4,"text-anchor":"end","font-size":10,fill:P.muted});
+    t.textContent=v.toFixed(2); svg.appendChild(t);
+  });
+  [[P0.registered_bar,"the mark we fixed before scoring",P.orange],
+   [P0.paper_range[0],"what the paper reported",P.green]].forEach(([v,label,col])=>{
+    svg.appendChild(el("line",{x1:L,x2:W-R,y1:yOf(v),y2:yOf(v),stroke:col,
+      "stroke-dasharray":"4 3","stroke-width":1.3}));
+    const t=el("text",{x:W-R+8,y:yOf(v)+3.5,"font-size":10.5,fill:col,"font-weight":600});
+    t.textContent=v.toFixed(2); svg.appendChild(t);
+    const t2=el("text",{x:W-R+38,y:yOf(v)+3.5,"font-size":10,fill:col});
+    t2.textContent=label; svg.appendChild(t2);
+  });
+  rows.forEach((r,i)=>{
+    const x0=L+i*bw, h=r.max_abs_r*ih, best=r.layer===P0.best_layer;
+    const bar=el("rect",{x:x0+bw*.28,y:yOf(r.max_abs_r),width:bw*.44,height:h,rx:2,
+      fill:best?C.valence:P.greyMid});
+    tipOn(bar,`<b>layer ${r.layer}</b>: best probe predicts preference at ${r.max_abs_r.toFixed(3)}`+
+      `<span class="t-sub">valence organization ${r.valence_r.toFixed(2)}, `+
+      `permutation p ${r.perm_p===0?"< 1e-4":r.perm_p}</span>`);
+    svg.appendChild(bar);
+    const lab=el("text",{x:x0+bw/2,y:H-26,"text-anchor":"middle","font-size":11,fill:P.text});
+    lab.textContent="layer "+r.layer; svg.appendChild(lab);
+  });
+  const yl=el("text",{x:14,y:T+ih/2,"font-size":10.5,fill:P.muted,
+    transform:`rotate(-90 14 ${T+ih/2})`,"text-anchor":"middle"});
+  yl.textContent="|r| between probe and preference"; svg.appendChild(yl);
+  host.appendChild(svg);
+}
+
+/* Read two, causal. Add the emotion's own direction to the residual stream and
+   see which way preferences move. Emotions run down the axis by their human
+   valence rating, so the pattern the claim rests on, negatives pushing down and
+   positives pushing up, is the shape of the chart rather than a claim about it.
+   Both doses are drawn: one dose could be a fluke, two that scale is a dose
+   response. */
+function drawSteering(){
+  const P0=D.prefs, rows=P0.doses["2"].emotions, W=780,H=380,L=118,R=150,T=18,B=44;
+  const host=document.getElementById("steerChart"); if(!host) return;
+  host.innerHTML="";
+  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
+  const iw=W-L-R, ih=H-T-B, rh=ih/rows.length;
+  const byName={};
+  P0.doses["8"].emotions.forEach(e=>byName[e.emotion]=e);
+  const lim=Math.max(...P0.doses["8"].emotions.map(e=>Math.abs(e.delta)))*1.08;
+  const xOf=v=>L+iw/2+(v/lim)*(iw/2);
+  [-lim,-lim/2,0,lim/2,lim].forEach(v=>{
+    svg.appendChild(el("line",{x1:xOf(v),x2:xOf(v),y1:T,y2:T+ih,
+      stroke:v===0?P.text:P.border,"stroke-width":v===0?1.2:1}));
+    const t=el("text",{x:xOf(v),y:H-26,"text-anchor":"middle","font-size":10,fill:P.muted});
+    t.textContent=Math.round(v); svg.appendChild(t);
+  });
+  rows.forEach((r,i)=>{
+    const y=T+i*rh, hi=byName[r.emotion];
+    const agrees=(r.valence>0)===(r.delta>0);
+    [[hi.delta,P.greySoft,"strong dose"],[r.delta,r.valence>0?C.dominance:P.red,"gentle dose"]]
+      .forEach(([v,fill],k)=>{
+        const x=Math.min(xOf(0),xOf(v)), w=Math.abs(xOf(v)-xOf(0));
+        const bar=el("rect",{x,y:y+rh*(k?0.42:0.14),width:w,height:rh*(k?0.34:0.28),rx:2,fill});
+        tipOn(bar,`<b>${r.emotion}, ${k?"gentle":"strong"} dose</b>: preferences move `+
+          `${v>0?"+":""}${v.toFixed(0)} Elo`+
+          `<span class="t-sub">human valence ${r.valence>0?"+":""}${r.valence.toFixed(2)}, so this `+
+          `${agrees?"moves the way that valence predicts":"moves against its valence"}</span>`);
+        svg.appendChild(bar);
+      });
+    const nm=el("text",{x:L-10,y:y+rh/2+4,"text-anchor":"end","font-size":11.5,
+      fill:agrees?P.text:P.alert});
+    nm.textContent=r.emotion+(agrees?"":" *"); svg.appendChild(nm);
+    const val=el("text",{x:W-R+10,y:y+rh/2+4,"font-size":10,fill:P.muted});
+    val.textContent=(r.valence>0?"+":"")+r.valence.toFixed(2); svg.appendChild(val);
+  });
+  const hdr=el("text",{x:W-R+10,y:T-4,"font-size":9.5,fill:P.muted});
+  hdr.textContent="human valence"; svg.appendChild(hdr);
+  const xl=el("text",{x:L+iw/2,y:H-8,"text-anchor":"middle","font-size":10.5,fill:P.muted});
+  xl.textContent="shift in preference for positive activities, Elo points";
+  svg.appendChild(xl);
+  host.appendChild(svg);
+}
+
 function drawPCs(model, hostId="pcChart", verdictId="pcVerdict"){
   const host=document.getElementById(hostId);
   if(!host) return;                        // no silent half-draw
@@ -1243,4 +1343,5 @@ function el2(t,a={}){const e=document.createElement(t);for(const k in a)e.setAtt
 numberFigures();
 drawPCs("base","coverPcBase",null);
 drawPCs("instruct","coverPcIt",null);
+drawPrefLayers(); drawSteering();
 drawPCs("base"); drawGrid(); drawStory(); drawEmo(); drawLayers(); drawLineage(); drawDose(); drawRsa();
