@@ -474,13 +474,6 @@ footer{padding:44px 0 64px;color:var(--muted);font-size:14px}
    stays a plain inline box (NOT inline-flex, which would stop a long link text
    wrapping mid-paragraph); only the trailing word and its arrow are held
    together, by .nw. */
-/* Thumbnails in the three opening cards. The paper this replicates opens its
-   own summary with three small figures rather than three paragraphs, and a
-   reader who will not read the paragraphs will still look at the pictures.
-   SVG like every other figure here, so they reflow instead of being squeezed. */
-.mini{margin:10px 0 6px}
-.minicap{font-family:var(--display);font-size:11.5px;line-height:1.45;color:var(--muted);
-margin-bottom:10px}
 .link-plain{color:var(--text);font-weight:600;text-decoration:none;transition:color .15s}
 .link-plain svg{width:10px;height:10px;margin-left:4px;vertical-align:baseline;fill:none;
 stroke:var(--orange);stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;
@@ -598,24 +591,15 @@ TEMPLATE = r"""<!DOCTYPE html>
   <h1>How are emotions represented in<br>large language models?</h1>
   <div class="grid3" style="margin-top:34px;gap:16px">
     <div class="card"><h3>The base model reproduces the result</h3>
-    <div class="mini" id="miniBase"></div>
-    <div class="minicap">Match with published human valence ratings, by principal component.
-    Above the dashed line counts as related.</div>
     <p style="font-size:15px">Sort 171 emotion vectors by what separates them most and the top principal component
     is pleasant-versus-unpleasant, the same axis people use. Nobody asked for that. It is the
     published result, reproduced on a new model.</p></div>
     <div class="card"><h3>The instruction-tuned version buries it</h3>
-    <div class="mini" id="miniInstruct"></div>
-    <div class="minicap">The same measure after instruction tuning. First place drops below the
-    line; the match reappears at component&nbsp;3.</div>
     <p style="font-size:15px">Train that same model to follow instructions and valence drops
     from first place to third. It is still present, just no longer how the model mainly sorts
     emotions. A larger axis takes over, and it matches nothing in the base model. We can measure
     it; we cannot yet say what it means.</p></div>
     <div class="card"><h3>It follows a story's emotion, roughly</h3>
-    <div class="mini" id="miniTrack"></div>
-    <div class="minicap">Each bar is one of twelve emotions: how often its own vector ranks first
-    while its story is read, at layer&nbsp;33. Dashed line is guessing.</div>
     <p style="font-size:15px">In stories written to move through three emotions, the model's internal
     state hands over from one emotion to the next, better than chance and often before the
     written turn. It is never reliable, and it works far better for some emotions than others.</p></div>
@@ -1386,68 +1370,6 @@ function drawMethod(){
 drawMethod();
 
 /* ---------- circumplex: principal-component bars ---------- */
-/* --- the three cover thumbnails ---------------------------------------
-   Same data and the same grading anchors as the full figures further down,
-   drawn small. Each one has to answer "is this good or bad?" on its own: the
-   0.5 line where a correlation starts counting as related, and the 1-in-12
-   line where guessing sits. A thumbnail without its anchor is decoration. */
-const MINI = {W:300, H:130, L:30, R:10, T:12, B:24};
-
-function miniFrame(hostId, ticks, bandTop){
-  const host=document.getElementById(hostId);
-  if(!host) return null;                       // fail loudly rather than silently
-  host.innerHTML="";
-  const {W,H,L,R,T,B}=MINI, iw=W-L-R, ih=H-T-B;
-  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
-  if(bandTop!=null){
-    // the region where a value counts as a real effect, shaded not labelled
-    svg.appendChild(el("rect",{x:L,y:T,width:iw,height:ih*bandTop,fill:P.green,opacity:.06}));
-  }
-  ticks.forEach(t=>{
-    const y=T+ih-t.at*ih;
-    svg.appendChild(el("line",{x1:L,x2:W-R,y1:y,y2:y,stroke:t.dash?P.muted:P.border,
-      "stroke-dasharray":t.dash?"3 3":""}));
-    const lab=el("text",{x:L-5,y:y+3.5,"text-anchor":"end","font-size":8,fill:P.muted});
-    lab.textContent=t.label; svg.appendChild(lab);
-  });
-  host.appendChild(svg);
-  return {svg, iw, ih};
-}
-
-/* How well each principal component matches published human valence ratings.
-   Bars above 0.5 are coloured; the rest stay grey, so "which components count"
-   is readable at thumbnail size without reading a single number. */
-function miniValence(hostId, model){
-  const rows=D.pcs[model];
-  const f=miniFrame(hostId,[{at:0,label:"0"},{at:.5,label:"0.5",dash:true},{at:1,label:"1"}],.5);
-  if(!f) return;
-  const {W,L,T,H}=MINI, bw=f.iw/rows.length;
-  rows.forEach((r,i)=>{
-    const v=Math.abs(r.valence), h=v*f.ih;
-    f.svg.appendChild(el("rect",{x:L+i*bw+bw*.22,y:T+f.ih-h,width:bw*.56,height:h,
-      rx:1.5, fill:v>=.5?C.valence:P.greyMid}));
-    const t=el("text",{x:L+i*bw+bw/2,y:H-9,"text-anchor":"middle","font-size":8,fill:P.muted});
-    t.textContent=r.pc; f.svg.appendChild(t);
-  });
-}
-
-/* How often each of the twelve emotions is identified first while its own
-   story is read. Twelve bars is too many to label at this size, so the caption
-   under the figure says what a bar is; the chance line carries the verdict. */
-function miniTracking(hostId){
-  const rows=D.emoByLayer.selfgen["33"], top=.6, chance=1/12;
-  // percentages throughout: an axis reading "0, 1/12, 60%" mixes two scales
-  const f=miniFrame(hostId,[{at:0,label:"0"},{at:chance/top,label:"8%",dash:true},
-                            {at:1,label:"60%"}],null);
-  if(!f) return;
-  const {L,T}=MINI, bw=f.iw/rows.length;
-  rows.forEach((r,i)=>{
-    const h=Math.min(r.rate/top,1)*f.ih;
-    f.svg.appendChild(el("rect",{x:L+i*bw+bw*.18,y:T+f.ih-h,width:bw*.64,height:h,
-      rx:1.5, fill:r.rate>=chance?P.orange:P.greyMid}));
-  });
-}
-
 function drawPCs(model){
   const host=document.getElementById("pcChart"); host.innerHTML="";
   // R is wide on purpose: the three scale labels live in the right margin,
@@ -2555,7 +2477,6 @@ function addModalLine(text,cls,style){
   parent.appendChild(b);
 });
 
-miniValence("miniBase","base"); miniValence("miniInstruct","instruct"); miniTracking("miniTrack");
 drawPCs("base"); drawGrid(); drawStory(); drawEmo(); drawLayers(); drawLineage(); drawDose(); drawRsa();
 </script>
 </body></html>"""
