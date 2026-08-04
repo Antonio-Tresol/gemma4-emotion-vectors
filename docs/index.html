@@ -420,6 +420,8 @@ border-bottom:1px solid var(--border)}</style></head>
       <span><i style="background:#D4D4D4"></i>grey backdrop: how much of the total spread this axis
       accounts for</span>
     </div>
+    <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/02_circumplex_geometry.ipynb" target="_blank" rel="noopener noreferrer">notebooks/02_circumplex_geometry.ipynb</a>, layer 33. Figure 6 redraws
+      these two, with a control to switch between them.</div>
     <details class="howto"><summary>How to read this</summary>
       <p>Each group of bars is one axis found by sorting the 171 emotion vectors by what separates
       them most. The grey backdrop is how much of that separation the axis accounts for. The four
@@ -468,7 +470,7 @@ border-bottom:1px solid var(--border)}</style></head>
     written turn. It is never reliable, and it works far better for some emotions than others.</p></div>
   </div>
   <p class="lede narrow" style="margin-top:30px">In
-  <a class="link-plain" href="https://transformer-circuits.pub/2026/emotions/index.html" target="_blank" rel="noopener noreferrer"><em>Emotion Concepts and their Function in a Large Language <span class="nw">Model</em><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a> (Sofroniew et al., 2026), Anthropic reported that
+  <a class="link-plain" href="https://transformer-circuits.pub/2026/emotions/index.html" target="_blank" rel="noopener noreferrer"><em>Emotion Concepts and their Function in a Large Language <span class="nw">Model<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></em></a> (Sofroniew et al., 2026), Anthropic reported that
   Claude&nbsp;Sonnet&nbsp;4.5 keeps a separate internal direction for each emotion. Those
   directions arrange themselves the way psychologists arrange them. We rebuilt that result on
   <a class="link-plain" href="https://huggingface.co/google/gemma-4-31b" target="_blank" rel="noopener noreferrer"><span class="nw">Gemma&nbsp;4&nbsp;31B<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a>, an open
@@ -800,7 +802,7 @@ border-bottom:1px solid var(--border)}</style></head>
       <p>Ten of the twelve do that, at both doses. We fixed the bar at nine before scoring. The two
       that do not, angry and surprised, fail at both doses rather than flipping about, which is
       what you would expect from a real exception rather than noise.</p>
-      <p>The four-times dose is drawn behind each bar. Loving moves 47 <span data-term="elo">Elo</span> points at the gentle
+      <p>Each emotion has two bars: the gentle dose below, the four-times dose above it in grey. Loving moves 47 <span data-term="elo">Elo</span> points at the gentle
       dose and 323 at the strong one, and desperate moves 16 and 102. Effects that grow with dose
       are harder to explain as an artefact than a single dose is. The model's answers stay
       coherent throughout, which is checked separately: a model steered into incoherence would
@@ -846,7 +848,8 @@ border-bottom:1px solid var(--border)}</style></head>
         <span class="slidergrp">
           <span class="muted" style="font-size:13px"><span data-term="token">token</span></span>
           <button id="tokPlay" class="playbtn" aria-label="Play the story"></button>
-          <input type="range" id="tokSlider" min="0" max="235" value="0">
+          <input type="range" id="tokSlider" min="0" max="235" value="0"
+            aria-label="Position in the story, in tokens">
           <span class="mono" id="tokLabel" style="min-width:78px;display:inline-block"></span>
         </span>
       </div>
@@ -920,6 +923,11 @@ border-bottom:1px solid var(--border)}</style></head>
       </span>
     </div>
     <div id="emoChart" data-figtitle="How often each emotion's own vector wins"></div>
+    <div class="legend">
+      <span><i style="background:var(--navy)"></i>at or above chance</span>
+      <span><i style="background:var(--grey-mid)"></i>below chance</span>
+      <span><i style="background:var(--alert)"></i>never wins: 0%</span>
+    </div>
     <div id="emoNote" style="margin-top:12px;min-height:36px;color:var(--body);font-size:14px"></div>
     <details class="howto"><summary>How to read this</summary>
       <p><b>The grading scale.</b> The dashed line at 8% is chance: a bar at or below it means
@@ -1489,7 +1497,7 @@ drawMethod();
    bar and the paper's own range are both drawn, because "0.64" means nothing
    without knowing what was promised and what the paper got. */
 function drawPrefLayers(){
-  const P0=D.prefs, rows=P0.by_layer, W=780,H=250,L=52,R=176,T=16,B=46;
+  const P0=D.prefs, rows=P0.by_layer, W=780,H=250,L=52,R=210,T=16,B=46;
   const host=document.getElementById("prefLayerChart"); if(!host) return;
   host.innerHTML="";
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
@@ -1659,7 +1667,7 @@ function drawGrid(){
     const x=L+j*cell,y=T+i*cell;
     const g=el("rect",{x,y,width:cell-3,height:cell-3,rx:3,
       fill:`rgba(29,53,87,${(v*0.95).toFixed(3)})`,style:"cursor:pointer"});
-    tipOn(g,`<b>instruction-tuned axis ${i+1} vs plain axis ${j+1}</b>: ${v.toFixed(2)}`+
+    tipOn(g,`<b>instruction-tuned axis ${i+1} vs base axis ${j+1}</b>: ${v.toFixed(2)}`+
       `<span class="t-sub">`+
       (i===0 ? "This row is the finding. The instruction-tuned model's biggest axis scores at most 0.14 against any of the base model's five biggest axes, so it is new structure rather than a rearrangement of them." :
        i===2&&j===0 ? "This is valence: the base model's top axis, still intact, but demoted to third place by instruction tuning." :
@@ -1674,9 +1682,9 @@ function drawGrid(){
   const ch=el("text",{x:L,y:14,"font-size":10.5,fill:P.muted,"font-weight":600});
   ch.textContent="the base model's five biggest axes"; svg.appendChild(ch);
   for(let j=0;j<5;j++){const t=el("text",{x:L+j*cell+(cell-3)/2,y:T-12,"text-anchor":"middle",
-    "font-size":10.5,fill:P.muted});t.textContent="plain "+(j+1);svg.appendChild(t);}
+    "font-size":10.5,fill:P.muted});t.textContent="axis "+(j+1);svg.appendChild(t);}
   for(let i=0;i<5;i++){const t=el("text",{x:L-8,y:T+i*cell+(cell-3)/2+4,"text-anchor":"end",
-    "font-size":10.5,fill:P.muted});t.textContent="chat "+(i+1);svg.appendChild(t);}
+    "font-size":10.5,fill:P.muted});t.textContent="axis "+(i+1);svg.appendChild(t);}
   const rh=el("text",{x:12,y:T+(5*cell)/2,"font-size":10.5,fill:P.muted,"font-weight":600,
     transform:`rotate(-90 12 ${T+(5*cell)/2})`,"text-anchor":"middle"});
   rh.textContent="the instruction-tuned model's five biggest axes"; svg.appendChild(rh);
@@ -2553,7 +2561,10 @@ addEventListener("scroll",()=>{
 addEventListener("keydown",e=>{
   // never hijack typing, and leave modified keys to the browser
   const tag=(e.target.tagName||"").toLowerCase();
-  if(tag==="input"||tag==="textarea"||e.metaKey||e.ctrlKey||e.altKey) return;
+  // A focused control owns its own keys. Space toggles a button and opens a
+  // <summary>; hijacking it for section-advance broke every one of them.
+  if(["input","textarea","button","summary","select","a"].includes(tag)
+     || e.target.isContentEditable || e.metaKey||e.ctrlKey||e.altKey) return;
   if(e.key==="ArrowRight"||e.key===" "||e.key==="PageDown"){e.preventDefault();goToSection(navIdx+1);}
   else if(e.key==="ArrowLeft"||e.key==="PageUp"){e.preventDefault();goToSection(navIdx-1);}
   else if(e.key==="Home"){e.preventDefault();navIdx=-1;scrollTo({top:0,behavior:"smooth"});}
@@ -2596,7 +2607,7 @@ function drawRsa(){
     const v=z[i][j];
     const cell=el("rect",{x:L+j*size,y:T+i*size,width:size+.5,height:size+.5,
       fill:`rgba(29,53,87,${Math.max(0,Math.min(1,v)).toFixed(3)})`});
-    tipOn(cell,`<b>${isCross?"instruction-tuned":""} layer ${layers[i]} vs ${isCross?"plain":""} `+
+    tipOn(cell,`<b>${isCross?"instruction-tuned":""} layer ${layers[i]} vs ${isCross?"base":""} `+
       `layer ${layers[j]}</b>: agreement ${v.toFixed(2)}`+
       `<span class="t-sub">1 means these two layers sort the 171 emotions the same way; `+
       `0 means they disagree completely.</span>`);
@@ -2718,6 +2729,14 @@ function addModalLine(text,cls,style){
     if(note && note.textContent.trim())
       addModalLine(note.textContent,"muted","font-size:13px;margin:0 0 10px");
     MODAL_BODY.appendChild(svg.cloneNode(true));
+    // The legend lives beside the chart, not inside the svg, so a clone of the
+    // svg alone arrives with every colour unexplained.
+    const legend=card.querySelector(".legend");
+    if(legend){
+      const l=document.createElement("div");
+      l.className="legend"; l.innerHTML=legend.innerHTML;
+      MODAL_BODY.appendChild(l);
+    }
     // the how-to-read block and the evidence file, both of which the acceptance
     // test for these figures depends on
     const howto=card.querySelector("details.howto");

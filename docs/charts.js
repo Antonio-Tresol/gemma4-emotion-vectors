@@ -165,7 +165,7 @@ drawMethod();
    bar and the paper's own range are both drawn, because "0.64" means nothing
    without knowing what was promised and what the paper got. */
 function drawPrefLayers(){
-  const P0=D.prefs, rows=P0.by_layer, W=780,H=250,L=52,R=176,T=16,B=46;
+  const P0=D.prefs, rows=P0.by_layer, W=780,H=250,L=52,R=210,T=16,B=46;
   const host=document.getElementById("prefLayerChart"); if(!host) return;
   host.innerHTML="";
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
@@ -335,7 +335,7 @@ function drawGrid(){
     const x=L+j*cell,y=T+i*cell;
     const g=el("rect",{x,y,width:cell-3,height:cell-3,rx:3,
       fill:`rgba(29,53,87,${(v*0.95).toFixed(3)})`,style:"cursor:pointer"});
-    tipOn(g,`<b>instruction-tuned axis ${i+1} vs plain axis ${j+1}</b>: ${v.toFixed(2)}`+
+    tipOn(g,`<b>instruction-tuned axis ${i+1} vs base axis ${j+1}</b>: ${v.toFixed(2)}`+
       `<span class="t-sub">`+
       (i===0 ? "This row is the finding. The instruction-tuned model's biggest axis scores at most 0.14 against any of the base model's five biggest axes, so it is new structure rather than a rearrangement of them." :
        i===2&&j===0 ? "This is valence: the base model's top axis, still intact, but demoted to third place by instruction tuning." :
@@ -350,9 +350,9 @@ function drawGrid(){
   const ch=el("text",{x:L,y:14,"font-size":10.5,fill:P.muted,"font-weight":600});
   ch.textContent="the base model's five biggest axes"; svg.appendChild(ch);
   for(let j=0;j<5;j++){const t=el("text",{x:L+j*cell+(cell-3)/2,y:T-12,"text-anchor":"middle",
-    "font-size":10.5,fill:P.muted});t.textContent="plain "+(j+1);svg.appendChild(t);}
+    "font-size":10.5,fill:P.muted});t.textContent="axis "+(j+1);svg.appendChild(t);}
   for(let i=0;i<5;i++){const t=el("text",{x:L-8,y:T+i*cell+(cell-3)/2+4,"text-anchor":"end",
-    "font-size":10.5,fill:P.muted});t.textContent="chat "+(i+1);svg.appendChild(t);}
+    "font-size":10.5,fill:P.muted});t.textContent="axis "+(i+1);svg.appendChild(t);}
   const rh=el("text",{x:12,y:T+(5*cell)/2,"font-size":10.5,fill:P.muted,"font-weight":600,
     transform:`rotate(-90 12 ${T+(5*cell)/2})`,"text-anchor":"middle"});
   rh.textContent="the instruction-tuned model's five biggest axes"; svg.appendChild(rh);
@@ -1229,7 +1229,10 @@ addEventListener("scroll",()=>{
 addEventListener("keydown",e=>{
   // never hijack typing, and leave modified keys to the browser
   const tag=(e.target.tagName||"").toLowerCase();
-  if(tag==="input"||tag==="textarea"||e.metaKey||e.ctrlKey||e.altKey) return;
+  // A focused control owns its own keys. Space toggles a button and opens a
+  // <summary>; hijacking it for section-advance broke every one of them.
+  if(["input","textarea","button","summary","select","a"].includes(tag)
+     || e.target.isContentEditable || e.metaKey||e.ctrlKey||e.altKey) return;
   if(e.key==="ArrowRight"||e.key===" "||e.key==="PageDown"){e.preventDefault();goToSection(navIdx+1);}
   else if(e.key==="ArrowLeft"||e.key==="PageUp"){e.preventDefault();goToSection(navIdx-1);}
   else if(e.key==="Home"){e.preventDefault();navIdx=-1;scrollTo({top:0,behavior:"smooth"});}
@@ -1272,7 +1275,7 @@ function drawRsa(){
     const v=z[i][j];
     const cell=el("rect",{x:L+j*size,y:T+i*size,width:size+.5,height:size+.5,
       fill:`rgba(29,53,87,${Math.max(0,Math.min(1,v)).toFixed(3)})`});
-    tipOn(cell,`<b>${isCross?"instruction-tuned":""} layer ${layers[i]} vs ${isCross?"plain":""} `+
+    tipOn(cell,`<b>${isCross?"instruction-tuned":""} layer ${layers[i]} vs ${isCross?"base":""} `+
       `layer ${layers[j]}</b>: agreement ${v.toFixed(2)}`+
       `<span class="t-sub">1 means these two layers sort the 171 emotions the same way; `+
       `0 means they disagree completely.</span>`);
@@ -1394,6 +1397,14 @@ function addModalLine(text,cls,style){
     if(note && note.textContent.trim())
       addModalLine(note.textContent,"muted","font-size:13px;margin:0 0 10px");
     MODAL_BODY.appendChild(svg.cloneNode(true));
+    // The legend lives beside the chart, not inside the svg, so a clone of the
+    // svg alone arrives with every colour unexplained.
+    const legend=card.querySelector(".legend");
+    if(legend){
+      const l=document.createElement("div");
+      l.className="legend"; l.innerHTML=legend.innerHTML;
+      MODAL_BODY.appendChild(l);
+    }
     // the how-to-read block and the evidence file, both of which the acceptance
     // test for these figures depends on
     const howto=card.querySelector("details.howto");

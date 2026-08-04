@@ -398,7 +398,11 @@ def mark_external_links(html: str) -> str:
         if href.startswith("mailto:"):
             return f'<a class="link-plain" href="{href}">{text}</a>'
         head, _, last_word = text.rpartition(" ")
-        tail = f'<span class="nw">{last_word}{EXTERNAL_ARROW}</span>'
+        # Any closing tags on the last word stay OUTSIDE the .nw span. Without
+        # this, link text wrapped in <em> produced <em>...<span>Model</em></span>:
+        # the em opened outside the span and closed inside it.
+        word, closers = re.match(r"(.*?)((?:</[a-zA-Z]+>)*)$", last_word, re.S).groups()
+        tail = f'<span class="nw">{word}{EXTERNAL_ARROW}</span>{closers}'
         label = f"{head} {tail}" if head else tail
         return (
             f'<a class="link-plain" href="{href}" '
