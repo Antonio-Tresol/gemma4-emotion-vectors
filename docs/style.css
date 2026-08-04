@@ -273,4 +273,5 @@ color:var(--text)}
 .mhv{min-width:0}
 .mh .kicker{margin-bottom:0}
 .mhnote{font-family:var(--display);font-size:12.5px;color:var(--muted);margin-top:8px}
+.mhnote+.mhnote{margin-top:3px}
 @media(max-width:560px){.mh{grid-template-columns:1fr;gap:2px}}
