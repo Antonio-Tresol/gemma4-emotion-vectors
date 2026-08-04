@@ -783,6 +783,13 @@ function drawLineage(){
         `<span class="t-sub">${passes?"passes":"fails"} the ${LL.bar}-of-12 mark, `+
         `which has to be met on both.</span>`);
       svg.appendChild(cell);
+      // The count in the cell, not only in the hover text. Shade alone cannot
+      // separate 7 from 8, and 8 is the pass mark; hover also reaches nobody on
+      // a touch screen, on a keyboard, or inside the expanded view, which
+      // clones the svg without its listeners.
+      const num=el("text",{x:x+cw/2,y:y+rh/2+4,"text-anchor":"middle","font-size":11,
+        "font-weight":600,fill:worst/12>0.55?"#fff":P.text});
+      num.textContent=worst; svg.appendChild(num);
       if(passes) svg.appendChild(el("rect",{x:x+1,y:y+3,width:cw-2,height:rh-6,rx:2,
         fill:"none",stroke:P.orange,"stroke-width":2}));
     });
@@ -1340,8 +1347,12 @@ paintProgress();
 
 /* ---------- expand any figure ---------- */
 const MODAL=document.getElementById("modal"), MODAL_BODY=document.getElementById("modalBody");
-function closeModal(){MODAL.classList.remove("on");MODAL_BODY.innerHTML="";}
+function closeModal(){
+  MODAL.classList.remove("on"); MODAL_BODY.innerHTML="";
+  if(MODAL_OPENER){ MODAL_OPENER.focus(); MODAL_OPENER=null; }
+}
 const MODAL_CLOSE=document.getElementById("modalClose");
+let MODAL_OPENER=null;
 MODAL_CLOSE.onclick=closeModal;
 // the same treatment as the expand control it mirrors; a bare glyph with no
 // hover text is a guess for the reader
@@ -1417,6 +1428,12 @@ function addModalLine(text,cls,style){
     const src=card.querySelector(".src");
     if(src) addModalLine(src.textContent,"src","font-size:11px;margin-top:10px");
     MODAL.classList.add("on");
+    // Focus moves into the dialog, and comes back to the control that opened it
+    // when it closes. Without this the keyboard stays behind the overlay.
+    MODAL_OPENER=b;
+    // #modal is display:none until .on, and focus() on a display:none element
+    // is silently dropped, so the focus move waits for the next frame.
+    requestAnimationFrame(()=>MODAL_CLOSE.focus());
   };
   parent.appendChild(b);
 });
