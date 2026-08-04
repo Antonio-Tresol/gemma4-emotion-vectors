@@ -53,9 +53,15 @@ nav .out{display:flex;gap:5px;align-items:center;margin-left:auto;flex-shrink:0;
 nav .out a{font-family:var(--display);font-size:11.5px;font-weight:600;text-decoration:none;
 padding:4px 10px;border-radius:6px;color:var(--muted);border:1px solid var(--border);
 white-space:nowrap;transition:color .12s,border-color .12s,background .12s}
+nav .out a{display:inline-flex;align-items:center;gap:5px}
+nav .out a svg{width:12px;height:12px;flex-shrink:0;fill:currentColor}
 nav .out a:hover{color:var(--text);border-color:var(--muted);background:var(--surface)}
+/* Adding the icons pushed these past a 375px viewport. Below 560 the label
+   drops and the icon carries it; the accessible name is on the anchor. */
 @media(max-width:560px){nav .out{gap:4px;padding-left:8px}
-nav .out a{padding:3px 7px;font-size:10.5px}}
+nav .out a{padding:4px 6px;font-size:10.5px}
+nav .out a span{display:none}
+nav .out a svg{width:13px;height:13px}}
 nav .brand{font-weight:700;color:var(--text);margin-right:6px;letter-spacing:-.01em;white-space:nowrap}
 header{padding:78px 0 54px;border-bottom:1px solid var(--border);background:var(--surface)}
 h1{font-family:var(--display);font-size:clamp(34px,5vw,52px);font-weight:700;color:var(--text);
@@ -257,7 +263,10 @@ transition:transform .18s}
 .figtitle .n{display:block;font-family:var(--mono);font-size:11px;font-weight:600;
 color:var(--orange);letter-spacing:.09em;text-transform:uppercase;margin-bottom:3px}
 .figtitle .t{display:block;font-size:16px;font-weight:600;color:var(--text)}
-@media(max-width:560px){.figtitle .t{font-size:15px}}</style></head>
+@media(max-width:560px){.figtitle .t{font-size:15px}}
+/* The contents list arrived with no heading, so it read as a stray grid of
+   links. Sized below the section headings it lists. */
+.contentsh{font-family:var(--display);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-top:34px}</style></head>
 <body>
 <div id="tip"></div><div id="bar"></div>
 <div id="modal"><div id="modalInner"><button id="modalClose">close &times;</button>
@@ -271,10 +280,10 @@ color:var(--orange);letter-spacing:.09em;text-transform:uppercase;margin-bottom:
        attribute is href, so carrying a class here is also what keeps these two
        out of it. They are nav chrome and must not take the arrow treatment. -->
   <span class="out">
-    <a class="navout" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors"
-       target="_blank" rel="noopener noreferrer">Code</a>
-    <a class="navout" href="https://huggingface.co/abotresol"
-       target="_blank" rel="noopener noreferrer">Data</a>
+    <a class="navout" aria-label="Code on GitHub" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors"
+       target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg><span>Code</span></a>
+    <a class="navout" aria-label="Data on Hugging Face" href="https://huggingface.co/abotresol"
+       target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="8" cy="3.6" rx="5.4" ry="2.1"/><path d="M2.6 3.6v8.8c0 1.16 2.42 2.1 5.4 2.1s5.4-.94 5.4-2.1V3.6"/><path d="M2.6 8c0 1.16 2.42 2.1 5.4 2.1s5.4-.94 5.4-2.1"/></svg><span>Data</span></a>
   </span>
 </div></nav>
 
@@ -330,22 +339,11 @@ color:var(--orange);letter-spacing:.09em;text-transform:uppercase;margin-bottom:
   31-billion-parameter model. After that, we expanded the work in three directions. Does
   instruction tuning change the picture? Does it matter whose stories the vectors are built from?
   And can a model follow an emotion that <em>changes</em> partway through a story?</p>
-  <p class="lede narrow" style="font-size:16px">Everything here is checkable:
-  <a class="link-plain" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors" target="_blank" rel="noopener noreferrer">the code and the research <span class="nw">record<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a> are on GitHub, and
-  <a class="link-plain" href="https://huggingface.co/abotresol" target="_blank" rel="noopener noreferrer">every story corpus, activation and scored <span class="nw">output<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a>
-  is on Hugging Face, public and needing no account. Found a mistake?
-  <a class="link-plain" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/issues" target="_blank" rel="noopener noreferrer">Open an <span class="nw">issue<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a>.
-  Corrections on claims that outrun their evidence are the ones we want most.</p>
+  <h2 class="contentsh">Contents</h2>
   <div class="index" id="coverIndex"></div>
-  <div class="muted" style="font-family:var(--display);font-size:13px;margin-top:18px">
-    Press <span class="kbd">&rarr;</span> or <span class="kbd">space</span> for the next section,
-    <span class="kbd">&larr;</span> to go back, <span class="kbd">1</span>&ndash;<span class="kbd">9</span>
-    or <span class="kbd">0</span> to jump straight to a numbered section.
-  </div>
 </div></header>
 
 <section id="question"><div class="wrap">
-  <div class="kicker">What we were trying to find out</div>
   <h2><span class="secno">1</span>What we measured, and why it matters</h2>
   <h3 style="margin-top:26px">The setup, in one picture</h3>
   <p class="narrow" style="margin-bottom:14px">We build an emotion vector by averaging the model's internal state across one emotion's
@@ -782,7 +780,6 @@ color:var(--orange);letter-spacing:.09em;text-transform:uppercase;margin-bottom:
 </div></section>
 
 <section id="next"><div class="wrap">
-  <div class="kicker">Where this leaves us</div>
   <h2><span class="secno">8</span>What we would do next</h2>
   <p class="narrow" style="margin-bottom:4px">Three experiments, in the order we would run them. Each
   one attacks a specific thing we could not settle.</p>
@@ -839,7 +836,6 @@ color:var(--orange);letter-spacing:.09em;text-transform:uppercase;margin-bottom:
 </div></section>
 
 <section id="methods"><div class="wrap">
-  <div class="kicker">How we measured it</div>
   <h2><span class="secno">9</span>How we measured it, in enough detail to argue with</h2>
   <p class="narrow">Four blocks, all collapsed. Open whichever one you want to challenge; each carries
   the formula, the pseudo-code and a glossary for every symbol in it.</p>
