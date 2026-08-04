@@ -1348,9 +1348,21 @@ function drawRsa(){
 })();
 
 /* ---------- progress: the nav is the tracker, no extra surface ---------- */
-document.getElementById("navTicks").innerHTML = SECTIONS.map(x=>
-  `<a href="#${x.id}" title="${x.n}. ${x.title.replace(/"/g,"&quot;")}">${x.n}</a>`).join("");
+/* The ticks are grouped the way the contents is: a hairline opens each part, so
+   the bar shows the three-beat shape at a glance without spelling anything out.
+   The part name rides in the title of its first tick, where a reader who wants
+   it can find it. */
+document.getElementById("navTicks").innerHTML = SECTIONS.map((x,i)=>{
+  // a separator wherever the part changes, including where the parts end and
+  // the back matter begins
+  const opens = i>0 && SECTIONS[i-1].part!==x.part;
+  const label = (x.part?`Part ${x.part.no}, ${x.part.title}: `:"")
+    + `${x.n}. ${x.title}`;
+  return `<a href="#${x.id}" class="${opens?"partstart":""}" `
+    + `title="${label.replace(/"/g,"&quot;")}">${x.n}</a>`;
+}).join("");
 const NAV_LINKS=[...document.querySelectorAll("nav .ticks a")];
+const INDEX_LINKS=[...document.querySelectorAll("#coverIndex a")];
 const HERE=document.getElementById("navHere");
 function paintProgress(){
   const cur=sectionFromScroll();
@@ -1358,6 +1370,8 @@ function paintProgress(){
     a.classList.toggle("on", i===cur);
     a.classList.toggle("done", i<cur);
   });
+  // the contents marks the same section the tick bar does
+  INDEX_LINKS.forEach((a,i)=>a.classList.toggle("on", i===cur));
   HERE.textContent = cur<0 ? "" : SECTIONS[cur].title;
   const max=document.body.scrollHeight-innerHeight;
   document.getElementById("bar").style.width=(max>0?(scrollY/max)*100:0)+"%";

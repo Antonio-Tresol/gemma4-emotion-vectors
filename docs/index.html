@@ -38,6 +38,11 @@ nav .ticks a{font-family:var(--display);font-size:11.5px;font-weight:600;text-de
 width:23px;height:23px;display:grid;place-items:center;border-radius:6px;
 color:var(--muted);background:transparent;transition:background .12s,color .12s}
 nav .ticks a:hover{background:var(--border);color:var(--text)}
+/* a hairline before the first tick of each part, so the bar carries the same
+   three groups the contents does */
+nav .ticks a.partstart{margin-left:9px;position:relative}
+nav .ticks a.partstart:before{content:"";position:absolute;left:-6px;top:4px;bottom:4px;
+width:1px;background:var(--border)}
 nav .ticks a.done{color:var(--text)}
 nav .ticks a.on{background:var(--orange);color:#fff}
 nav .here{font-family:var(--display);font-size:13px;font-weight:600;color:var(--text);
@@ -266,6 +271,14 @@ text-decoration:none;color:var(--body);font-family:var(--display);font-size:14.5
 transition:background .12s,color .12s,box-shadow .12s}
 .index a:hover,.index a:focus-visible{color:var(--text);background:var(--surface);
 box-shadow:inset 2px 0 0 var(--orange)}
+/* The title goes bold on hover as well. Weight is the change a reader notices
+   without looking for it; a shade of near-black is not. */
+.index a:hover .t,.index a:focus-visible .t{font-weight:650}
+/* The row for the section you are actually in, marked the way the tick bar
+   marks it, so the contents can be read as a position and not only as a list. */
+.index a.on{background:var(--surface);box-shadow:inset 2px 0 0 var(--orange);color:var(--text)}
+.index a.on .t{font-weight:650}
+.index a.on .n{color:var(--orange)}
 .index a:focus-visible{outline:none}
 .index a .n{font-family:var(--mono);font-size:12px;color:var(--orange);font-weight:600;min-width:20px}
 .index a .t{flex:1}
@@ -627,7 +640,6 @@ border-bottom:1px solid var(--border)}</style></head>
 </div></section>
 
 <section id="replication"><div class="wrap">
-  <div class="kicker">Part one &middot; Rebuilding the emotion vectors</div>
   <h2><span class="secno">3</span>Valence leads the base model and loses first place in the instruction-tuned one</h2>
   <p class="narrow">PCA over the 171 emotion vectors at layer 33. Each bar is one principal component:
   grey is the variance it explains, and the coloured bars are how strongly its scores correlate with
@@ -919,7 +931,6 @@ border-bottom:1px solid var(--border)}</style></head>
 </div></section>
 
 <section id="emotions"><div class="wrap">
-  <div class="kicker">Part three &middot; Following an emotion as it changes</div>
   <h2><span class="secno">7</span>Some emotions are followed well, others not at all</h2>
   <p class="narrow">For every phase of every story, we measured the centered cosine against all
   twelve emotion vectors. The question is how often the winner is the emotion that phase was
@@ -971,7 +982,6 @@ border-bottom:1px solid var(--border)}</style></head>
 </div></section>
 
 <section id="layers"><div class="wrap">
-  <div class="kicker">Part three &middot; Following an emotion as it changes</div>
   <h2><span class="secno">8</span>Different layers are good at different things</h2>
   <p class="narrow">We measured two different skills at six depths of the model, and they peak in
   different places. The first is the one from section 7:
@@ -1058,7 +1068,7 @@ border-bottom:1px solid var(--border)}</style></head>
   unvalidated in our tree: its falsification pass is owed. Read it as a strong observation, not a
   settled result.
   <br><br>
-  <b>3. Emotion vectors follow a story better than chance: exploratory.</b> Part three's
+  <b>3. Emotion vectors follow a story better than chance: exploratory.</b> Part III's
   measurements are registered as hypothesis-generating work with no pass bar attached, and one thing
   should be said plainly. The detection bar we <em>did</em> register in advance was written for the
   171-emotion vector set, and that set failed it at every layer. What passes is the twelve-emotion
@@ -2715,9 +2725,21 @@ function drawRsa(){
 })();
 
 /* ---------- progress: the nav is the tracker, no extra surface ---------- */
-document.getElementById("navTicks").innerHTML = SECTIONS.map(x=>
-  `<a href="#${x.id}" title="${x.n}. ${x.title.replace(/"/g,"&quot;")}">${x.n}</a>`).join("");
+/* The ticks are grouped the way the contents is: a hairline opens each part, so
+   the bar shows the three-beat shape at a glance without spelling anything out.
+   The part name rides in the title of its first tick, where a reader who wants
+   it can find it. */
+document.getElementById("navTicks").innerHTML = SECTIONS.map((x,i)=>{
+  // a separator wherever the part changes, including where the parts end and
+  // the back matter begins
+  const opens = i>0 && SECTIONS[i-1].part!==x.part;
+  const label = (x.part?`Part ${x.part.no}, ${x.part.title}: `:"")
+    + `${x.n}. ${x.title}`;
+  return `<a href="#${x.id}" class="${opens?"partstart":""}" `
+    + `title="${label.replace(/"/g,"&quot;")}">${x.n}</a>`;
+}).join("");
 const NAV_LINKS=[...document.querySelectorAll("nav .ticks a")];
+const INDEX_LINKS=[...document.querySelectorAll("#coverIndex a")];
 const HERE=document.getElementById("navHere");
 function paintProgress(){
   const cur=sectionFromScroll();
@@ -2725,6 +2747,8 @@ function paintProgress(){
     a.classList.toggle("on", i===cur);
     a.classList.toggle("done", i<cur);
   });
+  // the contents marks the same section the tick bar does
+  INDEX_LINKS.forEach((a,i)=>a.classList.toggle("on", i===cur));
   HERE.textContent = cur<0 ? "" : SECTIONS[cur].title;
   const max=document.body.scrollHeight-innerHeight;
   document.getElementById("bar").style.width=(max>0?(scrollY/max)*100:0)+"%";
