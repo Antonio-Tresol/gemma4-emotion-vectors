@@ -596,21 +596,6 @@ TEMPLATE = r"""<!DOCTYPE html>
 <header><div class="wrap">
   <div class="kicker">CAMBRIA capstone &middot; Hannah Kim &middot; Peyton Li &middot; Antonio Badilla-Olivas</div>
   <h1>How are emotions represented in<br>large language models?</h1>
-  <p class="lede narrow">Anthropic found that a language model keeps a separate internal direction
-  for each emotion. Those directions arrange themselves the way psychologists arrange emotions
-  (Sofroniew et al.,
-  <a href="https://transformer-circuits.pub/2026/emotions/index.html">Emotion Concepts and their
-  Function in a Large Language Model</a>, 2026). We rebuilt that result on
-  <a href="https://huggingface.co/google/gemma-4-31b">Gemma&nbsp;4&nbsp;31B</a> (a
-  31-billion-parameter model), in two versions of it. Then we asked a question the paper did not: can
-  the model follow an emotion that <em>changes</em> partway through a story? Three findings, below.</p>
-  <p class="lede narrow" style="font-size:16px">Everything here is checkable:
-  <a href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors">the code and the research
-  record</a> are on GitHub, and
-  <a href="https://huggingface.co/abotresol">every story corpus, activation and scored output</a>
-  is on Hugging Face, public and needing no account. Found a mistake?
-  <a href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/issues">Open an issue</a>.
-  Corrections on claims that outrun their evidence are the ones we want most.</p>
   <div class="grid3" style="margin-top:34px;gap:16px">
     <div class="card"><h3>The base model reproduces the result</h3>
     <div class="mini" id="miniBase"></div>
@@ -635,6 +620,21 @@ TEMPLATE = r"""<!DOCTYPE html>
     state hands over from one emotion to the next, better than chance and often before the
     written turn. It is never reliable, and it works far better for some emotions than others.</p></div>
   </div>
+  <p class="lede narrow" style="margin-top:30px">Anthropic found that a language model keeps a separate internal direction
+  for each emotion. Those directions arrange themselves the way psychologists arrange emotions
+  (Sofroniew et al.,
+  <a href="https://transformer-circuits.pub/2026/emotions/index.html">Emotion Concepts and their
+  Function in a Large Language Model</a>, 2026). We rebuilt that result on
+  <a href="https://huggingface.co/google/gemma-4-31b">Gemma&nbsp;4&nbsp;31B</a> (a
+  31-billion-parameter model), in two versions of it. Then we asked a question the paper did not: can
+  the model follow an emotion that <em>changes</em> partway through a story? Three findings, below.</p>
+  <p class="lede narrow" style="font-size:16px">Everything here is checkable:
+  <a href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors">the code and the research
+  record</a> are on GitHub, and
+  <a href="https://huggingface.co/abotresol">every story corpus, activation and scored output</a>
+  is on Hugging Face, public and needing no account. Found a mistake?
+  <a href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/issues">Open an issue</a>.
+  Corrections on claims that outrun their evidence are the ones we want most.</p>
   <div class="index" id="coverIndex"></div>
   <div class="muted" style="font-family:var(--display);font-size:13px;margin-top:18px">
     Press <span class="kbd">&rarr;</span> or <span class="kbd">space</span> for the next section,
