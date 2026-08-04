@@ -1167,14 +1167,13 @@ function drawPCs(model, hostId="pcChart", verdictId="pcVerdict"){
       const nm={valence:"valence",arousal:"arousal",dominance:"dominance",
         length:"story length"}[k];
       tipOn(bar,`<b>axis PC${r.pc} vs human ${nm} ratings</b>: ${r[k].toFixed(2)}`+
-        `<span class="t-sub">1.0 would mean this axis is exactly that rating, 0 that it has nothing `+
-        `to do with it.<br>PC${r.pc} accounts for ${(r.evr*100).toFixed(1)}% of everything that `+
-        `separates the 171 emotions.</span>`);
+        `<span class="t-sub">PC${r.pc} accounts for ${(r.evr*100).toFixed(1)}% of everything `+
+        `that separates the 171 emotions.</span>`);
       svg.appendChild(bar);
     });
     const back=el("rect",{x:x0+8,y:T+ih-r.evr*ih,width:bw-16,height:r.evr*ih,fill:"transparent"});
     tipOn(back,`<b>axis PC${r.pc}</b> accounts for ${(r.evr*100).toFixed(1)}% of everything that `+
-      `separates the 171 emotions<span class="t-sub">that is what the grey backdrop bar shows</span>`);
+      `separates the 171 emotions`);
     svg.appendChild(back);
     const lab=el("text",{x:x0+bw/2,y:H-24,"text-anchor":"middle","font-size":11,fill:P.text});
     lab.textContent=r.pc===1?"PC1 (biggest axis)":"PC"+r.pc; svg.appendChild(lab);
@@ -1562,10 +1561,7 @@ function drawLayers(){
       `randomly chosen emotion: wrong, but nearby.</span>`);
     svg.appendChild(c1);
     const c2=el("circle",{cx:X(i),cy:Y2(r.r_dval),r:7,fill:P.orange});
-    tipOn(c2,`<b>layer ${r.layer}: anticipation +${r.r_dval.toFixed(3)}</b>`+
-      `<span class="t-sub">in the words before a turn, how well the model's lean towards the next `+
-      `emotion matches how big the coming change in valence will be. 0 would mean it does not `+
-      `see the turn coming at all.</span>`);
+    tipOn(c2,`<b>layer ${r.layer}: anticipation +${r.r_dval.toFixed(3)}</b>`);
     svg.appendChild(c2);
     const t=el("text",{x:X(i),y:H-24,"text-anchor":"middle","font-size":11,fill:P.text});
     t.textContent="L"+r.layer; svg.appendChild(t);
@@ -1618,9 +1614,8 @@ function drawLineage(){
       const cell=el("rect",{x:x+1,y:y+3,width:cw-2,height:rh-6,rx:2,fill:shade(worst)});
       tipOn(cell,`<b>${r.label}, layer ${layer}</b>: `+
         `${paper} of 12 on the paper's scenarios, ${held} of 12 on ours`+
-        `<span class="t-sub">${passes?"passes":"fails"} the ${LL.bar}-of-12 mark, which has to be met `+
-        `on both. The scenarios are user messages that imply an emotion without naming it; the `+
-        `reading is taken at the last token before the reply.</span>`);
+        `<span class="t-sub">${passes?"passes":"fails"} the ${LL.bar}-of-12 mark, `+
+        `which has to be met on both.</span>`);
       svg.appendChild(cell);
       if(passes) svg.appendChild(el("rect",{x:x+1,y:y+3,width:cw-2,height:rh-6,rx:2,
         fill:"none",stroke:P.orange,"stroke-width":2}));

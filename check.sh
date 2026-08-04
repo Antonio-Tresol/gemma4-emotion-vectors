@@ -68,6 +68,19 @@ fi
 
 run_stage "local paths" uv run scripts/check_local_paths.py
 
+# The write-up's charts are plain JS inlined into docs/index.html. A syntax
+# error there does not fail the build: the page is written, every figure
+# silently renders empty, and nothing else here notices. That happened on
+# 2026-08-03, from an edit that left a dangling `+`. Skipped rather than
+# required, so a clone without node still passes the rest.
+if [[ -f docs/charts.js ]]; then
+    if command -v node >/dev/null 2>&1; then
+        run_stage "docs js syntax" node --check docs/charts.js
+    else
+        printf '\n=== docs js syntax ===\nnode not installed, skipping\n'
+    fi
+fi
+
 if [[ -f TREE.md ]]; then
     run_stage "research integrity" uv run scripts/validate_research.py
 else
