@@ -249,7 +249,17 @@ stroke:var(--orange);stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round
 transition:transform .18s}
 .link-plain:hover{text-decoration:underline;text-underline-offset:3px}
 .link-plain:hover svg{transform:translate(2px,-2px)}
-.nw{white-space:nowrap}</style></head>
+.nw{white-space:nowrap}
+/* Figure numbers and titles. Both lived only in data-figtitle, which the
+   expand view read and a reader on the page never saw, so every figure
+   arrived unnamed. Sized to sit clearly above the chart without competing
+   with the section heading. .figcap is a different, older thing: the small
+   muted sub-labels inside section 6. */
+.figtitle{font-family:var(--display);margin:0 0 10px;line-height:1.35}
+.figtitle .n{display:block;font-family:var(--mono);font-size:11px;font-weight:600;
+color:var(--orange);letter-spacing:.09em;text-transform:uppercase;margin-bottom:3px}
+.figtitle .t{display:block;font-size:16px;font-weight:600;color:var(--text)}
+@media(max-width:560px){.figtitle .t{font-size:15px}}</style></head>
 <body>
 <div id="tip"></div><div id="bar"></div>
 <div id="modal"><div id="modalInner"><button id="modalClose">close &times;</button>
@@ -349,7 +359,7 @@ transition:transform .18s}
   <em>cosine</em> is here. Centered, meaning the mean over the story
   set is subtracted first, so 0 is the corpus average rather than no emotion. Nothing on this
   page comes from prompting the model or reading its output.</p>
-  <div class="card"><div id="methodDiagram"></div>
+  <div class="card"><div id="methodDiagram" data-figtitle="How an emotion vector is built, and how it is read back"></div>
     <div class="legend">
       <span>171 emotions in parts one and two, ~9 stories each; the 12-emotion sets used from part
       three average 256. Vector quality tracks that count, and section 2 is about how much.</span>
@@ -2169,7 +2179,10 @@ function addModalLine(text,cls,style){
     const card=host.closest(".card") || parent;
     // the figure names itself via data-figtitle, so the expanded view never
     // depends on whatever markup happens to surround the chart
-    const title=host.dataset.figtitle || (card.querySelector("h3")||{}).textContent;
+    const named=host.dataset.figtitle || (card.querySelector("h3")||{}).textContent;
+    // carry the number across, so a reader who expands figure 7 still knows
+    // which figure they are looking at when they come back to the page
+    const title=named && host.dataset.fignum ? `Figure ${host.dataset.fignum}. ${named}` : named;
     if(title) addModalLine(title,"",
       "font-family:var(--display);font-size:17px;font-weight:600;color:var(--text);margin:0 0 4px");
     const cap=host.previousElementSibling;
@@ -2195,6 +2208,31 @@ function addModalLine(text,cls,style){
   parent.appendChild(b);
 });
 
+/* Every figure gets a visible number and title above it. Both already existed
+   in data-figtitle, but only the expand-to-full-screen view ever read them, so
+   on the page itself a figure arrived unnamed. Numbering is by document order
+   rather than hand-written, so inserting a figure renumbers the rest instead of
+   leaving a duplicate "Figure 4" behind. */
+function numberFigures(){
+  document.querySelectorAll("[data-figtitle]").forEach((host,i)=>{
+    const n=i+1;
+    host.dataset.fignum=n;                       // the modal reads this back
+    const cap=el2("div",{class:"figtitle"});
+    const tag=el2("span",{class:"n"}); tag.textContent="Figure "+n;
+    const ttl=el2("span",{class:"t"}); ttl.textContent=host.dataset.figtitle;
+    cap.appendChild(tag); cap.appendChild(ttl);
+    // Section 6 already puts a small .figcap sub-label directly above its
+    // charts, and the expand view finds it as the host's previous sibling.
+    // Going in above that label keeps both the lookup and the reading order.
+    const prev=host.previousElementSibling;
+    const anchor=(prev && prev.classList && prev.classList.contains("figcap")) ? prev : host;
+    anchor.parentNode.insertBefore(cap,anchor);
+  });
+}
+/* plain-HTML sibling of el(), which builds SVG-namespaced nodes */
+function el2(t,a={}){const e=document.createElement(t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+
+numberFigures();
 drawPCs("base","coverPcBase","coverVerdictBase");
 drawPCs("instruct","coverPcIt","coverVerdictIt");
 drawPCs("base"); drawGrid(); drawStory(); drawEmo(); drawLayers(); drawLineage(); drawDose(); drawRsa();

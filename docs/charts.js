@@ -1180,7 +1180,10 @@ function addModalLine(text,cls,style){
     const card=host.closest(".card") || parent;
     // the figure names itself via data-figtitle, so the expanded view never
     // depends on whatever markup happens to surround the chart
-    const title=host.dataset.figtitle || (card.querySelector("h3")||{}).textContent;
+    const named=host.dataset.figtitle || (card.querySelector("h3")||{}).textContent;
+    // carry the number across, so a reader who expands figure 7 still knows
+    // which figure they are looking at when they come back to the page
+    const title=named && host.dataset.fignum ? `Figure ${host.dataset.fignum}. ${named}` : named;
     if(title) addModalLine(title,"",
       "font-family:var(--display);font-size:17px;font-weight:600;color:var(--text);margin:0 0 4px");
     const cap=host.previousElementSibling;
@@ -1206,6 +1209,31 @@ function addModalLine(text,cls,style){
   parent.appendChild(b);
 });
 
+/* Every figure gets a visible number and title above it. Both already existed
+   in data-figtitle, but only the expand-to-full-screen view ever read them, so
+   on the page itself a figure arrived unnamed. Numbering is by document order
+   rather than hand-written, so inserting a figure renumbers the rest instead of
+   leaving a duplicate "Figure 4" behind. */
+function numberFigures(){
+  document.querySelectorAll("[data-figtitle]").forEach((host,i)=>{
+    const n=i+1;
+    host.dataset.fignum=n;                       // the modal reads this back
+    const cap=el2("div",{class:"figtitle"});
+    const tag=el2("span",{class:"n"}); tag.textContent="Figure "+n;
+    const ttl=el2("span",{class:"t"}); ttl.textContent=host.dataset.figtitle;
+    cap.appendChild(tag); cap.appendChild(ttl);
+    // Section 6 already puts a small .figcap sub-label directly above its
+    // charts, and the expand view finds it as the host's previous sibling.
+    // Going in above that label keeps both the lookup and the reading order.
+    const prev=host.previousElementSibling;
+    const anchor=(prev && prev.classList && prev.classList.contains("figcap")) ? prev : host;
+    anchor.parentNode.insertBefore(cap,anchor);
+  });
+}
+/* plain-HTML sibling of el(), which builds SVG-namespaced nodes */
+function el2(t,a={}){const e=document.createElement(t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+
+numberFigures();
 drawPCs("base","coverPcBase","coverVerdictBase");
 drawPCs("instruct","coverPcIt","coverVerdictIt");
 drawPCs("base"); drawGrid(); drawStory(); drawEmo(); drawLayers(); drawLineage(); drawDose(); drawRsa();

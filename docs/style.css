@@ -233,3 +233,13 @@ transition:transform .18s}
 .link-plain:hover{text-decoration:underline;text-underline-offset:3px}
 .link-plain:hover svg{transform:translate(2px,-2px)}
 .nw{white-space:nowrap}
+/* Figure numbers and titles. Both lived only in data-figtitle, which the
+   expand view read and a reader on the page never saw, so every figure
+   arrived unnamed. Sized to sit clearly above the chart without competing
+   with the section heading. .figcap is a different, older thing: the small
+   muted sub-labels inside section 6. */
+.figtitle{font-family:var(--display);margin:0 0 10px;line-height:1.35}
+.figtitle .n{display:block;font-family:var(--mono);font-size:11px;font-weight:600;
+color:var(--orange);letter-spacing:.09em;text-transform:uppercase;margin-bottom:3px}
+.figtitle .t{display:block;font-size:16px;font-weight:600;color:var(--text)}
+@media(max-width:560px){.figtitle .t{font-size:15px}}
