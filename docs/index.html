@@ -506,19 +506,18 @@ border-bottom:1px solid var(--border)}</style></head>
       three average 256. Vector quality tracks that count, and section 2 is about how much.</span>
     </div>
   </div>
-  <div class="grid2" style="margin-top:18px">
-    <div class="card"><h3>The two models we compare</h3><p style="font-size:15px">Gemma&nbsp;4&nbsp;31B <b>base</b>
-    and <b>instruction-tuned</b>: the same weights before and after post-training. Running both is a comparison the
-    original paper did not report, and it is where the interesting result came from.
-    <span data-term="layer">Layers</span> are sampled, not swept: twenty across the stack (0 to 57, every third) for the geometry and
-    detection work, six for the trajectories.</p></div>
-    <div class="card"><h3>The result being replicated</h3><p style="font-size:15px">Anthropic reports
-    that emotion vectors arrange on the <b><span data-term="circumplex">circumplex</span></b>. Principal component analysis (PCA)
-    finds the directions along which they differ most, and the top two recover valence and arousal.
-    That matches how humans rate the same words in the
-    <a class="link-plain" href="http://saifmohammad.com/WebPages/nrc-vad.html" target="_blank" rel="noopener noreferrer">NRC VAD <span class="nw">lexicon<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a> (VAD is valence, arousal, dominance). No human labels enter
-    the fit, so the alignment is the finding.</p></div>
-  </div>
+  <p class="narrow" style="margin-top:20px"><b>The two models we compare.</b>
+  Gemma&nbsp;4&nbsp;31B <b>base</b> and <b>instruction-tuned</b>: the same weights before and after
+  post-training. Running both is a comparison the original paper did not report, and it is where the
+  interesting result came from. <span data-term="layer">Layers</span> are sampled, not swept: twenty
+  across the stack (0 to 57, every third) for the geometry and detection work, six for the
+  trajectories.</p>
+  <p class="narrow"><b>The result being replicated.</b> Anthropic reports that emotion vectors
+  arrange on the <b><span data-term="circumplex">circumplex</span></b>. Principal component analysis
+  (PCA) finds the directions along which they differ most, and the top two recover valence and
+  arousal. That matches how humans rate the same words in the
+  <a class="link-plain" href="http://saifmohammad.com/WebPages/nrc-vad.html" target="_blank" rel="noopener noreferrer">NRC VAD <span class="nw">lexicon<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a> (VAD is valence,
+  arousal, dominance). No human labels enter the fit, so the alignment is the finding.</p>
   <h3 style="margin-top:38px">Why should anyone care whether this works?</h3>
   <ul class="reasons">
     <li><b>Readable and steerable in one object.</b> A direction you can read off mid-forward-pass
