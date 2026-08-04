@@ -42,22 +42,27 @@
     </details>
     <div class="src">source: notebooks/07_generator_lineages.ipynb (experiments E11 and E12)</div>
   </div>
-  <div class="grid2" style="margin-top:20px">
-    <div class="card"><h3>Why its own stories are worse</h3>
-      <p style="font-size:15px">Asked for 3,072 stories about emotions, the model named its character
-      <b>Elias</b> in <b>98.2%</b> of them. Its own writing reuses five-word phrases <b>53&times;</b>
-      as often as DeepSeek's does. That matters because narrow, repetitive stories make a narrow
-      vector. Whatever the stories have in common gets averaged in, so the vector stands for
-      the model's writing habits as much as for the emotion.</p>
-      <p style="font-size:15px" class="muted">It is also the sharpest thing we saw about what is
-      peculiar to this particular model. Ask it for variety and it gives you Elias, 3,000 times.</p></div>
-    <div class="card"><h3>Does the number of stories change the answer?</h3>
-      <div id="doseChart" data-figtitle="Detection against corpus size"></div>
-      <p style="font-size:15px;margin-top:8px">About <b>64</b> per emotion. At that point the vectors
-      already reach 8.6 working layers out of the 9 this writer ever achieves. (It is a
-      fraction because it averages five random draws of that many stories.) Quadrupling the
-      stories buys almost nothing.</p>
-      <div class="src">source: notebooks/07_generator_lineages.ipynb (experiment E12)</div></div>
+  <p class="narrow" style="margin-top:22px"><b>Why its own stories are worse.</b> Asked for 3,072
+  stories about emotions, the model named its character <b>Elias</b> in <b>98.2%</b> of them. Its own
+  writing reuses five-word phrases <b>53&times;</b> as often as DeepSeek's does. That matters because
+  narrow, repetitive stories make a narrow vector. Whatever the stories have in common gets averaged
+  in, so the vector stands for the model's writing habits as much as for the emotion. It is also the
+  sharpest thing we saw about what is peculiar to this particular model. Ask it for variety and it
+  gives you Elias, 3,000 times.</p>
+  <h3 style="margin-top:30px">Does the number of stories change the answer?</h3>
+  <div class="card" style="margin-top:14px">
+    <div id="doseChart" data-figtitle="Detection against corpus size"></div>
+    <details class="howto"><summary>How to read this</summary>
+      <p>Each point is one corpus size, and its height is how many of the 20 sampled layers pass the
+      detection mark at that size. Every point averages five random draws of that many stories, which
+      is why a count can be fractional.</p>
+      <p><b>The grading scale.</b> 0 would mean corpus size never buys a working layer. 9 is the most
+      this writer ever reaches at any size, so 9 is the ceiling rather than 20.</p>
+    </details>
+    <div class="src">source: notebooks/07_generator_lineages.ipynb (experiment E12)</div>
   </div>
+  <p class="narrow" style="margin-top:14px">About <b>64</b> per emotion. At that point the vectors
+  already reach 8.6 working layers out of the 9 this writer ever achieves. Quadrupling the stories
+  buys almost nothing.</p>
   <div class="takeaway"><span class="lbl">Takeaway</span>An emotion vector is only as good as the corpus behind it. Same model, same test, and a nine-fold spread in how many layers work. A stronger outside writer beats the model's own stories, which are too repetitive to build a broad vector from.</div>
 </div></section>

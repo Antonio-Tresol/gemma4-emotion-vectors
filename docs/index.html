@@ -499,7 +499,8 @@ border-bottom:1px solid var(--border)}</style></head>
   <b>angle between that vector and the model's state at a given word</b>, which is what a
   <em>cosine</em> is here. Centered, meaning the mean over the story
   set is subtracted first, so 0 is the corpus average rather than no emotion.</p>
-  <div class="card"><div id="methodDiagram" data-figtitle="How an emotion vector is built, and how it is read back"></div>
+  <div class="card"><div id="methodDiagram" data-schematic
+    data-figtitle="How an emotion vector is built, and how it is read back"></div>
     <div class="legend">
       <span>171 emotions in parts one and two, ~9 stories each; the 12-emotion sets used from part
       three average 256. Vector quality tracks that count, and section 2 is about how much.</span>
@@ -585,23 +586,28 @@ border-bottom:1px solid var(--border)}</style></head>
     </details>
     <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/07_generator_lineages.ipynb" target="_blank" rel="noopener noreferrer">notebooks/07_generator_lineages.ipynb</a> (experiments E11 and E12)</div>
   </div>
-  <div class="grid2" style="margin-top:20px">
-    <div class="card"><h3>Why its own stories are worse</h3>
-      <p style="font-size:15px">Asked for 3,072 stories about emotions, the model named its character
-      <b>Elias</b> in <b>98.2%</b> of them. Its own writing reuses five-word phrases <b>53&times;</b>
-      as often as DeepSeek's does. That matters because narrow, repetitive stories make a narrow
-      vector. Whatever the stories have in common gets averaged in, so the vector stands for
-      the model's writing habits as much as for the emotion.</p>
-      <p style="font-size:15px" class="muted">It is also the sharpest thing we saw about what is
-      peculiar to this particular model. Ask it for variety and it gives you Elias, 3,000 times.</p></div>
-    <div class="card"><h3>Does the number of stories change the answer?</h3>
-      <div id="doseChart" data-figtitle="Detection against corpus size"></div>
-      <p style="font-size:15px;margin-top:8px">About <b>64</b> per emotion. At that point the vectors
-      already reach 8.6 working layers out of the 9 this writer ever achieves. (It is a
-      fraction because it averages five random draws of that many stories.) Quadrupling the
-      stories buys almost nothing.</p>
-      <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/07_generator_lineages.ipynb" target="_blank" rel="noopener noreferrer">notebooks/07_generator_lineages.ipynb</a> (experiment E12)</div></div>
+  <p class="narrow" style="margin-top:22px"><b>Why its own stories are worse.</b> Asked for 3,072
+  stories about emotions, the model named its character <b>Elias</b> in <b>98.2%</b> of them. Its own
+  writing reuses five-word phrases <b>53&times;</b> as often as DeepSeek's does. That matters because
+  narrow, repetitive stories make a narrow vector. Whatever the stories have in common gets averaged
+  in, so the vector stands for the model's writing habits as much as for the emotion. It is also the
+  sharpest thing we saw about what is peculiar to this particular model. Ask it for variety and it
+  gives you Elias, 3,000 times.</p>
+  <h3 style="margin-top:30px">Does the number of stories change the answer?</h3>
+  <div class="card" style="margin-top:14px">
+    <div id="doseChart" data-figtitle="Detection against corpus size"></div>
+    <details class="howto"><summary>How to read this</summary>
+      <p>Each point is one corpus size, and its height is how many of the 20 sampled layers pass the
+      detection mark at that size. Every point averages five random draws of that many stories, which
+      is why a count can be fractional.</p>
+      <p><b>The grading scale.</b> 0 would mean corpus size never buys a working layer. 9 is the most
+      this writer ever reaches at any size, so 9 is the ceiling rather than 20.</p>
+    </details>
+    <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/07_generator_lineages.ipynb" target="_blank" rel="noopener noreferrer">notebooks/07_generator_lineages.ipynb</a> (experiment E12)</div>
   </div>
+  <p class="narrow" style="margin-top:14px">About <b>64</b> per emotion. At that point the vectors
+  already reach 8.6 working layers out of the 9 this writer ever achieves. Quadrupling the stories
+  buys almost nothing.</p>
   <div class="takeaway"><span class="lbl">Takeaway</span>An emotion vector is only as good as the corpus behind it. Same model, same test, and a nine-fold spread in how many layers work. A stronger outside writer beats the model's own stories, which are too repetitive to build a broad vector from.</div>
 </div></section>
 
@@ -669,34 +675,39 @@ border-bottom:1px solid var(--border)}</style></head>
   separated the same way, just renumbered. So we checked all 25 pairings. Each of the instruction-tuned
   model's top five axes went against each of the base model's top five. <b>1.0 means the two axes carry the
   same information; 0 means they have nothing in common.</b> Hover any square.</p>
-  <div class="grid2" style="margin-top:22px">
-    <div class="card">
-      <div id="gridChart" data-figtitle="Instruction-tuned axes against base axes, top five of each"></div>
-      <div id="gridNote" class="muted" style="margin-top:10px;min-height:34px;font-size:13.5px"></div>
-      <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/02_circumplex_geometry.ipynb" target="_blank" rel="noopener noreferrer">notebooks/02_circumplex_geometry.ipynb</a>, layer 33</div>
-    </div>
-    <div class="card">
-      <h3>The top row is the finding: nothing matches</h3>
-      <p style="font-size:15px">Read the top row of the grid. The instruction-tuned model's biggest axis
-      scores <b>0.14</b> against its closest relative among the base model's five biggest axes,
-      near the bottom of the scale. It is not a renaming or a reshuffle of anything the base model had, and it is now the largest
-      single thing separating the model's emotions.</p>
-      <p style="font-size:15px">Now read down the first column. Valence is still in there, intact,
-      one floor down: the instruction-tuned model's third axis scores <b>0.83</b> against the base model's
-      first. Instruction tuning did not delete the circumplex. It demoted it.</p>
-      <div style="margin-top:16px">
-        <div class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.07em;
-          font-family:var(--display);font-weight:600">
-          the emotions at each end of that new axis</div>
-        <div style="margin-top:8px;font-size:14.5px"><b>one end:</b> <span id="pc1low"></span></div>
-        <div style="margin-top:6px;font-size:14.5px"><b>the other:</b> <span id="pc1high"></span></div>
-        <p class="muted" style="font-size:14px;margin-top:10px">Reading the two lists is the honest way
-        to guess what an axis means, and here the guess fails. It is clearly not pleasant-versus-
-        unpleasant, because <em>miserable</em> and <em>jubilant</em> sit at the same end. If anything
-        it looks like low-grade irritation. But we do not know, and naming it without evidence is
-        exactly the mistake we are trying to avoid. It stays an open question.</p>
-      </div>
-    </div>
+  <div class="card" style="margin-top:22px">
+    <div id="gridChart" data-figtitle="Instruction-tuned axes against base axes, top five of each"></div>
+    <div id="gridNote" class="muted" style="margin-top:10px;min-height:34px;font-size:13.5px"></div>
+    <details class="howto"><summary>How to read this</summary>
+      <p>Every square is one pairing: an instruction-tuned axis against a base axis. <b>1.0 means the
+      two carry the same information; 0 means they have nothing in common.</b></p>
+      <p><b>The grading scale.</b> A bright diagonal would mean instruction tuning had only
+      renumbered the same axes, and the section's claim would be wrong. An all-pale grid would mean
+      the two models share nothing at all. Neither is what the grid shows.</p>
+      <p>The top row is the test, because it is the axis instruction tuning put on top. Its largest
+      value against any base axis is 0.14.</p>
+    </details>
+    <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/02_circumplex_geometry.ipynb" target="_blank" rel="noopener noreferrer">notebooks/02_circumplex_geometry.ipynb</a>, layer 33</div>
+  </div>
+  <p class="narrow" style="margin-top:20px"><b>The top row is the finding: nothing matches.</b> The
+  instruction-tuned model's biggest axis scores <b>0.14</b> against its closest relative among the
+  base model's five biggest axes, near the bottom of the scale. It is not a renaming or a reshuffle
+  of anything the base model had, and it is now the largest single thing separating the model's
+  emotions.</p>
+  <p class="narrow">Now read down the first column. Valence is still in there, intact, one floor
+  down: the instruction-tuned model's third axis scores <b>0.83</b> against the base model's first.
+  Instruction tuning did not delete the circumplex. It demoted it.</p>
+  <div class="narrow" style="margin-top:18px">
+    <div class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.07em;
+      font-family:var(--display);font-weight:600">
+      the emotions at each end of that new axis</div>
+    <div style="margin-top:8px;font-size:14.5px"><b>one end:</b> <span id="pc1low"></span></div>
+    <div style="margin-top:6px;font-size:14.5px"><b>the other:</b> <span id="pc1high"></span></div>
+    <p class="muted" style="font-size:14px;margin-top:10px">Reading the two lists is the honest way
+    to guess what an axis means, and here the guess fails. It is clearly not pleasant-versus-
+    unpleasant, because <em>miserable</em> and <em>jubilant</em> sit at the same end. If anything
+    it looks like low-grade irritation. But we do not know, and naming it without evidence is
+    exactly the mistake we are trying to avoid. It stays an open question.</p>
   </div>
   <h3 style="margin-top:38px">The same question, without principal components</h3>
   <p class="narrow" style="margin-bottom:14px">This second measurement uses no principal components,
@@ -956,41 +967,46 @@ border-bottom:1px solid var(--border)}</style></head>
   A big swing from cheerful to devastated should produce a bigger lean than a small shift from
   content to calm. The two lines are on different scales, so each has its own axis and its own
   failure line. Read them as two charts sharing an x-axis.</p>
-  <div class="grid2" style="margin-top:22px">
-    <div class="card"><div id="layerChart" data-figtitle="Naming the current emotion vs sensing the next, by depth"></div>
-      <div class="legend">
-        <span><i style="background:var(--navy)"></i>names the current emotion right (left axis, 8% is
-        chance)</span>
-        <span><i style="background:var(--orange)"></i>the lean tracks how big the coming change is
-        (right axis, 0 means the size of the lean says nothing about the size of the change)</span>
-      </div>
-      <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/11_tracking_taxonomy.ipynb" target="_blank" rel="noopener noreferrer">notebooks/11_tracking_taxonomy.ipynb</a> (measurements repeated at each
-      layer)</div>
+  <div class="card" style="margin-top:22px">
+    <div id="layerChart" data-figtitle="Naming the current emotion vs sensing the next, by depth"></div>
+    <div class="legend">
+      <span><i style="background:var(--navy)"></i>names the current emotion right (left axis, 8% is
+      chance)</span>
+      <span><i style="background:var(--orange)"></i>the lean tracks how big the coming change is
+      (right axis, 0 means the size of the lean says nothing about the size of the change)</span>
     </div>
-    <div class="card">
-      <h3>Two different skills, in two different places</h3>
-      <p style="font-size:15px">Naming does not rise or fall with depth. It zigzags. Averaged over all twelve
-      emotions, layer 6 gets the current emotion right <b>58%</b> and layer 15 drops to
-      <b>33%</b>. Layer 24 climbs back to <b>57%</b>, layer 33 falls to <b>27%</b>, and layer
-      42 recovers to <b>41%</b>. The 58% peak and the 27% trough are two points on a sawtooth,
-      not the ends of a decline. This curve is the average of section 7's twelve bars, on
-      the Gemma-written vectors. At layer 33 the best single emotion reaches 49%; the worst
-      sits at 6%, below chance. The other measure runs the other way,
-      climbing from <b>+0.03</b> at layer 6 to <b>+0.26</b> at layer 51. It does not climb smoothly:
-      it reaches +0.143 by layer 24, collapses to +0.001 at layer 33, then climbs again.
-      Whatever the model is doing, it is not doing it all in one place, and the middle of the stack
-      behaves differently from either end.</p>
-      <p style="font-size:15px">One consolation in the errors: when the model names the wrong emotion,
-      it names a <em>near</em> one. The emotion it picks instead sits closer to the true one in the
-      VAD space than a randomly chosen emotion would, and that holds
-      at every layer we looked at.</p>
-      <div class="callout" style="margin-top:6px"><span class="k">A result that reverses with depth</span>
-      The model's own emotion layout explains its mistakes better at layer 33; human ratings explain
-      them better at layer 51. So the answer to "does it confuse emotions the way people do?" depends
-      on where you look.</div>
-    </div>
+    <details class="howto"><summary>How to read this</summary>
+      <p>Two measures share one x-axis, the depth of the model. They do not share a y-axis. Naming
+      accuracy is read on the left, where <b>8% is chance</b>. The size-tracking correlation is read
+      on the right, where <b>0 means the lean says nothing</b> about how big the coming change
+      is.</p>
+      <p><b>The grading scale.</b> Both curves flat at their floors, 8% and 0, would mean depth
+      carries no emotion signal anywhere. Both rising together would mean one skill, spread evenly.
+      Neither happens: each curve peaks at a different depth, which is the finding.</p>
+    </details>
+    <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/11_tracking_taxonomy.ipynb" target="_blank" rel="noopener noreferrer">notebooks/11_tracking_taxonomy.ipynb</a> (measurements repeated at each
+    layer)</div>
   </div>
-  <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/11_tracking_taxonomy.ipynb" target="_blank" rel="noopener noreferrer">notebooks/11_tracking_taxonomy.ipynb</a> (measurements repeated at each layer)</div>
+  <h3 style="margin-top:26px">Two different skills, in two different places</h3>
+  <p class="narrow">Naming does not rise or fall with depth. It zigzags. Averaged over all twelve
+  emotions, layer 6 gets the current emotion right <b>58%</b> and layer 15 drops to
+  <b>33%</b>. Layer 24 climbs back to <b>57%</b>, layer 33 falls to <b>27%</b>, and layer
+  42 recovers to <b>41%</b>. The 58% peak and the 27% trough are two points on a sawtooth,
+  not the ends of a decline. This curve is the average of section 7's twelve bars, on
+  the Gemma-written vectors. At layer 33 the best single emotion reaches 49%; the worst
+  sits at 6%, below chance. The other measure runs the other way,
+  climbing from <b>+0.03</b> at layer 6 to <b>+0.26</b> at layer 51. It does not climb smoothly:
+  it reaches +0.143 by layer 24, collapses to +0.001 at layer 33, then climbs again.
+  Whatever the model is doing, it is not doing it all in one place, and the middle of the stack
+  behaves differently from either end.</p>
+  <p class="narrow">One consolation in the errors: when the model names the wrong emotion,
+  it names a <em>near</em> one. The emotion it picks instead sits closer to the true one in the
+  VAD space than a randomly chosen emotion would, and that holds
+  at every layer we looked at.</p>
+  <div class="callout"><span class="k">A result that reverses with depth</span>
+  The model's own emotion layout explains its mistakes better at layer 33; human ratings explain
+  them better at layer 51. So the answer to "does it confuse emotions the way people do?" depends
+  on where you look.</div>
   <div class="takeaway"><span class="lbl">Takeaway</span>There is no single "emotion layer". Naming the emotion in front of it is an early-layer skill. Registering <em>how big</em> the coming emotional change is grows with depth and peaks at the deepest layer we read, unevenly, with a collapse at layer 33 we cannot explain. Any result quoted at one depth is a result about that depth.</div>
 </div></section>
 

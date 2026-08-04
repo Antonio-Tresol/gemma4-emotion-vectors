@@ -22,6 +22,38 @@ worse than no deck. `git log -- docs/slides/` has the builders if a deck is ever
 wanted again. Regenerate from the current `index.html`, not from those
 outputs.
 
+## The components, and when to use which
+
+Six devices set text apart on this page. Each has one job. `build.py` enforces
+the parts of this that a script can judge; the rest is on whoever edits.
+
+| Device | Job | Where it may appear |
+|---|---|---|
+| `.card` | holds **one figure and its four supports**: the generated title, the key to its marks, the how-to block, the source line | around every chart, and nothing else except the three key-result summaries in the header |
+| `details.howto` | how to **judge** the figure: what a failure looks like, what a strong result looks like, where the observed value sits | inside every result figure's card |
+| `.legend` | how to **decode** the figure: what each colour and mark means | inside the card, unless the key is drawn in the plot itself |
+| `.src` | which notebook or script the numbers came from | inside every result figure's card |
+| `.callout` | a caveat that **cuts against** the surrounding text | anywhere, sparingly |
+| `.takeaway` | the section's verdict | once per section, at its end |
+
+Everything else is prose. Parallel items are a list: `<ul class="reasons">` when
+the order does not matter, `<ol class="steps">` when the text claims one.
+
+Three rules that are easy to get wrong:
+
+- **The legend is not the how-to.** A legend is needed to see the figure at all,
+  so it is never collapsed. A how-to is needed to judge it, and a reader who
+  knows the field will skip it, so it is behind a fold. If you cannot tell which
+  a sentence is, ask whether such a reader would skip it.
+- **A figure gets the full width.** Commentary goes below it, as prose, not
+  beside it in a second card. Three figures used to sit in a two-column grid
+  with their reading next to them, which halved the chart and left the expanded
+  view with no interpretation at all, because the expand control looks inside
+  the card.
+- **A schematic is not a result.** `data-schematic` marks a figure that carries
+  no measurement, and it is the only thing exempt from needing a how-to and a
+  source line. There is exactly one: the method diagram in section 1.
+
 ## How the numbers get here
 
 `build.py` holds one block per figure, and each block names the notebook whose

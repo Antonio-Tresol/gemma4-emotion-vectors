@@ -9,40 +9,45 @@
   A big swing from cheerful to devastated should produce a bigger lean than a small shift from
   content to calm. The two lines are on different scales, so each has its own axis and its own
   failure line. Read them as two charts sharing an x-axis.</p>
-  <div class="grid2" style="margin-top:22px">
-    <div class="card"><div id="layerChart" data-figtitle="Naming the current emotion vs sensing the next, by depth"></div>
-      <div class="legend">
-        <span><i style="background:var(--navy)"></i>names the current emotion right (left axis, 8% is
-        chance)</span>
-        <span><i style="background:var(--orange)"></i>the lean tracks how big the coming change is
-        (right axis, 0 means the size of the lean says nothing about the size of the change)</span>
-      </div>
-      <div class="src">source: notebooks/11_tracking_taxonomy.ipynb (measurements repeated at each
-      layer)</div>
+  <div class="card" style="margin-top:22px">
+    <div id="layerChart" data-figtitle="Naming the current emotion vs sensing the next, by depth"></div>
+    <div class="legend">
+      <span><i style="background:var(--navy)"></i>names the current emotion right (left axis, 8% is
+      chance)</span>
+      <span><i style="background:var(--orange)"></i>the lean tracks how big the coming change is
+      (right axis, 0 means the size of the lean says nothing about the size of the change)</span>
     </div>
-    <div class="card">
-      <h3>Two different skills, in two different places</h3>
-      <p style="font-size:15px">Naming does not rise or fall with depth. It zigzags. Averaged over all twelve
-      emotions, layer 6 gets the current emotion right <b>58%</b> and layer 15 drops to
-      <b>33%</b>. Layer 24 climbs back to <b>57%</b>, layer 33 falls to <b>27%</b>, and layer
-      42 recovers to <b>41%</b>. The 58% peak and the 27% trough are two points on a sawtooth,
-      not the ends of a decline. This curve is the average of section 7's twelve bars, on
-      the Gemma-written vectors. At layer 33 the best single emotion reaches 49%; the worst
-      sits at 6%, below chance. The other measure runs the other way,
-      climbing from <b>+0.03</b> at layer 6 to <b>+0.26</b> at layer 51. It does not climb smoothly:
-      it reaches +0.143 by layer 24, collapses to +0.001 at layer 33, then climbs again.
-      Whatever the model is doing, it is not doing it all in one place, and the middle of the stack
-      behaves differently from either end.</p>
-      <p style="font-size:15px">One consolation in the errors: when the model names the wrong emotion,
-      it names a <em>near</em> one. The emotion it picks instead sits closer to the true one in the
-      VAD space than a randomly chosen emotion would, and that holds
-      at every layer we looked at.</p>
-      <div class="callout" style="margin-top:6px"><span class="k">A result that reverses with depth</span>
-      The model's own emotion layout explains its mistakes better at layer 33; human ratings explain
-      them better at layer 51. So the answer to "does it confuse emotions the way people do?" depends
-      on where you look.</div>
-    </div>
+    <details class="howto"><summary>How to read this</summary>
+      <p>Two measures share one x-axis, the depth of the model. They do not share a y-axis. Naming
+      accuracy is read on the left, where <b>8% is chance</b>. The size-tracking correlation is read
+      on the right, where <b>0 means the lean says nothing</b> about how big the coming change
+      is.</p>
+      <p><b>The grading scale.</b> Both curves flat at their floors, 8% and 0, would mean depth
+      carries no emotion signal anywhere. Both rising together would mean one skill, spread evenly.
+      Neither happens: each curve peaks at a different depth, which is the finding.</p>
+    </details>
+    <div class="src">source: notebooks/11_tracking_taxonomy.ipynb (measurements repeated at each
+    layer)</div>
   </div>
-  <div class="src">source: notebooks/11_tracking_taxonomy.ipynb (measurements repeated at each layer)</div>
+  <h3 style="margin-top:26px">Two different skills, in two different places</h3>
+  <p class="narrow">Naming does not rise or fall with depth. It zigzags. Averaged over all twelve
+  emotions, layer 6 gets the current emotion right <b>58%</b> and layer 15 drops to
+  <b>33%</b>. Layer 24 climbs back to <b>57%</b>, layer 33 falls to <b>27%</b>, and layer
+  42 recovers to <b>41%</b>. The 58% peak and the 27% trough are two points on a sawtooth,
+  not the ends of a decline. This curve is the average of section 7's twelve bars, on
+  the Gemma-written vectors. At layer 33 the best single emotion reaches 49%; the worst
+  sits at 6%, below chance. The other measure runs the other way,
+  climbing from <b>+0.03</b> at layer 6 to <b>+0.26</b> at layer 51. It does not climb smoothly:
+  it reaches +0.143 by layer 24, collapses to +0.001 at layer 33, then climbs again.
+  Whatever the model is doing, it is not doing it all in one place, and the middle of the stack
+  behaves differently from either end.</p>
+  <p class="narrow">One consolation in the errors: when the model names the wrong emotion,
+  it names a <em>near</em> one. The emotion it picks instead sits closer to the true one in the
+  VAD space than a randomly chosen emotion would, and that holds
+  at every layer we looked at.</p>
+  <div class="callout"><span class="k">A result that reverses with depth</span>
+  The model's own emotion layout explains its mistakes better at layer 33; human ratings explain
+  them better at layer 51. So the answer to "does it confuse emotions the way people do?" depends
+  on where you look.</div>
   <div class="takeaway"><span class="lbl">Takeaway</span>There is no single "emotion layer". Naming the emotion in front of it is an early-layer skill. Registering <em>how big</em> the coming emotional change is grows with depth and peaks at the deepest layer we read, unevenly, with a collapse at layer 33 we cannot explain. Any result quoted at one depth is a result about that depth.</div>
 </div></section>

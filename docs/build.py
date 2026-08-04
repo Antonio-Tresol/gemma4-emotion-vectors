@@ -575,6 +575,40 @@ BANNED_WORDS = {
 }
 
 
+# One figure, one card, four supports. The rule is written out in README.md;
+# this checks the two halves of it a script can judge. It exists because the
+# expand control reads the how-to and the source line OUT of the figure's card,
+# so a figure whose reading lives in a sibling card expands with nothing to
+# read, and an independent audit found four figures in that state.
+FIGURE_HOST = re.compile(r"<div[^>]*\bdata-figtitle=\"([^\"]+)\"[^>]*>", re.I)
+
+
+def check_figures(html: str) -> None:
+    """Every result figure carries its how-to block and its source line."""
+    problems = []
+    for match in FIGURE_HOST.finditer(html):
+        title = match.group(1)
+        tag = match.group(0)
+        # the card a figure sits in ends at the next card or the section end,
+        # whichever comes first; that span is what the expand control clones
+        rest = html[match.end() :]
+        end = min(
+            (i for i in (rest.find('<div class="card"'), rest.find("</section>")) if i != -1),
+            default=len(rest),
+        )
+        card = rest[:end]
+        if "data-schematic" in tag:
+            continue  # carries no measurement, so there is nothing to grade or cite
+        if 'details class="howto"' not in card:
+            problems.append(f"  no how-to block: {title}")
+        if 'class="src"' not in card:
+            problems.append(f"  no source line: {title}")
+    if problems:
+        raise SystemExit("figure check failed\n" + "\n".join(problems))
+    total = len(FIGURE_HOST.findall(html))
+    print(f"figures: {total}, each with a how-to block and a source line")
+
+
 def check_jargon(html: str) -> None:
     """Fail the build on terms a reader has already had to ask about."""
     prose = " ".join(prose_sentences(html)).lower()
@@ -595,6 +629,7 @@ if __name__ == "__main__":
     html = build()
     check_em_dashes(html)
     check_prose(html)
+    check_figures(html)
     check_jargon(html)
     out.write_text(html, encoding="utf-8")
     print(f"wrote {out} ({out.stat().st_size / 1024:.0f} KB)")
