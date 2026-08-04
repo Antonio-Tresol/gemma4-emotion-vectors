@@ -1210,7 +1210,10 @@ const SECTIONS=[];
 {
   let part=null;
   document.querySelectorAll("section[id], .partbar[data-part]").forEach(node=>{
-    if(node.classList.contains("partbar")){ part=node.dataset.part; return; }
+    if(node.classList.contains("partbar")){
+      part={no:node.dataset.partNo, title:node.dataset.part};
+      return;
+    }
     // the parts cover the argument, not the back matter: next steps, methods
     // and the glossary belong to none of them
     if(node.hasAttribute("data-endparts")) part=null;
@@ -1220,7 +1223,7 @@ const SECTIONS=[];
 }
 document.getElementById("coverIndex").innerHTML = SECTIONS.map((x,i)=>{
   const opens = x.part && (i===0 || SECTIONS[i-1].part!==x.part);
-  return (opens ? `<span class="ipart">${x.part}</span>` : "")
+  return (opens ? `<span class="ipart"><b>Part ${x.part.no}</b> &middot; ${x.part.title}</span>` : "")
     + `<a href="#${x.id}"><span class="n">${x.n}</span><span class="t">${x.title}</span></a>`;
 }).join("");
 

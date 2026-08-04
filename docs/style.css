@@ -235,6 +235,7 @@ font-family:var(--display);font-size:15px;line-height:1.55;color:var(--text)}
 .index .ipart{display:block;font-family:var(--mono);font-size:11px;font-weight:600;
 letter-spacing:.11em;text-transform:uppercase;color:var(--navy);margin:18px 0 4px}
 .index .ipart:first-child{margin-top:6px}
+.index .ipart b{color:var(--orange)}
 .index a{display:flex;gap:12px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--border);
 text-decoration:none;color:var(--body);font-family:var(--display);font-size:14.5px}
 /* The contents rows only changed from --body to --text on hover, two shades of
