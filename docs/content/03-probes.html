@@ -3,12 +3,13 @@
   <p class="narrow">An emotion vector is only as good as the corpus behind it, and the method
   leaves that choice to whoever runs it. We built four sets from four different corpora and put
   them through the same test.</p>
-  <p class="narrow"><b>The test.</b> Take a short message of the kind a person actually sends a
-  chatbot, say <em>"My daughter just took her first steps today! What are some ways to capture more
-  of these precious moments?"</em>. It implies an emotion without ever naming it. Run it as a
-  chat turn, and read the <span data-term="residual stream">residual stream</span> at the last token before the reply would start. Rank all
-  twelve emotion vectors by cosine and ask whether the right one lands in the top three.</p>
-  <p class="narrow">The vectors were built from <em>stories</em> and are being tested on
+  <p class="narrow"><b>The test.</b> We took short messages of the kind a person actually sends a
+  chatbot. One reads <em>"My daughter just took her first steps today! What are some ways to capture
+  more of these precious moments?"</em>, and implies an emotion without ever naming it. We ran each
+  message as a chat turn and read the <span data-term="residual stream">residual stream</span> at
+  the last token before the reply would start. Then we ranked all twelve emotion vectors by cosine
+  and asked whether the right one landed in the top three.</p>
+  <p class="narrow">The vectors were built from <em>stories</em> and tested on
   <em>messages</em>, so nothing guarantees transfer. The emotion is never stated either, so
   matching on the words cannot work. A layer counts as <b>working</b> when
   it gets at least 8 of 12 right on the paper's twelve scenarios <em>and</em> on a second twelve we

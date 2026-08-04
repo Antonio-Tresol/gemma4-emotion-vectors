@@ -541,12 +541,13 @@ border-bottom:1px solid var(--border)}</style></head>
   <p class="narrow">An emotion vector is only as good as the corpus behind it, and the method
   leaves that choice to whoever runs it. We built four sets from four different corpora and put
   them through the same test.</p>
-  <p class="narrow"><b>The test.</b> Take a short message of the kind a person actually sends a
-  chatbot, say <em>"My daughter just took her first steps today! What are some ways to capture more
-  of these precious moments?"</em>. It implies an emotion without ever naming it. Run it as a
-  chat turn, and read the <span data-term="residual stream">residual stream</span> at the last token before the reply would start. Rank all
-  twelve emotion vectors by cosine and ask whether the right one lands in the top three.</p>
-  <p class="narrow">The vectors were built from <em>stories</em> and are being tested on
+  <p class="narrow"><b>The test.</b> We took short messages of the kind a person actually sends a
+  chatbot. One reads <em>"My daughter just took her first steps today! What are some ways to capture
+  more of these precious moments?"</em>, and implies an emotion without ever naming it. We ran each
+  message as a chat turn and read the <span data-term="residual stream">residual stream</span> at
+  the last token before the reply would start. Then we ranked all twelve emotion vectors by cosine
+  and asked whether the right one landed in the top three.</p>
+  <p class="narrow">The vectors were built from <em>stories</em> and tested on
   <em>messages</em>, so nothing guarantees transfer. The emotion is never stated either, so
   matching on the words cannot work. A layer counts as <b>working</b> when
   it gets at least 8 of 12 right on the paper's twelve scenarios <em>and</em> on a second twelve we
@@ -894,10 +895,10 @@ border-bottom:1px solid var(--border)}</style></head>
 <section id="emotions"><div class="wrap">
   <div class="kicker">Part three &middot; Following an emotion as it changes</div>
   <h2><span class="secno">7</span>Some emotions are followed well, others not at all</h2>
-  <p class="narrow">The same read over the whole corpus rather than one story. For every phase, take
-  the centered cosine against all twelve emotion vectors and ask how often the winner is the emotion
-  that phase was written to convey. Chance is 1 in 12.</p>
-  <p class="narrow">Note the shift from 171 emotions to <b>twelve</b>. The stories were written to
+  <p class="narrow">For every phase of every story, we measured the centered cosine against all
+  twelve emotion vectors. The question is how often the winner is the emotion that phase was
+  written to convey. Chance is 1 in 12.</p>
+  <p class="narrow">The set shifts here from 171 emotions to <b>twelve</b>. The stories were written to
   move between these twelve, so twelve is what there is to choose from, and picking one of
   twelve is a test we can actually score. Picking at random would be right 1 time in 12, or 8%.
   Each bar is one emotion's score.</p>
@@ -1055,7 +1056,7 @@ border-bottom:1px solid var(--border)}</style></head>
     <p>We start from a collection of stories, each labelled with the emotion it was written to evoke.
     Each story goes through the model and we record the residual stream at a chosen layer. For one
     emotion, we average those activations across all of its stories. That average is the emotion vector.
-    Repeat for every emotion word and you have 171 of them.</p>
+    We repeat that for every emotion word, which gives 171 of them.</p>
     <div id="m1"></div>
     <p>Two details that change the numbers. <b>Subtracting the average (centering):</b> we subtract the
     mean across all the emotions in the set. What remains is what makes <em>this</em> emotion
@@ -1065,7 +1066,7 @@ border-bottom:1px solid var(--border)}</style></head>
     a story is hundreds of words, and we combine them into one recording. We ignore the padding,
     drop the first 50 words as scene-setting, and average the rest, up to 512. Dropping the first
     50 is the convention the original paper used.
-    (A <span data-term="token">token</span> is a word-fragment, roughly three-quarters of a word; the model reads those rather than words, and this page counts them.) We fixed both choices before any scoring. Note this is the opposite of what block 3 does,
+    (A <span data-term="token">token</span> is a word-fragment, roughly three-quarters of a word; the model reads those rather than words, and this page counts them.) We fixed both choices before any scoring. This is the opposite of what block 3 does,
     where we deliberately keep every word separate instead of averaging.</p>
   </details>
 

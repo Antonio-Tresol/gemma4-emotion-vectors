@@ -8,7 +8,7 @@
     <p>We start from a collection of stories, each labelled with the emotion it was written to evoke.
     Each story goes through the model and we record the residual stream at a chosen layer. For one
     emotion, we average those activations across all of its stories. That average is the emotion vector.
-    Repeat for every emotion word and you have 171 of them.</p>
+    We repeat that for every emotion word, which gives 171 of them.</p>
     <div id="m1"></div>
     <p>Two details that change the numbers. <b>Subtracting the average (centering):</b> we subtract the
     mean across all the emotions in the set. What remains is what makes <em>this</em> emotion
@@ -18,7 +18,7 @@
     a story is hundreds of words, and we combine them into one recording. We ignore the padding,
     drop the first 50 words as scene-setting, and average the rest, up to 512. Dropping the first
     50 is the convention the original paper used.
-    (A <span data-term="token">token</span> is a word-fragment, roughly three-quarters of a word; the model reads those rather than words, and this page counts them.) We fixed both choices before any scoring. Note this is the opposite of what block 3 does,
+    (A <span data-term="token">token</span> is a word-fragment, roughly three-quarters of a word; the model reads those rather than words, and this page counts them.) We fixed both choices before any scoring. This is the opposite of what block 3 does,
     where we deliberately keep every word separate instead of averaging.</p>
   </details>
 
