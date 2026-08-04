@@ -39,6 +39,27 @@ the parts of this that a script can judge; the rest is on whoever edits.
 Everything else is prose. Parallel items are a list: `<ul class="reasons">` when
 the order does not matter, `<ol class="steps">` when the text claims one.
 
+## Headings
+
+Measured against the two Transformer Circuits papers this one replicates and
+cites: 99 headings in the first, 81 in the second, mean length 6 and 5 words,
+and between them three questions. The form is a **declarative claim** ("Emotion
+vectors activate in expected contexts") or a **noun phrase naming a step or an
+object** ("The geometry of emotion space", "Dataset construction").
+
+So, for both section headings and sub-headings here:
+
+- **State the finding, or name the thing.** Three to nine words. Sentence case.
+- **A question only where the section opens one** that the page then answers
+  with evidence, which is what section 4 does. They allow themselves about one
+  in fifty.
+- **Never an imperative**, and never the second person. A heading does not tell
+  a reader what to do or ask them anything.
+- **Never about the presentation.** "The setup, in one picture" named the
+  format; "Building an emotion vector" names the content.
+- **A sub-heading never restates the section heading above it.** Section 8's
+  said the same thing as its own h2, so it went.
+
 Every chart is an SVG with a fixed `viewBox` scaled to the width of its card,
 so **its aspect ratio alone decides its height**. One CSS rule caps that height
 at `min(72vh, 620px)`: a 1:1 chart at full width would otherwise be as tall as

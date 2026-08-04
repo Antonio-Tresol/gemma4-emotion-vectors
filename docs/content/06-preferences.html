@@ -5,7 +5,7 @@
   prefers. The paper tests its emotion vectors against such a ranking in two ways: by reading the
   vectors, and by adding them back into the model. We ran both tests on Gemma&nbsp;4&nbsp;31B.</p>
 
-  <h3 style="margin-top:34px">Reading: does an emotion vector predict what the model prefers?</h3>
+  <h3 style="margin-top:34px">Reading the vectors against the ranking</h3>
   <p class="narrow">For each emotion, we measured how strongly its vector was active while the
   model considered an activity, then correlated that with where the activity landed in the
   ranking.</p>
@@ -31,7 +31,7 @@
     <div class="src">source: notebooks/04_paper_plot_parity.ipynb, chat template, post-fix probes; scored by scripts/score_preferences.py</div>
   </div>
 
-  <h3 style="margin-top:40px">Pushing: does adding the vector move what the model prefers?</h3>
+  <h3 style="margin-top:40px">Adding the vectors to the model</h3>
   <p class="narrow">We added each emotion's own direction into the residual stream while the model
   made its choices, and measured which way the ranking moved. If these vectors are the
   machinery the model runs on, a pleasant emotion should move it towards pleasant activities and an

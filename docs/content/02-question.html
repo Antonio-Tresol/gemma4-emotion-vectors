@@ -1,6 +1,6 @@
 <section id="question"><div class="wrap">
   <h2><span class="secno">1</span>What we measured, and why it matters</h2>
-  <h3 style="margin-top:26px">The setup, in one picture</h3>
+  <h3 style="margin-top:26px">Building an emotion vector</h3>
   <p class="narrow" style="margin-bottom:14px">We built each emotion vector by averaging the model's internal state across one emotion's
   stories, then subtracting the average over all the emotions. To read it back we measure the
   <b>angle between that vector and the model's state at a given word</b>, which is what a
@@ -24,7 +24,7 @@
   arousal. That matches how humans rate the same words in the
   <a href="http://saifmohammad.com/WebPages/nrc-vad.html">NRC VAD lexicon</a> (VAD is valence,
   arousal, dominance). No human labels enter the fit, so the alignment is the finding.</p>
-  <h3 style="margin-top:38px">Why should anyone care whether this works?</h3>
+  <h3 style="margin-top:38px">Why this matters</h3>
   <ul class="reasons">
     <li><b>Readable and steerable in one object.</b> A direction you can read off mid-forward-pass
     is also a direction you can add back in, which makes an emotion vector an interpretability
