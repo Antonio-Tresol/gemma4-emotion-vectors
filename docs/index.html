@@ -147,14 +147,13 @@ border-radius:12px;padding:18px 20px}
 .steps li::marker{color:var(--orange);font-family:var(--display);font-weight:650}
 .callout{border-left:3px solid var(--orange);padding:14px 0 14px 18px;background:transparent;margin:18px 0}
 /* the three parts of the talk, each announced by a full-width divider */
-.partbar{border-top:2px solid var(--navy);margin-top:64px;padding-top:20px}
-/* the deck sets a part off with a small letter-spaced caps label above the
-   slide title, so the part reads as a SUPERheading and the section h2 below it
-   stays the largest thing on screen. Same hierarchy here. */
-.partbar .ptitle{font-family:var(--display);font-size:18px;font-weight:650;color:var(--navy);
-  letter-spacing:.11em;text-transform:uppercase}
-.partbar .pblurb{max-width:62ch;margin-top:12px;color:var(--muted);font-size:16px}
-@media(max-width:700px){.partbar .ptitle{font-size:15px}}
+/* The three parts of the argument. The label was navy uppercase at its own
+   size, a third kind of label the heading stance forbids, inherited from a deck
+   deleted in July. It reuses .kicker now, one of the two label kinds the page
+   has, and the part title is an h2 like every other title. */
+.partbar{border-top:2px solid var(--navy);margin-top:64px;padding-top:22px}
+.partbar .ptitle{margin-bottom:10px}
+.partbar .pblurb{max-width:62ch;color:var(--body);font-size:17px;line-height:1.55}
 .callout .k{font-family:var(--display);font-weight:650;color:var(--text);display:block;margin-bottom:4px}
 /* FIGURE SIZING, the standard. Every chart is an SVG with a fixed viewBox
    scaled to the width of its card, so its aspect ratio alone decides its
@@ -247,8 +246,12 @@ margin-right:.5em;vertical-align:.12em;letter-spacing:0}
 font-family:var(--display);font-size:15px;line-height:1.55;color:var(--text)}
 .takeaway b{font-weight:650}
 .takeaway .lbl{margin-bottom:4px}
-.index{display:grid;grid-template-columns:repeat(2,1fr);gap:0 26px;margin-top:22px}
-@media(max-width:760px){.index{grid-template-columns:1fr}}
+/* One column. Two scrambled the part headings: a group label landed in one
+   column while the sections it heads flowed into the other. */
+.index{margin-top:22px;max-width:820px}
+.index .ipart{display:block;font-family:var(--mono);font-size:11px;font-weight:600;
+letter-spacing:.11em;text-transform:uppercase;color:var(--navy);margin:18px 0 4px}
+.index .ipart:first-child{margin-top:6px}
 .index a{display:flex;gap:12px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--border);
 text-decoration:none;color:var(--body);font-family:var(--display);font-size:14.5px}
 /* The contents rows only changed from --body to --text on hover, two shades of
@@ -551,7 +554,7 @@ border-bottom:1px solid var(--border)}</style></head>
   </ul>
 </div></section>
 
-<div class="partbar"><div class="wrap"><span class="ptitle">Part one &middot; Rebuilding the emotion vectors</span><p class="pblurb">Does the published result hold up on a different model? A prior question comes first: section 2 puts four different story corpora through the same detection test.</p></div></div>
+<div class="partbar" data-part="Rebuilding the published result"><div class="wrap"><span class="kicker">Part one</span><h2 class="ptitle">Rebuilding the published result</h2><p class="pblurb">Sections 2 and 3 rebuild the circumplex on Gemma&nbsp;4&nbsp;31B. Which stories the vectors are built from turns out to decide whether it works at all.</p></div></div>
 
 <section id="probes"><div class="wrap">
   <h2><span class="secno">2</span>Who writes the stories changes the answer</h2>
@@ -677,7 +680,7 @@ border-bottom:1px solid var(--border)}</style></head>
   <div class="takeaway"><span class="lbl">Takeaway</span>The base model's emotions separate first by valence: the human circumplex, recovered without being asked for. In the instruction-tuned model the top axis is something else entirely, with valence pushed down to third.</div>
 </div></section>
 
-<div class="partbar"><div class="wrap"><span class="ptitle">Part two &middot; Base vs. instruction-tuned</span><p class="pblurb">The two versions of the model organise emotions differently. Working out what pushed valence out of first place is the part of this project we are least able to explain and most interested in.</p></div></div>
+<div class="partbar" data-part="What instruction tuning changed"><div class="wrap"><span class="kicker">Part two</span><h2 class="ptitle">What instruction tuning changed</h2><p class="pblurb">Instruction tuning demotes valence and puts a larger axis on top. We can measure that axis at every layer, and we cannot say what it encodes.</p></div></div>
 
 <section id="displaced"><div class="wrap">
   <h2><span class="secno">4</span>What took valence's place?</h2>
@@ -767,7 +770,7 @@ border-bottom:1px solid var(--border)}</style></head>
   <div class="takeaway"><span class="lbl">Takeaway</span>The biggest thing separating emotions in the instruction-tuned model is not a rearrangement of anything the base model had. It is new, instruction tuning put it there, and it breaks the model's layers into disagreeing blocks. We can show all of that. We still cannot say what it encodes.</div>
 </div></section>
 
-<div class="partbar"><div class="wrap"><span class="ptitle">Part three &middot; Following an emotion as it changes</span><p class="pblurb">The step past the published work. We wrote stories that move through three emotions, then read them one word at a time, to see whether the model changes its mind when the story does.</p></div></div>
+<div class="partbar" data-part="What the vectors can do"><div class="wrap"><span class="kicker">Part three</span><h2 class="ptitle">What the vectors can do</h2><p class="pblurb">The vectors read and move the model's preferences, and they follow a story's emotion better than chance without ever becoming reliable.</p></div></div>
 
 <section id="preferences"><div class="wrap">
   <h2><span class="secno">5</span>Can you steer the model with them?</h2>
@@ -1020,7 +1023,7 @@ border-bottom:1px solid var(--border)}</style></head>
   <div class="takeaway"><span class="lbl">Takeaway</span>There is no single "emotion layer". Naming the emotion in front of it is an early-layer skill. Registering <em>how big</em> the coming emotional change is grows with depth and peaks at the deepest layer we read, unevenly, with a collapse at layer 33 we cannot explain. Any result quoted at one depth is a result about that depth.</div>
 </div></section>
 
-<section id="next"><div class="wrap">
+<section id="next" data-endparts><div class="wrap">
   <h2><span class="secno">9</span>What we would do next</h2>
   <p class="narrow">Each of these attacks something we could not settle, and we would run them in
   the order shown.</p>
@@ -2564,11 +2567,28 @@ def wrong_emotion_null(cos, phases, emotion_set, rng):
 );
 
 /* ---------- section index on the cover ---------- */
-const SECTIONS=[...document.querySelectorAll("section[id]")].map((sec,i)=>({
-  id:sec.id, n:i+1,
-  title:sec.querySelector("h2").textContent.replace(/^\s*\d+\s*/,"").trim()}));
-document.getElementById("coverIndex").innerHTML = SECTIONS.map(x=>
-  `<a href="#${x.id}"><span class="n">${x.n}</span><span class="t">${x.title}</span></a>`).join("");
+/* Walked in document order so each section picks up the part divider it falls
+   under. The parts used to exist only as a bar in the body: the contents and
+   the tick row were both built from section[id] alone, so a reader met "PART
+   TWO" while both navigation aids showed a flat list of eleven. One structure
+   now, built once. */
+const SECTIONS=[];
+{
+  let part=null;
+  document.querySelectorAll("section[id], .partbar[data-part]").forEach(node=>{
+    if(node.classList.contains("partbar")){ part=node.dataset.part; return; }
+    // the parts cover the argument, not the back matter: next steps, methods
+    // and the glossary belong to none of them
+    if(node.hasAttribute("data-endparts")) part=null;
+    SECTIONS.push({id:node.id, n:SECTIONS.length+1, part,
+      title:node.querySelector("h2").textContent.replace(/^\s*\d+\s*/,"").trim()});
+  });
+}
+document.getElementById("coverIndex").innerHTML = SECTIONS.map((x,i)=>{
+  const opens = x.part && (i===0 || SECTIONS[i-1].part!==x.part);
+  return (opens ? `<span class="ipart">${x.part}</span>` : "")
+    + `<a href="#${x.id}"><span class="n">${x.n}</span><span class="t">${x.title}</span></a>`;
+}).join("");
 
 /* ---------- keyboard: next / previous / jump ---------- */
 /* Track the section explicitly rather than re-deriving it from scrollY: a

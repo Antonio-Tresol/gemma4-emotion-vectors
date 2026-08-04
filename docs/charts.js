@@ -1201,11 +1201,28 @@ def wrong_emotion_null(cos, phases, emotion_set, rng):
 );
 
 /* ---------- section index on the cover ---------- */
-const SECTIONS=[...document.querySelectorAll("section[id]")].map((sec,i)=>({
-  id:sec.id, n:i+1,
-  title:sec.querySelector("h2").textContent.replace(/^\s*\d+\s*/,"").trim()}));
-document.getElementById("coverIndex").innerHTML = SECTIONS.map(x=>
-  `<a href="#${x.id}"><span class="n">${x.n}</span><span class="t">${x.title}</span></a>`).join("");
+/* Walked in document order so each section picks up the part divider it falls
+   under. The parts used to exist only as a bar in the body: the contents and
+   the tick row were both built from section[id] alone, so a reader met "PART
+   TWO" while both navigation aids showed a flat list of eleven. One structure
+   now, built once. */
+const SECTIONS=[];
+{
+  let part=null;
+  document.querySelectorAll("section[id], .partbar[data-part]").forEach(node=>{
+    if(node.classList.contains("partbar")){ part=node.dataset.part; return; }
+    // the parts cover the argument, not the back matter: next steps, methods
+    // and the glossary belong to none of them
+    if(node.hasAttribute("data-endparts")) part=null;
+    SECTIONS.push({id:node.id, n:SECTIONS.length+1, part,
+      title:node.querySelector("h2").textContent.replace(/^\s*\d+\s*/,"").trim()});
+  });
+}
+document.getElementById("coverIndex").innerHTML = SECTIONS.map((x,i)=>{
+  const opens = x.part && (i===0 || SECTIONS[i-1].part!==x.part);
+  return (opens ? `<span class="ipart">${x.part}</span>` : "")
+    + `<a href="#${x.id}"><span class="n">${x.n}</span><span class="t">${x.title}</span></a>`;
+}).join("");
 
 /* ---------- keyboard: next / previous / jump ---------- */
 /* Track the section explicitly rather than re-deriving it from scrollY: a
