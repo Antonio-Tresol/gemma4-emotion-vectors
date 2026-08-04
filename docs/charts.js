@@ -21,7 +21,11 @@ const GLOSSARY = {
   "residual stream": "The running vector each layer reads from and writes back to, carrying everything the model has worked out so far about a token.",
   "circumplex": "The arrangement psychologists use for emotions: a circle whose two axes are how pleasant the feeling is and how worked up.",
   "valence": "How pleasant or unpleasant an emotion is, on the scale people rate words with.",
-  "elo": "A ranking fitted from many head-to-head choices, borrowed from chess, where a higher number means preferred more often."
+  "elo": "A ranking fitted from many head-to-head choices, borrowed from chess, where a higher number means preferred more often.",
+  "arousal": "How worked up an emotion is, from calm to agitated, on the scale people rate words with.",
+  "dominance": "How much control an emotion implies, from helpless to in charge, on the scale people rate words with.",
+  "principal component": "The directions along which a set of vectors differ most, found by a standard method that is told nothing about what the vectors mean.",
+  "probe": "A direction used as a detector: take the angle between it and the model's state, and read off how strongly that concept is present."
 };
 function wireGlossary(){
   document.querySelectorAll("[data-term]").forEach(node=>{

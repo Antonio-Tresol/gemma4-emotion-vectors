@@ -349,9 +349,9 @@ border-bottom:1px solid var(--border)}</style></head>
     <div id="coverPcBase" data-figtitle="Principal components of the 171 emotion vectors, base model, layer 33"></div>
     <div id="coverPcIt" data-figtitle="Principal components of the 171 emotion vectors, instruction-tuned model, layer 33"></div>
     <div class="legend">
-      <span><i style="background:var(--navy)"></i>valence</span>
-      <span><i style="background:var(--teal)"></i>arousal</span>
-      <span><i style="background:var(--green)"></i>dominance</span>
+      <span><i style="background:var(--navy)"></i><span data-term="valence">valence</span></span>
+      <span><i style="background:var(--teal)"></i><span data-term="arousal">arousal</span></span>
+      <span><i style="background:var(--green)"></i><span data-term="dominance">dominance</span></span>
       <span><i style="background:var(--amber)"></i>story length, the confound we had to rule out</span>
       <span><i style="background:#D4D4D4"></i>grey backdrop: how much of the total spread this axis
       accounts for</span>
@@ -389,7 +389,7 @@ border-bottom:1px solid var(--border)}</style></head>
   <h2>Key results</h2>
   <div class="grid3" style="margin-top:20px;gap:16px">
     <div class="card"><h3>The base model reproduces the result</h3>
-    <p style="font-size:15px">Sort 171 emotion vectors by what separates them most and the top principal component
+    <p style="font-size:15px">Sort 171 emotion vectors by what separates them most and the top <span data-term="principal component">principal component</span>
     is pleasant-versus-unpleasant, the same axis people use. The sorting is unsupervised, so the
     match is the finding. It is the published result, reproduced on a new model.</p></div>
     <div class="card"><h3>The instruction-tuned version buries it</h3>
@@ -432,10 +432,10 @@ border-bottom:1px solid var(--border)}</style></head>
     <div class="card"><h3>The two models we compare</h3><p style="font-size:15px">Gemma&nbsp;4&nbsp;31B <b>base</b>
     and <b>instruction-tuned</b>: the same weights before and after post-training. Running both is a comparison the
     original paper did not report, and it is where the interesting result came from.
-    Layers are sampled, not swept: twenty across the stack (0 to 57, every third) for the geometry and
+    <span data-term="layer">Layers</span> are sampled, not swept: twenty across the stack (0 to 57, every third) for the geometry and
     detection work, six for the trajectories.</p></div>
     <div class="card"><h3>The result being replicated</h3><p style="font-size:15px">Anthropic reports
-    that emotion vectors arrange on the <b>circumplex</b>. Principal component analysis (PCA)
+    that emotion vectors arrange on the <b><span data-term="circumplex">circumplex</span></b>. Principal component analysis (PCA)
     finds the directions along which they differ most, and the top two recover valence and arousal.
     That matches how humans rate the same words in the
     <a class="link-plain" href="http://saifmohammad.com/WebPages/nrc-vad.html" target="_blank" rel="noopener noreferrer">NRC VAD <span class="nw">lexicon<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a> (VAD is valence, arousal, dominance). No human labels enter
@@ -479,7 +479,7 @@ border-bottom:1px solid var(--border)}</style></head>
   <p class="narrow"><b>The test.</b> Take a short message of the kind a person actually sends a
   chatbot, say <em>"My daughter just took her first steps today! What are some ways to capture more
   of these precious moments?"</em>. It implies an emotion without ever naming it. Run it as a
-  chat turn, and read the residual stream at the last token before the reply would start. Rank all
+  chat turn, and read the <span data-term="residual stream">residual stream</span> at the last token before the reply would start. Rank all
   twelve emotion vectors by cosine and ask whether the right one lands in the top three.</p>
   <p class="narrow">The vectors were built from <em>stories</em> and are being tested on
   <em>messages</em>, so nothing guarantees transfer. The emotion is never stated either, so
@@ -704,7 +704,7 @@ border-bottom:1px solid var(--border)}</style></head>
       <p>All four layers clear it, and layer 33 reaches 0.64. That is a pass, and it is below the
       paper's 0.71 to 0.74 on a much larger model. Both statements are the result.</p>
       <p>An earlier version of this measurement read 0.70, which sits inside the paper's range. It
-      was computed with probes built before we found an extraction bug. The corrected probes give
+      was computed with <span data-term="probe">probes</span> built before we found an extraction bug. The corrected probes give
       0.64, and that is the number here.</p>
     </details>
     <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/04_paper_plot_parity.ipynb" target="_blank" rel="noopener noreferrer">notebooks/04_paper_plot_parity.ipynb</a>, chat template, post-fix probes; scored by scripts/score_preferences.py</div>
@@ -731,7 +731,7 @@ border-bottom:1px solid var(--border)}</style></head>
       <p>Ten of the twelve do that, at both doses. We fixed the bar at nine before scoring. The two
       that do not, angry and surprised, fail at both doses rather than flipping about, which is
       what you would expect from a real exception rather than noise.</p>
-      <p>The four-times dose is drawn behind each bar. Loving moves 47 Elo points at the gentle
+      <p>The four-times dose is drawn behind each bar. Loving moves 47 <span data-term="elo">Elo</span> points at the gentle
       dose and 323 at the strong one, and desperate moves 16 and 102. Effects that grow with dose
       are harder to explain as an artefact than a single dose is. The model's answers stay
       coherent throughout, which is checked separately: a model steered into incoherence would
@@ -1093,7 +1093,11 @@ const GLOSSARY = {
   "residual stream": "The running vector each layer reads from and writes back to, carrying everything the model has worked out so far about a token.",
   "circumplex": "The arrangement psychologists use for emotions: a circle whose two axes are how pleasant the feeling is and how worked up.",
   "valence": "How pleasant or unpleasant an emotion is, on the scale people rate words with.",
-  "elo": "A ranking fitted from many head-to-head choices, borrowed from chess, where a higher number means preferred more often."
+  "elo": "A ranking fitted from many head-to-head choices, borrowed from chess, where a higher number means preferred more often.",
+  "arousal": "How worked up an emotion is, from calm to agitated, on the scale people rate words with.",
+  "dominance": "How much control an emotion implies, from helpless to in charge, on the scale people rate words with.",
+  "principal component": "The directions along which a set of vectors differ most, found by a standard method that is told nothing about what the vectors mean.",
+  "probe": "A direction used as a detector: take the angle between it and the model's state, and read off how strongly that concept is present."
 };
 function wireGlossary(){
   document.querySelectorAll("[data-term]").forEach(node=>{

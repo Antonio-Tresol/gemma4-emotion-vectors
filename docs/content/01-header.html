@@ -4,9 +4,9 @@
     <div id="coverPcBase" data-figtitle="Principal components of the 171 emotion vectors, base model, layer 33"></div>
     <div id="coverPcIt" data-figtitle="Principal components of the 171 emotion vectors, instruction-tuned model, layer 33"></div>
     <div class="legend">
-      <span><i style="background:var(--navy)"></i>valence</span>
-      <span><i style="background:var(--teal)"></i>arousal</span>
-      <span><i style="background:var(--green)"></i>dominance</span>
+      <span><i style="background:var(--navy)"></i><span data-term="valence">valence</span></span>
+      <span><i style="background:var(--teal)"></i><span data-term="arousal">arousal</span></span>
+      <span><i style="background:var(--green)"></i><span data-term="dominance">dominance</span></span>
       <span><i style="background:var(--amber)"></i>story length, the confound we had to rule out</span>
       <span><i style="background:#D4D4D4"></i>grey backdrop: how much of the total spread this axis
       accounts for</span>
@@ -44,7 +44,7 @@
   <h2>Key results</h2>
   <div class="grid3" style="margin-top:20px;gap:16px">
     <div class="card"><h3>The base model reproduces the result</h3>
-    <p style="font-size:15px">Sort 171 emotion vectors by what separates them most and the top principal component
+    <p style="font-size:15px">Sort 171 emotion vectors by what separates them most and the top <span data-term="principal component">principal component</span>
     is pleasant-versus-unpleasant, the same axis people use. The sorting is unsupervised, so the
     match is the finding. It is the published result, reproduced on a new model.</p></div>
     <div class="card"><h3>The instruction-tuned version buries it</h3>

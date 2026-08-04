@@ -16,10 +16,10 @@
     <div class="card"><h3>The two models we compare</h3><p style="font-size:15px">Gemma&nbsp;4&nbsp;31B <b>base</b>
     and <b>instruction-tuned</b>: the same weights before and after post-training. Running both is a comparison the
     original paper did not report, and it is where the interesting result came from.
-    Layers are sampled, not swept: twenty across the stack (0 to 57, every third) for the geometry and
+    <span data-term="layer">Layers</span> are sampled, not swept: twenty across the stack (0 to 57, every third) for the geometry and
     detection work, six for the trajectories.</p></div>
     <div class="card"><h3>The result being replicated</h3><p style="font-size:15px">Anthropic reports
-    that emotion vectors arrange on the <b>circumplex</b>. Principal component analysis (PCA)
+    that emotion vectors arrange on the <b><span data-term="circumplex">circumplex</span></b>. Principal component analysis (PCA)
     finds the directions along which they differ most, and the top two recover valence and arousal.
     That matches how humans rate the same words in the
     <a href="http://saifmohammad.com/WebPages/nrc-vad.html">NRC VAD lexicon</a> (VAD is valence, arousal, dominance). No human labels enter
