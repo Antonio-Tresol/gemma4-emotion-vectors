@@ -981,10 +981,10 @@ codeTabs("m2","geometry_report/_context, _displacement",
     <span class="op">,</span> <i>X</i> <span class="op">=</span>
     <i>U</i>&thinsp;<i>&Sigma;</i>&thinsp;<i>W</i><sup>&#8868;</sup>
   </span>
-  <span class="gl">Stack the 171 centred emotion vectors as the rows of <i>X</i> and take its singular
+  <span class="gl">The rows of <i>X</i> are the 171 centred emotion vectors, and we take its singular
   value decomposition. The principal components are the right singular vectors
   <i>w</i><sub>1</sub>&thinsp;&hellip;&thinsp;<i>w</i><sub><i>k</i></sub>, ordered by how much spread
-  they explain. No human label enters this step.</span>
+  they explain. This step uses no human labels.</span>
   <span class="eq">
     <i>z</i><sub><i>e</i>,<i>k</i></sub> <span class="op">=</span>
     <i>&#7805;</i><sub>e</sub>

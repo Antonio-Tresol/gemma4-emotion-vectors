@@ -553,6 +553,7 @@ def check_prose(html: str) -> None:
 # queried, so the list exists to stop them returning rather than to be clever.
 # A term earns removal from this list by being defined on the page at first use.
 BANNED_WORDS = {
+    "stack": "say \u201cthe model\u2019s layers\u201d; the verb \u201cstacked\u201d is fine",
     "battery": "say what is in it: \u201cthe paper\u2019s twelve scenarios\u201d",
     "batteries": "say \u201cboth sets of scenarios\u201d",
     "arm": "say \u201cmodel\u201d, \u201cversion\u201d or \u201ccondition\u201d",

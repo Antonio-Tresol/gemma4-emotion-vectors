@@ -597,7 +597,7 @@ border-bottom:1px solid var(--border)}</style></head>
   most working layers. Vectors built from DeepSeek's fixed-prompt stories pass at nine of the
   twenty, the model's own stories give five, and a smaller model's stories give one. We had
   expected the model to read its own emotional writing best; the opposite holds. No source works
-  in the first third of the stack, and the passing layers cluster late, around layers 33
+  in the first third of the model's layers, and the passing layers cluster late, around layers 33
   to 57.</p>
   <p class="narrow">The two DeepSeek corpora differ in their prompts. One used a single fixed
   prompt; the other used a persona-by-setting grid meant to force variety. The varied corpus is
@@ -999,7 +999,7 @@ border-bottom:1px solid var(--border)}</style></head>
   sits at 6%, below chance. The other measure runs the other way,
   climbing from <b>+0.03</b> at layer 6 to <b>+0.26</b> at layer 51. The climb is uneven:
   it reaches +0.143 by layer 24, collapses to +0.001 at layer 33, then resumes.
-  The middle of the stack behaves differently from either end.</p>
+  The middle layers behave differently from both ends of the model.</p>
   <p class="narrow">The errors have structure: when the model names the wrong emotion,
   it names a <em>near</em> one. The emotion it picks instead sits closer to the true one in the
   VAD space than a randomly chosen emotion would, and that holds
@@ -2326,10 +2326,10 @@ codeTabs("m2","geometry_report/_context, _displacement",
     <span class="op">,</span> <i>X</i> <span class="op">=</span>
     <i>U</i>&thinsp;<i>&Sigma;</i>&thinsp;<i>W</i><sup>&#8868;</sup>
   </span>
-  <span class="gl">Stack the 171 centred emotion vectors as the rows of <i>X</i> and take its singular
+  <span class="gl">The rows of <i>X</i> are the 171 centred emotion vectors, and we take its singular
   value decomposition. The principal components are the right singular vectors
   <i>w</i><sub>1</sub>&thinsp;&hellip;&thinsp;<i>w</i><sub><i>k</i></sub>, ordered by how much spread
-  they explain. No human label enters this step.</span>
+  they explain. This step uses no human labels.</span>
   <span class="eq">
     <i>z</i><sub><i>e</i>,<i>k</i></sub> <span class="op">=</span>
     <i>&#7805;</i><sub>e</sub>
