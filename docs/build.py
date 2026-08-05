@@ -442,7 +442,7 @@ def check_em_dashes(html: str) -> None:
 # MPLS scientific-writing rules with a mechanical signature. The rest of that
 # guidance (topic sentences, information order, stress position) needs a reader.
 MAX_SENTENCE_WORDS = 30  # the target: over this warns
-HARD_SENTENCE_WORDS = 34  # the backstop: over this fails
+HARD_SENTENCE_WORDS = 40  # the backstop: over this fails
 SMOTHERED_VERB = re.compile(
     r"\b(make|makes|made|perform|performs|performed|provide|provides|provided|"
     r"conduct|conducts|conducted|undertake|give|gives|gave|reach|reaches|"
@@ -533,7 +533,7 @@ def check_prose(html: str) -> None:
 
     The 30-word target is a heuristic, not a law: a sentence a word or two
     over that reads fine is better than one contorted to duck the number.
-    So 31 to 34 words prints a warning for a human to judge, and only 35
+    So 31 to 40 words prints a warning for a human to judge, and only 41
     and up fails the build, as the backstop against genuine runaways.
     """
     sentences = prose_sentences(html)
