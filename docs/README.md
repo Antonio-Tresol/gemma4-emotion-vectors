@@ -24,20 +24,29 @@ outputs.
 
 ## The components, and when to use which
 
-Six devices set text apart on this page. Each has one job. `build.py` enforces
+Five devices set text apart on this page. Each has one job. `build.py` enforces
 the parts of this that a script can judge; the rest is on whoever edits.
 
 | Device | Job | Where it may appear |
 |---|---|---|
 | `.card` | holds **one figure and its four supports**: the generated title, the key to its marks, the how-to block, the source line | around every chart, and nothing else except the three key-result summaries in the header |
-| `details.howto` | how to **judge** the figure: what a failure looks like, what a strong result looks like, where the observed value sits | inside every result figure's card |
+| `details.howto` | how to **judge** the figure: what a failure looks like, what a strong result looks like | inside every result figure's card |
 | `.legend` | how to **decode** the figure: what each colour and mark means | inside the card, unless the key is drawn in the plot itself |
 | `.src` | which notebook or script the numbers came from | inside every result figure's card |
-| `.callout` | a caveat that **cuts against** the surrounding text | anywhere, sparingly |
 | `.takeaway` | the section's verdict | once per section, at its end |
 
-Everything else is prose. Parallel items are a list: `<ul class="reasons">` when
-the order does not matter, `<ol class="steps">` when the text claims one.
+Everything else is prose. Parallel items are a list: `<ul>` when the order does
+not matter, `<ol class="steps">` when the text claims one. A caveat is a heading
+plus prose, never a box.
+
+**A how-to block is short, and it holds no findings.** Its whole job is how to
+read the plot: what one mark is (only when the body has not already said it),
+what a failure would look like, what a strong result would look like. Two or
+three short paragraphs at most. It sits behind a fold, so most readers never
+open it; results and their numbers therefore live in body prose beside the
+figure, never inside the fold. Section 3's how-to once carried the section's
+entire findings, which made the visible section setup, figure, verdict, with
+its evidence hidden from anyone who did not click.
 
 ## Headings
 
@@ -101,11 +110,11 @@ uv run python build.py             # -> index.html  (reads data/)
 ## Status
 
 A talk, not a paper: short sprint, no external review, nulls included and
-labelled as such. The `Method` and `Q&A` sections carry the maths, the
-pseudo-code and a symbol glossary for every measurement, so a claim can be
-traced to code without leaving the page.
+labelled as such. Section 10 carries the maths, the pseudo-code and a symbol
+glossary for every measurement, so a claim can be traced to code without
+leaving the page.
 
-The three headline results are not equally settled, and section 8 says so on the
+The three headline results are not equally settled, and section 9 says so on the
 page. The base-model circumplex has survived a falsification pass. The
 instruction-tuning result is measured, but its gate is still owed. The
 story-following work is registered as exploratory.

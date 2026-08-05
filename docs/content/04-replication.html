@@ -26,26 +26,28 @@
       accounts for</span>
     </div>
     <details class="howto"><summary>How to read this</summary>
-      <p><b>What a success looks like:</b> the base model. Its biggest axis matches human valence
-      ratings at 0.83, and its second matches arousal at 0.55. Those are the two axes of the
-      circumplex, in order, recovered from the activations alone.</p>
-      <p><b>The same axis also matches dominance.</b> Dominance (how much control the emotion
-      implies) correlates with the biggest axis at <b>0.66</b>, higher than the second axis matches
-      arousal. Valence and dominance are themselves correlated in the human ratings, so this figure
-      alone cannot say whether the axis is valence, or valence and dominance together. Story length
-      is ruled out: it matches this axis at 0.15. We have not separated these two, and the result we
-      are reproducing carries the same ambiguity.</p>
-      <p><b>What a failure looks like:</b> the instruction-tuned model. Its biggest axis matches valence
-      at 0.11, near zero. The 171 emotions differ from one another in many ways at once. This
-      single axis explains 28% of all that variation, compared with 15% for the base model's
-      top axis.</p>
-      <p>Valence remains represented: the instruction-tuned model's <em>third</em> axis
-      matches it at 0.72. The amber bar matters here: the instruction-tuned model's second axis
-      matches story length at 0.66, higher than it matches any emotion rating.</p>
+      <p>A bad result is every coloured bar near 0: axes that match nothing people rate. A strong
+      result is a tall coloured bar on the biggest axis, standing clear of the amber story-length
+      control.</p>
+      <p>The buttons above the chart switch between the two models, and the verdict line beside
+      them updates as you switch.</p>
     </details>
     <div class="src">source: notebooks/02_circumplex_geometry.ipynb, layer 33, measured after the centring
     correction described in Method block 4</div>
   </div>
+  <p class="narrow" style="margin-top:22px">On the base model, the biggest axis matches human
+  valence ratings at <b>0.83</b> and the second matches arousal at 0.55. Those are the two axes of
+  the circumplex, in order, recovered from the activations alone. The biggest axis also matches
+  dominance at <b>0.66</b>, and valence and dominance are themselves correlated in the human
+  ratings. The figure alone cannot say whether that axis is valence, or valence and dominance
+  together; the result we are reproducing carries the same ambiguity. Story length matches it at
+  0.15, so the control is ruled out.</p>
+  <p class="narrow">On the instruction-tuned model, the biggest axis matches valence at <b>0.11</b>,
+  near zero. That axis explains 28% of all the variation among the 171 vectors, compared with 15%
+  for the base model's top axis. Valence remains represented lower down: the <em>third</em> axis
+  matches it at 0.72. The second axis matches story
+  length at 0.66, higher than it matches any emotion rating. Section 4 asks what the new top axis
+  encodes.</p>
   <div class="takeaway"><span class="lbl">Takeaway</span>The base model's emotions separate first by valence and then by arousal, which recovers the human circumplex from the activations alone. In the instruction-tuned model the top axis matches none of the human ratings, and valence falls to third.</div>
 </div></section>
 
