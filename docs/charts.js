@@ -1223,8 +1223,11 @@ const SECTIONS=[];
 }
 document.getElementById("coverIndex").innerHTML = SECTIONS.map((x,i)=>{
   const opens = x.part && (i===0 || SECTIONS[i-1].part!==x.part);
+  // the first section after the parts close gets a group gap, so the back
+  // matter reads as outside Part III the same way section 1 reads as before Part I
+  const closes = !x.part && i>0 && SECTIONS[i-1].part;
   return (opens ? `<span class="ipart"><b>Part ${x.part.no}</b> &middot; ${x.part.title}</span>` : "")
-    + `<a href="#${x.id}"><span class="n">${x.n}</span><span class="t">${x.title}</span></a>`;
+    + `<a href="#${x.id}"${closes?' class="postparts"':""}><span class="n">${x.n}</span><span class="t">${x.title}</span></a>`;
 }).join("");
 
 /* ---------- keyboard: next / previous / jump ---------- */
