@@ -24,8 +24,8 @@
     </details>
     <div class="src">source: notebooks/04_paper_plot_parity.ipynb, chat template, post-fix probes; scored by scripts/score_preferences.py</div>
   </div>
-  <p class="narrow" style="margin-top:20px">All four layers clear the mark, and layer 33 reaches
-  <b>0.64</b>. That sits below the 0.71 to 0.74 the paper reports on Claude Sonnet 4.5. An earlier
+  <p class="narrow" style="margin-top:20px">We found that all four layers clear the mark, with
+  layer 33 reaching <b>0.64</b>, below the 0.71 to 0.74 the paper reports on Claude Sonnet 4.5. An earlier
   version of this measurement read 0.70, inside the paper's range; it was computed with
   <span data-term="probe">probes</span> built before we found an extraction bug. The corrected
   probes give 0.64, and that is the number drawn.</p>
@@ -53,8 +53,8 @@
     </details>
     <div class="src">source: notebooks/04_paper_plot_parity.ipynb, layer 33, post-fix directions, both doses; scored by scripts/score_steering.py</div>
   </div>
-  <p class="narrow" style="margin-top:20px">Ten of the twelve emotions move preferences in their
-  own direction at both doses, against the mark of nine we fixed in advance. The two exceptions,
+  <p class="narrow" style="margin-top:20px">We found that ten of the twelve emotions move
+  preferences in their own direction at both doses, against the mark of nine we fixed in advance. The two exceptions,
   angry and surprised, fail at both doses; an artefact of noise would flip between them. The
   effects grow with dose: loving moves 47 <span data-term="elo">Elo</span> points at the gentle
   dose and 323 at the four-times dose, and desperate moves 16 and 102. The model's answers stay

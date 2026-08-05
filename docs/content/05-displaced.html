@@ -58,16 +58,16 @@
     </details>
     <div class="src">source: notebooks/02_circumplex_geometry.ipynb, section 10</div>
   </div>
-  <p class="narrow" style="margin-top:22px">On the base model, the late layers agree with one
-  another at <b>0.94</b> out of 1, close to the single-picture case. On the instruction-tuned
+  <p class="narrow" style="margin-top:22px">We found that the base model's late layers agree with
+  one another at <b>0.94</b> out of 1, close to the single-picture case. In the instruction-tuned
   model the same measure drops to <b>0.79</b> and the grid breaks into visible blocks. The base
-  view is the control: without it, a genuinely broken-up model could not be told apart from a
-  measure that always looks blotchy.</p>
-  <p class="narrow">Removing the biggest axis at each layer merges the blocks back together, which
-  is the evidence that the one dominant axis <em>caused</em> the fragmentation. The
-  base-against-instruction-tuned view adds a depth profile: its diagonal is how much instruction
-  tuning changed each layer, and it reads 0.97 at layer 3 against 0.21 at layer 57. The early
-  layers came through intact; the late half was rebuilt.</p>
+  view serves as the control: without it, a genuinely broken-up model could not be told apart
+  from a measure that always looks blotchy.</p>
+  <p class="narrow">Removing the biggest axis at each layer merges the blocks back together,
+  indicating that the one dominant axis <em>caused</em> the fragmentation. The
+  base-against-instruction-tuned view adds a depth profile: its diagonal measures how much
+  instruction tuning changed each layer, and it reads 0.97 at layer 3 against 0.21 at layer 57.
+  The early layers came through intact; the late half was rebuilt.</p>
 
   <h3 style="margin-top:30px">The shared structure survives beneath the new axis</h3>
   <p class="narrow">  Taken at face value, the two models look largely unrelated. Comparing each model's top three axes

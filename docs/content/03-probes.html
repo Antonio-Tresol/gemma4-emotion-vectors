@@ -22,18 +22,19 @@
     </details>
     <div class="src">source: notebooks/07_generator_lineages.ipynb (experiments E11 and E12)</div>
   </div>
-  <p class="narrow" style="margin-top:22px">A stronger outside writer gives the most working
-  layers. Vectors built from DeepSeek's fixed-prompt stories pass at nine of the twenty layers,
-  the model's own stories give five, and a smaller model's stories give one. The intuitive guess,
-  that a model reads its own emotional writing best, is wrong here. Depth matters as well: no
-  source works in the first third of the stack, and the passing layers cluster late, around 33
+  <p class="narrow" style="margin-top:22px">We found that a stronger outside writer gives the
+  most working layers. Vectors built from DeepSeek's fixed-prompt stories pass at nine of the
+  twenty, the model's own stories give five, and a smaller model's stories give one. We had
+  expected the model to read its own emotional writing best; the opposite holds. No source works
+  in the first third of the stack, and the passing layers cluster late, around layers 33
   to 57.</p>
   <p class="narrow">The two DeepSeek corpora differ in their prompts. One used a single fixed
-  prompt; the other used a persona-by-setting grid meant to force variety, and it is four times
-  the size yet scores lower. A separate run matches the two on stories per emotion, with five
-  seeds per point and the same scorer. Matched, the fixed-prompt corpus reaches <b>8.6</b> passing
-  layers at 64 stories each, while the varied one needs <b>1,024</b> each to reach <b>6.8</b>.
-  Forcing variety cost accuracy here. The rows in the figure also compare whole corpora, which
+  prompt; the other used a persona-by-setting grid meant to force variety. The varied corpus is
+  four times the size yet scores lower, which is the opposite of what we expected. We matched the two on
+  stories per emotion in a separate run, with five seeds per point and the same scorer. Matched,
+  the fixed-prompt corpus reaches <b>8.6</b> passing layers at 64 stories each, while the varied
+  one needs <b>1,024</b> each to reach <b>6.8</b>, so the variety itself costs accuracy. The rows
+  in the figure also compare whole corpora, which
   differ in size as well as writer, so they do not isolate the writer on their own.</p>
   <p class="narrow">Gemma's own stories repeat themselves. Across 3,072
   stories written to a request for varied emotional scenes, Gemma named the central character
