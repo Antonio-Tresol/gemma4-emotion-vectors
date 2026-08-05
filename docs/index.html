@@ -258,6 +258,9 @@ font-family:var(--display);font-size:15px;line-height:1.55;color:var(--text)}
 letter-spacing:.11em;text-transform:uppercase;color:var(--navy);margin:18px 0 4px}
 .index .ipart:first-child{margin-top:6px}
 .index .ipart b{color:var(--orange)}
+/* the row that closes the parts: the same group gap an .ipart heading gives,
+   so sections 9-11 stop reading as members of Part III */
+.index a.postparts{margin-top:18px}
 .index a{display:flex;gap:12px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--border);
 text-decoration:none;color:var(--body);font-family:var(--display);font-size:14.5px}
 /* The contents rows only changed from --body to --text on hover, two shades of
@@ -538,7 +541,7 @@ border-bottom:1px solid var(--border)}</style></head>
   <p class="narrow" style="margin-top:20px">We compare Gemma&nbsp;4&nbsp;31B in two forms,
   <b>base</b> and <b>instruction-tuned</b>: the same weights before and after post-training. We measured at twenty of the model's sixty
   <span data-term="layer">layers</span>, every third from layer 0 to layer 57, for the
-  principal-component and detection experiments in sections 2 and 3. The story experiments in
+  <span data-term="principal component">principal-component</span> and detection experiments in sections 2 and 3. The story experiments in
   sections 6 to 8 use six of those layers.</p>
   <p class="narrow">The result being replicated is that emotion vectors arrange on the
   <b><span data-term="circumplex">circumplex</span></b>. Principal component analysis
@@ -641,7 +644,7 @@ border-bottom:1px solid var(--border)}</style></head>
 
 <section id="replication"><div class="wrap">
   <h2><span class="secno">3</span>Valence leads the base model and loses first place in the instruction-tuned one</h2>
-  <p class="narrow">We performed principal component analysis on the 171 emotion vectors at layer 33.
+  <p class="narrow">We performed <span data-term="principal component">principal component analysis</span> on the 171 emotion vectors at layer 33.
   Each bar below is one component: grey is the variance it explains. The coloured bars are how
   strongly its scores correlate with published human ratings of the same 171 words. The components are
   computed from the activations alone; the human ratings are brought in afterwards to test whether the
@@ -2582,8 +2585,11 @@ const SECTIONS=[];
 }
 document.getElementById("coverIndex").innerHTML = SECTIONS.map((x,i)=>{
   const opens = x.part && (i===0 || SECTIONS[i-1].part!==x.part);
+  // the first section after the parts close gets a group gap, so the back
+  // matter reads as outside Part III the same way section 1 reads as before Part I
+  const closes = !x.part && i>0 && SECTIONS[i-1].part;
   return (opens ? `<span class="ipart"><b>Part ${x.part.no}</b> &middot; ${x.part.title}</span>` : "")
-    + `<a href="#${x.id}"><span class="n">${x.n}</span><span class="t">${x.title}</span></a>`;
+    + `<a href="#${x.id}"${closes?' class="postparts"':""}><span class="n">${x.n}</span><span class="t">${x.title}</span></a>`;
 }).join("");
 
 /* ---------- keyboard: next / previous / jump ---------- */
