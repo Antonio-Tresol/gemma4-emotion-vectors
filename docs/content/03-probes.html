@@ -1,14 +1,14 @@
 <section id="probes"><div class="wrap">
-  <h2><span class="secno">2</span>Who writes the stories changes the answer</h2>
+  <h2><span class="secno">2</span>Detection accuracy depends on who wrote the stories</h2>
   <p class="narrow">We built four sets of emotion vectors, each from a different corpus of stories,
   and scored all four with the same detection test.</p>
   <p class="narrow">The test uses short messages of the kind a person actually sends a chatbot. One reads <em>"My daughter just took her first steps today! What are some ways to capture
   more of these precious moments?"</em>, and implies an emotion without ever naming it. We ran each
   message as a chat turn and read the <span data-term="residual stream">residual stream</span> at
-  the last token before the reply would start. Then we ranked all twelve emotion vectors by cosine
-  and asked whether the right one landed in the top three.</p>
-  <p class="narrow">The vectors were built from <em>stories</em> and tested on <em>messages</em>,
-  so the test measures transfer between two kinds of text. Each message implies an emotion without
+  the last token before the reply would start. Then we measured the cosine between that state and
+  each of the twelve emotion vectors, which ranks the twelve. The test passes when the vector for
+  the implied emotion ranks in the top three.</p>
+  <p class="narrow">Each message implies an emotion without
   naming it, so a vector that keyed on the emotion word would score at chance. A layer counts as
   <b>working</b> when it gets at least 8 of 12 right on the paper's twelve scenarios <em>and</em> on
   a second twelve we wrote ourselves. We fixed both marks before scoring.</p>  <div class="card" style="margin-top:22px">

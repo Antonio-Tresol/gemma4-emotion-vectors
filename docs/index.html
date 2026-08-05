@@ -557,31 +557,32 @@ border-bottom:1px solid var(--border)}</style></head>
   first way; section 5 uses them both ways.</p>
   <p class="narrow">People bring language models their worst days, and companies sell them as
   companions and therapists. Serving that use well means following how a person's state
-  <em>moves</em> across a conversation. Sections 6 to 8 test exactly that ability, and it is where
-  the results are weakest. It is also possible that emotion is not a major axis of this model's
+  <em>moves</em> across a conversation. Sections 6 to 8 test exactly that ability.
+  It is also possible that emotion is not a major axis of this model's
   representation at all; section 9 sets out that reading.</p>
   <p class="narrow">Research on <span data-term="ai welfare">AI welfare</span> leans on what a
   model reports about itself. Reading internal state adds a second, independent kind of evidence,
-  the kind Long and colleagues class as internal. What we measured is the model representing the
+  classed as internal in
+  <a class="link-plain" href="https://nonhumanminds.org/wp-content/uploads/2026/07/Studying-AI-Welfare-Empirically.pdf" target="_blank" rel="noopener noreferrer"><em>Studying AI welfare <span class="nw">empirically<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></em></a> (<a href="#r-long2026">Long et al., 2026</a>). What we measured is the model representing the
   emotions <em>of a story it is reading</em>. That is not evidence about what the model feels.</p>
   <p class="narrow">Where the model's arrangement of emotions diverges from the human ratings, the
   divergence is itself a measurement of what is particular to this model. Instruction tuning
   visibly redraws it, which is the subject of part II.</p>
 </div></section>
 
-<div class="partbar" data-part-no="I" data-part="Rebuilding the published result"><div class="wrap"><span class="kicker">Part I</span><h2 class="ptitle">Rebuilding the published result</h2><p class="pblurb">Sections 2 and 3 rebuild the paper's central result on an open model. Sorted by what separates them most, a model's emotion vectors should recover the pleasantness and activation axes psychologists use. Section 2 comes first because the rebuild depends on which stories the vectors are built from, and that turns out to change the answer by a factor of nine.</p></div></div>
+<div class="partbar" data-part-no="I" data-part="Rebuilding the published result"><div class="wrap"><span class="kicker">Part I</span><h2 class="ptitle">Rebuilding the published result</h2><p class="pblurb">Sections 2 and 3 rebuild the paper's central result on an open model. A model's emotion vectors, sorted by what separates them most, should recover valence and arousal, the two axes psychologists use.</p></div></div>
 
 <section id="probes"><div class="wrap">
-  <h2><span class="secno">2</span>Who writes the stories changes the answer</h2>
+  <h2><span class="secno">2</span>Detection accuracy depends on who wrote the stories</h2>
   <p class="narrow">We built four sets of emotion vectors, each from a different corpus of stories,
   and scored all four with the same detection test.</p>
   <p class="narrow">The test uses short messages of the kind a person actually sends a chatbot. One reads <em>"My daughter just took her first steps today! What are some ways to capture
   more of these precious moments?"</em>, and implies an emotion without ever naming it. We ran each
   message as a chat turn and read the <span data-term="residual stream">residual stream</span> at
-  the last token before the reply would start. Then we ranked all twelve emotion vectors by cosine
-  and asked whether the right one landed in the top three.</p>
-  <p class="narrow">The vectors were built from <em>stories</em> and tested on <em>messages</em>,
-  so the test measures transfer between two kinds of text. Each message implies an emotion without
+  the last token before the reply would start. Then we measured the cosine between that state and
+  each of the twelve emotion vectors, which ranks the twelve. The test passes when the vector for
+  the implied emotion ranks in the top three.</p>
+  <p class="narrow">Each message implies an emotion without
   naming it, so a vector that keyed on the emotion word would score at chance. A layer counts as
   <b>working</b> when it gets at least 8 of 12 right on the paper's twelve scenarios <em>and</em> on
   a second twelve we wrote ourselves. We fixed both marks before scoring.</p>  <div class="card" style="margin-top:22px">
@@ -1192,8 +1193,8 @@ border-bottom:1px solid var(--border)}</style></head>
       for emotions: a circle whose two axes are how pleasant the feeling is and how worked
       up.</span></summary>
       <p>Russell proposed in 1980 that words for feelings sit around a circle rather than in a list
-      of separate categories. The circle is spanned by pleasantness and activation: <em>elated</em>
-      at the pleasant and active side, <em>miserable</em> opposite it. The published result we rebuild
+      of separate categories. The circle is spanned by valence and arousal: <em>elated</em>
+      at the pleasant, worked-up side, <em>miserable</em> opposite it. The published result we rebuild
       is that a model's emotion vectors, sorted by what separates them most, recover those same two
       axes without being told about either. Section 3 tests that on both models, and section 4 asks
       what happened in the instruction-tuned one.</p>
