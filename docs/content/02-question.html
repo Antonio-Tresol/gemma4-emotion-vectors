@@ -1,17 +1,18 @@
 <section id="question"><div class="wrap">
   <h2><span class="secno">1</span>What we measured, and why it matters</h2>
   <h3 style="margin-top:26px">Building an emotion vector</h3>
-  <p class="narrow" style="margin-bottom:14px">We built each emotion vector by averaging the model's internal state across one emotion's
-  stories, then subtracting the average over all the emotions. To read it back we measure the
-  <b>angle between that vector and the model's state at a given word</b>, which is what a
-  <em>cosine</em> is here. The cosine is centred: we subtract the mean over the story set first,
-  so 0 is the corpus average. <a href="#methods">Section 10 gives the formula, the pseudo-code and a
-  glossary for every symbol in it</a>.</p>
+  <p class="narrow" style="margin-bottom:14px">We built each emotion vector by averaging the model's internal state across its
+  mono-emotion stories, then subtracting the average over all the emotions. To read it back we
+  measure the <b>angle between that vector and the model's state at a given word and a given
+  layer</b>, using cosine similarity. The cosine is centred: we subtract the mean over the story
+  set first, so 0 is the corpus average. <a href="#methods">Section 10 defines each step
+  exactly</a>.</p>
   <div class="card"><div id="methodDiagram" data-schematic
     data-figtitle="How an emotion vector is built, and how it is read back"></div>
     <div class="legend">
-      <span>Parts I and II use 171 emotions with about 9 stories each. Part III uses 12 emotions
-      with about 256 stories each. Section 2 measures how much that count matters.</span>
+      <span>Sections 2 to 5 use 171 emotions with about 9 stories each; sections 6 to 8 use 12
+      emotions with about 256 stories each. Section 2 measures how much the story count
+      matters.</span>
     </div>
   </div>
   <p class="narrow" style="margin-top:20px">We compare Gemma&nbsp;4&nbsp;31B in two forms,
@@ -26,25 +27,22 @@
   <a href="http://saifmohammad.com/WebPages/nrc-vad.html">NRC VAD lexicon</a> (VAD is valence,
   arousal, dominance). The components are computed from the activations alone, and the human
   ratings are brought in afterwards to test whether the axes line up with them.</p>
-  <h3 style="margin-top:38px">Why this matters</h3>
-  <ul class="reasons">
-    <li><b>A direction can be read and added back in.</b> The same object serves as an
-    interpretability measurement and as an intervention, which is unusual and is what makes emotion
-    vectors worth testing at all.</li>
-    <li><b>Models are already used as listeners.</b> People bring them their worst days, and companies are
-    selling them as companions and therapists. Doing that well means following how someone's state
-    <em>moves</em> across a long conversation, which is what we tested and where it gets shaky.
-    Emotion may not be a major axis of this model's representation at all, and that is the
-    possibility we find most interesting.</li>
-    <li><b><span data-term="ai welfare">AI welfare</span> needs evidence that is not self-report.</b>
-    Arguments in that field lean heavily on what a model says about itself, and reading internal state sidesteps the
-    obvious objection to that. The caveat is
-    load-bearing: what we measured is the model representing the emotions <em>of a story it is
-    reading</em>. That is not evidence about what the model feels.</li>
-    <li><b>The geometry departs from human ratings in measurable ways.</b> Where the model's
-    arrangement of emotions diverges from the VAD norms, the difference is itself a measurement of
-    what is peculiar to this model, and instruction tuning visibly redraws it.</li>
-  </ul>
+  <h3 style="margin-top:38px">What these measurements are for</h3>
+  <p class="narrow">An emotion vector can be read, and it can be added back into the model, so the
+  same object serves as a measurement and as an intervention. Sections 3 and 4 use the vectors the
+  first way; section 5 uses them both ways.</p>
+  <p class="narrow">People bring language models their worst days, and companies sell them as
+  companions and therapists. Serving that use well means following how a person's state
+  <em>moves</em> across a conversation. Sections 6 to 8 test exactly that ability, and it is where
+  the results are weakest. It is also possible that emotion is not a major axis of this model's
+  representation at all; section 9 sets out that reading.</p>
+  <p class="narrow">Research on <span data-term="ai welfare">AI welfare</span> leans on what a
+  model reports about itself. Reading internal state adds a second, independent kind of evidence,
+  the kind Long and colleagues class as internal. What we measured is the model representing the
+  emotions <em>of a story it is reading</em>. That is not evidence about what the model feels.</p>
+  <p class="narrow">Where the model's arrangement of emotions diverges from the human ratings, the
+  divergence is itself a measurement of what is particular to this model. Instruction tuning
+  visibly redraws it, which is the subject of part II.</p>
 </div></section>
 
 <div class="partbar" data-part-no="I" data-part="Rebuilding the published result"><div class="wrap"><span class="kicker">Part I</span><h2 class="ptitle">Rebuilding the published result</h2><p class="pblurb">Sections 2 and 3 rebuild the paper's central result on an open model. Sorted by what separates them most, a model's emotion vectors should recover the pleasantness and activation axes psychologists use. Section 2 comes first because the rebuild depends on which stories the vectors are built from, and that turns out to change the answer by a factor of nine.</p></div></div>

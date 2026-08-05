@@ -125,7 +125,7 @@ function drawMethod(){
   svg.appendChild(txt(479,68,"mean over stories",{size:11}));
   svg.appendChild(txt(479,84,"\u2212 mean over emotions",{size:11,fill:P.orange,weight:600}));
   svg.appendChild(txt(479,116,"3. difference of means",{size:10.5,fill:P.muted,weight:600}));
-  svg.appendChild(txt(479,130,"centring is load-bearing",{size:9.5,fill:P.orange}));
+  svg.appendChild(txt(479,130,"centring changes the answer",{size:9.5,fill:P.orange}));
   arrow(560,596,yMid);
   // 4. the vector, and what it is used for. Shifted left of where this used to
   // sit: the two branch labels on the right ran past the viewBox and were cut.
@@ -139,8 +139,8 @@ function drawMethod(){
   const rx=712;
   svg.appendChild(el("line",{x1:696,y1:yMid,x2:rx-4,y2:yMid,stroke:P.muted,"stroke-width":1.4}));
   svg.appendChild(el("line",{x1:rx-4,y1:44,x2:rx-4,y2:112,stroke:P.muted,"stroke-width":1.4}));
-  [[44,"PCA over the 171","\u2192 parts one, two"],
-   [112,"cos(stream, vector)","\u2192 per token, part three"]].forEach(([y,a,b])=>{
+  [[44,"PCA over the 171","\u2192 sections 3 and 4"],
+   [112,"cos(stream, vector)","\u2192 sections 2, 5 to 8"]].forEach(([y,a,b])=>{
     arrow(rx-4,rx+12,y);
     svg.appendChild(txt(rx+18,y-2,a,{anchor:"start",size:11,weight:600}));
     svg.appendChild(txt(rx+18,y+12,b,{anchor:"start",size:9.5,fill:P.muted}));

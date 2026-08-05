@@ -142,9 +142,6 @@ border-radius:12px;padding:18px 20px}
 /* Reason lists. Five equal cards in a three-column grid left a ragged row and
    gave the abstract reason the same weight as the concrete one. A list lets an
    item be one line or four, which is what these actually are. */
-.reasons{max-width:820px;margin:6px 0 20px;padding-left:20px}
-.reasons li{margin-bottom:12px;line-height:1.62;padding-left:6px}
-.reasons li::marker{color:var(--orange)}
 /* Proposed next experiments. Numbered rather than bulleted because the prose
    claims an order and a bullet cannot carry one. */
 .steps{max-width:820px;margin:14px 0 20px;padding-left:24px}
@@ -474,7 +471,7 @@ border-bottom:1px solid var(--border)}</style></head>
       <p>A bad result would be every coloured bar near 0, meaning the model's own axes have nothing
       to do with how people rate emotions. A strong one is a tall bar on the biggest axis. The base
       model shows the strong version, valence at 0.83 on PC1. After instruction tuning the biggest
-      axis matches nothing we tested, and valence does not reappear until PC3.</p>
+      axis matches none of the four ratings, and valence does not reappear until PC3.</p>
       <p>Read the whole row. PC1 in the base model also matches dominance at 0.66.
       PC2 in the instruction-tuned model matches story length at 0.66. That is why the length
       control is drawn beside the three ratings rather than left out.</p>
@@ -498,21 +495,24 @@ border-bottom:1px solid var(--border)}</style></head>
   <div class="mhnote" style="margin-top:18px">Not peer reviewed. <a class="link-plain" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/issues" target="_blank" rel="noopener noreferrer">Feedback is <span class="nw">welcome<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a>.</div>
   <h2>Key results</h2>
   <div class="grid3" style="margin-top:20px;gap:16px">
-    <div class="card"><h3>The base model reproduces the published circumplex</h3>
+    <div class="card"><h3>The base model reproduces the published <span data-term="circumplex">circumplex</span></h3>
     <p style="font-size:15px">The top <span data-term="principal component">principal component</span> of the 171 emotion vectors
-    is pleasant-versus-unpleasant, the same axis people use. The sorting uses no human labels, so the match comes from the model. It is the published result, reproduced on a new model.</p></div>
+    is pleasant-versus-unpleasant, the same axis people use. The sorting uses no human labels, so the match comes from the model.</p></div>
     <div class="card"><h3>Instruction tuning demotes valence to third place</h3>
     <p style="font-size:15px">After instruction tuning, valence drops
-    from first place to third. It is still present, just no longer how the model mainly sorts
-    emotions. A larger axis takes over, and it matches nothing in the base model.</p></div>
-    <div class="card"><h3>Emotion vectors follow a story better than chance</h3>
-    <p style="font-size:15px">In stories written to move through three emotions, the model's internal
-    state hands over from one emotion to the next, better than chance and often before the
-    written turn. It is never reliable, and it works far better for some emotions than others.</p></div>
+    from first place to third and remains measurable there. A larger axis takes its place; its
+    closest match among the base model's axes is 0.14, and we could not identify what it
+    encodes.</p></div>
+    <div class="card"><h3>The model can track emotions throughout a story better than chance</h3>
+    <p style="font-size:15px">The model's internal state hands over from one emotion to the next as
+    the story turns. In stories written to move through three emotions, the handover beats chance
+    and often arrives before the written turn. It is never reliable, and it works far better for
+    some emotions than others.</p></div>
   </div>
-  <p class="lede narrow" style="margin-top:30px">In
-  <a class="link-plain" href="https://transformer-circuits.pub/2026/emotions/index.html" target="_blank" rel="noopener noreferrer"><em>Emotion concepts and their function in a large language <span class="nw">model<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></em></a> (<a href="#r-sofroniew2026">Sofroniew et al., 2026</a>), Anthropic reported that
-  Claude&nbsp;Sonnet&nbsp;4.5 keeps a separate internal direction for each emotion. Those
+  <p class="lede narrow" style="margin-top:30px">We start from
+  <a class="link-plain" href="https://transformer-circuits.pub/2026/emotions/index.html" target="_blank" rel="noopener noreferrer"><em>Emotion concepts and their function in a large language <span class="nw">model<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></em></a> (<a href="#r-sofroniew2026">Sofroniew et al., 2026</a>). Anthropic reported that
+  Claude&nbsp;Sonnet&nbsp;4.5 keeps a separate direction in its
+  <span data-term="residual stream">residual stream</span> for each emotion. Those
   directions arrange themselves the way psychologists arrange them. We rebuilt that result on
   <a class="link-plain" href="https://huggingface.co/google/gemma-4-31b" target="_blank" rel="noopener noreferrer"><span class="nw">Gemma&nbsp;4&nbsp;31B<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a>, an open
   31-billion-parameter model. After that, we expanded the work in three directions. Does
@@ -525,17 +525,18 @@ border-bottom:1px solid var(--border)}</style></head>
 <section id="question"><div class="wrap">
   <h2><span class="secno">1</span>What we measured, and why it matters</h2>
   <h3 style="margin-top:26px">Building an emotion vector</h3>
-  <p class="narrow" style="margin-bottom:14px">We built each emotion vector by averaging the model's internal state across one emotion's
-  stories, then subtracting the average over all the emotions. To read it back we measure the
-  <b>angle between that vector and the model's state at a given word</b>, which is what a
-  <em>cosine</em> is here. The cosine is centred: we subtract the mean over the story set first,
-  so 0 is the corpus average. <a href="#methods">Section 10 gives the formula, the pseudo-code and a
-  glossary for every symbol in it</a>.</p>
+  <p class="narrow" style="margin-bottom:14px">We built each emotion vector by averaging the model's internal state across its
+  mono-emotion stories, then subtracting the average over all the emotions. To read it back we
+  measure the <b>angle between that vector and the model's state at a given word and a given
+  layer</b>, using cosine similarity. The cosine is centred: we subtract the mean over the story
+  set first, so 0 is the corpus average. <a href="#methods">Section 10 defines each step
+  exactly</a>.</p>
   <div class="card"><div id="methodDiagram" data-schematic
     data-figtitle="How an emotion vector is built, and how it is read back"></div>
     <div class="legend">
-      <span>Parts I and II use 171 emotions with about 9 stories each. Part III uses 12 emotions
-      with about 256 stories each. Section 2 measures how much that count matters.</span>
+      <span>Sections 2 to 5 use 171 emotions with about 9 stories each; sections 6 to 8 use 12
+      emotions with about 256 stories each. Section 2 measures how much the story count
+      matters.</span>
     </div>
   </div>
   <p class="narrow" style="margin-top:20px">We compare Gemma&nbsp;4&nbsp;31B in two forms,
@@ -550,25 +551,22 @@ border-bottom:1px solid var(--border)}</style></head>
   <a class="link-plain" href="http://saifmohammad.com/WebPages/nrc-vad.html" target="_blank" rel="noopener noreferrer">NRC VAD <span class="nw">lexicon<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a> (VAD is valence,
   arousal, dominance). The components are computed from the activations alone, and the human
   ratings are brought in afterwards to test whether the axes line up with them.</p>
-  <h3 style="margin-top:38px">Why this matters</h3>
-  <ul class="reasons">
-    <li><b>A direction can be read and added back in.</b> The same object serves as an
-    interpretability measurement and as an intervention, which is unusual and is what makes emotion
-    vectors worth testing at all.</li>
-    <li><b>Models are already used as listeners.</b> People bring them their worst days, and companies are
-    selling them as companions and therapists. Doing that well means following how someone's state
-    <em>moves</em> across a long conversation, which is what we tested and where it gets shaky.
-    Emotion may not be a major axis of this model's representation at all, and that is the
-    possibility we find most interesting.</li>
-    <li><b><span data-term="ai welfare">AI welfare</span> needs evidence that is not self-report.</b>
-    Arguments in that field lean heavily on what a model says about itself, and reading internal state sidesteps the
-    obvious objection to that. The caveat is
-    load-bearing: what we measured is the model representing the emotions <em>of a story it is
-    reading</em>. That is not evidence about what the model feels.</li>
-    <li><b>The geometry departs from human ratings in measurable ways.</b> Where the model's
-    arrangement of emotions diverges from the VAD norms, the difference is itself a measurement of
-    what is peculiar to this model, and instruction tuning visibly redraws it.</li>
-  </ul>
+  <h3 style="margin-top:38px">What these measurements are for</h3>
+  <p class="narrow">An emotion vector can be read, and it can be added back into the model, so the
+  same object serves as a measurement and as an intervention. Sections 3 and 4 use the vectors the
+  first way; section 5 uses them both ways.</p>
+  <p class="narrow">People bring language models their worst days, and companies sell them as
+  companions and therapists. Serving that use well means following how a person's state
+  <em>moves</em> across a conversation. Sections 6 to 8 test exactly that ability, and it is where
+  the results are weakest. It is also possible that emotion is not a major axis of this model's
+  representation at all; section 9 sets out that reading.</p>
+  <p class="narrow">Research on <span data-term="ai welfare">AI welfare</span> leans on what a
+  model reports about itself. Reading internal state adds a second, independent kind of evidence,
+  the kind Long and colleagues class as internal. What we measured is the model representing the
+  emotions <em>of a story it is reading</em>. That is not evidence about what the model feels.</p>
+  <p class="narrow">Where the model's arrangement of emotions diverges from the human ratings, the
+  divergence is itself a measurement of what is particular to this model. Instruction tuning
+  visibly redraws it, which is the subject of part II.</p>
 </div></section>
 
 <div class="partbar" data-part-no="I" data-part="Rebuilding the published result"><div class="wrap"><span class="kicker">Part I</span><h2 class="ptitle">Rebuilding the published result</h2><p class="pblurb">Sections 2 and 3 rebuild the paper's central result on an open model. Sorted by what separates them most, a model's emotion vectors should recover the pleasantness and activation axes psychologists use. Section 2 comes first because the rebuild depends on which stories the vectors are built from, and that turns out to change the answer by a factor of nine.</p></div></div>
@@ -672,8 +670,7 @@ border-bottom:1px solid var(--border)}</style></head>
     <details class="howto"><summary>How to read this</summary>
       <p><b>What a success looks like:</b> the base model. Its biggest axis matches human valence
       ratings at 0.83, and its second matches arousal at 0.55. Those are the two axes of the
-      circumplex, in order, recovered from the activations alone. That is the published result,
-      reproduced.</p>
+      circumplex, in order, recovered from the activations alone.</p>
       <p><b>The same axis also matches dominance.</b> Dominance (how much control the emotion
       implies) correlates with the biggest axis at <b>0.66</b>, higher than the second axis matches
       arousal. Valence and dominance are themselves correlated in the human ratings, so this figure
@@ -1058,7 +1055,7 @@ border-bottom:1px solid var(--border)}</style></head>
     <li><b>Instruction tuning demotes it and puts a large non-emotional axis on top: measured, not
     yet formally tested.</b> Every number behind it is real and reproducible, but the claim is still
     marked unvalidated in our tree and its falsification pass is owed. Treat it as a strong observation with its falsification pass still owed.</li>
-    <li><b>Emotion vectors follow a story better than chance: exploratory.</b> These measurements
+    <li><b>The model can track emotions throughout a story better than chance: exploratory.</b> These measurements
     are registered as hypothesis-generating work with no pass mark attached. The detection mark we
     <em>did</em> fix in advance was written for the 171-emotion vector set, and that set failed it
     at every layer. What passes is the twelve-emotion sets, a substitution we made after seeing the
@@ -1263,8 +1260,8 @@ border-bottom:1px solid var(--border)}</style></head>
       present.</span></summary>
       <p>A direction can be read or added back in, and the emotion vectors here are used both ways.
       We build a direction by
-      averaging the model's state over one emotion's stories, then subtracting the average over all
-      of them. Reading it back means measuring the cosine between that direction and the state we
+      averaging the model's state over an emotion's mono-emotion stories, then subtracting the
+      average over all of them. Reading it back means measuring the cosine between that direction and the state we
       are testing. Building a steering direction as a difference of means is the recipe of
       contrastive activation addition (Panickssery and colleagues) and of activation engineering
       (Turner and colleagues). Zou and colleagues set out the wider programme of reading and
@@ -1487,7 +1484,7 @@ function drawMethod(){
   svg.appendChild(txt(479,68,"mean over stories",{size:11}));
   svg.appendChild(txt(479,84,"\u2212 mean over emotions",{size:11,fill:P.orange,weight:600}));
   svg.appendChild(txt(479,116,"3. difference of means",{size:10.5,fill:P.muted,weight:600}));
-  svg.appendChild(txt(479,130,"centring is load-bearing",{size:9.5,fill:P.orange}));
+  svg.appendChild(txt(479,130,"centring changes the answer",{size:9.5,fill:P.orange}));
   arrow(560,596,yMid);
   // 4. the vector, and what it is used for. Shifted left of where this used to
   // sit: the two branch labels on the right ran past the viewBox and were cut.
@@ -1501,8 +1498,8 @@ function drawMethod(){
   const rx=712;
   svg.appendChild(el("line",{x1:696,y1:yMid,x2:rx-4,y2:yMid,stroke:P.muted,"stroke-width":1.4}));
   svg.appendChild(el("line",{x1:rx-4,y1:44,x2:rx-4,y2:112,stroke:P.muted,"stroke-width":1.4}));
-  [[44,"PCA over the 171","\u2192 parts one, two"],
-   [112,"cos(stream, vector)","\u2192 per token, part three"]].forEach(([y,a,b])=>{
+  [[44,"PCA over the 171","\u2192 sections 3 and 4"],
+   [112,"cos(stream, vector)","\u2192 sections 2, 5 to 8"]].forEach(([y,a,b])=>{
     arrow(rx-4,rx+12,y);
     svg.appendChild(txt(rx+18,y-2,a,{anchor:"start",size:11,weight:600}));
     svg.appendChild(txt(rx+18,y+12,b,{anchor:"start",size:9.5,fill:P.muted}));

@@ -125,9 +125,6 @@ border-radius:12px;padding:18px 20px}
 /* Reason lists. Five equal cards in a three-column grid left a ragged row and
    gave the abstract reason the same weight as the concrete one. A list lets an
    item be one line or four, which is what these actually are. */
-.reasons{max-width:820px;margin:6px 0 20px;padding-left:20px}
-.reasons li{margin-bottom:12px;line-height:1.62;padding-left:6px}
-.reasons li::marker{color:var(--orange)}
 /* Proposed next experiments. Numbered rather than bulleted because the prose
    claims an order and a bullet cannot carry one. */
 .steps{max-width:820px;margin:14px 0 20px;padding-left:24px}
