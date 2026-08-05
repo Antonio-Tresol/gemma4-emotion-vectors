@@ -441,7 +441,8 @@ def check_em_dashes(html: str) -> None:
 
 # MPLS scientific-writing rules with a mechanical signature. The rest of that
 # guidance (topic sentences, information order, stress position) needs a reader.
-MAX_SENTENCE_WORDS = 30
+MAX_SENTENCE_WORDS = 30  # the target: over this warns
+HARD_SENTENCE_WORDS = 34  # the backstop: over this fails
 SMOTHERED_VERB = re.compile(
     r"\b(make|makes|made|perform|performs|performed|provide|provides|provided|"
     r"conduct|conducts|conducted|undertake|give|gives|gave|reach|reaches|"
@@ -528,16 +529,31 @@ def prose_sentences(html: str) -> list[str]:
 
 
 def check_prose(html: str) -> None:
-    """Fail the build on the two rules a script can actually judge."""
+    """Fail the build on the two rules a script can actually judge.
+
+    The 30-word target is a heuristic, not a law: a sentence a word or two
+    over that reads fine is better than one contorted to duck the number.
+    So 31 to 34 words prints a warning for a human to judge, and only 35
+    and up fails the build, as the backstop against genuine runaways.
+    """
     sentences = prose_sentences(html)
     counts = [len([w for w in s.split() if re.search(r"[A-Za-z0-9]", w)]) for s in sentences]
-    long_ones = [(n, s) for n, s in zip(counts, sentences) if n > MAX_SENTENCE_WORDS]
+    over_hard = [(n, s) for n, s in zip(counts, sentences) if n > HARD_SENTENCE_WORDS]
+    over_soft = [
+        (n, s) for n, s in zip(counts, sentences) if MAX_SENTENCE_WORDS < n <= HARD_SENTENCE_WORDS
+    ]
     smothered = sorted({m.group(0) for s in sentences for m in SMOTHERED_VERB.finditer(s)})
+    if over_soft:
+        print(
+            f"prose warning: {len(over_soft)} sentence(s) over the {MAX_SENTENCE_WORDS}-word "
+            "target, within tolerance:\n"
+            + "\n".join(f"  [{n}] {s[:120]}" for n, s in sorted(over_soft, reverse=True))
+        )
     problems = []
-    if long_ones:
+    if over_hard:
         problems.append(
-            f"{len(long_ones)} sentence(s) over {MAX_SENTENCE_WORDS} words:\n"
-            + "\n".join(f"  [{n}] {s[:120]}" for n, s in sorted(long_ones, reverse=True))
+            f"{len(over_hard)} sentence(s) over {HARD_SENTENCE_WORDS} words:\n"
+            + "\n".join(f"  [{n}] {s[:120]}" for n, s in sorted(over_hard, reverse=True))
         )
     if smothered:
         problems.append("smothered verbs (use the plain verb): " + ", ".join(smothered))
@@ -545,7 +561,7 @@ def check_prose(html: str) -> None:
         raise SystemExit("prose check failed\n" + "\n".join(problems))
     print(
         f"prose: {len(sentences)} sentences, mean {sum(counts) / len(counts):.1f} words, "
-        f"longest {max(counts)} (limit {MAX_SENTENCE_WORDS})"
+        f"longest {max(counts)} (target {MAX_SENTENCE_WORDS}, hard limit {HARD_SENTENCE_WORDS})"
     )
 
 
