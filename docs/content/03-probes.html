@@ -17,33 +17,25 @@
       taking the worse of the two sets. A ring marks a layer that clears the mark on both. The
       number at the right of a row counts its rings, out of the 20 layers we sampled.</span></div>
     <details class="howto"><summary>How to read this</summary>
-      <p>One row per story source, one column per sampled layer. The cell is how many of the twelve
-      scenarios that layer got right, taking the worse of the two sets of twelve. A layer has to
-      clear the mark on both. <b>Ringed cells clear it.</b> The number on the right is how many rings
-      the row has.</p>
-      <p><b>The grading scale.</b> 0 of 20 layers would mean these vectors never detect anything.
-      20 of 20 would mean every depth works. Nothing we built came close to the top: the best story
-      source reaches 9, and the worst reaches 1.</p>
-      <p><b>What the ordering shows.</b> A stronger outside writer (DeepSeek) gives vectors that
-      work at nine layers; the model's own writing gives five; a smaller model's writing gives one. So
-      the intuitive guess, that a model reads its own emotional writing best, is wrong here. It is
-      out-written.</p>
-      <p><b>The four corpora differ in more than their writer.</b> Two of them are DeepSeek's, written
-      under different prompts. Their sizes run from 1,539 stories to 12,262, as the row labels show. So
-      these rows compare whole corpora. They do not isolate the writer.</p>
-      <p><b>Why two DeepSeek rows?</b> One used a single fixed prompt. The other used a
-      persona-by-setting grid meant to force variety. The varied corpus is four times the size and
-      still scores lower, which is the opposite of what we expected. A separate run controls for size
-      properly, with 5 seeds per point and the same scorer. Matched on stories per emotion, the
-      fixed-prompt corpus reaches <b>8.6</b> passing layers at 64 stories each. The varied one needs
-      <b>1,024</b> each to reach <b>6.8</b>. Forcing variety costs accuracy here rather than buying
-      it.</p>
-      <p><b>Where</b> matters as well as how many. No source works in the first third of the stack, and
-      the passing layers cluster late, around 33 to 57. A single quoted layer would have hidden that.</p>
+      <p>A failing row would have no rings: vectors that never clear the mark at any depth. A
+      perfect row would ring all 20 layers. Every row sits between the two.</p>
     </details>
     <div class="src">source: notebooks/07_generator_lineages.ipynb (experiments E11 and E12)</div>
   </div>
-  <p class="narrow" style="margin-top:22px">Gemma's own stories repeat themselves. Across 3,072
+  <p class="narrow" style="margin-top:22px">A stronger outside writer gives the most working
+  layers. Vectors built from DeepSeek's fixed-prompt stories pass at nine of the twenty layers,
+  the model's own stories give five, and a smaller model's stories give one. The intuitive guess,
+  that a model reads its own emotional writing best, is wrong here. Depth matters as well: no
+  source works in the first third of the stack, and the passing layers cluster late, around 33
+  to 57.</p>
+  <p class="narrow">The two DeepSeek corpora differ in their prompts. One used a single fixed
+  prompt; the other used a persona-by-setting grid meant to force variety, and it is four times
+  the size yet scores lower. A separate run matches the two on stories per emotion, with five
+  seeds per point and the same scorer. Matched, the fixed-prompt corpus reaches <b>8.6</b> passing
+  layers at 64 stories each, while the varied one needs <b>1,024</b> each to reach <b>6.8</b>.
+  Forcing variety cost accuracy here. The rows in the figure also compare whole corpora, which
+  differ in size as well as writer, so they do not isolate the writer on their own.</p>
+  <p class="narrow">Gemma's own stories repeat themselves. Across 3,072
   stories written to a request for varied emotional scenes, Gemma named the central character
   <b>Elias</b> in <b>98.2%</b> of them. Its five-word phrases recur <b>53&times;</b> as often as
   DeepSeek's do. An emotion vector is the average of the activations a corpus produces, so whatever

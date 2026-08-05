@@ -52,24 +52,22 @@
       on what emotions are, one stable picture from bottom to top. <b>What a bad result looks like:</b>
       pale patches and visible blocks. Groups of layers agree with each other but not with
       the rest, so the model has no single account of emotion.</p>
-      <p>Every square is scored from 0 to 1: 1 means the two layers sort the 171 emotions identically,
-      0 means they share nothing. Start on <b>base model</b> and you get close to the good case: its
-      late layers agree with each other at <b>0.94</b> out of 1. Now switch to <b>instruction-tuned
-      model</b>. The same measure drops to <b>0.79</b> and the grid visibly breaks into blocks. The base view matters here as the control:
-      without it, you could not tell a genuinely broken-up model from a measure that just always looks
-      blotchy.</p>
-      <p>Now switch to <b>instruction-tuned, top PC removed</b>. We remove just the biggest axis at each
-      layer, and the blocks largely merge back together. That is the evidence that the one dominant
-      axis <em>caused</em> the fragmentation.</p>
-      <p><b>base vs. instruction-tuned</b> is the odd one out. It is the only view with a different model on
-      each axis, and so the only one that is not a mirror image about its diagonal. Rows are
-      instruction-tuned layers, columns are base layers, and the diagonal answers "how much did instruction tuning
-      change this particular depth?". If instruction tuning changed nothing the diagonal would read 1.0
-      throughout. It reads 0.97 at layer 3 and 0.21 at layer 57: the early layers came through intact,
-      the late half was rebuilt.</p>
+      <p><b>base vs. instruction-tuned</b> is the only view with a different model on each axis, so
+      it is the only one that is not a mirror image about its diagonal. Rows are instruction-tuned
+      layers, columns are base layers.</p>
     </details>
     <div class="src">source: notebooks/02_circumplex_geometry.ipynb, section 10</div>
   </div>
+  <p class="narrow" style="margin-top:22px">On the base model, the late layers agree with one
+  another at <b>0.94</b> out of 1, close to the single-picture case. On the instruction-tuned
+  model the same measure drops to <b>0.79</b> and the grid breaks into visible blocks. The base
+  view is the control: without it, a genuinely broken-up model could not be told apart from a
+  measure that always looks blotchy.</p>
+  <p class="narrow">Removing the biggest axis at each layer merges the blocks back together, which
+  is the evidence that the one dominant axis <em>caused</em> the fragmentation. The
+  base-against-instruction-tuned view adds a depth profile: its diagonal is how much instruction
+  tuning changed each layer, and it reads 0.97 at layer 3 against 0.21 at layer 57. The early
+  layers came through intact; the late half was rebuilt.</p>
 
   <h3 style="margin-top:30px">The shared structure survives beneath the new axis</h3>
   <p class="narrow">  Taken at face value, the two models look largely unrelated. Comparing each model's top three axes

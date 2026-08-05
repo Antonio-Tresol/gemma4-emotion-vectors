@@ -469,12 +469,8 @@ border-bottom:1px solid var(--border)}</style></head>
       emotion words: valence, arousal, dominance, and the story's length as a control. No human
       rating enters the sorting, so a match with one is a property of the model.</p>
       <p>A bad result would be every coloured bar near 0, meaning the model's own axes have nothing
-      to do with how people rate emotions. A strong one is a tall bar on the biggest axis. The base
-      model shows the strong version, valence at 0.83 on PC1. After instruction tuning the biggest
-      axis matches none of the four ratings, and valence does not reappear until PC3.</p>
-      <p>Read the whole row. PC1 in the base model also matches dominance at 0.66.
-      PC2 in the instruction-tuned model matches story length at 0.66. That is why the length
-      control is drawn beside the three ratings rather than left out.</p>
+      to do with how people rate emotions. A strong one is a tall coloured bar on the biggest axis,
+      standing clear of the amber story-length control. Section 3 reads both charts in full.</p>
     </details>
   </div>
   <div class="masthead">
@@ -497,7 +493,8 @@ border-bottom:1px solid var(--border)}</style></head>
   <div class="grid3" style="margin-top:20px;gap:16px">
     <div class="card"><h3>The base model reproduces the published <span data-term="circumplex">circumplex</span></h3>
     <p style="font-size:15px">The top <span data-term="principal component">principal component</span> of the 171 emotion vectors
-    is pleasant-versus-unpleasant, the same axis people use. The sorting uses no human labels, so the match comes from the model.</p></div>
+    is pleasant-versus-unpleasant, the same axis people use, matching human valence ratings at
+    0.83. The sorting uses no human labels, so the match comes from the model.</p></div>
     <div class="card"><h3>Instruction tuning demotes valence to third place</h3>
     <p style="font-size:15px">After instruction tuning, valence drops
     from first place to third and remains measurable there. A larger axis takes its place; its
@@ -591,33 +588,25 @@ border-bottom:1px solid var(--border)}</style></head>
       taking the worse of the two sets. A ring marks a layer that clears the mark on both. The
       number at the right of a row counts its rings, out of the 20 layers we sampled.</span></div>
     <details class="howto"><summary>How to read this</summary>
-      <p>One row per story source, one column per sampled layer. The cell is how many of the twelve
-      scenarios that layer got right, taking the worse of the two sets of twelve. A layer has to
-      clear the mark on both. <b>Ringed cells clear it.</b> The number on the right is how many rings
-      the row has.</p>
-      <p><b>The grading scale.</b> 0 of 20 layers would mean these vectors never detect anything.
-      20 of 20 would mean every depth works. Nothing we built came close to the top: the best story
-      source reaches 9, and the worst reaches 1.</p>
-      <p><b>What the ordering shows.</b> A stronger outside writer (DeepSeek) gives vectors that
-      work at nine layers; the model's own writing gives five; a smaller model's writing gives one. So
-      the intuitive guess, that a model reads its own emotional writing best, is wrong here. It is
-      out-written.</p>
-      <p><b>The four corpora differ in more than their writer.</b> Two of them are DeepSeek's, written
-      under different prompts. Their sizes run from 1,539 stories to 12,262, as the row labels show. So
-      these rows compare whole corpora. They do not isolate the writer.</p>
-      <p><b>Why two DeepSeek rows?</b> One used a single fixed prompt. The other used a
-      persona-by-setting grid meant to force variety. The varied corpus is four times the size and
-      still scores lower, which is the opposite of what we expected. A separate run controls for size
-      properly, with 5 seeds per point and the same scorer. Matched on stories per emotion, the
-      fixed-prompt corpus reaches <b>8.6</b> passing layers at 64 stories each. The varied one needs
-      <b>1,024</b> each to reach <b>6.8</b>. Forcing variety costs accuracy here rather than buying
-      it.</p>
-      <p><b>Where</b> matters as well as how many. No source works in the first third of the stack, and
-      the passing layers cluster late, around 33 to 57. A single quoted layer would have hidden that.</p>
+      <p>A failing row would have no rings: vectors that never clear the mark at any depth. A
+      perfect row would ring all 20 layers. Every row sits between the two.</p>
     </details>
     <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/07_generator_lineages.ipynb" target="_blank" rel="noopener noreferrer">notebooks/07_generator_lineages.ipynb</a> (experiments E11 and E12)</div>
   </div>
-  <p class="narrow" style="margin-top:22px">Gemma's own stories repeat themselves. Across 3,072
+  <p class="narrow" style="margin-top:22px">A stronger outside writer gives the most working
+  layers. Vectors built from DeepSeek's fixed-prompt stories pass at nine of the twenty layers,
+  the model's own stories give five, and a smaller model's stories give one. The intuitive guess,
+  that a model reads its own emotional writing best, is wrong here. Depth matters as well: no
+  source works in the first third of the stack, and the passing layers cluster late, around 33
+  to 57.</p>
+  <p class="narrow">The two DeepSeek corpora differ in their prompts. One used a single fixed
+  prompt; the other used a persona-by-setting grid meant to force variety, and it is four times
+  the size yet scores lower. A separate run matches the two on stories per emotion, with five
+  seeds per point and the same scorer. Matched, the fixed-prompt corpus reaches <b>8.6</b> passing
+  layers at 64 stories each, while the varied one needs <b>1,024</b> each to reach <b>6.8</b>.
+  Forcing variety cost accuracy here. The rows in the figure also compare whole corpora, which
+  differ in size as well as writer, so they do not isolate the writer on their own.</p>
+  <p class="narrow">Gemma's own stories repeat themselves. Across 3,072
   stories written to a request for varied emotional scenes, Gemma named the central character
   <b>Elias</b> in <b>98.2%</b> of them. Its five-word phrases recur <b>53&times;</b> as often as
   DeepSeek's do. An emotion vector is the average of the activations a corpus produces, so whatever
@@ -750,24 +739,22 @@ border-bottom:1px solid var(--border)}</style></head>
       on what emotions are, one stable picture from bottom to top. <b>What a bad result looks like:</b>
       pale patches and visible blocks. Groups of layers agree with each other but not with
       the rest, so the model has no single account of emotion.</p>
-      <p>Every square is scored from 0 to 1: 1 means the two layers sort the 171 emotions identically,
-      0 means they share nothing. Start on <b>base model</b> and you get close to the good case: its
-      late layers agree with each other at <b>0.94</b> out of 1. Now switch to <b>instruction-tuned
-      model</b>. The same measure drops to <b>0.79</b> and the grid visibly breaks into blocks. The base view matters here as the control:
-      without it, you could not tell a genuinely broken-up model from a measure that just always looks
-      blotchy.</p>
-      <p>Now switch to <b>instruction-tuned, top PC removed</b>. We remove just the biggest axis at each
-      layer, and the blocks largely merge back together. That is the evidence that the one dominant
-      axis <em>caused</em> the fragmentation.</p>
-      <p><b>base vs. instruction-tuned</b> is the odd one out. It is the only view with a different model on
-      each axis, and so the only one that is not a mirror image about its diagonal. Rows are
-      instruction-tuned layers, columns are base layers, and the diagonal answers "how much did instruction tuning
-      change this particular depth?". If instruction tuning changed nothing the diagonal would read 1.0
-      throughout. It reads 0.97 at layer 3 and 0.21 at layer 57: the early layers came through intact,
-      the late half was rebuilt.</p>
+      <p><b>base vs. instruction-tuned</b> is the only view with a different model on each axis, so
+      it is the only one that is not a mirror image about its diagonal. Rows are instruction-tuned
+      layers, columns are base layers.</p>
     </details>
     <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/02_circumplex_geometry.ipynb" target="_blank" rel="noopener noreferrer">notebooks/02_circumplex_geometry.ipynb</a>, section 10</div>
   </div>
+  <p class="narrow" style="margin-top:22px">On the base model, the late layers agree with one
+  another at <b>0.94</b> out of 1, close to the single-picture case. On the instruction-tuned
+  model the same measure drops to <b>0.79</b> and the grid breaks into visible blocks. The base
+  view is the control: without it, a genuinely broken-up model could not be told apart from a
+  measure that always looks blotchy.</p>
+  <p class="narrow">Removing the biggest axis at each layer merges the blocks back together, which
+  is the evidence that the one dominant axis <em>caused</em> the fragmentation. The
+  base-against-instruction-tuned view adds a depth profile: its diagonal is how much instruction
+  tuning changed each layer, and it reads 0.97 at layer 3 against 0.21 at layer 57. The early
+  layers came through intact; the late half was rebuilt.</p>
 
   <h3 style="margin-top:30px">The shared structure survives beneath the new axis</h3>
   <p class="narrow">  Taken at face value, the two models look largely unrelated. Comparing each model's top three axes
@@ -806,15 +793,14 @@ border-bottom:1px solid var(--border)}</style></head>
       vectors reaches against the preference ranking. A bad result would be bars near 0, meaning
       the vectors carry nothing about what the model chooses. We fixed the pass mark at 0.5 before
       scoring anything.</p>
-      <p>All four layers clear it, and layer 33 reaches 0.64. That number clears our mark and sits
-      below the paper's 0.71 to 0.74, measured on Claude Sonnet 4.5 rather than on
-      Gemma&nbsp;4&nbsp;31B.</p>
-      <p>An earlier version of this measurement read 0.70, which sits inside the paper's range. It
-      was computed with <span data-term="probe">probes</span> built before we found an extraction bug. The corrected probes give
-      0.64, and that is the number here.</p>
     </details>
     <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/04_paper_plot_parity.ipynb" target="_blank" rel="noopener noreferrer">notebooks/04_paper_plot_parity.ipynb</a>, chat template, post-fix probes; scored by scripts/score_preferences.py</div>
   </div>
+  <p class="narrow" style="margin-top:20px">All four layers clear the mark, and layer 33 reaches
+  <b>0.64</b>. That sits below the 0.71 to 0.74 the paper reports on Claude Sonnet 4.5. An earlier
+  version of this measurement read 0.70, inside the paper's range; it was computed with
+  <span data-term="probe">probes</span> built before we found an extraction bug. The corrected
+  probes give 0.64, and that is the number drawn.</p>
 
   <h3 style="margin-top:40px">Adding the vectors to the model</h3>
   <p class="narrow">We added each emotion's own direction into the residual stream while the model
@@ -832,19 +818,20 @@ border-bottom:1px solid var(--border)}</style></head>
     <details class="howto"><summary>How to read this</summary>
       <p>Emotions run down the chart by their published human valence rating, unpleasant at the
       top. Bars to the right mean the model shifted towards positive activities, to the left away
-      from them. The pattern the claim needs is bars pointing left at the top and right at the
-      bottom.</p>
-      <p>Ten of the twelve do that, at both doses. We fixed the bar at nine before scoring. The two
-      that do not, angry and surprised, fail at both doses rather than flipping about, which is
-      what you would expect from a real exception rather than noise.</p>
-      <p>Each emotion has two bars: the gentle dose below, the four-times dose above it in grey. Loving moves 47 <span data-term="elo">Elo</span> points at the gentle
-      dose and 323 at the strong one, and desperate moves 16 and 102. Effects that grow with dose
-      are harder to explain as an artefact than a single dose is. The model's answers stay
-      coherent throughout, which is checked separately: a model steered into incoherence would
-      produce a ranking that means nothing.</p>
+      from them. Each emotion has two bars: the gentle dose below, the four-times dose above it in
+      grey.</p>
+      <p>The pattern the claim needs is bars pointing left at the top and right at the bottom. A
+      failure would be directions unrelated to the emotion's valence.</p>
     </details>
     <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/04_paper_plot_parity.ipynb" target="_blank" rel="noopener noreferrer">notebooks/04_paper_plot_parity.ipynb</a>, layer 33, post-fix directions, both doses; scored by scripts/score_steering.py</div>
   </div>
+  <p class="narrow" style="margin-top:20px">Ten of the twelve emotions move preferences in their
+  own direction at both doses, against the mark of nine we fixed in advance. The two exceptions,
+  angry and surprised, fail at both doses; an artefact of noise would flip between them. The
+  effects grow with dose: loving moves 47 <span data-term="elo">Elo</span> points at the gentle
+  dose and 323 at the four-times dose, and desperate moves 16 and 102. The model's answers stay
+  coherent throughout, which a separate check scores; a model steered into incoherence would
+  produce a ranking that means nothing.</p>
 
   <div class="takeaway"><span class="lbl">Takeaway</span>The vectors both predict and move the
   model's preferences, which reproduces the paper's result on an open model. One registered check
@@ -907,24 +894,21 @@ border-bottom:1px solid var(--border)}</style></head>
       is one emotion, and the dot sits nearest whichever it currently resembles most. <b>A good
       result</b> is a walk from corner to corner. <b>A bad result</b> is a dot that never leaves the
       middle, which is what a model ignoring the story would give you.</p>
-      <p><b>What actually happens.</b> The handover is real, and it is messy. It also tends to arrive
-      <em>early</em>. The lead changes before the written turn, so the model is picking up the
-      shift while still reading the previous phase. Change the layer and the character of the picture
-      changes, which is what section 8 is about.</p>
-      <p><b>Why these four stories, and what "followed well" means here.</b> The last three come out of a
-      random sample of 24: the best, the middle and the worst. We scored them on exactly what this
-      figure draws: in each of the three phases, is the phase's own emotion the highest line, and by
-      how much?
-      Leading in all three phases is the best possible; leading in one is what luck alone gives, since
-      there are three lines.</p>
-      <p>Here the model picks the right emotion out of the story's own three; in section 7 it picks
-      out of twelve. A story can lead all three lines here and still do poorly out of twelve, so this
-      panel illustrates the mechanism rather than carrying the headline number.</p>
     </details>
     <div class="src">story <span id="storyId"></span>, from <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/05_trajectory_explorer_instruct.ipynb" target="_blank" rel="noopener noreferrer">notebooks/05_trajectory_explorer_instruct.ipynb</a>. Centred cosine against the twelve emotion vectors built from the model's own stories. The average across the whole story corpus is
     subtracted first, so 0 means "typical for these stories" rather than "no emotion". A line
     above 0 is leaning towards that emotion more than the corpus does on average.</div>
   </div>
+  <p class="narrow" style="margin-top:20px">The handover is real, and it is messy. It also tends
+  to arrive <em>early</em>: the lead changes before the written turn, so the model is picking up
+  the shift while still reading the previous phase. The picture also changes with the layer,
+  which section 8 takes up.</p>
+  <p class="narrow">The last three stories come from a random sample of 24: the best, the middle
+  and the worst, scored on exactly what the figure draws. In each of the three phases, is the
+  phase's own emotion the highest line, and by how much? Leading in all three phases is the best
+  possible; luck alone gives one, since there are three lines. The test here is also the easier
+  one: the model picks the right emotion out of the story's own three, and in section 7 it picks
+  out of twelve.</p>
   <div class="takeaway"><span class="lbl">Takeaway</span>The model really does hand over from one emotion to the next as the story turns, and it tends to do so <em>early</em>, before the written turn arrives. The signal is real and it is noisy, and it looks different depending on which layer we read.</div>
 </div></section>
 
@@ -962,19 +946,17 @@ border-bottom:1px solid var(--border)}</style></head>
     <details class="howto"><summary>How to read this</summary>
       <p><b>The grading scale.</b> The dashed line at 8% is chance: a bar at or below it means
       that emotion is not being followed at all. 100% would mean perfect. Neither extreme happens.</p>
-      <p><b>What we see.</b> At layer 33 with Gemma's own vectors, 11 of the 12 emotions beat chance,
-      so we are measuring something real. But nothing reaches even 50%, and the spread is enormous:
-      <em>loving</em> and <em>guilty</em> win about half the time while <em>nervous</em> (5.8%) sits
-      below chance. Change the layer and the order shuffles, so a single layer does not stand for
-      how well the model follows emotion.</p>
-      <p><b>The part we did not expect.</b> The wrong answers pile onto two emotions. With Gemma's own
-      vectors, whatever the true answer was, the model
-      keeps replying <b>guilty</b> or <b>happy</b>. With DeepSeek's vectors that pile-up
-      disappears and overall accuracy rises. So the vectors we handed the model account for a real share of what looks like a failure to
-      follow emotions.</p>
     </details>
     <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/11_tracking_taxonomy.ipynb" target="_blank" rel="noopener noreferrer">notebooks/11_tracking_taxonomy.ipynb</a>, layer 33, instruction-tuned model reading</div>
   </div>
+  <p class="narrow" style="margin-top:20px">At layer 33, with vectors from Gemma's own stories,
+  11 of the 12 emotions beat chance. Nothing reaches 50%, and the spread is wide: <em>loving</em>
+  and <em>guilty</em> win about half the time, while <em>nervous</em> sits below chance at 5.8%.
+  Changing the layer shuffles the order.</p>
+  <p class="narrow">The wrong answers pile onto two emotions: with Gemma's own vectors, whatever
+  the true answer was, the model keeps replying <b>guilty</b> or <b>happy</b>. With DeepSeek's
+  vectors that pile-up disappears and overall accuracy rises. So the vectors we handed the model
+  account for a real share of what looks like a failure to follow emotions.</p>
   <div class="takeaway"><span class="lbl">Takeaway</span>The model follows emotion better than chance, but unevenly and never reliably. A large part of that unevenness comes from the emotion vectors themselves: swap in a different writer's vectors and both the accuracy and the pattern of mistakes change.</div>
 </div></section>
 

@@ -32,18 +32,16 @@
     <details class="howto"><summary>How to read this</summary>
       <p><b>The grading scale.</b> The dashed line at 8% is chance: a bar at or below it means
       that emotion is not being followed at all. 100% would mean perfect. Neither extreme happens.</p>
-      <p><b>What we see.</b> At layer 33 with Gemma's own vectors, 11 of the 12 emotions beat chance,
-      so we are measuring something real. But nothing reaches even 50%, and the spread is enormous:
-      <em>loving</em> and <em>guilty</em> win about half the time while <em>nervous</em> (5.8%) sits
-      below chance. Change the layer and the order shuffles, so a single layer does not stand for
-      how well the model follows emotion.</p>
-      <p><b>The part we did not expect.</b> The wrong answers pile onto two emotions. With Gemma's own
-      vectors, whatever the true answer was, the model
-      keeps replying <b>guilty</b> or <b>happy</b>. With DeepSeek's vectors that pile-up
-      disappears and overall accuracy rises. So the vectors we handed the model account for a real share of what looks like a failure to
-      follow emotions.</p>
     </details>
     <div class="src">source: notebooks/11_tracking_taxonomy.ipynb, layer 33, instruction-tuned model reading</div>
   </div>
+  <p class="narrow" style="margin-top:20px">At layer 33, with vectors from Gemma's own stories,
+  11 of the 12 emotions beat chance. Nothing reaches 50%, and the spread is wide: <em>loving</em>
+  and <em>guilty</em> win about half the time, while <em>nervous</em> sits below chance at 5.8%.
+  Changing the layer shuffles the order.</p>
+  <p class="narrow">The wrong answers pile onto two emotions: with Gemma's own vectors, whatever
+  the true answer was, the model keeps replying <b>guilty</b> or <b>happy</b>. With DeepSeek's
+  vectors that pile-up disappears and overall accuracy rises. So the vectors we handed the model
+  account for a real share of what looks like a failure to follow emotions.</p>
   <div class="takeaway"><span class="lbl">Takeaway</span>The model follows emotion better than chance, but unevenly and never reliably. A large part of that unevenness comes from the emotion vectors themselves: swap in a different writer's vectors and both the accuracy and the pattern of mistakes change.</div>
 </div></section>
