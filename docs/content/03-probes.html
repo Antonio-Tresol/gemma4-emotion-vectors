@@ -30,12 +30,12 @@
   to 57.</p>
   <p class="narrow">The two DeepSeek corpora differ in their prompts. One used a single fixed
   prompt; the other used a persona-by-setting grid meant to force variety. The varied corpus is
-  four times the size yet scores lower, which is the opposite of what we expected. We matched the two on
-  stories per emotion in a separate run, with five seeds per point and the same scorer. Matched,
-  the fixed-prompt corpus reaches <b>8.6</b> passing layers at 64 stories each, while the varied
-  one needs <b>1,024</b> each to reach <b>6.8</b>, so the variety itself costs accuracy. The rows
-  in the figure also compare whole corpora, which
-  differ in size as well as writer, so they do not isolate the writer on their own.</p>
+  four times the size yet scores lower, which is the opposite of what we expected. The rows of
+  the figure compare whole corpora, which differ in size as well as prompt. We therefore re-ran
+  the test at matched sizes: the same number of stories per emotion drawn from each corpus, five
+  random draws per size, one scorer. At 64 stories per emotion the fixed-prompt corpus already
+  reaches <b>8.6</b> passing layers, while the varied one needs <b>1,024</b> per emotion to reach
+  <b>6.8</b>. Prompt variety costs accuracy even with size matched.</p>
   <p class="narrow">Gemma's own stories repeat themselves. Across 3,072
   stories written to a request for varied emotional scenes, Gemma named the central character
   <b>Elias</b> in <b>98.2%</b> of them. Its five-word phrases recur <b>53&times;</b> as often as
