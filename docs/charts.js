@@ -686,7 +686,8 @@ document.querySelectorAll("[data-vectors]").forEach(b=>b.onclick=()=>{
 /* ---------- naming vs anticipating, by layer ---------- */
 function drawLayers(){
   const host=document.getElementById("layerChart"); host.innerHTML="";
-  const rows=D.byLayer, W=470,H=320,L=52,R=52,T=34,B=44;
+  // 880 to match the shared canvas scale; 470 was the old half-column size
+  const rows=D.byLayer, W=880,H=320,L=56,R=56,T=34,B=44;
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
   const iw=W-L-R, ih=H-T-B;
   const X=i=>L+(i/(rows.length-1))*iw;
@@ -838,7 +839,9 @@ function drawLineage(){
 /* dose-response: how many stories per emotion you actually need */
 function drawDose(){
   const host=document.getElementById("doseChart"); host.innerHTML="";
-  const ns=Object.keys(D.dose), W=380,H=190,L=52,R=14,T=18,B=42;
+  // 880 to match the shared canvas scale; 380 rendered this chart at more
+  // than twice the scale of the rest of the page
+  const ns=Object.keys(D.dose), W=880,H=240,L=56,R=20,T=24,B=46;
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
   const iw=W-L-R, ih=H-T-B;
   const X=i=>L+(i/(ns.length-1))*iw, Y=v=>T+ih-(v/20)*ih;
