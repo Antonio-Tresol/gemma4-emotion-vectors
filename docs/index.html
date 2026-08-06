@@ -951,7 +951,7 @@ border-bottom:1px solid var(--border)}</style></head>
   answer was, the model keeps replying <em>guilty</em> or <em>happy</em>. With DeepSeek's vectors
   that pile-up disappears and overall accuracy rises. This suggests that part of the apparent
   failure comes from the vectors themselves.</p>
-  <div class="takeaway"><span class="lbl">Takeaway</span>The model follows emotion better than chance, but unevenly and never reliably. A large part of that unevenness comes from the emotion vectors themselves: swap in a different writer's vectors and both the accuracy and the pattern of mistakes change.</div>
+  <div class="takeaway"><span class="lbl">Takeaway</span>The model follows emotion better than chance, but unevenly and not reliably. A large part of that unevenness comes from the emotion vectors themselves.</div>
 </div></section>
 
 <section id="layers"><div class="wrap">
@@ -960,7 +960,7 @@ border-bottom:1px solid var(--border)}</style></head>
   different places. The first is the one from section 7:
   does the model name the emotion in front of it? The second is anticipation:
   before each turn the model leans slightly towards the emotion about to arrive. We measured
-  whether the <em>size</em> of that lean tracks the <em>size</em> of the coming emotional change.
+  whether the size of that lean tracks the size of the coming emotional change.
   A big swing from cheerful to devastated should produce a bigger lean than a small shift from
   content to calm. The two lines are on different scales, so each has its own axis and its own
   failure line. Read them as two charts sharing an x-axis.</p>
