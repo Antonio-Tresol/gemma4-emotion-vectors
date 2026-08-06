@@ -916,9 +916,6 @@ border-bottom:1px solid var(--border)}</style></head>
   <p class="narrow">The set shifts here from 171 emotions to <b>twelve</b>, because the stories were
   written to move between these twelve. Picking at random would be right 1 time in 12, or 8%.
   Each bar is one emotion's score.</p>
-  <p class="narrow">A vector belongs to the model it was read from, and we extracted the
-  twelve-emotion sets from the instruction-tuned model only. This section therefore covers the
-  instruction-tuned model alone.</p>
   <div class="card" style="margin-top:22px">
     <div class="controls">
       <button class="seg on" data-vectors="selfgen">vectors from Gemma's own stories</button>
@@ -943,11 +940,11 @@ border-bottom:1px solid var(--border)}</style></head>
   <p class="narrow" style="margin-top:20px">We found that 11 of the 12 emotions beat chance at
   layer 33, with vectors from Gemma's own stories. Nothing reaches 50%, and the spread is wide:
   <em>loving</em> and <em>guilty</em> win about half the time, while <em>nervous</em> sits below
-  chance at 5.8%. Changing the layer shuffles the order.</p>
+  chance at 5.8%. Changing the layer shuffles the order of the emotions.</p>
   <p class="narrow">Unexpectedly, the wrong answers pile onto two emotions: whatever the true
   answer was, the model keeps replying <b>guilty</b> or <b>happy</b>. With DeepSeek's vectors
-  that pile-up disappears and overall accuracy rises, which suggests that a real share of the
-  apparent failure belongs to the vectors.</p>
+  that pile-up disappears and overall accuracy rises. This suggests that part of the apparent
+  failure comes from the vectors themselves.</p>
   <div class="takeaway"><span class="lbl">Takeaway</span>The model follows emotion better than chance, but unevenly and never reliably. A large part of that unevenness comes from the emotion vectors themselves: swap in a different writer's vectors and both the accuracy and the pattern of mistakes change.</div>
 </div></section>
 
