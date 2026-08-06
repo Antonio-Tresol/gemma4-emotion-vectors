@@ -905,12 +905,13 @@ border-bottom:1px solid var(--border)}</style></head>
   emotional changes, though noisily. The switch usually comes <em>before</em> the written turn, so
   the model starts leaning towards the next emotion while still reading the previous phase. The
   pattern depends on which layer we read, and section 8 measures how.</p>
-  <p class="narrow">The last three stories are the best, the middle and the worst of a random
-  sample of 24. We scored each phase on whether its own emotion is the highest line and by how
-  much. Leading in all three phases is the best possible; luck alone gives one, since there are
-  three lines. The test here is also the easier one: the model picks the right emotion out of the
-  story's own three, and in section 7 it picks out of twelve.</p>
-  <div class="takeaway"><span class="lbl">Takeaway</span>The model really does hand over from one emotion to the next as the story turns, and it tends to do so <em>early</em>, before the written turn arrives. The signal is real and it is noisy, and it looks different depending on which layer we read.</div>
+  <p class="narrow">Three of the four story buttons are labelled by how well the model tracked
+  them. They are the best, the middle and the worst of 24 randomly sampled stories, ranked by how
+  many of their three phases have their own emotion as the highest line, and by how big its lead
+  is. Three of three is the best a story can do; one of three is what luck gives, since there are
+  three lines. This test is also easier than section 7's: here the model chooses between the
+  story's own three emotions, there between twelve.</p>
+  <div class="takeaway"><span class="lbl">Takeaway</span>The model's internal state follows the story's emotional changes, though noisily. It usually starts leaning towards the next emotion <em>before</em> the written turn, while still reading the previous phase. The pattern depends on which layer we read.</div>
 </div></section>
 
 <section id="emotions"><div class="wrap">
