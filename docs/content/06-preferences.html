@@ -2,8 +2,8 @@
   <h2><span class="secno">5</span>Emotion vectors predict and move the model's preferences</h2>
   <p class="narrow">We showed the model two activities at a time and asked which it would rather
   do, over every ordered pair. Fitting those answers together gives one ranking of what the model
-  prefers. The paper tests its emotion vectors against such a ranking in two ways: by reading the
-  vectors, and by adding them back into the model. We ran both tests on Gemma&nbsp;4&nbsp;31B.</p>
+  prefers. The original paper tests its emotion vectors against such a ranking in two ways: by reading the
+  vectors, and by adding them back into the model's residual stream.</p>
 
   <h3 style="margin-top:34px">Reading the vectors against the ranking</h3>
   <p class="narrow">For each emotion, we measured how strongly its vector was active while the
@@ -24,11 +24,8 @@
     </details>
     <div class="src">source: notebooks/04_paper_plot_parity.ipynb, chat template, post-fix probes; scored by scripts/score_preferences.py</div>
   </div>
-  <p class="narrow" style="margin-top:20px">We found that all four layers clear the mark, with
-  layer 33 reaching <b>0.64</b>, below the 0.71 to 0.74 the paper reports on Claude Sonnet 4.5. An earlier
-  version of this measurement read 0.70, inside the paper's range; it was computed with
-  <span data-term="probe">probes</span> built before we found an extraction bug. The corrected
-  probes give 0.64, and that is the number drawn.</p>
+  <p class="narrow" style="margin-top:20px">We found that all four layers clear the mark of 0.5, with
+  layer 33 reaching <b>0.64</b>, below the 0.71 to 0.74 the paper reports on Claude Sonnet 4.5.</p>
 
   <h3 style="margin-top:40px">Adding the vectors to the model</h3>
   <p class="narrow">We added each emotion's own direction into the residual stream while the model

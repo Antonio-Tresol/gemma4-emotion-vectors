@@ -22,23 +22,23 @@
     </details>
     <div class="src">source: notebooks/07_generator_lineages.ipynb (experiments E11 and E12)</div>
   </div>
-  <p class="narrow" style="margin-top:22px">We found that a stronger outside writer gives the
+  <p class="narrow" style="margin-top:22px">We found that a stronger writer gives the
   most working layers. Vectors built from DeepSeek's fixed-prompt stories pass at nine of the
-  twenty, the model's own stories give five, and a smaller model's stories give one. We had
-  expected the model to read its own emotional writing best; the opposite holds. No source works
-  in the first third of the model's layers, and the passing layers cluster late, around layers 33
+  twenty while the model's own stories give five and a smaller model's stories give one. We had
+  expected the model to read its own emotional writing best. Interestingly, no source works
+  in the first third of the model's layers and the passing layers cluster late, around layers 33
   to 57.</p>
   <p class="narrow">The two DeepSeek corpora differ in their prompts. One used a single fixed
-  prompt; the other used a persona-by-setting grid meant to force variety. The varied corpus is
-  four times the size yet scores lower, which is the opposite of what we expected. The rows of
+  prompt while the other used a persona-by-setting grid meant to force variety. Surprisingly, the
+  varied corpus is four times the size yet scores lower. The rows of
   the figure compare whole corpora, which differ in size as well as prompt. We therefore re-ran
   the test at matched sizes: the same number of stories per emotion drawn from each corpus, five
-  random draws per size, one scorer. At 64 stories per emotion the fixed-prompt corpus already
+  random draws per size using a unique scorer. At 64 stories per emotion the fixed-prompt corpus already
   reaches <b>8.6</b> passing layers, while the varied one needs <b>1,024</b> per emotion to reach
   <b>6.8</b>. Prompt variety costs accuracy even with size matched.</p>
-  <p class="narrow">Gemma's own stories repeat themselves. Across 3,072
+  <p class="narrow">We also found that Gemma's own stories repeat themselves quite often. Across 3,072
   stories written to a request for varied emotional scenes, Gemma named the central character
-  <b>Elias</b> in <b>98.2%</b> of them. Its five-word phrases recur <b>53&times;</b> as often as
+  <b>Elias</b> in <b>98.2%</b> of them. Its five-word phrases recur <b>53 times</b> as often as
   DeepSeek's do. An emotion vector is the average of the activations a corpus produces, so whatever
   those stories share is averaged into the vector alongside the emotion. A corpus this repetitive
   therefore yields a vector that partly encodes Gemma's writing habits.</p>
@@ -54,8 +54,9 @@
     </details>
     <div class="src">source: notebooks/07_generator_lineages.ipynb (experiment E12)</div>
   </div>
-  <p class="narrow" style="margin-top:14px">About <b>64</b> per emotion. At that point the vectors
-  already reach 8.6 working layers out of the 9 this writer ever achieves. Quadrupling the stories
-  buys almost nothing.</p>
+  <p class="narrow" style="margin-top:14px">In terms of how many stories to use to generate the
+  emotion vectors, we found that about <b>64</b> per emotion works well in our setting. At that
+  point the vectors already reach 8.6 working layers out of the 9 this writer ever achieves. From
+  there it seems to plateau.</p>
   <div class="takeaway"><span class="lbl">Takeaway</span>An emotion vector is only as good as the corpus behind it. Same model, same test, and a nine-fold spread in how many layers work. A stronger outside writer beats the model's own stories, which are too repetitive to build a broad vector from.</div>
 </div></section>
