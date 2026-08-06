@@ -1512,4 +1512,7 @@ numberFigures();
 drawPCs("base","coverPcBase",null);
 drawPCs("instruct","coverPcIt",null);
 drawPrefLayers(); drawSteering();
-drawPCs("base"); drawGrid(); drawStory(); drawEmo(); drawLayers(); drawLineage(); drawDose(); drawRsa();
+/* selectStory rather than drawStory: only selectStory fills the story id in
+   the source line and the scoring note, so a bare draw left both empty until
+   the first button click */
+drawPCs("base"); drawGrid(); selectStory(0); drawEmo(); drawLayers(); drawLineage(); drawDose(); drawRsa();
