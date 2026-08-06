@@ -823,13 +823,13 @@ border-bottom:1px solid var(--border)}</style></head>
       from them. Each emotion has two bars: the gentle dose below, the four-times dose above it in
       grey.</p>
       <p>The pattern the claim needs is bars pointing left at the top and right at the bottom. A
-      failure would be directions unrelated to the emotion's valence.</p>
+      failure would be directions unrelated to the emotion's valence. We fixed the pass mark, nine
+      of the twelve, before scoring.</p>
     </details>
     <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/04_paper_plot_parity.ipynb" target="_blank" rel="noopener noreferrer">notebooks/04_paper_plot_parity.ipynb</a>, layer 33, post-fix directions, both doses; scored by scripts/score_steering.py</div>
   </div>
-  <p class="narrow" style="margin-top:20px">We fixed the pass mark in advance: at least nine of
-  the twelve emotions had to move preferences the way their valence predicts. Ten do, at both
-  doses.</p>
+  <p class="narrow" style="margin-top:20px">Ten of the twelve emotions move preferences the way
+  their valence predicts, at both doses.</p>
   <p class="narrow">The two exceptions,
   angry and surprised, fail at both doses; an artefact of noise would flip between them. The
   effects grow with dose: loving moves 47 <span data-term="elo">Elo</span> points at the gentle
