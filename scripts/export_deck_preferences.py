@@ -27,6 +27,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import numpy as np
+
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "results"
 OUT = ROOT / "docs" / "data" / "preferences.json"
@@ -43,15 +45,31 @@ SIGN_BAR = 9  # of 12, registered before scoring
 
 def main() -> int:
     correlational = json.loads(CORRELATIONAL.read_text())
-    by_layer = [
-        {
-            "layer": row["layer"],
-            "max_abs_r": round(row["max_abs_r"], 4),
-            "valence_r": round(row["valence_organization_r"], 4),
-            "perm_p": row["valence_organization_perm_p"],
-        }
-        for row in correlational["probe_elo_by_layer"]
+    # the scores file stores each layer's winner only as an index into the
+    # probe bundle's emotion order, so resolve the names here, once
+    emotion_names = [
+        str(name)
+        for name in np.load(ROOT / correlational["probe_bundle"], allow_pickle=True)["emotions"]
     ]
+    by_layer = []
+    for row in correlational["probe_elo_by_layer"]:
+        winner_index = row["argmax_probe_index"]
+        winner_r = row["per_probe_r"][winner_index]
+        if abs(abs(winner_r) - row["max_abs_r"]) > 1e-6:
+            raise ValueError(
+                f"layer {row['layer']}: argmax probe r {winner_r} does not "
+                f"match max_abs_r {row['max_abs_r']}"
+            )
+        by_layer.append(
+            {
+                "layer": row["layer"],
+                "max_abs_r": round(row["max_abs_r"], 4),
+                "best_emotion": emotion_names[winner_index],
+                "best_r": round(winner_r, 4),
+                "valence_r": round(row["valence_organization_r"], 4),
+                "perm_p": row["valence_organization_perm_p"],
+            }
+        )
 
     doses = {}
     for alpha, path in STEERING.items():
@@ -98,6 +116,8 @@ def main() -> int:
     OUT.write_text(json.dumps(payload, indent=1) + "\n")
     print(f"wrote {OUT.relative_to(ROOT)}")
     print(f"  correlational: |r| {payload['best_abs_r']} at layer {payload['best_layer']}")
+    for row in by_layer:
+        print(f"    layer {row['layer']}: {row['best_emotion']} r={row['best_r']}")
     print(f"  registered bar {payload['registered_bar']}, paper {PAPER_RANGE[0]}-{PAPER_RANGE[1]}")
     for alpha, dose in doses.items():
         print(

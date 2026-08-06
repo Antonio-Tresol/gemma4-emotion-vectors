@@ -796,7 +796,10 @@ border-bottom:1px solid var(--border)}</style></head>
     <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/04_paper_plot_parity.ipynb" target="_blank" rel="noopener noreferrer">notebooks/04_paper_plot_parity.ipynb</a>, chat template, post-fix probes; scored by scripts/score_preferences.py</div>
   </div>
   <p class="narrow" style="margin-top:20px">We found that all four layers clear the mark of 0.5, with
-  layer 33 reaching <b>0.64</b>, below the 0.71 to 0.74 the paper reports on Claude Sonnet 4.5.</p>
+  layer 33 reaching <b>0.64</b>, below the 0.71 to 0.74 the paper reports on Claude Sonnet 4.5.
+  A different emotion wins at each layer: <em>overwhelmed</em> at 24, <em>calm</em> at 30,
+  <em>safe</em> at 33 and <em>at ease</em> at 36. The correlation for <em>safe</em> runs negative:
+  the more strongly it activates on an activity, the lower that activity sits in the ranking.</p>
 
   <h3 style="margin-top:40px">Adding the vectors to the model</h3>
   <p class="narrow">We added each emotion's own direction into the residual stream while the model
@@ -1532,12 +1535,17 @@ function drawPrefLayers(){
     const x0=L+i*bw, h=r.max_abs_r*ih, best=r.layer===P0.best_layer;
     const bar=el("rect",{x:x0+bw*.28,y:yOf(r.max_abs_r),width:bw*.44,height:h,rx:2,
       fill:best?C.valence:P.greyMid});
-    tipOn(bar,`<b>layer ${r.layer}</b>: best probe predicts preference at ${r.max_abs_r.toFixed(3)}`+
-      `<span class="t-sub">valence organization ${r.valence_r.toFixed(2)}, `+
+    tipOn(bar,`<b>layer ${r.layer}</b>: best vector "${r.best_emotion}", r = ${r.best_r.toFixed(2)}`+
+      `<span class="t-sub">${r.best_r<0?"negative: the more it activates, the lower the activity ranks. ":""}`+
+      `valence organization ${r.valence_r.toFixed(2)}, `+
       `permutation p ${r.perm_p===0?"< 1e-4":r.perm_p}</span>`);
     svg.appendChild(bar);
     const lab=el("text",{x:x0+bw/2,y:H-26,"text-anchor":"middle","font-size":11,fill:P.text});
     lab.textContent="layer "+r.layer; svg.appendChild(lab);
+    // name the winning vector under each bar: the bar is a maximum over all
+    // 171 emotions, and which emotion wins is part of the result
+    const win=el("text",{x:x0+bw/2,y:H-11,"text-anchor":"middle","font-size":10,fill:P.muted});
+    win.textContent=`best: ${r.best_emotion}${r.best_r<0?" (−)":""}`; svg.appendChild(win);
   });
   const yl=el("text",{x:14,y:T+ih/2,"font-size":10.5,fill:P.muted,
     transform:`rotate(-90 14 ${T+ih/2})`,"text-anchor":"middle"});

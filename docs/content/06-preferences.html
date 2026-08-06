@@ -25,7 +25,10 @@
     <div class="src">source: notebooks/04_paper_plot_parity.ipynb, chat template, post-fix probes; scored by scripts/score_preferences.py</div>
   </div>
   <p class="narrow" style="margin-top:20px">We found that all four layers clear the mark of 0.5, with
-  layer 33 reaching <b>0.64</b>, below the 0.71 to 0.74 the paper reports on Claude Sonnet 4.5.</p>
+  layer 33 reaching <b>0.64</b>, below the 0.71 to 0.74 the paper reports on Claude Sonnet 4.5.
+  A different emotion wins at each layer: <em>overwhelmed</em> at 24, <em>calm</em> at 30,
+  <em>safe</em> at 33 and <em>at ease</em> at 36. The correlation for <em>safe</em> runs negative:
+  the more strongly it activates on an activity, the lower that activity sits in the ranking.</p>
 
   <h3 style="margin-top:40px">Adding the vectors to the model</h3>
   <p class="narrow">We added each emotion's own direction into the residual stream while the model

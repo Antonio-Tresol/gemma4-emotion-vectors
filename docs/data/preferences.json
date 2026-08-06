@@ -10,24 +10,32 @@
   {
    "layer": 24,
    "max_abs_r": 0.597,
+   "best_emotion": "overwhelmed",
+   "best_r": 0.597,
    "valence_r": 0.5544,
    "perm_p": 0.0
   },
   {
    "layer": 30,
    "max_abs_r": 0.6223,
+   "best_emotion": "calm",
+   "best_r": 0.6223,
    "valence_r": 0.411,
    "perm_p": 0.0
   },
   {
    "layer": 33,
    "max_abs_r": 0.6448,
+   "best_emotion": "safe",
+   "best_r": -0.6448,
    "valence_r": 0.4123,
    "perm_p": 0.0
   },
   {
    "layer": 36,
    "max_abs_r": 0.5658,
+   "best_emotion": "at ease",
+   "best_r": 0.5658,
    "valence_r": 0.5289,
    "perm_p": 0.0
   }
