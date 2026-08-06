@@ -537,7 +537,7 @@ border-bottom:1px solid var(--border)}</style></head>
   mono-emotion stories, then subtracting the average over all the emotions. To read it back we
   measure the <b>angle between that vector and the model's state at a given word and a given
   layer</b>, using cosine similarity. The cosine is centred: we subtract the mean over the story
-  corpus first, so 0 is the corpus average. <a href="#methods">Section 10 defines each step
+  corpus first, so 0 is the corpus average. <a href="#methods">Section 11 defines each step
   exactly</a>.</p>
   <div class="card"><div id="methodDiagram" data-schematic
     data-figtitle="How an emotion vector is built, and how it is read back"></div>
@@ -1049,8 +1049,30 @@ border-bottom:1px solid var(--border)}</style></head>
   from.</p>
 </div></section>
 
+<section id="conclusion" data-endparts><div class="wrap">
+  <h2><span class="secno">10</span>Conclusion</h2>
+  <p class="narrow">We have shown that an open 31-billion-parameter model organises emotions much
+  the way psychologists do. The biggest axis of the base model's 171 emotion vectors is pleasant
+  versus unpleasant, matching human <span data-term="valence">valence</span> ratings at 0.83, with
+  no human labels in the sorting. Instruction tuning keeps that axis but demotes it to third
+  place, beneath a larger axis we could not identify. And the vectors are not inert. Read out
+  token by token, they follow a story's emotional turns better than chance, usually leaning
+  towards the next emotion before the written turn. Added back into the model, ten of the twelve
+  move its preferences the way their valence predicts.</p>
+  <p class="narrow">We caution against reading more into these directions than the measurements
+  support. Every positive result on this page is better than chance and too weak to rely on.
+  Part of that weakness sits in our instruments rather than the model: section 7's pile-up of
+  wrong answers onto two emotions appeared with one writer's vectors and vanished with another's.
+  How much of the rest is the model and how much the instruments is an experiment section 9
+  already lists. And nothing here speaks to whether the model feels anything; we measured
+  directions and their effects, not experience.</p>
+  <p class="narrow">Even so, the directions are there, they are readable, and they move behaviour.
+  Instruction tuning, the step that turns a base model into an assistant, is also the step that
+  rearranged them. Understanding what it put on top is where we would start.</p>
+</div></section>
+
 <section id="methods"><div class="wrap">
-  <h2><span class="secno">10</span>Further details on methodology</h2>
+  <h2><span class="secno">11</span>Further details on methodology</h2>
   <p class="narrow">Each block below carries the formula, the pseudo-code and a glossary for every
   symbol in it.</p>
 
@@ -1131,7 +1153,7 @@ border-bottom:1px solid var(--border)}</style></head>
 </div></section>
 
 <section id="glossary"><div class="wrap">
-  <h2><span class="secno">11</span>Glossary and references</h2>
+  <h2><span class="secno">12</span>Glossary and references</h2>
   <p class="narrow">Every dotted word on this page has an entry here, with the source its
   definition rests on.</p>
 
@@ -2679,7 +2701,7 @@ addEventListener("keydown",e=>{
   else if(e.key==="ArrowLeft"||e.key==="PageUp"){e.preventDefault();goToSection(navIdx-1);}
   else if(e.key==="Home"){e.preventDefault();navIdx=-1;scrollTo({top:0,behavior:"smooth"});}
   else if(/^[0-9]$/.test(e.key)){
-    // 1-9 are sections 1-9; 0 is section 10, the Q&A
+    // 1-9 are sections 1-9; 0 is section 10, the conclusion
     const n=e.key==="0"?10:parseInt(e.key,10);
     if(n<=SECTIONS.length){e.preventDefault();goToSection(n-1);}
   }

@@ -1343,7 +1343,7 @@ addEventListener("keydown",e=>{
   else if(e.key==="ArrowLeft"||e.key==="PageUp"){e.preventDefault();goToSection(navIdx-1);}
   else if(e.key==="Home"){e.preventDefault();navIdx=-1;scrollTo({top:0,behavior:"smooth"});}
   else if(/^[0-9]$/.test(e.key)){
-    // 1-9 are sections 1-9; 0 is section 10, the Q&A
+    // 1-9 are sections 1-9; 0 is section 10, the conclusion
     const n=e.key==="0"?10:parseInt(e.key,10);
     if(n<=SECTIONS.length){e.preventDefault();goToSection(n-1);}
   }
