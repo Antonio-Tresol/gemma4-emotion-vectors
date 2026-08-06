@@ -189,7 +189,7 @@ LINEAGE = [
     {
         "key": "weak",
         "label": "gemma-4-E4B",
-        "sub": "a smaller external model",
+        "sub": "A smaller external model",
         "layers": 1,
         "pref": 0.593,
         "overlap": None,
@@ -197,8 +197,8 @@ LINEAGE = [
     },
     {
         "key": "self",
-        "label": "the probed model itself",
-        "sub": "self-generated stories",
+        "label": "The probed model itself",
+        "sub": "Self-generated stories",
         "layers": 5,
         "pref": 0.616,
         "overlap": 0.0386,
@@ -207,7 +207,7 @@ LINEAGE = [
     {
         "key": "diverse",
         "label": "deepseek-v4-pro, varied prompts",
-        "sub": "persona x setting grid",
+        "sub": "Persona x setting grid",
         "layers": 7,
         "pref": 0.772,
         "overlap": None,
@@ -216,7 +216,7 @@ LINEAGE = [
     {
         "key": "fixed",
         "label": "deepseek-v4-pro, one prompt",
-        "sub": "a stronger external writer",
+        "sub": "A stronger external writer",
         "layers": 9,
         "pref": 0.706,
         "overlap": 0.0007,
@@ -341,7 +341,7 @@ EXTERNAL_ARROW = (
 # which is what keeps this from touching the tick bar and the section index.
 REPO_BLOB = "https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/"
 _SRC_BLOCK = re.compile(r'(<div class="src"[^>]*>)(.*?)(</div>)', re.DOTALL)
-_NOTEBOOK = re.compile(r"(notebooks/\d\d_[A-Za-z0-9_]+\.ipynb)")
+_NOTEBOOK = re.compile(r"(notebooks/\d\d_[A-Za-z0-9_]+\.ipynb|scripts/[A-Za-z0-9_]+\.py)")
 
 
 def link_notebooks(html: str) -> str:

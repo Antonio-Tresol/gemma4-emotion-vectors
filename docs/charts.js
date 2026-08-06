@@ -105,9 +105,9 @@ function drawMethod(){
   const yMid=78;
   // 1. labelled stories
   [0,1,2].forEach(i=>svg.appendChild(box(24+i*6,44+i*7,120,40,"#fff")));
-  svg.appendChild(txt(96,68,"stories tagged",{size:11}));
+  svg.appendChild(txt(96,68,"Stories tagged",{size:11}));
   svg.appendChild(txt(96,81,"\u201cafraid\u201d",{size:11,weight:600}));
-  svg.appendChild(txt(96,124,"1. corpus",{size:10.5,fill:P.muted,weight:600}));
+  svg.appendChild(txt(96,124,"1. Corpus",{size:10.5,fill:P.muted,weight:600}));
   svg.appendChild(txt(96,138,"~9 or 256 per emotion",{size:9.5,fill:P.muted}));
   arrow(168,214,yMid);
   // 2. forward pass, residual stream tapped at one layer
@@ -117,23 +117,23 @@ function drawMethod(){
     svg.appendChild(el("rect",{x,y:46,width:15,height:48,rx:3,
       fill:i===3?P.navy:P.border,opacity:i===3?1:.85}));
   });
-  svg.appendChild(txt(280,116,"2. forward pass",{size:10.5,fill:P.muted,weight:600}));
-  svg.appendChild(txt(280,130,"residual stream at one layer",{size:9.5,fill:P.muted}));
+  svg.appendChild(txt(280,116,"2. Forward pass",{size:10.5,fill:P.muted,weight:600}));
+  svg.appendChild(txt(280,130,"Residual stream at one layer",{size:9.5,fill:P.muted}));
   arrow(352,404,yMid);
   // 3. mean over the corpus, minus the mean over all emotions
   svg.appendChild(box(404,44,150,52,"#fff"));
-  svg.appendChild(txt(479,68,"mean over stories",{size:11}));
+  svg.appendChild(txt(479,68,"Mean over stories",{size:11}));
   svg.appendChild(txt(479,84,"\u2212 mean over emotions",{size:11,fill:P.orange,weight:600}));
-  svg.appendChild(txt(479,116,"3. difference of means",{size:10.5,fill:P.muted,weight:600}));
-  svg.appendChild(txt(479,130,"centring changes the answer",{size:9.5,fill:P.orange}));
+  svg.appendChild(txt(479,116,"3. Difference of means",{size:10.5,fill:P.muted,weight:600}));
+  svg.appendChild(txt(479,130,"Centring changes the answer",{size:9.5,fill:P.orange}));
   arrow(560,596,yMid);
   // 4. the vector, and what it is used for. Shifted left of where this used to
   // sit: the two branch labels on the right ran past the viewBox and were cut.
   svg.appendChild(box(596,44,100,52,"#fff",P.navy));
   svg.appendChild(el("line",{x1:610,y1:82,x2:680,y2:56,stroke:P.navy,"stroke-width":2.2}));
   svg.appendChild(el("path",{d:"M674,54 L681,55 L677,62",fill:"none",stroke:P.navy,"stroke-width":2.2}));
-  svg.appendChild(txt(646,116,"4. emotion vector",{size:10.5,fill:P.muted,weight:600}));
-  svg.appendChild(txt(646,130,"one direction per emotion",{size:9.5,fill:P.muted}));
+  svg.appendChild(txt(646,116,"4. Emotion vector",{size:10.5,fill:P.muted,weight:600}));
+  svg.appendChild(txt(646,130,"One direction per emotion",{size:9.5,fill:P.muted}));
   // The two reads that follow. Labels stay short so they fit inside W=880; the
   // paragraph above the figure carries the full definition of the cosine.
   const rx=712;
@@ -179,8 +179,8 @@ function drawPrefLayers(){
     const t=el("text",{x:L-8,y:yOf(v)+4,"text-anchor":"end","font-size":10,fill:P.muted});
     t.textContent=v.toFixed(2); svg.appendChild(t);
   });
-  [[P0.registered_bar,"the mark we fixed before scoring",P.orange],
-   [P0.paper_range[0],"what the paper reported",P.green]].forEach(([v,label,col])=>{
+  [[P0.registered_bar,"The mark we fixed before scoring",P.orange],
+   [P0.paper_range[0],"What the paper reported",P.green]].forEach(([v,label,col])=>{
     svg.appendChild(el("line",{x1:L,x2:W-R,y1:yOf(v),y2:yOf(v),stroke:col,
       "stroke-dasharray":"4 3","stroke-width":1.3}));
     const t=el("text",{x:W-R+8,y:yOf(v)+3.5,"font-size":10.5,fill:col,"font-weight":600});
@@ -192,15 +192,15 @@ function drawPrefLayers(){
     const x0=L+i*bw, h=r.max_abs_r*ih, best=r.layer===P0.best_layer;
     const bar=el("rect",{x:x0+bw*.28,y:yOf(r.max_abs_r),width:bw*.44,height:h,rx:2,
       fill:best?C.valence:P.greyMid});
-    tipOn(bar,`<b>layer ${r.layer}</b>: best vector "${r.best_emotion}", r = ${r.best_r.toFixed(2)}`+
-      (r.best_r<0?`<span class="t-sub">negative: the more it activates, the lower the activity ranks</span>`:""));
+    tipOn(bar,`<b>Layer ${r.layer}</b>: best vector "${r.best_emotion}", r = ${r.best_r.toFixed(2)}`+
+      (r.best_r<0?`<span class="t-sub">Negative: the more it activates, the lower the activity ranks</span>`:""));
     svg.appendChild(bar);
     const lab=el("text",{x:x0+bw/2,y:H-26,"text-anchor":"middle","font-size":11,fill:P.text});
-    lab.textContent="layer "+r.layer; svg.appendChild(lab);
+    lab.textContent="Layer "+r.layer; svg.appendChild(lab);
     // name the winning vector under each bar: the bar is a maximum over all
     // 171 emotions, and which emotion wins is part of the result
     const win=el("text",{x:x0+bw/2,y:H-11,"text-anchor":"middle","font-size":10,fill:P.muted});
-    win.textContent=`best: ${r.best_emotion}${r.best_r<0?" (−)":""}`; svg.appendChild(win);
+    win.textContent=`Best: ${r.best_emotion}${r.best_r<0?" (−)":""}`; svg.appendChild(win);
   });
   const yl=el("text",{x:14,y:T+ih/2,"font-size":10.5,fill:P.muted,
     transform:`rotate(-90 14 ${T+ih/2})`,"text-anchor":"middle"});
@@ -250,9 +250,9 @@ function drawSteering(){
     val.textContent=(r.valence>0?"+":"")+r.valence.toFixed(2); svg.appendChild(val);
   });
   const hdr=el("text",{x:W-R+10,y:T-4,"font-size":9.5,fill:P.muted});
-  hdr.textContent="human valence"; svg.appendChild(hdr);
+  hdr.textContent="Human valence"; svg.appendChild(hdr);
   const xl=el("text",{x:L+iw/2,y:H-8,"text-anchor":"middle","font-size":10.5,fill:P.muted});
-  xl.textContent="shift in preference for positive activities, Elo points";
+  xl.textContent="Shift in preference for positive activities, Elo points";
   svg.appendChild(xl);
   host.appendChild(svg);
 }
@@ -277,9 +277,9 @@ function drawPCs(model, hostId="pcChart", verdictId="pcVerdict"){
     tx.textContent=v.toFixed(2); svg.appendChild(tx);
   });
   // both ends of the scale, said in words rather than left to the reader
-  [[1,"1.0","exactly that human rating",P.green],
-   [0.5,"0.5","clearly related",P.muted],
-   [0,"0","nothing to do with it",P.alert]].forEach(([v,num,label,col])=>{
+  [[1,"1.0","Exactly that human rating",P.green],
+   [0.5,"0.5","Clearly related",P.muted],
+   [0,"0","Nothing to do with it",P.alert]].forEach(([v,num,label,col])=>{
     const y=T+ih-v*ih;
     svg.appendChild(el("line",{x1:L,x2:W-R,y1:y,y2:y,stroke:col,"stroke-dasharray":"4 3",
       "stroke-width":v===0.5?1:1.4,opacity:v===0.5?.5:.9}));
@@ -299,13 +299,13 @@ function drawPCs(model, hostId="pcChart", verdictId="pcVerdict"){
       const bar=el("rect",{x:x0+13+j*sw,y:T+ih-h,width:sw-3,height:h,fill:C[k],rx:2});
       const nm={valence:"valence",arousal:"arousal",dominance:"dominance",
         length:"story length"}[k];
-      tipOn(bar,`<b>axis PC${r.pc} vs human ${nm} ratings</b>: ${r[k].toFixed(2)}`+
+      tipOn(bar,`<b>Axis PC${r.pc} vs human ${nm} ratings</b>: ${r[k].toFixed(2)}`+
         `<span class="t-sub">PC${r.pc} accounts for ${(r.evr*100).toFixed(1)}% of everything `+
         `that separates the 171 emotions.</span>`);
       svg.appendChild(bar);
     });
     const back=el("rect",{x:x0+8,y:T+ih-r.evr*ih,width:bw-16,height:r.evr*ih,fill:"transparent"});
-    tipOn(back,`<b>axis PC${r.pc}</b> accounts for ${(r.evr*100).toFixed(1)}% of everything that `+
+    tipOn(back,`<b>Axis PC${r.pc}</b> accounts for ${(r.evr*100).toFixed(1)}% of everything that `+
       `separates the 171 emotions`);
     svg.appendChild(back);
     const lab=el("text",{x:x0+bw/2,y:H-24,"text-anchor":"middle","font-size":11,fill:P.text});
@@ -338,7 +338,7 @@ function drawGrid(){
     const x=L+j*cell,y=T+i*cell;
     const g=el("rect",{x,y,width:cell-3,height:cell-3,rx:3,
       fill:`rgba(29,53,87,${(v*0.95).toFixed(3)})`,style:"cursor:pointer"});
-    tipOn(g,`<b>instruction-tuned axis ${i+1} vs base axis ${j+1}</b>: ${v.toFixed(2)}`+
+    tipOn(g,`<b>Instruction-tuned axis ${i+1} vs base axis ${j+1}</b>: ${v.toFixed(2)}`+
       `<span class="t-sub">`+
       (i===0 ? "This row is the test. The instruction-tuned model's biggest axis scores at most 0.14 against any of the base model's five biggest axes, so it is new structure rather than a rearrangement of them." :
        i===2&&j===0 ? "This is valence: the base model's top axis, still intact, but demoted to third place by instruction tuning." :
@@ -351,14 +351,14 @@ function drawGrid(){
   // column and row headers, plus one line naming which model each side belongs to,
   // because "it PC1" read as an abbreviation nobody on the page had defined
   const ch=el("text",{x:L,y:14,"font-size":10.5,fill:P.muted,"font-weight":600});
-  ch.textContent="the base model's five biggest axes"; svg.appendChild(ch);
+  ch.textContent="The base model's five biggest axes"; svg.appendChild(ch);
   for(let j=0;j<5;j++){const t=el("text",{x:L+j*cell+(cell-3)/2,y:T-12,"text-anchor":"middle",
-    "font-size":10.5,fill:P.muted});t.textContent="axis "+(j+1);svg.appendChild(t);}
+    "font-size":10.5,fill:P.muted});t.textContent="Axis "+(j+1);svg.appendChild(t);}
   for(let i=0;i<5;i++){const t=el("text",{x:L-8,y:T+i*cell+(cell-3)/2+4,"text-anchor":"end",
-    "font-size":10.5,fill:P.muted});t.textContent="axis "+(i+1);svg.appendChild(t);}
+    "font-size":10.5,fill:P.muted});t.textContent="Axis "+(i+1);svg.appendChild(t);}
   const rh=el("text",{x:12,y:T+(5*cell)/2,"font-size":10.5,fill:P.muted,"font-weight":600,
     transform:`rotate(-90 12 ${T+(5*cell)/2})`,"text-anchor":"middle"});
-  rh.textContent="the instruction-tuned model's five biggest axes"; svg.appendChild(rh);
+  rh.textContent="The instruction-tuned model's five biggest axes"; svg.appendChild(rh);
   // a scale strip, so a shade can be read without hovering
   const sx=L, sy=T+5*cell+14, sw=5*cell-3;
   for(let i=0;i<40;i++){
@@ -371,7 +371,7 @@ function drawGrid(){
     t.textContent=lab; svg.appendChild(t);
   });
   host.appendChild(svg);
-  note.textContent="hover any square for what that pairing means";
+  note.textContent="Hover any square for what that pairing means";
 }
 document.getElementById("pc1low").textContent=D.itpc1.low.join(", ");
 document.getElementById("pc1high").textContent=D.itpc1.high.join(", ");
@@ -416,7 +416,7 @@ function drawStory(){
     t.textContent=lab; svg.appendChild(t);
   });
   const zl2=el("text",{x:L-6,y:Y(0)+12,"text-anchor":"end","font-size":8,fill:P.muted});
-  zl2.textContent="corpus avg"; svg.appendChild(zl2);
+  zl2.textContent="Corpus avg"; svg.appendChild(zl2);
   S.boundaries.forEach(b=>{
     svg.appendChild(el("line",{x1:X(b),x2:X(b),y1:T,y2:T+ih,stroke:P.text,"stroke-width":1,"stroke-dasharray":"4 3",opacity:.45}));
   });
@@ -425,7 +425,7 @@ function drawStory(){
     svg.appendChild(el("path",{d,fill:"none",stroke:EC[k],"stroke-width":1.9,opacity:.9}));
     const hit=el("path",{d,fill:"none",stroke:"transparent","stroke-width":11});
     tipOn(hit,()=>`<b>${S.emotions[k]}</b> at token ${curTok}: ${serie[curTok].toFixed(3)}`+
-      `<span class="t-sub">how close the model's state sits to the ${S.emotions[k]} vector. `+
+      `<span class="t-sub">How close the model's state sits to the ${S.emotions[k]} vector. `+
       `Higher means closer. Read at layer ${curLayer}.</span>`);
     svg.appendChild(hit);
   });
@@ -437,22 +437,22 @@ function drawStory(){
     `<span><i style="background:${EC[k]}"></i>${nm} <b style="color:${EC[k]}">`+
     `${ys[k][curTok].toFixed(3)}</b></span>`).join("")+
     `<span style="margin-left:auto">reading at token ${curTok}, layer ${curLayer}</span>`;
-  [[0,"0"],[S.boundaries[0],"turn 1 · "+S.boundaries[0]],
-   [S.boundaries[1],"turn 2 · "+S.boundaries[1]],[n-1,String(n-1)]].forEach(([i,lab],k)=>{
+  [[0,"0"],[S.boundaries[0],"Turn 1 · "+S.boundaries[0]],
+   [S.boundaries[1],"Turn 2 · "+S.boundaries[1]],[n-1,String(n-1)]].forEach(([i,lab],k)=>{
     const t=el("text",{x:X(i),y:T+ih+13,"text-anchor":k===0?"start":(k===3?"end":"middle"),
       "font-size":9,fill:k===1||k===2?P.text:P.muted});
     t.textContent=lab; svg.appendChild(t);
   });
   const xl=el("text",{x:L+iw/2,y:H-6,"text-anchor":"middle","font-size":10.5,fill:P.muted});
-  xl.textContent="token in the story";
+  xl.textContent="Token in the story";
   svg.appendChild(xl);
   const yl=el("text",{x:12,y:T+ih/2,"font-size":10.5,fill:P.muted,
     transform:`rotate(-90 12 ${T+ih/2})`,"text-anchor":"middle"});
-  yl.textContent="closeness to each emotion vector"; svg.appendChild(yl);
+  yl.textContent="Closeness to each emotion vector"; svg.appendChild(yl);
   // the y range is re-fitted per layer, so say so rather than let the reader
   // assume the shapes are comparable across the layer buttons
   const rn=el("text",{x:W-R,y:T+8,"text-anchor":"end","font-size":8.5,fill:P.muted});
-  rn.textContent="y range re-fitted per layer"; svg.appendChild(rn);
+  rn.textContent="Y range re-fitted per layer"; svg.appendChild(rn);
   host.appendChild(svg);
 
   // ternary
@@ -488,8 +488,8 @@ function drawStory(){
   tipOn(dot,()=>{
     const m=mix(curTok), tot=m[0]+m[1]+m[2];
     const parts=S.emotions.map((nm,k)=>`${nm} ${pct(m[k]/tot)}`);
-    return `<b>token ${curTok}, written as ${S.emotions[phase]}</b>`+
-      `<span class="t-sub">the model's state reads as: ${parts.join(", ")}.`+
+    return `<b>Token ${curTok}, written as ${S.emotions[phase]}</b>`+
+      `<span class="t-sub">The model's state reads as: ${parts.join(", ")}.`+
       `<br>A corner means it looks purely like that emotion; the middle means undecided.</span>`;
   });
   s2.appendChild(dot);
@@ -503,12 +503,12 @@ function drawStory(){
   s2.appendChild(el("circle",{cx:mid[0],cy:mid[1],r:3,fill:"none",stroke:P.muted,
     "stroke-dasharray":"2 2"}));
   const cl2=el("text",{x:cx,y:TH-38,"text-anchor":"middle","font-size":9.5,fill:P.muted});
-cl2.textContent="corner = reads purely as that emotion · middle = undecided"; s2.appendChild(cl2);
+cl2.textContent="Corner = reads purely as that emotion · middle = undecided"; s2.appendChild(cl2);
   const cap=el("text",{x:cx,y:TH-23,"text-anchor":"middle","font-size":9.5,fill:P.muted});
-cap.textContent="solid line = the walk so far · dotted = still to come · "+
+cap.textContent="Solid line = the walk so far · dotted = still to come · "+
     "big dot = where it is now"; s2.appendChild(cap);
   const cap2=el("text",{x:cx,y:TH-7,"text-anchor":"middle","font-size":10.5,fill:P.muted});
-  cap2.textContent="written to walk "+S.emotions.join(" → "); s2.appendChild(cap2);
+  cap2.textContent="Written to walk "+S.emotions.join(" → "); s2.appendChild(cap2);
   th.appendChild(s2);
 
   document.getElementById("tokLabel").textContent="t = "+curTok+" / "+(S.n_tokens-1);
@@ -542,7 +542,7 @@ function selectStory(i){
     ? `${S.qual.wins} of 3 phases led by the right emotion (per phase: `+
       `${S.qual.perPhase.map(w=>w?"yes":"no").join(", ")}); average margin `+
       `${S.qual.margin>=0?"+":""}${S.qual.margin.toFixed(3)}. One of three by luck.`
-    : "the worked example; the other three are scored, best / middle / worst of a random 24";
+    : "The worked example; the other three are scored, best / middle / worst of a random 24";
   document.getElementById("storyQual").textContent=q;
   document.getElementById("storyId").textContent=S.id;
   drawStory();
@@ -625,15 +625,15 @@ function drawEmo(){
   });
   const yl=el("text",{x:16,y:T+ih/2,"font-size":10.5,fill:P.muted,
     transform:`rotate(-90 16 ${T+ih/2})`,"text-anchor":"middle"});
-  yl.textContent="phases where this emotion’s own vector wins"; svg.appendChild(yl);
+  yl.textContent="Phases where this emotion’s own vector wins"; svg.appendChild(yl);
   svg.appendChild(el("line",{x1:L,x2:W-R,y1:Y(chance),y2:Y(chance),stroke:P.alert,
     "stroke-dasharray":"5 4","stroke-width":1.5}));
   // in the right margin, clear of the bars: inside the plot this label was
   // drawn in dark red across the two tallest navy bars
   const ct=el("text",{x:W-R+6,y:Y(chance)+3.5,"font-size":10.5,fill:P.alert});
-  ct.textContent="chance (8%)"; svg.appendChild(ct);
+  ct.textContent="Chance (8%)"; svg.appendChild(ct);
   const ct2=el("text",{x:W-R+6,y:Y(chance)+16,"font-size":9.5,fill:P.muted});
-  ct2.textContent="at or below this line: no signal"; svg.appendChild(ct2);
+  ct2.textContent="At or below this line: no signal"; svg.appendChild(ct2);
   const gt=el("text",{x:W-R+6,y:Y(1)+3.5,"font-size":10.5,fill:P.green});
   gt.textContent="100% = always right"; svg.appendChild(gt);
   rows.forEach((r,i)=>{
@@ -644,7 +644,7 @@ function drawEmo(){
       ? r.wrong.map(w=>`${w[0]} ${pct(w[1])}`).join(", ")
       : "no single dominant wrong answer";
     tipOn(bar,`<b>${r.e}</b> at layer ${emoLayer}`+
-      `<span class="t-sub">its own probe wins <b>${pct(r.rate)}</b> of ${r.n} story phases`+
+      `<span class="t-sub">Its own probe wins <b>${pct(r.rate)}</b> of ${r.n} story phases`+
       ` (chance is 1/12).<br>When it is wrong, the model says: ${wrongHtml}.</span>`);
     svg.appendChild(bar);
     const nearChance=Math.abs(r.rate-chance)<0.03;
@@ -658,7 +658,7 @@ function drawEmo(){
   // the standing note restates the verdict for whichever layer and vector set is showing
   const best=rows[0], nWin=rows.filter(r=>r.rate>=chance).length, nNever=rows.filter(r=>r.rate===0).length;
   document.getElementById("emoNote").innerHTML =
-    `<b>layer ${emoLayer}, vectors from ${emoBank==="selfgen"?"Gemma's own":"DeepSeek's"} stories:</b> `+
+    `<b>Layer ${emoLayer}, vectors from ${emoBank==="selfgen"?"Gemma's own":"DeepSeek's"} stories:</b> `+
 `${nWin} of 12 emotions beat chance, best is ${best.e} at ${pct(best.rate)}`+
     ` (${rows[0].n} phases per emotion)`+
     (nNever?`, and ${nNever} never win at all`:"")+". Hover any bar for its wrong answers.";
@@ -692,10 +692,10 @@ function drawLayers(){
   // colour pairing a reader cannot tell which y-value belongs to which curve.
   const yLeft=el("text",{x:13,y:T+ih/2,"font-size":10,fill:P.navy,
     transform:`rotate(-90 13 ${T+ih/2})`,"text-anchor":"middle"});
-  yLeft.textContent="how often it names the emotion right"; svg.appendChild(yLeft);
+  yLeft.textContent="How often it names the emotion right"; svg.appendChild(yLeft);
   const yRight=el("text",{x:W-13,y:T+ih/2,"font-size":10,fill:P.orange,
     transform:`rotate(90 ${W-13} ${T+ih/2})`,"text-anchor":"middle"});
-  yRight.textContent="lean size vs size of the coming change"; svg.appendChild(yRight);
+  yRight.textContent="Lean size vs size of the coming change"; svg.appendChild(yRight);
   [[0,"0%"],[0.3,"30%"],[0.6,"60%"]].forEach(([v,lab])=>{
     const t=el("text",{x:L-7,y:Y1(v)+3.5,"text-anchor":"end","font-size":9.5,fill:P.navy});
     t.textContent=lab; svg.appendChild(t);
@@ -708,7 +708,7 @@ function drawLayers(){
   svg.appendChild(el("line",{x1:L,x2:W-R,y1:Y1(1/12),y2:Y1(1/12),stroke:P.navy,
     "stroke-dasharray":"4 3",opacity:.55}));
   const a1=el("text",{x:W-R-2,y:Y1(1/12)-6,"text-anchor":"end","font-size":9.5,fill:P.navy});
-  a1.textContent="chance (8%)"; svg.appendChild(a1);
+  a1.textContent="Chance (8%)"; svg.appendChild(a1);
   svg.appendChild(el("line",{x1:L,x2:W-R,y1:Y2(0),y2:Y2(0),stroke:P.orange,
     "stroke-dasharray":"4 3",opacity:.55}));
   // above its own line, not below: below puts it on the x-axis tick labels, and
@@ -724,13 +724,13 @@ function drawLayers(){
   svg.appendChild(el("path",{d:d2,fill:"none",stroke:P.orange,"stroke-width":2.4,"stroke-dasharray":"5 3"}));
   rows.forEach((r,i)=>{
     const c1=el("circle",{cx:X(i),cy:Y1(r.top1),r:7,fill:P.navy});
-    tipOn(c1,`<b>layer ${r.layer}: names the right emotion ${pct(r.top1)} of the time</b>`+
-      `<span class="t-sub">when it is wrong, the emotion it picks instead sits ${r.vad.toFixed(2)} `+
+    tipOn(c1,`<b>Layer ${r.layer}: names the right emotion ${pct(r.top1)} of the time</b>`+
+      `<span class="t-sub">When it is wrong, the emotion it picks instead sits ${r.vad.toFixed(2)} `+
       `away in the VAD space, against ${r.shuffle.toFixed(2)} for a `+
       `randomly chosen emotion: wrong, but nearby.</span>`);
     svg.appendChild(c1);
     const c2=el("circle",{cx:X(i),cy:Y2(r.r_dval),r:7,fill:P.orange});
-    tipOn(c2,`<b>layer ${r.layer}: anticipation +${r.r_dval.toFixed(3)}</b>`);
+    tipOn(c2,`<b>Layer ${r.layer}: anticipation +${r.r_dval.toFixed(3)}</b>`);
     svg.appendChild(c2);
     const t=el("text",{x:X(i),y:H-24,"text-anchor":"middle","font-size":11,fill:P.text});
     t.textContent="L"+r.layer; svg.appendChild(t);
@@ -740,7 +740,7 @@ function drawLayers(){
   const b=el("text",{x:X(5),y:Y2(rows[5].r_dval)-10,"text-anchor":"end","font-size":10.5,fill:P.orange});
   b.textContent="+0.26 at layer 51"; svg.appendChild(b);
   const xl=el("text",{x:L+iw/2,y:H-8,"text-anchor":"middle","font-size":10.5,fill:P.muted});
-  xl.textContent="layer of the model"; svg.appendChild(xl);
+  xl.textContent="Layer of the model"; svg.appendChild(xl);
   host.appendChild(svg);
 }
 
@@ -765,7 +765,7 @@ function drawLineage(){
   ttl.textContent="Can these emotion vectors spot the emotion behind a user's message?";
   svg.appendChild(ttl);
   const sub=el("text",{x:14,y:34,"font-size":10.5,fill:P.muted});
-  sub.textContent="cell = of 12 scenarios, how many put the right emotion in its top 3";
+  sub.textContent="Cell = of 12 scenarios, how many put the right emotion in its top 3";
   svg.appendChild(sub);
 
   rows.forEach((r,i)=>{
@@ -810,7 +810,7 @@ function drawLineage(){
     t.textContent=layer; svg.appendChild(t);
   });
   const xl=el("text",{x:L+iw/2,y:H-6,"text-anchor":"middle","font-size":10.5,fill:P.muted});
-  xl.textContent="layer of the model (20 sampled, every third from 0 to 57)"; svg.appendChild(xl);
+  xl.textContent="Layer of the model (20 sampled, every third from 0 to 57)"; svg.appendChild(xl);
 
   // colour key, with the pass mark on it
   const kx=L, ky=T-26, kw=140;
@@ -826,7 +826,7 @@ function drawLineage(){
   const bl=el("text",{x:kx+kw+62,y:ky+7,"font-size":9.5,fill:P.orange,"font-weight":600});
   bl.textContent="↑ 8 = pass mark, fixed before scoring"; svg.appendChild(bl);
   const rl=el("text",{x:W-R+10,y:ky+7,"font-size":9.5,fill:P.orange});
-  rl.textContent="ringed = passes"; svg.appendChild(rl);
+  rl.textContent="Ringed = passes"; svg.appendChild(rl);
 
   host.appendChild(svg);
 }
@@ -847,24 +847,24 @@ function drawDose(){
   });
   const yl=el("text",{x:14,y:T+ih/2,"font-size":9.5,fill:P.muted,
     transform:`rotate(-90 14 ${T+ih/2})`,"text-anchor":"middle"});
-  yl.textContent="layers that work, of 20"; svg.appendChild(yl);
+  yl.textContent="Layers that work, of 20"; svg.appendChild(yl);
   svg.appendChild(el("line",{x1:L,x2:W-R,y1:Y(9),y2:Y(9),stroke:P.green,
     "stroke-dasharray":"4 3"}));
   // left-anchored: right-anchored, the trailing "9" sat under the last marker
   const cl=el("text",{x:L+4,y:Y(9)-5,"font-size":9.5,fill:P.green});
-  cl.textContent="best this writer ever reaches: 9 of 20"; svg.appendChild(cl);
+  cl.textContent="Best this writer ever reaches: 9 of 20"; svg.appendChild(cl);
   let d=""; ns.forEach((n,i)=>{d+=(i?"L":"M")+X(i)+","+Y(D.dose[n]);});
   svg.appendChild(el("path",{d,fill:"none",stroke:P.navy,"stroke-width":2.2}));
   ns.forEach((n,i)=>{
     const c=el("circle",{cx:X(i),cy:Y(D.dose[n]),r:6,fill:P.navy});
-    tipOn(c,`<b>${n} stories per emotion</b><span class="t-sub">gives ${D.dose[n]} working layers, `+
+    tipOn(c,`<b>${n} stories per emotion</b><span class="t-sub">Gives ${D.dose[n]} working layers, `+
       `averaged over 5 random draws of that many stories. The most this writer ever reaches is 9.</span>`);
     svg.appendChild(c);
     const t=el("text",{x:X(i),y:H-16,"text-anchor":"middle","font-size":10,fill:P.muted});
     t.textContent=n; svg.appendChild(t);
   });
   const xl=el("text",{x:L+iw/2,y:H-3,"text-anchor":"middle","font-size":10,fill:P.muted});
-  xl.textContent="stories per emotion"; svg.appendChild(xl);
+  xl.textContent="Stories per emotion"; svg.appendChild(xl);
   host.appendChild(svg);
 }
 
@@ -1285,10 +1285,10 @@ const RSA_LABEL={"instruct RSA (unablated)":"instruction-tuned model",
   "instruct RSA (top component removed)":"instruction-tuned, top PC removed",
   "cross-model RSA: instruct vs base":"base vs. instruction-tuned"};
 /* the one-line reminder under the buttons: what THIS view is for */
-const RSA_NOTE={"instruct RSA (unablated)":"do the instruction-tuned model's layers agree with each other?",
-  "base RSA (unablated)":"the control: the same question on the base model",
-  "instruct RSA (top component removed)":"the same layers, with only the mystery axis removed",
-  "cross-model RSA: instruct vs base":"one model on each axis: what did instruction tuning change?"};
+const RSA_NOTE={"instruct RSA (unablated)":"Do the instruction-tuned model's layers agree with each other?",
+  "base RSA (unablated)":"The control: the same question on the base model",
+  "instruct RSA (top component removed)":"The same layers, with only the mystery axis removed",
+  "cross-model RSA: instruct vs base":"One model on each axis: what did instruction tuning change?"};
 let rsaKey=RSA_KEYS[0];
 function drawRsa(){
   const host=document.getElementById("rsaChart"); if(!host) return;
@@ -1299,16 +1299,16 @@ function drawRsa(){
   // one view that is NOT symmetric — so orientation has to be on the figure.
   const isCross=rsaKey.indexOf("cross-model")===0;
   const rowName=isCross?"layer of the instruction-tuned model"
-                       :"layer of the model (same model on both axes)";
+                       :"Layer of the model (same model on both axes)";
   const colName=isCross?"layer of the base model"
-                       :"layer of the model (same model on both axes)";
+                       :"Layer of the model (same model on both axes)";
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
   const size=Math.min((W-L-Rr)/n,(H-T-B)/n);
   for(let i=0;i<n;i++)for(let j=0;j<n;j++){
     const v=z[i][j];
     const cell=el("rect",{x:L+j*size,y:T+i*size,width:size+.5,height:size+.5,
       fill:`rgba(29,53,87,${Math.max(0,Math.min(1,v)).toFixed(3)})`});
-    tipOn(cell,`<b>${isCross?"instruction-tuned":""} layer ${layers[i]} vs ${isCross?"base":""} `+
+    tipOn(cell,`<b>${isCross?"Instruction-tuned layer":"Layer"} ${layers[i]} vs ${isCross?"base ":""}`+
       `layer ${layers[j]}</b>: agreement ${v.toFixed(2)}`+
       `<span class="t-sub">1 means these two layers sort the 171 emotions the same way; `+
       `0 means they disagree completely.</span>`);
@@ -1338,7 +1338,10 @@ function drawRsa(){
   // the title lives INSIDE the svg: an exported png of this chart is otherwise
   // three near-identical matrices with nothing saying which one you are seeing
   const ttl=el("text",{x:L,y:20,"font-size":12.5,fill:P.text,"font-weight":600});
-  ttl.textContent=RSA_LABEL[rsaKey]||rsaKey; svg.appendChild(ttl);
+  // the same label feeds the buttons (lowercase, a control) and this in-figure
+  // title (figure text, so it takes the capital)
+  const rsaTitle=RSA_LABEL[rsaKey]||rsaKey;
+  ttl.textContent=rsaTitle.charAt(0).toUpperCase()+rsaTitle.slice(1); svg.appendChild(ttl);
   host.appendChild(svg);
   document.getElementById("rsaNote").textContent=RSA_NOTE[rsaKey]||"";
 }

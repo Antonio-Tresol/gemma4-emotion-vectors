@@ -12,9 +12,9 @@
   <div class="card" style="margin-top:20px">
     <div id="prefLayerChart" data-figtitle="How well an emotion vector predicts the model's preferences"></div>
     <div class="legend">
-      <span><i style="background:var(--navy)"></i>the best layer we measured</span>
-      <span><i style="background:var(--grey-mid)"></i>the other three</span>
-      <span><i style="background:var(--green);opacity:.35"></i>the range the paper reported</span>
+      <span><i style="background:var(--navy)"></i>The best layer we measured</span>
+      <span><i style="background:var(--grey-mid)"></i>The other three</span>
+      <span><i style="background:var(--green);opacity:.35"></i>The range the paper reported</span>
     </div>
     <details class="howto"><summary>How to read this</summary>
       <p>Each bar is one layer, and its height is the strongest correlation any of the 171 emotion
@@ -22,7 +22,7 @@
       the vectors carry nothing about what the model chooses. We fixed the pass mark at 0.5 before
       scoring anything.</p>
     </details>
-    <div class="src">source: notebooks/04_paper_plot_parity.ipynb, chat template, post-fix probes; scored by scripts/score_preferences.py</div>
+    <div class="src">Source: notebooks/04_paper_plot_parity.ipynb, chat template, post-fix probes; scored by scripts/score_preferences.py</div>
   </div>
   <p class="narrow" style="margin-top:20px">We found that all four layers clear the mark of 0.5, with
   layer 33 reaching <b>0.64</b>, below the 0.71 to 0.74 the paper reports on Claude Sonnet 4.5.
@@ -41,9 +41,9 @@
   <div class="card" style="margin-top:20px">
     <div id="steerChart" data-figtitle="Which way preferences move when an emotion vector is added"></div>
     <div class="legend">
-      <span><i style="background:var(--green)"></i>pleasant emotion, gentle dose</span>
-      <span><i style="background:var(--red)"></i>unpleasant emotion, gentle dose</span>
-      <span><i style="background:var(--grey-soft)"></i>the same emotion at four times the dose</span>
+      <span><i style="background:var(--green)"></i>Pleasant emotion, gentle dose</span>
+      <span><i style="background:var(--red)"></i>Unpleasant emotion, gentle dose</span>
+      <span><i style="background:var(--grey-soft)"></i>The same emotion at four times the dose</span>
       <span>* marks the two that move against their own valence</span>
     </div>
     <details class="howto"><summary>How to read this</summary>
@@ -55,7 +55,7 @@
       failure would be directions unrelated to the emotion's valence. We fixed the pass mark, nine
       of the twelve, before scoring.</p>
     </details>
-    <div class="src">source: notebooks/04_paper_plot_parity.ipynb, layer 33, post-fix directions, both doses; scored by scripts/score_steering.py</div>
+    <div class="src">Source: notebooks/04_paper_plot_parity.ipynb, layer 33, post-fix directions, both doses; scored by scripts/score_steering.py</div>
   </div>
   <p class="narrow" style="margin-top:20px">Ten of the twelve emotions move preferences the way
   their valence predicts, at both doses.</p>

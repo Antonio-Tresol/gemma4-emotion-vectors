@@ -76,6 +76,13 @@ the column is wide, and a figure a reader cannot see all of has lost the
 comparison it exists to make. Nothing is sized in pixels per chart, and nothing
 needs a media query: the ratio and the cap do it.
 
+**Figure text starts with a capital letter.** Axis titles, in-plot labels,
+captions, legend entries, tooltips and source lines all begin with a capital,
+unless the first token is a symbol, a number, a formula, or a code identifier
+(`cos(stream, vector)`, `~9 or 256 per emotion`, model names). Control labels
+beside buttons ("layer", "story", "showing") stay lowercase: they are UI
+affordances, not figure text.
+
 Three rules that are easy to get wrong:
 
 - **The legend is not the how-to.** A legend is needed to see the figure at all,
