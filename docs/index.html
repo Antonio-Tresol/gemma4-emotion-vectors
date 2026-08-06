@@ -1841,8 +1841,12 @@ function drawStory(){
       fill:v===0?P.text:P.muted});
     t.textContent=lab; svg.appendChild(t);
   });
-  const zl2=el("text",{x:L-6,y:Y(0)+12,"text-anchor":"end","font-size":8,fill:P.muted});
-  zl2.textContent="Corpus avg"; svg.appendChild(zl2);
+  // stacked on two lines: one line ran from x~16 to the tick and touched the
+  // rotated axis title at x=12
+  [["Corpus",11],["avg",20]].forEach(([word,dy])=>{
+    const t=el("text",{x:L-6,y:Y(0)+dy,"text-anchor":"end","font-size":8,fill:P.muted});
+    t.textContent=word; svg.appendChild(t);
+  });
   S.boundaries.forEach(b=>{
     svg.appendChild(el("line",{x1:X(b),x2:X(b),y1:T,y2:T+ih,stroke:P.text,"stroke-width":1,"stroke-dasharray":"4 3",opacity:.45}));
   });
