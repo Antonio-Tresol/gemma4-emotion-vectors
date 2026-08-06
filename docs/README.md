@@ -69,6 +69,13 @@ So, for both section headings and sub-headings here:
 - **A sub-heading never restates the section heading above it.** Section 8's
   said the same thing as its own h2, so it went.
 
+Every chart draws on a canvas **760 to 880 viewBox units wide**, so all of
+them render at one shared scale when stretched to the column. A narrower
+canvas renders proportionally larger: three charts kept 380-470 canvases from
+an old half-column layout and drew at roughly double the scale of the page
+until 2026-08-05. The one exception is the square 5x5 grid, whose height the
+cap below already limits.
+
 Every chart is an SVG with a fixed `viewBox` scaled to the width of its card,
 so **its aspect ratio alone decides its height**. One CSS rule caps that height
 at `min(72vh, 620px)`: a 1:1 chart at full width would otherwise be as tall as
