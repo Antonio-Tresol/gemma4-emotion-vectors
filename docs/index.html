@@ -842,8 +842,8 @@ border-bottom:1px solid var(--border)}</style></head>
   coherent throughout, which a separate check scores.</p>
 
   <div class="takeaway"><span class="lbl">Takeaway</span>The vectors both predict and move the
-  model's preferences, which reproduces the paper's result on an open model. One registered check
-  failed. We correlated each vector's prediction strength with the <span data-term="elo">Elo</span>
+  model's preferences, which reproduces the paper's result on an open model. We correlated each
+  vector's prediction strength with the <span data-term="elo">Elo</span>
   shift its steering produced. The correlation is 0.40 at the gentle dose and 0.30 at the four-times
   dose, against our mark of 0.5 and the paper's 0.85. So the vectors move preferences in the right direction, and we
   cannot yet show that a vector which predicts strongly also steers strongly.</div>
@@ -900,10 +900,11 @@ border-bottom:1px solid var(--border)}</style></head>
     </details>
     <div class="src">Story <span id="storyId"></span>, from <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/05_trajectory_explorer_instruct.ipynb" target="_blank" rel="noopener noreferrer">notebooks/05_trajectory_explorer_instruct.ipynb</a></div>
   </div>
-  <p class="narrow" style="margin-top:20px">We found that the handover is real, and that it is
-  messy. It tends to arrive <em>early</em>: the lead changes before the written turn, so the
-  model is picking up the shift while still reading the previous phase. The picture also changes
-  with the layer, which section 8 takes up.</p>
+  <p class="narrow" style="margin-top:20px">In the figure, the highest line switches from one
+  emotion to the next near each marked turn: the model's internal state does follow the story's
+  emotional changes, though noisily. The switch usually comes <em>before</em> the written turn, so
+  the model starts leaning towards the next emotion while still reading the previous phase. The
+  pattern depends on which layer we read, and section 8 measures how.</p>
   <p class="narrow">We drew the last three stories from a random sample of 24 and scored them on
   exactly what the figure draws. In each of the three phases, is the phase's own emotion the
   highest line, and by how much? They are the best, the middle and the worst of that sample.

@@ -49,10 +49,11 @@
     </details>
     <div class="src">Story <span id="storyId"></span>, from notebooks/05_trajectory_explorer_instruct.ipynb</div>
   </div>
-  <p class="narrow" style="margin-top:20px">We found that the handover is real, and that it is
-  messy. It tends to arrive <em>early</em>: the lead changes before the written turn, so the
-  model is picking up the shift while still reading the previous phase. The picture also changes
-  with the layer, which section 8 takes up.</p>
+  <p class="narrow" style="margin-top:20px">In the figure, the highest line switches from one
+  emotion to the next near each marked turn: the model's internal state does follow the story's
+  emotional changes, though noisily. The switch usually comes <em>before</em> the written turn, so
+  the model starts leaning towards the next emotion while still reading the previous phase. The
+  pattern depends on which layer we read, and section 8 measures how.</p>
   <p class="narrow">We drew the last three stories from a random sample of 24 and scored them on
   exactly what the figure draws. In each of the three phases, is the phase's own emotion the
   highest line, and by how much? They are the best, the middle and the worst of that sample.
