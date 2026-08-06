@@ -541,12 +541,12 @@ border-bottom:1px solid var(--border)}</style></head>
     </div>
   </div>
   <p class="narrow" style="margin-top:20px">We compare Gemma&nbsp;4&nbsp;31B in two forms,
-  <b>base</b> and <b>instruction-tuned</b>: the same weights before and after post-training. We measured at twenty of the model's sixty
+  <em>base</em> and <em>instruction-tuned</em>: the same weights before and after post-training. We measured at twenty of the model's sixty
   <span data-term="layer">layers</span>, every third from layer 0 to layer 57, for the
   <span data-term="principal component">principal-component</span> and detection experiments in sections 2 and 3. The story experiments in
   sections 6 to 8 use six of those layers.</p>
   <p class="narrow">The result being replicated is that emotion vectors arrange on the
-  <b><span data-term="circumplex">circumplex</span></b>. Principal component analysis
+  <span data-term="circumplex">circumplex</span>. Principal component analysis
   (PCA) finds the directions along which they differ most, and the top two recover valence and
   arousal. That matches how humans rate the same words in the
   <a class="link-plain" href="http://saifmohammad.com/WebPages/nrc-vad.html" target="_blank" rel="noopener noreferrer">NRC VAD <span class="nw">lexicon<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a> (VAD is valence,
@@ -585,7 +585,7 @@ border-bottom:1px solid var(--border)}</style></head>
   the implied emotion ranks in the top three.</p>
   <p class="narrow">Each message implies an emotion without
   naming it, so a vector that keyed on the emotion word would score at chance. A layer counts as
-  <b>working</b> when it gets at least 8 of 12 right on the paper's twelve scenarios <em>and</em> on
+  <em>working</em> when it gets at least 8 of 12 right on the paper's twelve scenarios <em>and</em> on
   a second twelve we wrote ourselves. We fixed both marks before scoring.</p>  <div class="card" style="margin-top:22px">
     <div id="lineageChart" data-figtitle="Detection by story source and layer"></div>
     <div class="legend"><span>Each cell is how many of the twelve scenarios that layer got right,
@@ -613,7 +613,7 @@ border-bottom:1px solid var(--border)}</style></head>
   <b>6.8</b>. Prompt variety costs accuracy even with size matched.</p>
   <p class="narrow">We also found that Gemma's own stories repeat themselves quite often. Across 3,072
   stories written to a request for varied emotional scenes, Gemma named the central character
-  <b>Elias</b> in <b>98.2%</b> of them. Its five-word phrases recur <b>53 times</b> as often as
+  <em>Elias</em> in <b>98.2%</b> of them. Its five-word phrases recur <b>53 times</b> as often as
   DeepSeek's do. An emotion vector is the average of the activations a corpus produces, so whatever
   those stories share is averaged into the vector alongside the emotion. A corpus this repetitive
   therefore yields a vector that partly encodes Gemma's writing habits.</p>
@@ -643,10 +643,10 @@ border-bottom:1px solid var(--border)}</style></head>
   strongly its scores correlate with published human ratings of the same 171 words. The components are
   computed from the activations alone; the human ratings are brought in afterwards to test whether the
   axes line up.</p>
-  <p class="narrow">The ratings cover three things: how <b>pleasant</b> the emotion is (psychologists
-  call this <em>valence</em>), how <b>worked-up</b> (<em>arousal</em>), and how <b>in control</b> the
+  <p class="narrow">The ratings cover three things: how pleasant the emotion is (psychologists
+  call this <em>valence</em>), how worked-up (<em>arousal</em>), and how in control the
   person feels (<em>dominance</em>). We also correlated each component against one thing that has
-  nothing to do with emotion but could fake the whole result: <b>how long the stories were</b>.
+  nothing to do with emotion but could fake the whole result: how long the stories were.
   Story length is the amber control bar in the figure. A
   perfect match scores 1.0; no relationship scores 0.</p>
   <div class="card" style="margin-top:22px">
@@ -681,9 +681,9 @@ border-bottom:1px solid var(--border)}</style></head>
   ratings. The figure alone cannot say whether that axis is valence, or valence and dominance
   together, so the result carries the same ambiguity.</p>
   <p class="narrow">In the instruction-tuned model, in contrast, the biggest axis matches valence
-  at <b>0.11</b>, near zero. That axis explains 28% of all the variation among the 171 vectors, compared with 15%
+  at <b>0.11</b>, near zero. That axis explains <b>28%</b> of all the variation among the 171 vectors, compared with 15%
   for the base model's top axis. Valence remains represented lower down the components: the <em>third</em> axis
-  matches it at 0.72. The second axis matches story
+  matches it at <b>0.72</b>. The second axis matches story
   length at 0.66, which is higher than it matches any emotion rating. Section 4 asks what the new top axis
   encodes.</p>
   <div class="takeaway"><span class="lbl">Takeaway</span>The base model's emotions separate first by valence and then by arousal, which recovers the human circumplex from the activations alone. In the instruction-tuned model the top axis matches none of the human ratings, and valence falls to third.</div>
@@ -724,7 +724,7 @@ border-bottom:1px solid var(--border)}</style></head>
   notebook 02: at one end <span id="pc1low"></span>; at the other,
   <span id="pc1high"></span>.</p>
   <p class="narrow">Using the two lists to guess what an axis means suggests a common thread
-  in the second list: irritated, on edge, uneasy and impatient all read as low-grade
+  in the second list: <em>irritated</em>, <em>on edge</em>, <em>uneasy</em> and <em>impatient</em> all read as low-grade
   agitation. The first mixes <em>miserable</em> with <em>jubilant</em>, so the axis does not
   separate pleasant from unpleasant emotions. We could not identify what the axis as a whole
   represents.</p>
@@ -854,7 +854,7 @@ border-bottom:1px solid var(--border)}</style></head>
   <p class="narrow">Each of these four stories was written to pass through three emotions in turn,
   with the turns marked. We fed one to the model and, at every <span data-term="token">token</span>, measured how close its
   internal state sat to each of the three emotion vectors.</p>
-  <p class="narrow">Three of the four stories use the <b>same three emotions</b> and differ only in how
+  <p class="narrow">Three of the four stories use the same three emotions and differ only in how
   they are written, and the model follows them very differently. How well the model follows an
   emotion depends on how the story is written, as much as on the emotion itself.</p>
   <div class="card" style="margin-top:22px">
@@ -919,7 +919,7 @@ border-bottom:1px solid var(--border)}</style></head>
   <p class="narrow">For every phase of every story, we measured the centred cosine against all
   twelve emotion vectors. The question is how often the winner is the emotion that phase was
   written to convey.</p>
-  <p class="narrow">The set shifts here from 171 emotions to <b>twelve</b>, because the stories were
+  <p class="narrow">The set shifts here from 171 emotions to twelve, because the stories were
   written to move between these twelve. Picking at random would be right 1 time in 12, or 8%.
   Each bar is one emotion's score.</p>
   <div class="card" style="margin-top:22px">
@@ -948,7 +948,7 @@ border-bottom:1px solid var(--border)}</style></head>
   <em>loving</em> and <em>guilty</em> win about half the time, while <em>nervous</em> sits below
   chance at 5.8%. Changing the layer shuffles the order of the emotions.</p>
   <p class="narrow">Unexpectedly, the wrong answers pile onto two emotions: whatever the true
-  answer was, the model keeps replying <b>guilty</b> or <b>happy</b>. With DeepSeek's vectors
+  answer was, the model keeps replying <em>guilty</em> or <em>happy</em>. With DeepSeek's vectors
   that pile-up disappears and overall accuracy rises. This suggests that part of the apparent
   failure comes from the vectors themselves.</p>
   <div class="takeaway"><span class="lbl">Takeaway</span>The model follows emotion better than chance, but unevenly and never reliably. A large part of that unevenness comes from the emotion vectors themselves: swap in a different writer's vectors and both the accuracy and the pattern of mistakes change.</div>
@@ -958,7 +958,7 @@ border-bottom:1px solid var(--border)}</style></head>
   <h2><span class="secno">8</span>Naming and anticipation peak at different depths</h2>
   <p class="narrow">We measured two different skills at six depths of the model, and they peak in
   different places. The first is the one from section 7:
-  <b>does the model name the emotion in front of it?</b> The second is anticipation:
+  does the model name the emotion in front of it? The second is anticipation:
   before each turn the model leans slightly towards the emotion about to arrive. We measured
   whether the <em>size</em> of that lean tracks the <em>size</em> of the coming emotional change.
   A big swing from cheerful to devastated should produce a bigger lean than a small shift from
@@ -986,8 +986,8 @@ border-bottom:1px solid var(--border)}</style></head>
   </div>
   <p class="narrow">Naming accuracy rises and falls repeatedly with depth. Averaged over all twelve
   emotions, layer 6 gets the current emotion right <b>58%</b> of the time and layer 15 drops to
-  <b>33%</b>. Layer 24 climbs back to <b>57%</b>, layer 33 falls to <b>27%</b>, and layer
-  42 recovers to <b>41%</b>. The 58% peak and the 27% trough are two points on a sawtooth. This curve is the average of section 7's twelve bars, on
+  33%. Layer 24 climbs back to 57%, layer 33 falls to <b>27%</b>, and layer
+  42 recovers to 41%. The 58% peak and the 27% trough are two points on a sawtooth. This curve is the average of section 7's twelve bars, on
   the Gemma-written vectors. At layer 33 the best single emotion reaches 49%; the worst
   sits at 6%, below chance. The other measure runs the other way,
   climbing from <b>+0.03</b> at layer 6 to <b>+0.26</b> at layer 51. The climb is uneven:
@@ -1104,7 +1104,7 @@ border-bottom:1px solid var(--border)}</style></head>
     <summary style="font-size:15px">3. How "does it follow the story?" was scored</summary>
     <p>We wrote 173 three-emotion recipes and generated stories from each, giving a corpus of
     8,938 labelled phases and 5,934 transitions between them. The
-    model reads the story once and we keep its state at <b>every single word</b>. At each position
+    model reads the story once and we keep its state at every single word. At each position
     we measure the angle between that state and each of the 12 emotion vectors. A phase's score is the
     average over the words inside it; we skip phases shorter than 4 words.
     Two questions follow, and we wrote down what would count as passing before running either.</p>

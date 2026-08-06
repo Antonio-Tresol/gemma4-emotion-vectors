@@ -39,6 +39,17 @@ Everything else is prose. Parallel items are a list: `<ul>` when the order does
 not matter, `<ol class="steps">` when the text claims one. A caveat is a heading
 plus prose, never a box.
 
+**Bold and italic each have fixed jobs.** Bold: run-in labels in folds and
+graded lists; a finding stated as a claim at a paragraph's head; the decisive
+number of a claim (one or two per paragraph, first statement); scale
+definitions carried in prose ("1.0 means...") and view names when instructing.
+Italic: titles and venues of works; a technical term at its defining first
+use; a word used as a word, emotion names included; contrastive stress,
+sparingly. Never bold for stress, never italic as a label, never both on one
+phrase. (The reference's bibliography sets titles bold with everything else
+plain, but that is Distill's numbered-citation grammar; our author-date
+entries keep venues in italic, which is that form's standard.)
+
 **A how-to block is short, and it holds no findings.** Its whole job is how to
 read the plot: what one mark is (only when the body has not already said it),
 what a failure would look like, what a strong result would look like. Two or
