@@ -464,7 +464,9 @@ function drawStory(){
 
   // ternary
   const th=document.getElementById("ternChart"); th.innerHTML="";
-  const TW=880,TH=340,cx=TW/2,top=26,side=300,hgt=side*Math.sin(Math.PI/3);
+  /* TH leaves 20 units between the bottom corner labels (y≈302) and the first
+     caption line; at 340 they shared a row and nearly overlapped */
+  const TW=880,TH=360,cx=TW/2,top=26,side=300,hgt=side*Math.sin(Math.PI/3);
   const s2=el("svg",{viewBox:`0 0 ${TW} ${TH}`,width:"100%"});
   const A=[cx,top], B2=[cx-side/2,top+hgt], Cc=[cx+side/2,top+hgt];
   s2.appendChild(el("polygon",{points:`${A[0]},${A[1]} ${B2[0]},${B2[1]} ${Cc[0]},${Cc[1]}`,
