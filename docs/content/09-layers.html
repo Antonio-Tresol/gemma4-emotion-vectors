@@ -28,15 +28,14 @@
     <div class="src">Source: notebooks/11_tracking_taxonomy.ipynb (measurements repeated at each
     layer)</div>
   </div>
-  <p class="narrow">Naming accuracy rises and falls repeatedly with depth. Averaged over all twelve
-  emotions, layer 6 gets the current emotion right <b>58%</b> of the time and layer 15 drops to
-  33%. Layer 24 climbs back to 57%, layer 33 falls to <b>27%</b>, and layer
-  42 recovers to 41%. The 58% peak and the 27% trough are two points on a sawtooth. This curve is the average of section 7's twelve bars, on
-  the Gemma-written vectors. At layer 33 the best single emotion reaches 49%; the worst
-  sits at 6%, below chance. The other measure runs the other way,
-  climbing from <b>+0.03</b> at layer 6 to <b>+0.26</b> at layer 51. The climb is uneven:
-  it reaches +0.143 by layer 24, collapses to +0.001 at layer 33, then resumes.
-  The middle layers behave differently from both ends of the model.</p>
+  <p class="narrow">We found that the two curves have opposite shapes. The navy line, naming
+  accuracy, is a sawtooth: <b>58%</b> at layer 6, down to 33%, back to 57%, down to <b>27%</b> at
+  layer 33, back to 41%. This line is the average of section 7's twelve bars, on the Gemma-written
+  vectors, and the average hides a wide spread: at layer 33 the best emotion reaches 49% and the
+  worst sits at 6%, below chance.</p>
+  <p class="narrow">The orange line, size tracking, climbs instead, from <b>+0.03</b> at layer 6 to
+  <b>+0.26</b> at layer 51, its deepest point. The climb is not smooth: it too collapses at
+  layer 33, to +0.001, then resumes. Both measures dip at the same depth.</p>
   <p class="narrow">The errors have structure: when the model names the wrong emotion,
   it names a <em>near</em> one. The emotion it picks instead sits closer to the true one in the
   VAD space than a randomly chosen emotion would, and that holds
