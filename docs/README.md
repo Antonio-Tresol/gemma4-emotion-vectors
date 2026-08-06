@@ -69,6 +69,13 @@ So, for both section headings and sub-headings here:
 - **A sub-heading never restates the section heading above it.** Section 8's
   said the same thing as its own h2, so it went.
 
+**Text and figures share one centreline.** The reference pages centre a
+~650px text column and let figures outset symmetrically around it (measured:
+paragraph and figure centre offsets are both zero at a 1600px viewport). Here
+every measure-capped text block centres via `--measure` (648px, an absolute
+value because `ch` scales with each element's font and let headings escape),
+and cards span the centred wrap.
+
 Every chart draws on a canvas **760 to 880 viewBox units wide**, so all of
 them render at one shared scale when stretched to the column. A narrower
 canvas renders proportionally larger: three charts kept 380-470 canvases from
