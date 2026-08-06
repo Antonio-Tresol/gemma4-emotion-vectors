@@ -2,8 +2,7 @@
   <h2><span class="secno">6</span>Following one story, token by token</h2>
   <p class="narrow">Each of these four stories was written to pass through three emotions in turn,
   with the turns marked. We fed one to the model and, at every <span data-term="token">token</span>, measured how close its
-  internal state sat to each of the three emotion vectors. Press play, or drag the slider, and both panels
-  advance together.</p>
+  internal state sat to each of the three emotion vectors.</p>
   <p class="narrow">Three of the four stories use the <b>same three emotions</b> and differ only in how
   they are written, and the model follows them very differently. How well the model follows an
   emotion depends on how the story is written, as much as on the emotion itself.</p>
@@ -16,9 +15,7 @@
          matters most for the line chart: 236 tokens across half a column is a
          smear. The shared control sits between them, next to what it drives,
          and the readout that doubles as the colour legend sits with it. -->
-    <div><div class="figcap muted" style="font-size:12.5px;margin-bottom:6px">
-      one line per emotion, over the length of the story</div>
-      <div id="lineChart" data-figtitle="Three emotion vectors over one story"></div></div>
+    <div><div id="lineChart" data-figtitle="Three emotion vectors over one story"></div></div>
     <div class="storyctl">
       <div class="controls">
         <span class="muted" style="font-size:13px">layer</span>
@@ -33,12 +30,10 @@
       </div>
       <div id="storyReadout" class="legend" style="margin:8px 0 0"></div>
     </div>
-    <div style="margin-top:18px"><div class="figcap muted" style="font-size:12.5px;margin-bottom:6px">
-      the same three numbers, as a position between the three emotions</div>
-      <div id="ternChart" data-figtitle="The same three readings, as a position between the emotions"></div></div>
+    <div style="margin-top:18px"><div id="ternChart" data-figtitle="The same three readings, as a position between the emotions"></div></div>
     <div style="margin-top:20px">
       <div class="figcap muted" style="font-size:12.5px;margin-bottom:6px">
-        the story the model is reading. The phase you are currently on is highlighted</div>
+        The story the model is reading. The phase at the current token is highlighted</div>
       <div class="storybox" id="storyBox"></div>
     </div>
     <details class="howto"><summary>How to read this</summary>
