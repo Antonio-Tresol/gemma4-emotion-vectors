@@ -1,0 +1,27 @@
+{
+  "title": "How are emotions represented in large language models? A study with Gemma 4 31B",
+  "description": "A replication and extension of Anthropic's emotion-vectors result on Gemma 4 31B, carried out as a CAMBRIA capstone (Cambridge Boston Alignment Initiative). The base model's biggest emotion axis matches human valence ratings at 0.83 with no human labels in the sorting; instruction tuning demotes that axis to third place, beneath a larger axis we could not identify; and reading the vectors token by token tracks a story's emotional turns better than chance. The interactive write-up is at https://antonio-tresol.github.io/gemma4-emotion-vectors/ and every story corpus, activation and scored output is public on Hugging Face.",
+  "creators": [
+    {"name": "Badilla-Olivas, Antonio"},
+    {"name": "Kim, Hannah", "affiliation": "Harvard University"},
+    {"name": "Li, Peyton", "affiliation": "MIT"}
+  ],
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "MIT",
+  "keywords": [
+    "interpretability",
+    "AI safety",
+    "emotion vectors",
+    "Gemma",
+    "large language models",
+    "steering vectors"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://antonio-tresol.github.io/gemma4-emotion-vectors/",
+      "relation": "isDocumentedBy",
+      "scheme": "url"
+    }
+  ]
+}
