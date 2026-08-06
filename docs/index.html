@@ -1778,7 +1778,7 @@ function drawStory(){
   if(readout) readout.innerHTML = S.emotions.map((nm,k)=>
     `<span><i style="background:${EC[k]}"></i>${nm} <b style="color:${EC[k]}">`+
     `${ys[k][curTok].toFixed(3)}</b></span>`).join("")+
-    `<span style="margin-left:auto">reading at token ${curTok}, layer ${curLayer}</span>`;
+    `<span style="margin-left:auto">Reading at token ${curTok}, layer ${curLayer}</span>`;
   [[0,"0"],[S.boundaries[0],"Turn 1 · "+S.boundaries[0]],
    [S.boundaries[1],"Turn 2 · "+S.boundaries[1]],[n-1,String(n-1)]].forEach(([i,lab],k)=>{
     const t=el("text",{x:X(i),y:T+ih+13,"text-anchor":k===0?"start":(k===3?"end":"middle"),
@@ -1792,8 +1792,9 @@ function drawStory(){
     transform:`rotate(-90 12 ${T+ih/2})`,"text-anchor":"middle"});
   yl.textContent="Closeness to each emotion vector"; svg.appendChild(yl);
   // the y range is re-fitted per layer, so say so rather than let the reader
-  // assume the shapes are comparable across the layer buttons
-  const rn=el("text",{x:W-R,y:T+8,"text-anchor":"end","font-size":8.5,fill:P.muted});
+  // assume the shapes are comparable across the layer buttons. Above the plot
+  // area, because inside it the label sat across the turn-marker lines.
+  const rn=el("text",{x:W-R,y:T-5,"text-anchor":"end","font-size":8.5,fill:P.muted});
   rn.textContent="Y range re-fitted per layer"; svg.appendChild(rn);
   host.appendChild(svg);
 
