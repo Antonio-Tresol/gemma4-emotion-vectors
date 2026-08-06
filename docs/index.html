@@ -1668,7 +1668,10 @@ document.querySelectorAll("[data-model]").forEach(b=>b.onclick=()=>{
 /* ---------- what moved in: correlation grid ---------- */
 function drawGrid(){
   const host=document.getElementById("gridChart"); host.innerHTML="";
-  const W=420,H=420,L=64,T=42,cell=62;
+  // 880 to match the shared canvas scale, the 5x5 grid centred within it;
+  // the old 420 square canvas rendered the grid at ~1.5x page scale even
+  // after the height cap
+  const cell=62,W=880,H=404,T=42,L=(W-5*cell)/2;
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
   const note=document.getElementById("gridNote");
   D.grid.forEach((row,i)=>row.forEach((v,j)=>{
@@ -1693,8 +1696,8 @@ function drawGrid(){
     "font-size":10.5,fill:P.muted});t.textContent="Axis "+(j+1);svg.appendChild(t);}
   for(let i=0;i<5;i++){const t=el("text",{x:L-8,y:T+i*cell+(cell-3)/2+4,"text-anchor":"end",
     "font-size":10.5,fill:P.muted});t.textContent="Axis "+(i+1);svg.appendChild(t);}
-  const rh=el("text",{x:12,y:T+(5*cell)/2,"font-size":10.5,fill:P.muted,"font-weight":600,
-    transform:`rotate(-90 12 ${T+(5*cell)/2})`,"text-anchor":"middle"});
+  const rh=el("text",{x:L-46,y:T+(5*cell)/2,"font-size":10.5,fill:P.muted,"font-weight":600,
+    transform:`rotate(-90 ${L-46} ${T+(5*cell)/2})`,"text-anchor":"middle"});
   rh.textContent="The instruction-tuned model's five biggest axes"; svg.appendChild(rh);
   // a scale strip, so a shade can be read without hovering
   const sx=L, sy=T+5*cell+14, sw=5*cell-3;

@@ -78,10 +78,10 @@ and cards span the centred wrap.
 
 Every chart draws on a canvas **760 to 880 viewBox units wide**, so all of
 them render at one shared scale when stretched to the column. A narrower
-canvas renders proportionally larger: three charts kept 380-470 canvases from
-an old half-column layout and drew at roughly double the scale of the page
-until 2026-08-05. The one exception is the square 5x5 grid, whose height the
-cap below already limits.
+canvas renders proportionally larger: four charts kept 380-470 canvases from
+an old half-column layout and drew at up to double the scale of the page
+until 2026-08-05, the square 5x5 grid among them (the height cap softened it
+but did not normalise it).
 
 Every chart is an SVG with a fixed `viewBox` scaled to the width of its card,
 so **its aspect ratio alone decides its height**. One CSS rule caps that height
