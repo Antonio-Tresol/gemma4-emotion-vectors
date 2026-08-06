@@ -399,7 +399,10 @@ function drawStory(){
   const ys=S.lines_by_layer[curLayer];
   // line chart
   const host=document.getElementById("lineChart"); host.innerHTML="";
-  const W=470,H=300,L=62,R=12,T=14,B=44;
+  /* 880 to match every other chart's canvas. These two figures once sat side
+     by side in half-columns at 470; stacked full-width, the narrow canvas
+     rendered them at ~1.75x the scale of the rest of the page. */
+  const W=880,H=300,L=62,R=14,T=14,B=44;
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
   const iw=W-L-R, ih=H-T-B, n=S.n_tokens;
   let lo=Infinity,hi=-Infinity; ys.forEach(s=>s.forEach(v=>{lo=Math.min(lo,v);hi=Math.max(hi,v);}));
@@ -458,7 +461,7 @@ function drawStory(){
 
   // ternary
   const th=document.getElementById("ternChart"); th.innerHTML="";
-  const TW=470,TH=316,cx=TW/2,top=26,side=232,hgt=side*Math.sin(Math.PI/3);
+  const TW=880,TH=340,cx=TW/2,top=26,side=300,hgt=side*Math.sin(Math.PI/3);
   const s2=el("svg",{viewBox:`0 0 ${TW} ${TH}`,width:"100%"});
   const A=[cx,top], B2=[cx-side/2,top+hgt], Cc=[cx+side/2,top+hgt];
   s2.appendChild(el("polygon",{points:`${A[0]},${A[1]} ${B2[0]},${B2[1]} ${Cc[0]},${Cc[1]}`,
