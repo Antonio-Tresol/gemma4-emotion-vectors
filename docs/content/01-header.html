@@ -44,7 +44,7 @@
   <h2>Key results</h2>
   <div class="grid3" style="margin-top:20px;gap:16px">
     <div class="card"><h3>The base model reproduces the published <span data-term="circumplex">circumplex</span></h3>
-    <p style="font-size:15px">The top <span data-term="principal component">principal component</span> of the 171 emotion vectors
+    <p style="font-size:15px">The biggest axis of the 171 emotion vectors
     is pleasant-versus-unpleasant, the same axis people use, matching human valence ratings at
     0.83. The sorting uses no human labels, so the match comes from the model.</p></div>
     <div class="card"><h3>Instruction tuning demotes valence to third place</h3>
@@ -53,9 +53,9 @@
     closest match among the base model's axes is 0.14, and we could not identify what it
     encodes.</p></div>
     <div class="card"><h3>The model can track emotions throughout a story better than chance</h3>
-    <p style="font-size:15px">The model's internal state hands over from one emotion to the next as
-    the story turns. In stories written to move through three emotions, the handover beats chance
-    and often arrives before the written turn.</p></div>
+    <p style="font-size:15px">The model's internal state follows the story's emotional changes
+    better than chance. In stories written to move through three emotions, it usually starts
+    leaning towards the next emotion before the written turn.</p></div>
   </div>
   <p class="lede narrow" style="margin-top:30px">In
   <a href="https://transformer-circuits.pub/2026/emotions/index.html"><em>Emotion concepts and their

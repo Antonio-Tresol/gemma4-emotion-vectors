@@ -5,7 +5,7 @@
   mono-emotion stories, then subtracting the average over all the emotions. To read it back we
   measure the <b>angle between that vector and the model's state at a given word and a given
   layer</b>, using cosine similarity. The cosine is centred: we subtract the mean over the story
-  set first, so 0 is the corpus average. <a href="#methods">Section 10 defines each step
+  corpus first, so 0 is the corpus average. <a href="#methods">Section 10 defines each step
   exactly</a>.</p>
   <div class="card"><div id="methodDiagram" data-schematic
     data-figtitle="How an emotion vector is built, and how it is read back"></div>
@@ -25,8 +25,8 @@
   (PCA) finds the directions along which they differ most, and the top two recover valence and
   arousal. That matches how humans rate the same words in the
   <a href="http://saifmohammad.com/WebPages/nrc-vad.html">NRC VAD lexicon</a> (VAD is valence,
-  arousal, dominance). The components are computed from the activations alone, and the human
-  ratings are brought in afterwards to test whether the axes line up with them.</p>
+  arousal, dominance). The axes are computed from the model's internal states alone, and the human
+  ratings are brought in afterwards to test whether they line up.</p>
   <h3 style="margin-top:38px">What these measurements are for</h3>
   <p class="narrow">An emotion vector can be read, and it can be added back into the model, so the
   same object serves as a measurement and as an intervention. Sections 3 and 4 use the vectors the

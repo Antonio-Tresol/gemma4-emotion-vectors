@@ -17,6 +17,48 @@ const C = {valence:P.navy, arousal:P.teal, dominance:P.green, length:P.amber, ev
    back out of that markup, so the page holds one copy of every definition and
    editing the glossary section edits the tooltips with it. The entry carries
    the longer version and the reference the definition comes from. */
+/* Every occurrence of a glossary term in body prose gets the tooltip, not only
+   the hand-marked spans, which drifted as prose was edited: most instances of
+   most terms carried no tip. Runs before wireGlossary, which then wires every
+   [data-term] the same way whether hand-written or wrapped here. Hand-written
+   spans still work anywhere, including outside these prose containers. */
+function autoMarkTerms(){
+  const slugs=[...document.querySelectorAll(".gterm[data-slug]")].map(e=>e.dataset.slug);
+  if(!slugs.length) return;
+  // plural and hyphen variants map back to the entry's slug; longest first so
+  // "principal component analysis" wins over "principal component"
+  const variantToSlug={};
+  slugs.forEach(s=>{variantToSlug[s]=s; variantToSlug[s+"s"]=s;});
+  variantToSlug["principal component analysis"]="principal component";
+  const variants=Object.keys(variantToSlug).sort((a,b)=>b.length-a.length);
+  const pattern=new RegExp("\\b("+variants.map(v=>v.replace(/ /g,"[-\\s]+")).join("|")+")\\b","gi");
+  const PROSE="p, li, .takeaway, .pblurb";
+  const SKIP="#glossary, [data-term], a, nav, .legend, .src, .controls, button, svg";
+  const targets=[];
+  const walker=document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+    acceptNode:node=>{
+      const parent=node.parentElement;
+      if(!parent || !parent.closest(PROSE) || parent.closest(SKIP)) return NodeFilter.FILTER_REJECT;
+      pattern.lastIndex=0;
+      return pattern.test(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+    }});
+  while(walker.nextNode()) targets.push(walker.currentNode);
+  targets.forEach(node=>{
+    const text=node.nodeValue, frag=document.createDocumentFragment();
+    let last=0, m; pattern.lastIndex=0;
+    while((m=pattern.exec(text))){
+      frag.appendChild(document.createTextNode(text.slice(last,m.index)));
+      const span=document.createElement("span");
+      span.dataset.term=variantToSlug[m[1].toLowerCase().replace(/[-\s]+/g," ")];
+      span.textContent=m[1];
+      frag.appendChild(span);
+      last=m.index+m[1].length;
+    }
+    frag.appendChild(document.createTextNode(text.slice(last)));
+    node.parentNode.replaceChild(frag,node);
+  });
+}
+
 function wireGlossary(){
   const entries = {};
   document.querySelectorAll(".gterm[data-slug]").forEach(entry=>{
@@ -320,8 +362,8 @@ function drawPCs(model, hostId="pcChart", verdictId="pcVerdict"){
   host.appendChild(svg);
   const verdict=document.getElementById(verdictId);
   if(verdict) verdict.textContent = model==="base"
-    ? "biggest axis = valence, 0.83. the circumplex, recovered."
-    : "biggest axis = unknown. valence scores 0.11 here, and leads PC3 instead.";
+    ? "Biggest axis = valence, 0.83. The circumplex, recovered."
+    : "Biggest axis = unknown. Valence scores 0.11 here, and leads PC3 instead.";
 }
 document.querySelectorAll("[data-model]").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("[data-model]").forEach(x=>x.classList.remove("on"));
@@ -1517,6 +1559,7 @@ function numberFigures(){
 /* plain-HTML sibling of el(), which builds SVG-namespaced nodes */
 function el2(t,a={}){const e=document.createElement(t);for(const k in a)e.setAttribute(k,a[k]);return e;}
 
+autoMarkTerms();   // before wireGlossary, so the wrapped spans get wired too
 wireGlossary();
 openTargetedEntry();   // a cold load of #g-elo lands on an open entry, not a shut one
 numberFigures();
