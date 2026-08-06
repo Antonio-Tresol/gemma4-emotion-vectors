@@ -96,6 +96,9 @@ font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:var(--orange
 .kicker{margin-bottom:14px}
 .partbar .kicker{max-width:var(--measure);margin-inline:auto}
 section{padding:62px 0;border-bottom:1px solid var(--border);scroll-margin-top:56px}
+/* A part bar draws its own navy rule, so the section before it gives up its
+   grey one; otherwise every part opened under two stacked lines. */
+section:has(+ .partbar){border-bottom:0}
 section:nth-of-type(even){background:var(--surface)}
 p{margin-bottom:14px;max-width:var(--measure);margin-inline:auto}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px 26px}
@@ -487,12 +490,12 @@ border-bottom:1px solid var(--border)}</style></head>
       <a class="link-plain" href="https://github.com/Antonio-Tresol" target="_blank" rel="noopener noreferrer">Antonio <span class="nw">Badilla-Olivas<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a><sup>1,&dagger;</sup>,
       <a class="link-plain" href="https://www.linkedin.com/in/hjkim015/" target="_blank" rel="noopener noreferrer">Hannah <span class="nw">Kim<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a><sup>2</sup>,
       <a class="link-plain" href="https://www.linkedin.com/in/peytonli3/" target="_blank" rel="noopener noreferrer">Peyton <span class="nw">Li<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a><sup>3</sup></div></div>
-    <div class="mh"><span class="kicker">Reading time</span><div class="mhv">About
-      34 minutes</div></div>
     <div class="mh"><span class="kicker">Programme</span><div class="mhv">Capstone project,
       <a class="link-plain" href="https://www.cbai.ai/cambria" target="_blank" rel="noopener noreferrer"><span class="nw">CAMBRIA<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a>, a
       <a class="link-plain" href="https://www.cbai.ai/" target="_blank" rel="noopener noreferrer">Cambridge Boston Alignment <span class="nw">Initiative<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a> programme</div></div>
     <div class="mh"><span class="kicker">Last edited</span><div class="mhv">August 2026</div></div>
+    <div class="mh"><span class="kicker">Reading time</span><div class="mhv">About
+      34 minutes</div></div>
     <div class="mhnote"><sup>1</sup>&nbsp;Independent
       &nbsp; <sup>2</sup>&nbsp;Harvard University
       &nbsp; <sup>3</sup>&nbsp;MIT</div>

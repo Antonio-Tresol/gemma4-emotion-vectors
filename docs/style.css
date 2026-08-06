@@ -79,6 +79,9 @@ font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:var(--orange
 .kicker{margin-bottom:14px}
 .partbar .kicker{max-width:var(--measure);margin-inline:auto}
 section{padding:62px 0;border-bottom:1px solid var(--border);scroll-margin-top:56px}
+/* A part bar draws its own navy rule, so the section before it gives up its
+   grey one; otherwise every part opened under two stacked lines. */
+section:has(+ .partbar){border-bottom:0}
 section:nth-of-type(even){background:var(--surface)}
 p{margin-bottom:14px;max-width:var(--measure);margin-inline:auto}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px 26px}
