@@ -495,7 +495,7 @@ border-bottom:1px solid var(--border)}</style></head>
       <a class="link-plain" href="https://www.cbai.ai/" target="_blank" rel="noopener noreferrer">Cambridge Boston Alignment <span class="nw">Initiative<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></a> programme</div></div>
     <div class="mh"><span class="kicker">Last edited</span><div class="mhv">August 2026</div></div>
     <div class="mh"><span class="kicker">Reading time</span><div class="mhv">About
-      34 minutes</div></div>
+      35 minutes</div></div>
     <div class="mhnote"><sup>1</sup>&nbsp;Independent
       &nbsp; <sup>2</sup>&nbsp;Harvard University
       &nbsp; <sup>3</sup>&nbsp;MIT</div>
@@ -520,10 +520,15 @@ border-bottom:1px solid var(--border)}</style></head>
     better than chance. In stories written to move through three emotions, it usually starts
     leaning towards the next emotion before the written turn.</p></div>
   </div>
-  <p class="lede narrow" style="margin-top:30px">When a language model reads a frightened
-  sentence, something inside it leans towards fear. This page is about those leanings: one
-  direction in the model's internal state for each emotion, which can be read as a story turns
-  and pushed to change what the model prefers.</p>
+  <p class="lede narrow" style="margin-top:30px">Every reader knows that a story does not
+  announce its turns: dread gathers before the door opens, and relief arrives a sentence before
+  the rescue. This page is about the machinery of something similar inside a language model.
+  When Gemma&nbsp;4&nbsp;31B reads a frightened sentence, its internal state leans measurably
+  towards fear. There is one such direction for each emotion, and together they arrange
+  themselves much the way psychologists arrange human feeling, pleasant against unpleasant.
+  They can be read, word by word, as a story turns, and pushed, to change what the model
+  prefers. And, like its reader, the model usually starts leaning towards the next emotion
+  before the story announces it.</p>
   <p class="lede narrow">In
   <a class="link-plain" href="https://transformer-circuits.pub/2026/emotions/index.html" target="_blank" rel="noopener noreferrer"><em>Emotion concepts and their function in a large language <span class="nw">model<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11L11 1M11 1H4M11 1V8"/></svg></span></em></a> (<a href="#r-sofroniew2026">Sofroniew et al., 2026</a>), Anthropic reported that
   Claude&nbsp;Sonnet&nbsp;4.5 keeps a separate direction in its
@@ -1050,20 +1055,23 @@ border-bottom:1px solid var(--border)}</style></head>
   the way psychologists do. The biggest axis of the base model's 171 emotion vectors is pleasant
   versus unpleasant, matching human <span data-term="valence">valence</span> ratings at 0.83, with
   no human labels in the sorting. Instruction tuning keeps that axis but demotes it to third
-  place, beneath a larger axis we could not identify. And the vectors are not inert. Read out
-  token by token, they follow a story's emotional turns better than chance, usually leaning
-  towards the next emotion before the written turn. Added back into the model, ten of the twelve
-  move its preferences the way their valence predicts.</p>
+  place, beneath a larger axis we could not identify. And the vectors are not inert: read out
+  token by token, they follow a story's emotional turns better than chance; added back into the
+  model, ten of the twelve move its preferences the way their valence predicts.</p>
   <p class="narrow">We would urge caution in drawing strong conclusions from these directions.
   Every positive result on this page is real but small: each clears its chance level and none
   approaches the ceiling. Some of that gap belongs to the vector sets rather than the model:
   section 7's concentration of errors onto two emotions appeared with one writer's vectors and
-  vanished with another's. Separating the rest is the third experiment in section 9. And our
-  measurements concern emotion representations and their effects on behaviour, not whether the
-  model feels anything.</p>
-  <p class="narrow">Even so, the directions are there, they are readable, and they move behaviour.
-  Instruction tuning, the step that turns a base model into an assistant, is also the step that
-  rearranged them. Understanding what it put on top is where we would start.</p>
+  vanished with another's. Separating the rest is the third experiment in section 9.</p>
+  <p class="narrow">Even so, the directions are there, they are readable, and they move behaviour,
+  which is what section 1 asked of them. A model sold as a companion needs to follow how a
+  person's state moves across a conversation; this one can, weakly, and often a beat before the
+  story says so. Research on AI welfare needs internal evidence to set beside what a model says
+  about itself; these directions are that kind of evidence. What they measure here, though, is a
+  story's emotions, not the model's own. And where the model's arrangement diverges from the
+  human one, the divergence is the finding. Instruction tuning, the step that turns a base model
+  into an assistant, is the step that redrew the arrangement, and the largest axis it drew has no
+  name yet. Naming it is where we would begin.</p>
 </div></section>
 
 <section id="methods"><div class="wrap">
