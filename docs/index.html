@@ -603,7 +603,7 @@ border-bottom:1px solid var(--border)}</style></head>
   varied corpus is four times the size yet scores lower. The rows of
   the figure compare whole corpora, which differ in size as well as prompt. We therefore re-ran
   the test at matched sizes: the same number of stories per emotion drawn from each corpus, five
-  random draws per size using a unique scorer. At 64 stories per emotion the fixed-prompt corpus already
+  random draws per size using the same scorer. At 64 stories per emotion the fixed-prompt corpus already
   reaches <b>8.6</b> passing layers, while the varied one needs <b>1,024</b> per emotion to reach
   <b>6.8</b>. Prompt variety costs accuracy even with size matched.</p>
   <p class="narrow">We also found that Gemma's own stories repeat themselves quite often. Across 3,072
@@ -674,12 +674,12 @@ border-bottom:1px solid var(--border)}</style></head>
   axes of the circumplex, in order, recovered from the activations alone. The biggest axis also matches
   dominance at <b>0.66</b>, and valence and dominance are themselves correlated in the human
   ratings. The figure alone cannot say whether that axis is valence, or valence and dominance
-  together so the result carries the same ambiguity.</p>
+  together, so the result carries the same ambiguity.</p>
   <p class="narrow">In the instruction-tuned model, in contrast, the biggest axis matches valence
   at <b>0.11</b>, near zero. That axis explains 28% of all the variation among the 171 vectors, compared with 15%
   for the base model's top axis. Valence remains represented lower down the components: the <em>third</em> axis
   matches it at 0.72. The second axis matches story
-  length at 0.66 which is higher than it matches any emotion rating. Section 4 asks what the new top axis
+  length at 0.66, which is higher than it matches any emotion rating. Section 4 asks what the new top axis
   encodes.</p>
   <div class="takeaway"><span class="lbl">Takeaway</span>The base model's emotions separate first by valence and then by arousal, which recovers the human circumplex from the activations alone. In the instruction-tuned model the top axis matches none of the human ratings, and valence falls to third.</div>
 </div></section>
@@ -712,14 +712,14 @@ border-bottom:1px solid var(--border)}</style></head>
   base model's five biggest axes, near the bottom of the scale. This axis has no counterpart in the
   base model, and it is now the largest single one separating the model's
   emotions.</p>
-  <p class="narrow">Reading down the first column the instruction-tuned model's third axis scores
+  <p class="narrow">Reading down the first column, the instruction-tuned model's third axis scores
   <b>0.83</b> against the base model's first. It seems that the circumplex survives instruction
-  tuning just that it has moved from the first axis to the third.</p>
+  tuning; it has just moved from the first axis to the third.</p>
   <p class="narrow" style="margin-top:18px">The eight emotions at each end of the new axis, from
   notebook 02: at one end <span id="pc1low"></span>; at the other,
   <span id="pc1high"></span>.</p>
-  <p class="narrow">Using the two lists to guess what an axis means suggest that a common thread
-  on the second list: irritated, on edge, uneasy and impatient all read as low-grade
+  <p class="narrow">Using the two lists to guess what an axis means suggests a common thread
+  in the second list: irritated, on edge, uneasy and impatient all read as low-grade
   agitation. The first mixes <em>miserable</em> with <em>jubilant</em>, so the axis does not
   separate pleasant from unpleasant emotions. We could not identify what the axis as a whole
   represents.</p>
@@ -747,7 +747,7 @@ border-bottom:1px solid var(--border)}</style></head>
     <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/02_circumplex_geometry.ipynb" target="_blank" rel="noopener noreferrer">notebooks/02_circumplex_geometry.ipynb</a>, section 10</div>
   </div>
   <p class="narrow" style="margin-top:22px">We found that the base model's late layers agree with
-  one another at <b>0.94</b> out of 1 which is a close to perfect agreement. In the instruction-tuned
+  one another at <b>0.94</b> out of 1, which is close to perfect agreement. In the instruction-tuned
   model the same measure drops to <b>0.79</b> and the grid breaks into visible blocks.</p>
   <p class="narrow">Removing the biggest axis at each layer merges the blocks back together.
   This indicates that the one dominant axis <em>caused</em> the fragmentation. The
@@ -762,7 +762,7 @@ border-bottom:1px solid var(--border)}</style></head>
   almost a right angle while even the closest pair is only partly aligned.
   Subtracting that one unidentified axis raises the late-layer agreement between the two models from
   <b>0.29</b> to <b>0.60</b>, on the same 0-to-1 scale as the grid above. So the shared emotion
-  structure survives just that it sits underneath one large direction that matches none of the emotion
+  structure survives; it just sits underneath one large direction that matches none of the emotion
   ratings.</p>
   <div class="takeaway"><span class="lbl">Takeaway</span>The biggest axis separating emotions in the instruction-tuned model is new: its closest match among the base model's axes is 0.14. Instruction tuning introduced it and it breaks the model's layers into disagreeing blocks. We could not identify what it encodes.</div>
 </div></section>

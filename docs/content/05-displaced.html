@@ -24,14 +24,14 @@
   base model's five biggest axes, near the bottom of the scale. This axis has no counterpart in the
   base model, and it is now the largest single one separating the model's
   emotions.</p>
-  <p class="narrow">Reading down the first column the instruction-tuned model's third axis scores
+  <p class="narrow">Reading down the first column, the instruction-tuned model's third axis scores
   <b>0.83</b> against the base model's first. It seems that the circumplex survives instruction
-  tuning just that it has moved from the first axis to the third.</p>
+  tuning; it has just moved from the first axis to the third.</p>
   <p class="narrow" style="margin-top:18px">The eight emotions at each end of the new axis, from
   notebook 02: at one end <span id="pc1low"></span>; at the other,
   <span id="pc1high"></span>.</p>
-  <p class="narrow">Using the two lists to guess what an axis means suggest that a common thread
-  on the second list: irritated, on edge, uneasy and impatient all read as low-grade
+  <p class="narrow">Using the two lists to guess what an axis means suggests a common thread
+  in the second list: irritated, on edge, uneasy and impatient all read as low-grade
   agitation. The first mixes <em>miserable</em> with <em>jubilant</em>, so the axis does not
   separate pleasant from unpleasant emotions. We could not identify what the axis as a whole
   represents.</p>
@@ -59,7 +59,7 @@
     <div class="src">source: notebooks/02_circumplex_geometry.ipynb, section 10</div>
   </div>
   <p class="narrow" style="margin-top:22px">We found that the base model's late layers agree with
-  one another at <b>0.94</b> out of 1 which is a close to perfect agreement. In the instruction-tuned
+  one another at <b>0.94</b> out of 1, which is close to perfect agreement. In the instruction-tuned
   model the same measure drops to <b>0.79</b> and the grid breaks into visible blocks.</p>
   <p class="narrow">Removing the biggest axis at each layer merges the blocks back together.
   This indicates that the one dominant axis <em>caused</em> the fragmentation. The
@@ -74,7 +74,7 @@
   almost a right angle while even the closest pair is only partly aligned.
   Subtracting that one unidentified axis raises the late-layer agreement between the two models from
   <b>0.29</b> to <b>0.60</b>, on the same 0-to-1 scale as the grid above. So the shared emotion
-  structure survives just that it sits underneath one large direction that matches none of the emotion
+  structure survives; it just sits underneath one large direction that matches none of the emotion
   ratings.</p>
   <div class="takeaway"><span class="lbl">Takeaway</span>The biggest axis separating emotions in the instruction-tuned model is new: its closest match among the base model's axes is 0.14. Instruction tuning introduced it and it breaks the model's layers into disagreeing blocks. We could not identify what it encodes.</div>
 </div></section>
