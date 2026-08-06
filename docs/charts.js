@@ -1415,6 +1415,14 @@ function drawRsa(){
   const rsaTitle=RSA_LABEL[rsaKey]||rsaKey;
   ttl.textContent=rsaTitle.charAt(0).toUpperCase()+rsaTitle.slice(1); svg.appendChild(ttl);
   host.appendChild(svg);
+  // square cells make the height the binding constraint, so leftover width
+  // would pool right of the colour scale; measure what was actually drawn and
+  // centre it (getBBox needs the svg in the DOM, hence after appendChild)
+  const drawn=svg.getBBox();
+  const centreShift=(W-drawn.width)/2-drawn.x;
+  const centred=el("g",{transform:`translate(${centreShift.toFixed(1)} 0)`});
+  while(svg.firstChild) centred.appendChild(svg.firstChild);
+  svg.appendChild(centred);
   document.getElementById("rsaNote").textContent=RSA_NOTE[rsaKey]||"";
 }
 (function(){
