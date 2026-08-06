@@ -29,6 +29,9 @@
   A different emotion wins at each layer: <em>overwhelmed</em> at 24, <em>calm</em> at 30,
   <em>safe</em> at 33 and <em>at ease</em> at 36. The correlation for <em>safe</em> runs negative:
   the more strongly it activates on an activity, the lower that activity sits in the ranking.</p>
+  <p class="narrow">The pattern also runs through all 171 vectors at once. Emotions people rate as
+  pleasant tend to predict liked activities and unpleasant ones disliked, correlating at 0.41 at
+  layer 33; shuffling the valence ratings ten thousand times never reproduced that.</p>
 
   <h3 style="margin-top:40px">Adding the vectors to the model</h3>
   <p class="narrow">We added each emotion's own direction into the residual stream while the model
@@ -53,8 +56,9 @@
     </details>
     <div class="src">source: notebooks/04_paper_plot_parity.ipynb, layer 33, post-fix directions, both doses; scored by scripts/score_steering.py</div>
   </div>
-  <p class="narrow" style="margin-top:20px">We found that ten of the twelve emotions move
-  preferences in their own direction at both doses, against the mark of nine we fixed in advance.</p>
+  <p class="narrow" style="margin-top:20px">We fixed the pass mark in advance: at least nine of
+  the twelve emotions had to move preferences the way their valence predicts. Ten do, at both
+  doses.</p>
   <p class="narrow">The two exceptions,
   angry and surprised, fail at both doses; an artefact of noise would flip between them. The
   effects grow with dose: loving moves 47 <span data-term="elo">Elo</span> points at the gentle

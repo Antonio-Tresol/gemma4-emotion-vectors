@@ -193,9 +193,7 @@ function drawPrefLayers(){
     const bar=el("rect",{x:x0+bw*.28,y:yOf(r.max_abs_r),width:bw*.44,height:h,rx:2,
       fill:best?C.valence:P.greyMid});
     tipOn(bar,`<b>layer ${r.layer}</b>: best vector "${r.best_emotion}", r = ${r.best_r.toFixed(2)}`+
-      `<span class="t-sub">${r.best_r<0?"negative: the more it activates, the lower the activity ranks. ":""}`+
-      `valence organization ${r.valence_r.toFixed(2)}, `+
-      `permutation p ${r.perm_p===0?"< 1e-4":r.perm_p}</span>`);
+      (r.best_r<0?`<span class="t-sub">negative: the more it activates, the lower the activity ranks</span>`:""));
     svg.appendChild(bar);
     const lab=el("text",{x:x0+bw/2,y:H-26,"text-anchor":"middle","font-size":11,fill:P.text});
     lab.textContent="layer "+r.layer; svg.appendChild(lab);

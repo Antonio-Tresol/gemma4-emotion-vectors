@@ -800,6 +800,9 @@ border-bottom:1px solid var(--border)}</style></head>
   A different emotion wins at each layer: <em>overwhelmed</em> at 24, <em>calm</em> at 30,
   <em>safe</em> at 33 and <em>at ease</em> at 36. The correlation for <em>safe</em> runs negative:
   the more strongly it activates on an activity, the lower that activity sits in the ranking.</p>
+  <p class="narrow">The pattern also runs through all 171 vectors at once. Emotions people rate as
+  pleasant tend to predict liked activities and unpleasant ones disliked, correlating at 0.41 at
+  layer 33; shuffling the valence ratings ten thousand times never reproduced that.</p>
 
   <h3 style="margin-top:40px">Adding the vectors to the model</h3>
   <p class="narrow">We added each emotion's own direction into the residual stream while the model
@@ -824,8 +827,9 @@ border-bottom:1px solid var(--border)}</style></head>
     </details>
     <div class="src">source: <a class="link-src" href="https://github.com/Antonio-Tresol/gemma4-emotion-vectors/blob/main/notebooks/04_paper_plot_parity.ipynb" target="_blank" rel="noopener noreferrer">notebooks/04_paper_plot_parity.ipynb</a>, layer 33, post-fix directions, both doses; scored by scripts/score_steering.py</div>
   </div>
-  <p class="narrow" style="margin-top:20px">We found that ten of the twelve emotions move
-  preferences in their own direction at both doses, against the mark of nine we fixed in advance.</p>
+  <p class="narrow" style="margin-top:20px">We fixed the pass mark in advance: at least nine of
+  the twelve emotions had to move preferences the way their valence predicts. Ten do, at both
+  doses.</p>
   <p class="narrow">The two exceptions,
   angry and surprised, fail at both doses; an artefact of noise would flip between them. The
   effects grow with dose: loving moves 47 <span data-term="elo">Elo</span> points at the gentle
@@ -1536,9 +1540,7 @@ function drawPrefLayers(){
     const bar=el("rect",{x:x0+bw*.28,y:yOf(r.max_abs_r),width:bw*.44,height:h,rx:2,
       fill:best?C.valence:P.greyMid});
     tipOn(bar,`<b>layer ${r.layer}</b>: best vector "${r.best_emotion}", r = ${r.best_r.toFixed(2)}`+
-      `<span class="t-sub">${r.best_r<0?"negative: the more it activates, the lower the activity ranks. ":""}`+
-      `valence organization ${r.valence_r.toFixed(2)}, `+
-      `permutation p ${r.perm_p===0?"< 1e-4":r.perm_p}</span>`);
+      (r.best_r<0?`<span class="t-sub">negative: the more it activates, the lower the activity ranks</span>`:""));
     svg.appendChild(bar);
     const lab=el("text",{x:x0+bw/2,y:H-26,"text-anchor":"middle","font-size":11,fill:P.text});
     lab.textContent="layer "+r.layer; svg.appendChild(lab);
