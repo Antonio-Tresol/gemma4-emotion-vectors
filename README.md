@@ -1,5 +1,7 @@
 # Emotion vectors in Gemma 4 31B
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21828290.svg)](https://doi.org/10.5281/zenodo.21828290)
+
 **Replicating Anthropic's emotion-vectors result on an open model, and asking what happens when the emotion changes partway through a story**
 
 <p align="center">
