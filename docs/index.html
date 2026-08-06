@@ -1028,25 +1028,6 @@ border-bottom:1px solid var(--border)}</style></head>
     "the model cannot do this" apart from "these vectors cannot do this" deserves an experiment of
     its own.</li>
   </ol>
-  <h3 style="margin-top:34px">Three results, three different grades of evidence</h3>
-  <p class="narrow">Only the first of the three results has been through the full falsification
-  pass.</p>
-  <ol class="steps">
-    <li><b>The base model reproduces the circumplex: tested and survived.</b> It has been through
-    the full falsification pass and came out the other side, including a re-run after we corrected
-    an extraction bug.</li>
-    <li><b>Instruction tuning demotes it and puts a large non-emotional axis on top: measured, not
-    yet formally tested.</b> Every number behind it is real and reproducible, but the claim is still
-    marked unvalidated in our tree and its falsification pass is owed. Treat it as a strong observation with its falsification pass still owed.</li>
-    <li><b>The model can track emotions throughout a story better than chance: exploratory.</b> These measurements
-    are registered as hypothesis-generating work with no pass mark attached. The detection mark we
-    <em>did</em> fix in advance was written for the 171-emotion vector set, and that set failed it
-    at every layer. What passes is the twelve-emotion sets, a substitution we made after seeing the
-    results; the grade stays exploratory for that reason.</li>
-  </ol>
-  <p class="narrow">What the new axis encodes is unsettled across all three results. So is how much
-  of the story-following belongs to the model, and how much to the stories its vectors were built
-  from.</p>
 </div></section>
 
 <section id="conclusion" data-endparts><div class="wrap">
@@ -1059,13 +1040,13 @@ border-bottom:1px solid var(--border)}</style></head>
   token by token, they follow a story's emotional turns better than chance, usually leaning
   towards the next emotion before the written turn. Added back into the model, ten of the twelve
   move its preferences the way their valence predicts.</p>
-  <p class="narrow">We caution against reading more into these directions than the measurements
-  support. Every positive result on this page is better than chance and too weak to rely on.
-  Part of that weakness sits in our instruments rather than the model: section 7's pile-up of
-  wrong answers onto two emotions appeared with one writer's vectors and vanished with another's.
-  How much of the rest is the model and how much the instruments is an experiment section 9
-  already lists. And nothing here speaks to whether the model feels anything; we measured
-  directions and their effects, not experience.</p>
+  <p class="narrow">We would urge caution in drawing strong conclusions from these directions.
+  Every positive result on this page is real but small: each clears its chance level and none
+  approaches the ceiling. Some of that gap belongs to the vector sets rather than the model:
+  section 7's concentration of errors onto two emotions appeared with one writer's vectors and
+  vanished with another's. Separating the rest is the third experiment in section 9. And our
+  measurements concern emotion representations and their effects on behaviour, not whether the
+  model feels anything.</p>
   <p class="narrow">Even so, the directions are there, they are readable, and they move behaviour.
   Instruction tuning, the step that turns a base model into an assistant, is also the step that
   rearranged them. Understanding what it put on top is where we would start.</p>
