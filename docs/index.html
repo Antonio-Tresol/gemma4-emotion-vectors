@@ -138,6 +138,9 @@ margin-top:10px}
 .coverfig{margin:30px 0 0;background:var(--surface);border:1px solid var(--border);
 border-radius:12px;padding:18px 20px}
 .howto{margin-top:14px;border-top:1px dashed var(--border);padding-top:12px}
+/* Standalone folds (section 10's methodology blocks) sit on the text measure
+   like prose; folds inside a figure card keep the card's full width. */
+.wrap>.howto{max-width:var(--measure);margin-inline:auto}
 .howto summary{font-family:var(--display);font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
 .howto[open] summary{color:var(--text);margin-bottom:8px}
 .howto p{font-size:14.5px;color:var(--body)}
@@ -995,10 +998,9 @@ border-bottom:1px solid var(--border)}</style></head>
   <p class="narrow">The orange line, size tracking, climbs instead, from <b>+0.03</b> at layer 6 to
   <b>+0.26</b> at layer 51, its deepest point. The climb is not smooth: it too collapses at
   layer 33, to +0.001, then resumes. Both measures dip at the same depth.</p>
-  <p class="narrow">The errors have structure: when the model names the wrong emotion,
-  it names a <em>near</em> one. The emotion it picks instead sits closer to the true one in the
-  VAD space than a randomly chosen emotion would, and that holds
-  at every layer we looked at.</p>
+  <p class="narrow">We also noted that on errors, the model naming is usually wrong because it
+  names a <em>near</em> one. The emotion it picks instead sits closer to the true one in the
+  VAD space than a randomly chosen emotion would.</p>
   <h3 style="margin-top:30px">A result that reverses with depth</h3>
   <p class="narrow">  The model's own emotion layout explains its mistakes better at layer 33; human ratings explain
   them better at layer 51. So the answer to "does it confuse emotions the way people do?" depends
@@ -1045,12 +1047,6 @@ border-bottom:1px solid var(--border)}</style></head>
   <p class="narrow">What the new axis encodes is unsettled across all three results. So is how much
   of the story-following belongs to the model, and how much to the stories its vectors were built
   from.</p>
-  <h3 style="margin-top:30px">A weak signal has two explanations</h3>
-  <p class="narrow">  Every positive result here is real and small: better than chance, too weak to
-  rely on. There are two readings and we cannot yet separate them. One is that
-  emotion is genuinely represented and our instruments are blunt. The other is that emotion is
-  not one of the big organising ideas in this model, and a weak signal is the correct answer.
-  Telling those apart is the experiment we would most like to run.</p>
 </div></section>
 
 <section id="methods"><div class="wrap">
@@ -1733,8 +1729,9 @@ function drawGrid(){
   const host=document.getElementById("gridChart"); host.innerHTML="";
   // 880 to match the shared canvas scale, the 5x5 grid centred within it;
   // the old 420 square canvas rendered the grid at ~1.5x page scale even
-  // after the height cap
-  const cell=62,W=880,H=404,T=42,L=(W-5*cell)/2;
+  // after the height cap. cell=84 puts the matrix at ~48% of the canvas,
+  // the same share Figure 8's agreement matrix occupies of its own
+  const cell=84,W=880,H=512,T=42,L=(W-5*cell)/2;
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
   const note=document.getElementById("gridNote");
   D.grid.forEach((row,i)=>row.forEach((v,j)=>{

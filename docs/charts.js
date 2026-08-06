@@ -393,8 +393,9 @@ function drawGrid(){
   const host=document.getElementById("gridChart"); host.innerHTML="";
   // 880 to match the shared canvas scale, the 5x5 grid centred within it;
   // the old 420 square canvas rendered the grid at ~1.5x page scale even
-  // after the height cap
-  const cell=62,W=880,H=404,T=42,L=(W-5*cell)/2;
+  // after the height cap. cell=84 puts the matrix at ~48% of the canvas,
+  // the same share Figure 8's agreement matrix occupies of its own
+  const cell=84,W=880,H=512,T=42,L=(W-5*cell)/2;
   const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,width:"100%"});
   const note=document.getElementById("gridNote");
   D.grid.forEach((row,i)=>row.forEach((v,j)=>{
