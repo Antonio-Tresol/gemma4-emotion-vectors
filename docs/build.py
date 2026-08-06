@@ -320,12 +320,20 @@ def build() -> str:
         "bar": LINEAGE_BAR,
         "facts": FACTS,
     }
+    body = read_content()
+    # the masthead's reading time, from the visible word count at 230 words a
+    # minute; computed here so it can never drift from the prose it describes
+    visible = re.sub(r"<[^>]+>", " ", re.sub(r"<!--.*?-->", " ", body, flags=re.S))
+    minutes = max(1, round(len(visible.split()) / 230))
     html = (
-        SKELETON.replace("__BODY__", read_content())
+        SKELETON.replace("__BODY__", body)
+        .replace("__READ_TIME__", str(minutes))
         .replace("__JS__", (HERE / "charts.js").read_text(encoding="utf-8").rstrip("\n"))
         .replace("__CSS__", (HERE / "style.css").read_text(encoding="utf-8").rstrip("\n"))
         .replace("__DATA__", json.dumps(payload))
     )
+    if "__READ_TIME__" in html:
+        raise AssertionError("__READ_TIME__ placeholder survived the build")
     return link_notebooks(mark_external_links(html))
 
 

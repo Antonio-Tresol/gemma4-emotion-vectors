@@ -121,9 +121,10 @@ margin-top:10px}
 .coverfig{margin:30px 0 0;background:var(--surface);border:1px solid var(--border);
 border-radius:12px;padding:18px 20px}
 .howto{margin-top:14px;border-top:1px dashed var(--border);padding-top:12px}
-/* Standalone folds (section 10's methodology blocks) sit on the text measure
-   like prose; folds inside a figure card keep the card's full width. */
-.wrap>.howto{max-width:var(--measure);margin-inline:auto}
+/* Front-matter dividers. The masthead, the findings and the contents are
+   different kinds of front matter; a hairline on the text measure keeps them
+   from reading as one run-on block. */
+hr.divider{max-width:var(--measure);margin:40px auto 30px;border:0;border-top:1px solid var(--border)}
 .howto summary{font-family:var(--display);font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
 .howto[open] summary{color:var(--text);margin-bottom:8px}
 .howto p{font-size:14.5px;color:var(--body)}

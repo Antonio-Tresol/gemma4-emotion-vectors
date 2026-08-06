@@ -34,6 +34,14 @@ the parts of this that a script can judge; the rest is on whoever edits.
 | `.legend` | how to **decode** the figure: what each colour and mark means | inside the card, unless the key is drawn in the plot itself |
 | `.src` | which notebook or script the numbers came from | inside every result figure's card |
 | `.takeaway` | the section's verdict | once per section, at its end |
+| `hr.divider` | a hairline separating the header's kinds of front matter (masthead, findings, contents) | header only |
+
+The `details.howto` fold belongs to figure cards only. Section 11's
+methodology blocks once wore it as primary content, which read as a different
+page; they are open `h3` + prose now, like every other section's sub-topics.
+The masthead's reading time is computed by `build.py` from the visible word
+count (230 words a minute) and injected over `__READ_TIME__`, so it cannot
+drift from the prose.
 
 Everything else is prose. Parallel items are a list: `<ul>` when the order does
 not matter, `<ol class="steps">` when the text claims one. A caveat is a heading

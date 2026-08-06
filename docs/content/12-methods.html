@@ -3,78 +3,70 @@
   <p class="narrow">Each block below carries the formula, the pseudo-code and a glossary for every
   symbol in it.</p>
 
-  <details class="howto" style="border-top:none;margin-top:18px">
-    <summary style="font-size:15px">1. How an emotion becomes a vector</summary>
-    <p>We started from a collection of stories, each labelled with the emotion it was written to evoke.
-    Each story went through the model and we recorded the residual stream at a chosen layer. For one
-    emotion, we averaged those activations across all of its stories. That average is the emotion vector.
-    We repeat that for every emotion word, which gives 171 of them.</p>
-    <div id="m1"></div>
-    <p><b>Subtracting the average (centring):</b> we subtract the
-    mean across all the emotions in the set. What remains is what makes <em>this</em> emotion
-    different from the others. Which pool we average over,
-    the 12 or the 171, changes the answer. Without centring, the number reflects features common to
-    all English prose instead of the emotion. An early version of our pipeline omitted this step
-    and reported no detections anywhere (block 4). <b>Which words count:</b>
-    a story is hundreds of words, and we combine them into one recording. We ignore the padding,
-    drop the first 50 words as scene-setting, and average the rest, up to 512. Dropping the first
-    50 is the convention the original paper used.
-    (A <span data-term="token">token</span> is a word-fragment, roughly three-quarters of a word; the model reads those rather than words, and this page counts them.) We fixed both choices before any scoring. Block 3 does the opposite:
-    there we keep every word separate instead of averaging.</p>
-  </details>
+  <h3 style="margin-top:30px">1. How an emotion becomes a vector</h3>
+  <p class="narrow">We started from a collection of stories, each labelled with the emotion it was written to evoke.
+  Each story went through the model and we recorded the residual stream at a chosen layer. For one
+  emotion, we averaged those activations across all of its stories. That average is the emotion vector.
+  We repeat that for every emotion word, which gives 171 of them.</p>
+  <div id="m1"></div>
+  <p class="narrow"><b>Subtracting the average (centring):</b> we subtract the
+  mean across all the emotions in the set. What remains is what makes <em>this</em> emotion
+  different from the others. Which pool we average over,
+  the 12 or the 171, changes the answer. Without centring, the number reflects features common to
+  all English prose instead of the emotion. An early version of our pipeline omitted this step
+  and reported no detections anywhere (block 4). <b>Which words count:</b>
+  a story is hundreds of words, and we combine them into one recording. We ignore the padding,
+  drop the first 50 words as scene-setting, and average the rest, up to 512. Dropping the first
+  50 is the convention the original paper used.
+  (A <span data-term="token">token</span> is a word-fragment, roughly three-quarters of a word; the model reads those rather than words, and this page counts them.) We fixed both choices before any scoring. Block 3 does the opposite:
+  there we keep every word separate instead of averaging.</p>
 
-  <details class="howto" style="border-top:none">
-    <summary style="font-size:15px">2. What "the biggest axis is valence, 0.83" actually means</summary>
-    <p><b>Step one.</b> We have 171 emotion vectors, each thousands of numbers long. Principal component
-    analysis finds the directions along which those 171 points differ most. The first component (PC1) is
-    the single direction that captures the most spread. It comes only from the model: we use no human
-    labels to find it.</p>
-    <p><b>Step two.</b> Each of the 171 emotions gets a <em>score</em> on PC1: how far along that
-    direction it sits. So "elated" gets a number, "miserable" gets a number, and so on.</p>
-    <p><b>Step three.</b> Separately, we look up each emotion word in the
-    <a href="http://saifmohammad.com/WebPages/nrc-vad.html">NRC VAD lexicon</a>, a published set of
-    human ratings. People scored thousands of words for valence, arousal and dominance, and 164 of
-    our 171 words are in it.</p>
-    <p><b>Step four.</b> We correlate the model's 164 PC1 scores against the humans' 164 valence ratings.
-    That correlation is <b>0.83</b> on the base model. In words: the direction of largest variation in
-    the model's emotion space, found without reference to any human judgement, lines up strongly with
-    what people call pleasant versus unpleasant.</p>
-    <div id="m2"></div>
-    <p><b>Why we ignore the sign.</b> A principal component points along an axis, but which of its two
-    directions gets called "positive" is arbitrary: flip it and the correlation flips sign
-    without anything changing. So we report the size of the correlation and not its sign.
-    <b>What would count as failure:</b> a number near 0, meaning the model's biggest axis has nothing
-    to do with valence. That is close to what the instruction-tuned model gives (0.11).</p>
-  </details>
+  <h3 style="margin-top:34px">2. What "the biggest axis is valence, 0.83" actually means</h3>
+  <p class="narrow"><b>Step one.</b> We have 171 emotion vectors, each thousands of numbers long. Principal component
+  analysis finds the directions along which those 171 points differ most. The first component (PC1) is
+  the single direction that captures the most spread. It comes only from the model: we use no human
+  labels to find it.</p>
+  <p class="narrow"><b>Step two.</b> Each of the 171 emotions gets a <em>score</em> on PC1: how far along that
+  direction it sits. So "elated" gets a number, "miserable" gets a number, and so on.</p>
+  <p class="narrow"><b>Step three.</b> Separately, we look up each emotion word in the
+  <a href="http://saifmohammad.com/WebPages/nrc-vad.html">NRC VAD lexicon</a>, a published set of
+  human ratings. People scored thousands of words for valence, arousal and dominance, and 164 of
+  our 171 words are in it.</p>
+  <p class="narrow"><b>Step four.</b> We correlate the model's 164 PC1 scores against the humans' 164 valence ratings.
+  That correlation is <b>0.83</b> on the base model. In words: the direction of largest variation in
+  the model's emotion space, found without reference to any human judgement, lines up strongly with
+  what people call pleasant versus unpleasant.</p>
+  <div id="m2"></div>
+  <p class="narrow"><b>Why we ignore the sign.</b> A principal component points along an axis, but which of its two
+  directions gets called "positive" is arbitrary: flip it and the correlation flips sign
+  without anything changing. So we report the size of the correlation and not its sign.
+  <b>What would count as failure:</b> a number near 0, meaning the model's biggest axis has nothing
+  to do with valence. That is close to what the instruction-tuned model gives (0.11).</p>
 
-  <details class="howto" style="border-top:none">
-    <summary style="font-size:15px">3. How "does it follow the story?" was scored</summary>
-    <p>We wrote 173 three-emotion recipes and generated stories from each, giving a corpus of
-    8,938 labelled phases and 5,934 transitions between them. The
-    model reads the story once and we keep its state at every single word. At each position
-    we measure the angle between that state and each of the 12 emotion vectors. A phase's score is the
-    average over the words inside it; we skip phases shorter than 4 words.
-    Two questions follow, and we wrote down what would count as passing before running either.</p>
-    <p><b>Naming:</b> inside a phase written as "afraid", where does the afraid vector place among the
-    12? First place is perfect; 6.5th on average is what chance gives. <b>Anticipation:</b> in the
-    words just before a written turn, has the <em>next</em> emotion's vector already begun to pull
-    ahead? Zero would mean the model does not see the turn coming.</p>
-    <div id="m3"></div>
-    <p>We compare both against a shuffle: the identical computation with the emotion labels randomly
-    reassigned. That shuffle sets the floor the real result has to beat.</p>
-    <div id="m4"></div>
-  </details>
+  <h3 style="margin-top:34px">3. How "does it follow the story?" was scored</h3>
+  <p class="narrow">We wrote 173 three-emotion recipes and generated stories from each, giving a corpus of
+  8,938 labelled phases and 5,934 transitions between them. The
+  model reads the story once and we keep its state at every single word. At each position
+  we measure the angle between that state and each of the 12 emotion vectors. A phase's score is the
+  average over the words inside it; we skip phases shorter than 4 words.
+  Two questions follow, and we wrote down what would count as passing before running either.</p>
+  <p class="narrow"><b>Naming:</b> inside a phase written as "afraid", where does the afraid vector place among the
+  12? First place is perfect; 6.5th on average is what chance gives. <b>Anticipation:</b> in the
+  words just before a written turn, has the <em>next</em> emotion's vector already begun to pull
+  ahead? Zero would mean the model does not see the turn coming.</p>
+  <div id="m3"></div>
+  <p class="narrow">We compare both against a shuffle: the identical computation with the emotion labels randomly
+  reassigned. That shuffle sets the floor the real result has to beat.</p>
+  <div id="m4"></div>
 
-  <details class="howto" style="border-top:none">
-    <summary style="font-size:15px">4. The controls each result had to pass</summary>
-    <p>We wrote down every prediction, and the mark it had to beat, before the data existed. We re-ran
-    every measurement with the emotion labels shuffled. The error bars treat each story as one unit
-    rather than each word, because words within a story are not independent. We checked whether a
-    randomly chosen direction scores just as well, and whether a result is simply reproducing how
-    common each answer already is. The notebooks re-run from those files on any machine.</p>
-    <p class="muted">One correction reversed a headline. Our first round of
-    detection tests found nothing passing anywhere. A later audit found that the extraction code had skipped
-    the subtract-the-average step from block 1. With that step restored, the same data passes on both
-    models. We report both, and the section-3 figure is the corrected one.</p>
-  </details>
+  <h3 style="margin-top:34px">4. The controls each result had to pass</h3>
+  <p class="narrow">We wrote down every prediction, and the mark it had to beat, before the data existed. We re-ran
+  every measurement with the emotion labels shuffled. The error bars treat each story as one unit
+  rather than each word, because words within a story are not independent. We checked whether a
+  randomly chosen direction scores just as well, and whether a result is simply reproducing how
+  common each answer already is. The notebooks re-run from those files on any machine.</p>
+  <p class="narrow muted">One correction reversed a headline. Our first round of
+  detection tests found nothing passing anywhere. A later audit found that the extraction code had skipped
+  the subtract-the-average step from block 1. With that step restored, the same data passes on both
+  models. We report both, and the section-3 figure is the corrected one.</p>
 </div></section>
