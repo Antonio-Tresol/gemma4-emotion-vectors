@@ -39,23 +39,41 @@ function autoMarkTerms(){
     acceptNode:node=>{
       const parent=node.parentElement;
       if(!parent || !parent.closest(PROSE) || parent.closest(SKIP)) return NodeFilter.FILTER_REJECT;
-      pattern.lastIndex=0;
-      return pattern.test(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
     }});
   while(walker.nextNode()) targets.push(walker.currentNode);
+  // Marking every occurrence speckled term-dense passages: section 8 alone had
+  // ten dotted "layer"s in two paragraphs. A cooldown thins them: the first
+  // occurrence in each section is always marked (readers arrive by section),
+  // and after that a term is re-marked only once COOLDOWN characters of prose
+  // have passed since its last mark.
+  const COOLDOWN=800;
+  const lastMark={};   // slug -> {section, offset}
+  let offset=0;
   targets.forEach(node=>{
-    const text=node.nodeValue, frag=document.createDocumentFragment();
+    const text=node.nodeValue;
+    pattern.lastIndex=0;
+    if(!pattern.test(text)){ offset+=text.length; return; }
+    const sectionHost=node.parentElement.closest("section, header, .partbar");
+    const section=sectionHost ? (sectionHost.id||sectionHost.className) : "";
+    const frag=document.createDocumentFragment();
     let last=0, m; pattern.lastIndex=0;
     while((m=pattern.exec(text))){
-      frag.appendChild(document.createTextNode(text.slice(last,m.index)));
-      const span=document.createElement("span");
-      span.dataset.term=variantToSlug[m[1].toLowerCase().replace(/[-\s]+/g," ")];
-      span.textContent=m[1];
-      frag.appendChild(span);
+      const slug=variantToSlug[m[1].toLowerCase().replace(/[-\s]+/g," ")];
+      const seen=lastMark[slug];
+      const due=!seen || seen.section!==section || (offset+m.index)-seen.offset>COOLDOWN;
+      frag.appendChild(document.createTextNode(text.slice(last, due?m.index:m.index+m[1].length)));
+      if(due){
+        const span=document.createElement("span");
+        span.dataset.term=slug; span.textContent=m[1];
+        frag.appendChild(span);
+        lastMark[slug]={section, offset:offset+m.index};
+      }
       last=m.index+m[1].length;
     }
     frag.appendChild(document.createTextNode(text.slice(last)));
     node.parentNode.replaceChild(frag,node);
+    offset+=text.length;
   });
 }
 
